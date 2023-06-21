@@ -16,20 +16,20 @@ type AvatarUserProps = {
   icon?: string;
 };
 
+export const transformShortName = (name: string) => {
+  let shortName = '';
+  let nameArr = name.split(' ');
+  if (nameArr.length > 1) {
+    nameArr = [nameArr[0], nameArr[nameArr.length - 1]];
+  }
+  shortName = nameArr.reduce((rs, name) => {
+    return (rs += name.charAt(0).toUpperCase());
+  }, '');
+  return shortName;
+};
+
 export const AvatarUser = (props: AvatarUserProps) => {
   const { name, isMarginRight, icon } = props;
-
-  const transformShortName = (name: string) => {
-    let shortName = '';
-    let nameArr = name.split(' ');
-    if (nameArr.length > 1) {
-      nameArr = [nameArr[0], nameArr[nameArr.length - 1]];
-    }
-    shortName = nameArr.reduce((rs, name) => {
-      return (rs += name.charAt(0).toUpperCase());
-    }, '');
-    return shortName;
-  };
 
   return (
     <>

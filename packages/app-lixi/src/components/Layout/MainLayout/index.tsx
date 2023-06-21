@@ -209,7 +209,6 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
   const setRef = useCallback(node => {
-    console.log('NODE', node);
     if (node && node.clientHeight) {
       // Check if a node is actually passed. Otherwise node would be null.
       const height = node.clientHeight;

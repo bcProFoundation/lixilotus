@@ -1,7 +1,7 @@
 import { Account, NotificationDto } from '@bcpros/lixi-models';
 import { getAllAccounts, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { Layout, message, Space, Modal, Popover, Button, Badge } from 'antd';
+import { Layout, message, Space, Modal, Popover, Button, Badge, Avatar } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -18,6 +18,10 @@ import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
 import { api as postApi } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { push } from 'connected-next-router';
+import { transformShortName } from '@components/Common/AvatarUser';
+import { stripHtml } from 'string-strip-html';
+import moment from 'moment';
+import { currency } from '@components/Common/Ticker';
 
 const { Sider } = Layout;
 
@@ -193,6 +197,16 @@ export const ContainerAccess = styled.div`
         }
       }
     }
+    .social-digest {
+      padding: 0 0.5rem;
+      width: 100%;
+      text-align: left;
+      padding-bottom: 5rem;
+      h3 {
+        padding: 1rem 0;
+        margin: 0;
+      }
+    }
   }
 `;
 
@@ -214,24 +228,24 @@ const ShortcutSideBar = styled(Sider)`
   overflow: auto;
   background: var(--bg-color-light-theme);
   box-shadow: 0 0 30px rgb(80 181 255 / 5%);
-  min-width: 220px !important;
-  max-width: 220px !important;
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: transparent;
-  }
-  &.show-scroll {
-    &::-webkit-scrollbar {
-      width: 5px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
-      box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
-      border-radius: 100px;
-    }
-  }
+  min-width: 250px !important;
+  max-width: 250px !important;
+  // &::-webkit-scrollbar {
+  //   width: 5px;
+  // }
+  // &::-webkit-scrollbar-thumb {
+  //   background: transparent;
+  // }
+  // &.show-scroll {
+  //   &::-webkit-scrollbar {
+  //     width: 5px;
+  //   }
+  //   &::-webkit-scrollbar-thumb {
+  //     background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
+  //     box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+  //     border-radius: 100px;
+  //   }
+  // }
 
   @media (max-width: 960px) {
     display: none;
@@ -249,26 +263,151 @@ const ShortcutSideBar = styled(Sider)`
   }
 `;
 
-const UserControl = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+const SpaceShorcutItem = styled(Space)`
   width: 100%;
-  margin-bottom: 2rem;
-  .img-bell {
-    margin-bottom: 1rem;
-  }
-  @media (max-height: 610px) {
-    margin-bottom: 8px;
-    img {
-      width: 20px;
-      height: 20px;
+  gap: 8px !important;
+  padding: 8px;
+  border: 1px solid #f1f1f1;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  &:hover {
+    background: #f1f1f1;
+    .page-name {
+      color: var(--color-primary);
     }
-    .img-bell {
-      margin-bottom: 8px;
+  }
+  .ant-space-item {
+    &:last-child {
+      flex: 1;
+    }
+  }
+  .avatar-account {
+    border: 1px solid #fbf1fb;
+    border-radius: 50%;
+    width: fit-content;
+    .ant-avatar {
+      display: flex;
+      align-items: center;
+      font-size: 14px !important;
+      width: 46px;
+      height: 46px;
+    }
+    img {
+      object-fit: cover;
+      border-radius: 50%;
+      width: 46px;
+      height: 46px;
+    }
+  }
+  .content-account {
+    display: flex;
+    .info-account {
+      flex: 1;
+      p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        line-clamp: 1;
+        -webkit-line-clamp: 1;
+        box-orient: vertical;
+        -webkit-box-orient: vertical;
+        margin: 0;
+        text-align: left;
+        line-height: 16px;
+      }
+      .page-name {
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .account-name {
+        font-size: 12px;
+      }
+      .content {
+        font-size: 11px;
+        color: gray;
+      }
+    }
+    .time-score {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 8px;
+      p {
+        margin: 0;
+        color: gray;
+        &.create-date {
+          font-size: 10px;
+        }
+        &.lotus-burn-score {
+          font-size: 10px;
+          color: #fff;
+        }
+      }
+      .content-score {
+        padding: 2px 4px;
+        background: #bfbfbf;
+        border-radius: 12px;
+      }
+    }
+  }
+  &.collapse {
+    img {
+      width: 30px;
+      height: 30px;
+    }
+    .ant-avatar {
+      width: 30px;
+      height: 30px;
     }
   }
 `;
+
+export const ShortCutItem = ({
+  item,
+  classStyle,
+  isCollapse,
+  onClickIcon
+}: {
+  item?: any;
+  classStyle?: string;
+  isCollapse?: boolean;
+  onClickIcon?: (e: any) => void;
+}) => (
+  <SpaceShorcutItem
+    className={isCollapse ? 'collapse card' : 'card'}
+    onClick={() => onClickIcon(item?.page?.id || item?.token?.tokenId || item?.postAccount?.address)}
+    size={5}
+  >
+    <div className="avatar-account">
+      {item?.page && <img src={item?.page?.avatar || '/images/default-avatar.jpg'} />}
+      {item?.token && <img src={`${currency.tokenIconsUrl}/64/${item?.token?.tokenId}.png`} />}
+      {!item?.page && !item?.token && <Avatar>{transformShortName(item?.postAccount?.name)}</Avatar>}
+    </div>
+    {!isCollapse && (
+      <>
+        <div className="content-account">
+          <div className="info-account">
+            {item?.page?.name && <p className="page-name">{item?.page?.name}</p>}
+            {item?.token?.name && <p className="page-name">{item?.token?.name}</p>}
+            <p className={!item?.page?.name && !item?.token?.name ? 'page-name' : 'account-name'}>
+              {item?.postAccount?.name}
+            </p>
+            <p className="content">
+              {item?.content.includes('twitter') ? 'Via Twitter' : stripHtml(item?.content).result}
+            </p>
+          </div>
+          <div className="time-score">
+            <p className="create-date">{moment(item?.createdAt).format('HH:SS')}</p>
+            <div className="content-score">
+              <p className="lotus-burn-score">{item?.lotusBurnScore}</p>
+            </div>
+          </div>
+        </div>
+      </>
+    )}
+  </SpaceShorcutItem>
+);
 
 const SidebarShortcut = () => {
   const refSidebarShortcut = useRef<HTMLDivElement | null>(null);
@@ -283,8 +422,22 @@ const SidebarShortcut = () => {
   const notifications = useAppSelector(getAllNotifications);
   const filterValue = useAppSelector(getFilterPostsHome);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
+  const [filterGroup, setFilterGroup] = useState([]);
 
   let pastScan;
+
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext } = useInfinitePostsQuery(
+    {
+      first: 30,
+      minBurnFilter: filterValue,
+      accountId: selectedAccountId ?? null,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
+    },
+    false
+  );
 
   const onScan = async (result: string) => {
     if (pastScan !== result) {
@@ -312,6 +465,13 @@ const SidebarShortcut = () => {
       );
     }
   }, []);
+
+  useEffect(() => {
+    const newArrFilter = _.uniqBy(data, item => {
+      return item?.page?.id || item?.token?.tokenId || item?.postAccount.address;
+    });
+    setFilterGroup([...newArrFilter]);
+  }, [data]);
 
   const triggerSrollbar = e => {
     const sidebarShortcutNode = refSidebarShortcut.current;
@@ -353,6 +513,19 @@ const SidebarShortcut = () => {
     return className;
   };
 
+  const pathShortcutItem = (item, path) => {
+    let fullPath = '';
+    if (item?.page) {
+      return (fullPath = `/page/${path}`);
+    }
+    if (item?.token) {
+      return (fullPath = `/token/${path}`);
+    }
+    if (item?.postAccount) {
+      return (fullPath = `/profile/${path}`);
+    }
+  };
+
   return (
     <>
       <ShortcutSideBar
@@ -365,126 +538,29 @@ const SidebarShortcut = () => {
           <div className="wrapper">
             {!navCollapsed && (
               <>
-                <div className="social-menu">
-                  <h3>Socical</h3>
-                  <ItemAccess
-                    icon={'/images/ico-newfeeds.svg'}
-                    text={intl.get('general.newsfeed')}
-                    active={currentPathName === '/' || currentPathName.includes('/post')}
-                    direction="horizontal"
-                    key="home"
-                    onClickItem={() => handleIconClick('/')}
-                  />
-                  <ItemAccess
-                    icon={'/images/ico-page.svg'}
-                    text={intl.get('general.page')}
-                    active={currentPathName.includes('/page')}
-                    direction="horizontal"
-                    key="page-feed"
-                    onClickItem={() => handleIconClick('/page/feed')}
-                  />
-                  <ItemAccess
-                    icon={'/images/ico-notifications.svg'}
-                    text={intl.get('general.notifications')}
-                    active={currentPathName === '/notifications'}
-                    direction="horizontal"
-                    key="notifications"
-                    onClickItem={() => handleIconClick('/notifications')}
-                  />
-                </div>
-                <div className="social-feature">
-                  <h3>Feature</h3>
-                  <ItemAccess
-                    icon={'/images/ico-tokens.svg'}
-                    text={intl.get('general.tokens')}
-                    active={currentPathName.includes('/token')}
-                    direction="horizontal"
-                    key="tokens-feed"
-                    onClickItem={() => handleIconClick('/token/listing')}
-                  />
-                  <ItemAccess
-                    icon={'/images/ico-account.svg'}
-                    text={intl.get('general.accounts')}
-                    active={currentPathName === '/wallet'}
-                    direction="horizontal"
-                    key="wallet-lotus"
-                    onClickItem={() => handleIconClick('/wallet')}
-                  />
-                  <ItemAccess
-                    icon={'/images/ico-lixi.svg'}
-                    text={intl.get('general.lixi')}
-                    active={currentPathName.includes('/lixi')}
-                    direction="horizontal"
-                    key="lixi"
-                    onClickItem={() => handleIconClick('/lixi')}
-                  />
-                  <ItemAccess
-                    icon={'/images/ico-setting.svg'}
-                    text={intl.get('general.settings')}
-                    active={currentPathName === '/settings'}
-                    direction="horizontal"
-                    key="settings"
-                    onClickItem={() => handleIconClick('/settings')}
-                  />
+                <div className="social-digest">
+                  <h3>Digest</h3>
+                  {filterGroup.map(item => {
+                    return <ShortCutItem item={item} onClickIcon={path => router.push(pathShortcutItem(item, path))} />;
+                  })}
                 </div>
               </>
             )}
             {navCollapsed && (
               <>
-                <div className="social-menu">
-                  <h3>-</h3>
-                  <ItemAccess
-                    icon={'/images/ico-newfeeds.svg'}
-                    active={currentPathName === '/' || currentPathName.includes('/post')}
-                    direction="horizontal"
-                    key="home"
-                    onClickItem={() => handleIconClick('/')}
-                  />
-                  <ItemAccess
-                    icon={'/images/ico-page.svg'}
-                    active={currentPathName.includes('/page')}
-                    direction="horizontal"
-                    key="page-feed"
-                    onClickItem={() => handleIconClick('/page/feed')}
-                  />
-                  <ItemAccess
-                    icon={'/images/ico-notifications.svg'}
-                    active={currentPathName === '/notifications'}
-                    direction="horizontal"
-                    key="notifications"
-                    onClickItem={() => handleIconClick('/notifications')}
-                  />
-                </div>
-                <div className="social-feature">
-                  <h3>-</h3>
-                  <ItemAccess
-                    icon={'/images/ico-tokens.svg'}
-                    active={currentPathName.includes('/token')}
-                    direction="horizontal"
-                    key="tokens-feed"
-                    onClickItem={() => handleIconClick('/token/listing')}
-                  />
-                  <ItemAccess
-                    icon={'/images/ico-account.svg'}
-                    active={currentPathName === '/wallet'}
-                    direction="horizontal"
-                    key="wallet-lotus"
-                    onClickItem={() => handleIconClick('/wallet')}
-                  />
-                  <ItemAccess
-                    icon={'/images/ico-lixi.svg'}
-                    active={currentPathName.includes('/lixi')}
-                    direction="horizontal"
-                    key="lixi"
-                    onClickItem={() => handleIconClick('/lixi')}
-                  />
-                  <ItemAccess
-                    icon={'/images/ico-setting.svg'}
-                    active={currentPathName === '/settings'}
-                    direction="horizontal"
-                    key="settings"
-                    onClickItem={() => handleIconClick('/settings')}
-                  />
+                <h3 style={{ marginBottom: '0' }}>
+                  <img width={22} height={22} src="/images/ico-hambuger.svg" alt="" />
+                </h3>
+                <div className="social-feature" style={{ padding: navCollapsed ? '0.5rem' : '1rem' }}>
+                  {filterGroup.map(item => {
+                    return (
+                      <ShortCutItem
+                        item={item}
+                        isCollapse={navCollapsed}
+                        onClickIcon={path => router.push(pathShortcutItem(item, path))}
+                      />
+                    );
+                  })}
                 </div>
               </>
             )}

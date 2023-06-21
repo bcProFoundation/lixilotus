@@ -23,6 +23,8 @@ import { Account } from '@bcpros/lixi-models';
 import * as _ from 'lodash';
 import { fromSmallestDenomination } from 'src/utils/cashMethods';
 import { push } from 'connected-next-router';
+import { ItemAccess } from '@containers/Sidebar/SideBarShortcut';
+import intl from 'react-intl-universal';
 
 export type TopbarProps = {
   className?: string;
@@ -77,7 +79,7 @@ const PathDirection = styled.div`
     position: relative;
     width: 20px;
     height: 20px;
-    margin-left: 1rem;
+    margin-left: 2rem;
     @media (max-width: 960px) {
       display: none;
     }
@@ -145,7 +147,64 @@ const AccountBox = styled.div`
   }
 `;
 
-const PopoverStyled = styled.div``;
+const PopoverStyled = styled.div`
+  .social-menu,
+  .social-feature {
+    width: 100%;
+    text-align: left;
+    padding-bottom: 0.5rem;
+
+    h3 {
+      font-size: 14px !important;
+      margin-bottom: 0.5rem !important;
+    }
+
+    .active-item-access {
+      padding: 4px !important;
+    }
+
+    img {
+      width: 16px;
+      height: 16px;
+    }
+
+    .text-item {
+      font-size: 12px !important;
+    }
+
+    h3 {
+      margin-bottom: 1rem;
+    }
+
+    div:not(.ant-space-item) {
+      margin-bottom: 1rem;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .active-item-access {
+      background: var(--bg-color-light-theme);
+      padding: 2px 0;
+      border-radius: var(--border-radius-primary);
+      img {
+        filter: var(--filter-color-primary);
+      }
+      .text-item {
+        color: var(--color-primary);
+      }
+    }
+
+    .item-access {
+      cursor: pointer;
+      &:hover {
+        .text-item {
+          color: var(--color-primary) !important;
+        }
+      }
+    }
+  }
+`;
 
 // eslint-disable-next-line react/display-name
 const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallback<HTMLElement>) => {
@@ -254,6 +313,16 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     }
   };
 
+  const handleIconClick = (newPath?: string) => {
+    if (currentPathName === '/' && newPath === '/') {
+      dispatch(postApi.util.resetApiState());
+      refetch();
+      dispatch(setGraphqlRequestLoading());
+    } else {
+      dispatch(push(newPath));
+    }
+  };
+
   const contentNotification = <PopoverStyled>{NotificationPopup(notifications, selectedAccount)}</PopoverStyled>;
 
   const contentFilterBurn = (
@@ -285,6 +354,73 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           );
         })}
     </AccountBox>
+  );
+
+  const contentMoreAction = (
+    <PopoverStyled>
+      <div className="social-menu">
+        <h3>Socical</h3>
+        <ItemAccess
+          icon={'/images/ico-newfeeds.svg'}
+          text={intl.get('general.newsfeed')}
+          active={currentPathName === '/' || currentPathName.includes('/post')}
+          direction="horizontal"
+          key="home"
+          onClickItem={() => handleIconClick('/')}
+        />
+        <ItemAccess
+          icon={'/images/ico-page.svg'}
+          text={intl.get('general.page')}
+          active={currentPathName.includes('/page')}
+          direction="horizontal"
+          key="page-feed"
+          onClickItem={() => handleIconClick('/page/feed')}
+        />
+        <ItemAccess
+          icon={'/images/ico-notifications.svg'}
+          text={intl.get('general.notifications')}
+          active={currentPathName === '/notifications'}
+          direction="horizontal"
+          key="notifications"
+          onClickItem={() => handleIconClick('/notifications')}
+        />
+      </div>
+      <div className="social-feature">
+        <h3>Feature</h3>
+        <ItemAccess
+          icon={'/images/ico-tokens.svg'}
+          text={intl.get('general.tokens')}
+          active={currentPathName.includes('/token')}
+          direction="horizontal"
+          key="tokens-feed"
+          onClickItem={() => handleIconClick('/token/listing')}
+        />
+        <ItemAccess
+          icon={'/images/ico-account.svg'}
+          text={intl.get('general.accounts')}
+          active={currentPathName === '/wallet'}
+          direction="horizontal"
+          key="wallet-lotus"
+          onClickItem={() => handleIconClick('/wallet')}
+        />
+        <ItemAccess
+          icon={'/images/ico-lixi.svg'}
+          text={intl.get('general.lixi')}
+          active={currentPathName.includes('/lixi')}
+          direction="horizontal"
+          key="lixi"
+          onClickItem={() => handleIconClick('/lixi')}
+        />
+        <ItemAccess
+          icon={'/images/ico-setting.svg'}
+          text={intl.get('general.settings')}
+          active={currentPathName === '/settings'}
+          direction="horizontal"
+          key="settings"
+          onClickItem={() => handleIconClick('/settings')}
+        />
+      </div>
+    </PopoverStyled>
   );
 
   return (
@@ -324,7 +460,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       <SpaceStyled direction="horizontal" size={15}>
         <div className="action-bar-header">
           <Button
-            onClick={() => dispatch(push('/'))}
+            onClick={() => handleIconClick('/')}
             className="home-btn animate__animated animate__heartBeat"
             type="text"
             icon={<HomeOutlined />}
@@ -341,6 +477,13 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             >
               <Button className="animate__animated animate__heartBeat" type="text" icon={<BellOutlined />} />
             </Badge>
+          </Popover>
+          <Popover className="more-btn" arrow={false} content={contentMoreAction} placement="bottom">
+            <Button
+              className="animate__animated animate__heartBeat"
+              type="text"
+              icon={<img src="/images/ico-grid.svg" />}
+            />
           </Popover>
         </div>
         <div className="account-bar">
@@ -441,6 +584,15 @@ const StyledTopbar = styled(Topbar)`
     gap: 8px;
     .anticon {
       font-size: 20px;
+    }
+    .more-btn {
+      display: flex;
+      justify-content: center;
+      img {
+        width: 20px;
+        height: 20px;
+        filter: var(--filter-color-primary);
+      }
     }
   }
 

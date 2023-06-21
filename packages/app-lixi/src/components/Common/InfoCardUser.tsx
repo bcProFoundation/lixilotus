@@ -8,7 +8,7 @@ import intl from 'react-intl-universal';
 import { useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
 import type { MenuProps } from 'antd';
-import { CaretRightOutlined } from '@ant-design/icons';
+import { currency } from '@components/Common/Ticker';
 
 type InfoCardProps = {
   imgUrl: any;
@@ -72,7 +72,7 @@ const CardUser = styled.div`
         top: 25px;
         margin-right: 0 !important;
         background: #bfbfbf;
-        font-size: 13px;
+        font-size: 12px;
       }
     }
     .image-page {
@@ -152,7 +152,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     <>
       <InfoCardUserContainer className={type === 'card' ? 'card' : ''}>
         <CardUser>
-          {!page && !page?.avatar && !page?.name && (
+          {!page && !token && (
             <div className="card-container">
               <div onClick={() => history.push(`/profile/${postAccountAddress}`)}>
                 {imgUrl ? <Avatar src={imgUrl} /> : <AvatarUser name={name} isMarginRight={true} />}
@@ -173,10 +173,10 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
               </div>
             </div>
           )}
-          {page && page?.avatar && page?.name && (
+          {page && page?.name && (
             <div className="card-container">
               <div className="page-bar" onClick={() => history.push(`/page/${page.id}}`)}>
-                {page?.avatar && <img className="image-page" src={page.avatar} />}
+                <img className="image-page" src={page?.avatar ? page?.avatar : '/images/default-avatar.jpg'} />
                 <AvatarUser name={name} isMarginRight={true} />
               </div>
               <div className="card-info">
@@ -196,13 +196,14 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
               </div>
             </div>
           )}
-          {token && token && token?.name && (
+          {token && token?.name && (
             <div className="card-container">
               <div className="page-bar" onClick={() => history.push(`/token/${token?.tokenId}}`)}>
-                <AvatarUser name={token?.name} isMarginRight={true} />
+                <img className="image-page" src={`${currency.tokenIconsUrl}/64/${token.tokenId}.png`} />
+                <AvatarUser name={name} isMarginRight={true} />
               </div>
               <div className="card-info">
-                <span className="name" onClick={() => history.push(`/token/${page.id}`)}>
+                <span className="name" onClick={() => history.push(`/token/${token?.tokenId}`)}>
                   {token?.name}
                 </span>
                 <p className="title">
