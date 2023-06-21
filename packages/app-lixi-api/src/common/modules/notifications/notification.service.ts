@@ -28,7 +28,7 @@ export class NotificationService {
     @InjectQueue(WEBPUSH_NOTIFICATION_QUEUE) private webpushQueue: Queue,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   async saveAndDispatchNotification(notification: NotificationDto) {
     if (!notification.recipientId) {
@@ -132,29 +132,30 @@ export class NotificationService {
   }
 
   async saveAnddDispathNotificationNewPost(notification: any) {
-    let listDeviceIdOfAllRecipients: string[] = [];
     let listRecipientAddress: string[] = notification.recipientAddresses;
     console.log('listRecipientAddress', listRecipientAddress);
-    const promiseList: Promise<any>[] = [];
-    listRecipientAddress.forEach(async address => {
-      promiseList.push(this.redis.smembers(`online:user:${address}`));
-    });
-    const allListDeviceIds = await Promise.all(promiseList);
-    listDeviceIdOfAllRecipients = allListDeviceIds;
+    let allListDeviceIds: string[] = [];
+    for (const address of listRecipientAddress) {
+      const deviceIds = await this.redis.smembers(`online:user:${address}`);
+      console.log('deviceIds', deviceIds);
+      allListDeviceIds.push(...deviceIds);
+    };
     // The rooms are the list of devices
     // Each room is a device
-    const rooms = listDeviceIdOfAllRecipients.map(deviceId => {
+    console.log('allListDeviceIds', allListDeviceIds);
+    const rooms = allListDeviceIds.map(deviceId => {
       return `device:${deviceId}`;
     });
+    console.log('rooms', rooms);
     // User currently online, we send in-app notification
     // Dispatch the notification
-    _.map(rooms, async room => {
+    for (const room of rooms) {
       const sendNotifJobData: SendNotificationJobData = {
         room,
         notification: { notificationTypeId: 14 } as NotificationDto
       };
       await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
-    });
+    }
   }
 
   async calcFee(post: any, burn: BurnCommand) {

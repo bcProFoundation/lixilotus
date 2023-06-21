@@ -51,7 +51,7 @@ export class PostResolver {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -816,8 +816,6 @@ export class PostResolver {
     return result;
   }
 
-  @Throttle(2, 1)
-  @UseGuards(GqlThrottlerGuard)
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Post)
   async createPost(@PostAccountEntity() account: Account, @Args('data') data: CreatePostInput) {
@@ -849,10 +847,10 @@ export class PostResolver {
         connect:
           uploadDetailIds.length > 0
             ? uploadDetailIds.map((uploadDetail: any) => {
-                return {
-                  id: uploadDetail
-                };
-              })
+              return {
+                id: uploadDetail
+              };
+            })
             : undefined
       },
       page: {
@@ -1000,7 +998,7 @@ export class PostResolver {
     // const addressFollowerAccountDetails = followerAccountDetails.map(item => item.address);
     // get list address
     const createNotiNewPost = {
-      recipientAddresses: ['lotus_16PSJJenhgYL4sr2QpEA8Hz6eLYyCScJchQMAjMLe']
+      recipientAddresses: ['lotus_16PSJQYsPAuj9A9JtaamJabiZXdrMxgbnrGsGJQVh']
     };
     console.log(createNotiNewPost.recipientAddresses);
     await this.notificationService.saveAnddDispathNotificationNewPost(createNotiNewPost);

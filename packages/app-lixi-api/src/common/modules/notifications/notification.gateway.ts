@@ -29,7 +29,7 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
   private logger: Logger = new Logger('NotificationGateway');
 
-  constructor(@InjectRedis() private readonly redis: Redis) {}
+  constructor(@InjectRedis() private readonly redis: Redis) { }
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
@@ -43,13 +43,13 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
     const deviceId = await this.redis.hget(`client:${client.id}`, 'deviceId');
     if (address && deviceId) {
       await this.redis.srem(`online:user:${address}`, deviceId);
-      await this.redis.scard(`online:user:${address}`, (error, count) => {
+      await this.redis.scard(`online:user:${address}`, async (error, count) => {
         if (error) {
           this.logger.error('Redis error:', error);
           return;
         }
         if (count === 0) {
-          this.redis.del(`online:user:${address}`);
+          await this.redis.del(`online:user:${address}`);
         }
       });
     }
