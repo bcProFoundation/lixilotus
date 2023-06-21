@@ -29,6 +29,7 @@ import { Image } from 'antd';
 import { useAppSelector } from '@store/hooks';
 import { getPostCoverUploads } from '@store/account/selectors';
 import Gallery from 'react-photo-gallery';
+import intl from 'react-intl-universal';
 
 export type EditorLexicalProps = {
   initialContent?: string;
@@ -129,7 +130,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
   };
 
   const Placeholder = () => {
-    return <div className="EditorLexical_placeholder">What do you think?...</div>;
+    return <div className="EditorLexical_placeholder">{intl.get('general.createPost')}</div>;
   };
 
   const setInitialContent = (hashtags: string[], initialContent: string, isEditMode: boolean) => {

@@ -110,6 +110,7 @@ export default {
   'general.topPages': 'Top Pages',
   'general.burned': 'Burned',
   'general.fee': 'Fee: ',
+  'general.createPost': 'What do you think?...',
   'general.suggested': 'Suggested: ',
 
   /* 02.Account */
@@ -490,6 +491,7 @@ export default {
   'page.inputAddress': 'Please input address',
   'page.createPostFee': 'Create post fee',
   'page.createCommentFee': 'Create comment fee',
+  'page.repostFee': 'Repost fee',
   'page.couldNotpostPage': 'Could not create page',
   'page.createPageSuccessful': 'Create page successful',
   'page.unableCreatePageServer': 'Unable to create page on server',
@@ -546,6 +548,10 @@ export default {
   'post.page': 'Page',
   'post.token': 'Token',
   'post.public': 'Public',
+  'post.singleReposted': '{repostName} has reposted',
+  'post.multiReposted': '{repostName} other has reposted',
+  'post.repostSuccessful': 'Repost successful',
+  'post.repostFailure': 'Unable to repost',
   'post.on': 'on',
   'post.insufficientFeeCreatePost': 'You need Lotus to perform this action.',
   'post.postTitle' : 'Post',

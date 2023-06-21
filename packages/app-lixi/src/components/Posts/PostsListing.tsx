@@ -7,7 +7,6 @@ import {
   getSelectedAccountId
 } from '@store/account/selectors';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { WalletContext } from '@context/index';
 import {
   addBurnQueue,
   addBurnTransaction,
@@ -16,7 +15,6 @@ import {
   getLatestBurnForPost,
   clearFailQueue
 } from '@store/burn';
-import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
 import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space, Select, Button } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
@@ -192,10 +190,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       first: 20,
       minBurnFilter: filterValue,
       accountId: selectedAccountId ?? null,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      ]
     },
     false
   );

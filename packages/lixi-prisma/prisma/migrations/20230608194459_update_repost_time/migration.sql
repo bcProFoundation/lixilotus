@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "post" ADD COLUMN     "updated_repost_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP;

@@ -117,7 +117,7 @@ const TwitterPlugin: React.FC = () => {
     }
     const result = `${beforeStatus}status/${id}`;
     return result;
-  }
+  };
 
   return (
     <>

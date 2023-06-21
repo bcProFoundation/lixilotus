@@ -6,7 +6,7 @@ import { openModal } from '@store/modal/actions';
 import { PostsQuery } from '@store/post/posts.generated';
 import { formatBalance } from '@utils/cashMethods';
 import { List, Button, Space } from 'antd';
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, RetweetOutlined } from '@ant-design/icons';
 import _, { truncate } from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
@@ -22,6 +22,7 @@ import Reaction from '@components/Common/Reaction';
 import parse from 'html-react-parser';
 import { ReadMoreMore } from 'read-more-more';
 import PostContent from './PostContent';
+import ActionPostBar from '@components/Common/ActionPostBar';
 import { setSelectedPost } from '@store/post/actions';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
@@ -33,7 +34,7 @@ export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   />
 );
 
-const SpaceIconNoneHover = styled(Space)`
+export const SpaceIconNoneHover = styled(Space)`
   min-height: 38px;
   padding: 8px;
   img {
@@ -52,6 +53,12 @@ const CardContainer = styled.div`
   flex-direction: column;
   padding: 1rem 1rem 0 1rem;
   width: 100%;
+
+  .retweet {
+    display: flex;
+    margin: 0px 0px 5px 5px;
+    color: gray;
+  }
 `;
 
 const CardHeader = styled.div`
@@ -170,6 +177,14 @@ export const GroupIconText = styled.div`
     cursor: pointer;
     @media (max-width: 960px) {
       margin-right: 1rem;
+    }
+
+    &.repost {
+      svg {
+        color: var(--color-primary);
+        width: 28px;
+        height: 28px;
+      }
     }
   }
   img {
@@ -302,9 +317,33 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
     dispatch(openModal('EditPostModalPopup', editPostProps));
   };
 
+  const reposted = () => {
+    if (!_.isNil(post.repost) && post.repost.length != 0) {
+      if (post.repost.length - 1 == 0) {
+        return (
+          <p className="retweet">
+            <RetweetOutlined />{' '}
+            {intl.get('post.singleReposted', { repostName: post.repost[post.repost.length - 1].account.name })}
+          </p>
+        );
+      } else {
+        return (
+          <p className="retweet">
+            <RetweetOutlined />{' '}
+            {intl.get('post.multiReposted', {
+              repostName: `${post.repost[post.repost.length - 1].account.name} + ${post.repost.length - 1}`
+            })}
+          </p>
+        );
+      }
+    }
+    return '';
+  };
+
   return (
     <PostListItemContainer key={post.id} ref={ref}>
       <CardContainer>
+        {reposted()}
         <CardHeader>
           <InfoCardUser
             imgUrl={post.page ? post.page.avatar : ''}
@@ -344,20 +383,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
           )}
         </Content>
       </CardContainer>
-      <ActionBar>
-        <GroupIconText>
-          <Reaction post={post} handleBurnForPost={handleBurnForPost} />
-          <IconNoneHover
-            value={formatBalance(post?.totalComments ?? 0)}
-            imgUrl="/images/ico-comments.svg"
-            key={`list-vertical-comment-o-${item.id}`}
-            classStyle="custom-comment"
-            onClickIcon={e => handlePostClick(e)}
-          />
-        </GroupIconText>
-
-        <ShareSocialButton slug={post.id} content={post.content} postAccountName={post.postAccount.name} />
-      </ActionBar>
+      <ActionPostBar post={post} handleBurnForPost={handleBurnForPost} onClickIconComment={e => handlePostClick(e)} />
     </PostListItemContainer>
   );
 };

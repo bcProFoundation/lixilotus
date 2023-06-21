@@ -16,7 +16,7 @@ const postsAdapter = createEntityAdapter<PostQuery['post']>({
 const { selectAll, selectEntities, selectIds, selectTotal } = postsAdapter.getSelectors();
 
 export interface PostListByIdParams extends PaginationArgs {
-  orderBy?: PostOrder;
+  orderBy?: PostOrder[];
   id?: string;
   accountId?: number;
 }
