@@ -149,8 +149,8 @@ const Content = styled.div`
     .show-more-desktop {
       color: #fff;
       position: absolute;
-      top: 75%;
-      right: 30%;
+      top: 50%;
+      right: 50%;
       font-size: 26px;
       font-weight: 500;
     }
