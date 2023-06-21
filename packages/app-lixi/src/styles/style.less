@@ -932,3 +932,50 @@ code {
     }
   }
 }
+
+.slick-active {
+  z-index: 1;
+}
+@keyframes activePostAnimation {
+  0% {
+    border-width: 3px;
+    border-color: #ffd7f6;
+  }
+  40% {
+    border-width: 3px;
+    border-color: #ffd7f6;
+  }
+  70%{
+    border-width: 3px;
+    border-color: transparent;
+  }
+  100% {
+    border-width: 3px;
+    border-color: transparent;  
+  }
+}
+
+.slick-active {
+  z-index: 1;
+}
+@keyframes activePostAnimation {
+  0% {
+    border-width: 3px;
+    border-color: #ffd7f6;
+  }
+  40% {
+    border-width: 3px;
+    border-color: #ffd7f6;
+  }
+  70%{
+    border-width: 3px;
+    border-color: transparent;
+  }
+  100% {
+    border-width: 3px;
+    border-color: transparent;  
+  }
+}
+.active-post{
+  animation: activePostAnimation 5s;
+}

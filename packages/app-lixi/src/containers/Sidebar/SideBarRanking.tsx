@@ -8,7 +8,7 @@ import { getAllAccounts, getSelectedAccount, getLeaderBoard } from '@store/accou
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { fetchNotifications } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
-import { Button, Space, Form, Input, Layout, Modal, Collapse } from 'antd';
+import { Badge, Button, Space, Form, Input, Layout, Modal, Tabs, Collapse, Skeleton } from 'antd';
 import * as _ from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -138,6 +138,25 @@ const RankingSideBar = styled(Sider)`
   }
 `;
 
+const SkeletonStyled = styled(Skeleton)`
+  padding: 0px;
+  margin-bottom: 0.5rem;
+
+  .ant-skeleton-header {
+    .ant-skeleton-avatar {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  .ant-skeleton-title {
+    margin-bottom: 0px !important;
+  }
+  .ant-skeleton-paragraph {
+    margin-top: 0.6rem !important;
+  }
+`;
+
 export const Logged = styled.div`
   margin-top: 1rem;
   display: flex;
@@ -241,7 +260,7 @@ const SidebarRanking = () => {
 
   const [form] = Form.useForm();
 
-  const { data: topPagesData } = useInfinitePagesQuery(
+  const { data: topPagesData, isLoading: isLoadingPage } = useInfinitePagesQuery(
     {
       first: 5,
       orderBy: [
@@ -324,7 +343,8 @@ const SidebarRanking = () => {
           <div className="container-right-bar your-shortcuts card">
             <div className="content">
               <h3 className="title-card">{intl.get('general.topPages')}</h3>
-              {topPagesData.slice(0, 5).map((item, index) => {
+              {isLoadingPage ? <SkeletonStyled active avatar paragraph={{rows:1}} /> :
+              topPagesData.slice(0, 5).map((item, index) => {
                 return (
                   <>
                     {index === 0 && (
@@ -384,7 +404,8 @@ const SidebarRanking = () => {
           <div className="container-right-bar your-shortcuts card">
             <div className="content">
               <h3 className="title-card">{intl.get('general.topAccounts')}</h3>
-              {leaderboard.map((item, index) => {
+              {isLoadingPage ? <SkeletonStyled active avatar paragraph={{rows:1}} /> :
+              leaderboard.map((item, index) => {
                 return (
                   <>
                     {index === 0 && (
@@ -529,7 +550,8 @@ const SidebarRanking = () => {
           <Form style={{ width: 'auto' }} form={form}>
             <Form.Item
               name="mnemonic"
-              validateStatus={isValidMnemonic === null || isValidMnemonic ? '' : 'error'}
+              validateStatus={isValidMnemonic 
+              null || isValidMnemonic ? '' : 'error'}
               help={isValidMnemonic === null || isValidMnemonic ? '' : intl.get('account.mnemonicRequired')}
             >
               <Input

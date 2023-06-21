@@ -20,7 +20,7 @@ export const postAdapter = createEntityAdapter<PostQuery['post']>({
 
 const initialState: PostState = postAdapter.getInitialState({
   selectedId: '',
-  postsByAccountId: [1, 2, 3]
+  postsByAccountId: []
 });
 
 export const postReducer = createReducer(initialState, builder => {

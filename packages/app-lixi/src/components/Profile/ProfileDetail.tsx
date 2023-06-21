@@ -1,9 +1,8 @@
-import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import { Follow } from '@bcpros/lixi-models/lib/follow/follow.model';
 import { FilterBurnt } from '@components/Common/FilterBurn';
-import SearchBox from '@components/Common/SearchBox';
 import PostListItem from '@components/Posts/PostListItem';
 import {
   CreateFollowAccountInput,
@@ -17,6 +16,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { addBurnQueue, addBurnTransaction, clearFailQueue, getFailQueue } from '@store/burn';
 import { useCreateFollowAccountMutation, useDeleteFollowAccountMutation } from '@store/follow/follows.api';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { openModal } from '@store/modal/actions';
 import { useInfinitePostsByUserIdQuery } from '@store/post/useInfinitePostsByUserIdQuery';
 import { getFilterPostsProfile } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
@@ -26,12 +26,11 @@ import { Button, Skeleton, Space, Tabs } from 'antd';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { useRouter } from 'next/router';
+import { currency } from '@components/Common/Ticker';
 import React, { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import { openModal } from '@store/modal/actions';
-import { Follow } from '@bcpros/lixi-models/lib/follow/follow.model';
 
 type UserDetailProps = {
   user: any;
@@ -507,7 +506,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
       let tipToAddresses: { address: string; amount: string }[] = [
         {
           address: userDetailData.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.08)).valueOf().toString()
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
         }
       ];
 
@@ -634,9 +633,8 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
               <Button onClick={() => openFollowModal(Follow.Followees)}>{`${userDetailData.followingsCount} ${intl.get(
                 'general.youFollow'
               )}`}</Button>
-              <Button onClick={() => openFollowModal(Follow.FollowingPages)}>{`${
-                userDetailData.followingPagesCount
-              } ${intl.get('general.followingPages')}`}</Button>
+              <Button onClick={() => openFollowModal(Follow.FollowingPages)}>{`${userDetailData.followingPagesCount
+                } ${intl.get('general.followingPages')}`}</Button>
             </div>
           )}
         </ProfileCardHeader>

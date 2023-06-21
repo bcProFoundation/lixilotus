@@ -76,8 +76,9 @@ const TwitterPlugin: React.FC = () => {
     );
   }, [editor]);
 
-  const handleClick = async urlText => {
-    let tweetObj = await TwitterEmbedConfig.parseUrl(urlText);
+  const handleClick = async (urlText: string) => {
+    let trimmedUrl = urlText.includes('status') ? getStatusLink(urlText) : urlText;
+    let tweetObj = await TwitterEmbedConfig.parseUrl(trimmedUrl);
     let tweetId = tweetObj && tweetObj?.id ? tweetObj?.id.toString() : '';
     if (tweetId && tweetId.length === 19) {
       editor.registerCommand<string>(
@@ -103,6 +104,20 @@ const TwitterPlugin: React.FC = () => {
     const { value } = e.target;
     setValueInput(value);
   };
+
+  const getStatusLink = (url: string) => {
+    const urlText = url.toLowerCase();
+    let id;
+    const afterStatus = urlText.slice(urlText.indexOf('status/') + 7);
+    const beforeStatus = urlText.slice(0, urlText.indexOf('status/'));
+    if (afterStatus.includes('/')) {
+      id = afterStatus.slice(0, afterStatus.indexOf('/'));
+    } else if (afterStatus.includes('?')) {
+      id = afterStatus.slice(0, afterStatus.indexOf('?'));
+    }
+    const result = `${beforeStatus}status/${id}`;
+    return result;
+  }
 
   return (
     <>

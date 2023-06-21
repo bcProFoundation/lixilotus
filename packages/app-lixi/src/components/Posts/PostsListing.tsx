@@ -38,6 +38,8 @@ import { getFilterPostsHome, getSearchPosts } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
+import { setSelectedPost } from '@store/post/actions';
+import { getSelectedPostId } from '@store/post/selectors';
 
 export const OPTION_BURN_VALUE = {
   LIKE: '1',
@@ -154,6 +156,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const leaderboard = useAppSelector(getLeaderBoard);
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
   const recentTagAtHome = useAppSelector(getRecentHashtagAtHome);
+  const postIdSelected = useAppSelector(getSelectedPostId);
   const [hashtags, setHashtags] = useState([]);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
   const [searchValuePosts, setSearchValuePosts] = useState<string | null>(null);
@@ -163,7 +166,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const menuItems = [{ label: intl.get('general.allPost'), key: 'all' }];
 
   useEffect(() => dispatch(getLeaderboard()), []);
-
+  const refs = useRef([]);
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
   };
@@ -186,6 +189,17 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     searchDataPost?.hashtags ? setHashtagsPosts(searchDataPost.hashtags) : setHashtagsPosts([]);
   }, [searchDataPost]);
 
+  useEffect(() => {
+    if (refs.current[postIdSelected]) {
+      const heightPost = refs.current[postIdSelected].clientHeight;
+      _.delay(() => {
+        refs.current[postIdSelected].firstChild.classList.add('active-post');
+        refs.current[postIdSelected].scrollIntoView({ behaviour: 'smooth' });
+      }, 500);
+      dispatch(setSelectedPost(''));
+    }
+  }, [data]);
+  
   //#region QueryVirtuoso
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
     useInfinitePostsBySearchQueryWithHashtag(
@@ -322,13 +336,20 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           >
             {data.map((item, index) => {
               return (
-                <PostListItem
-                  index={index}
-                  item={item}
+                <div
                   key={item.id}
-                  handleBurnForPost={handleBurnForPost}
-                  addHashtag={addHashtag}
-                />
+                  ref={element => {
+                    refs.current[item.id] = element;
+                  }}
+                >
+                  <PostListItem
+                    index={index}
+                    item={item}
+                    key={item.id}
+                    handleBurnForPost={handleBurnForPost}
+                    addHashtag={addHashtag}
+                  />
+                </div>
               );
             })}
           </InfiniteScroll>
@@ -376,13 +397,13 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         tag = PostsQueryTag.Posts;
         tipToAddresses.push({
           address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.08)).valueOf().toString()
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
         });
       } else if (post.page) {
         tag = PostsQueryTag.PostsByPageId;
         tipToAddresses.push({
           address: post.page.pageAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
         });
       } else if (post.token) {
         tag = PostsQueryTag.PostsByTokenId;

@@ -30,13 +30,13 @@ const PageDetailPage = props => {
       {isSuccessPageQuery && isSuccessCheckIsFollowed && (
         <>
           <NextSeo
-            title="Lixi Program"
+            title={currentPage.name}
             description="The lixi program send you a small gift ."
             canonical={canonicalUrl}
             openGraph={{
               url: canonicalUrl,
               title: 'LixiLotus',
-              description: currentPage.description || 'LixiLotus allow you to giveaway your Lotus effortlessly',
+              description: currentPage.description || 'Change your attention change the world!',
               images: [{ url: '' }],
               site_name: 'LixiLotus'
             }}

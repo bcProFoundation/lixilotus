@@ -20,6 +20,7 @@ import { formatRelativeTime } from '@utils/formatting';
 import { Counter } from '@components/Common/Counter';
 import Reaction from '@components/Common/Reaction';
 import PostContent from './PostContent';
+import { setSelectedPost } from '@store/post/actions';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List
@@ -293,6 +294,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
     if (e.target.className === 'read-more-more-module_btn__33IaH') {
       e.stopPropagation();
     } else {
+      dispatch(setSelectedPost(post.id));
       router.push(`/post/${post.id}`);
     }
   };

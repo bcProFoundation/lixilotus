@@ -1,4 +1,4 @@
-import { CameraOutlined, CompassOutlined, EditOutlined, HomeOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { CameraOutlined, CompassOutlined, EditOutlined, HomeOutlined, InfoCircleOutlined, FireOutlined } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
@@ -166,6 +166,28 @@ const ProfileCardHeader = styled.div`
       flex-direction: column;
       align-items: center;
       padding-right: 0;
+    }
+  }
+
+  .description-profile {
+    width: 100%;
+    background: #fff;
+    padding: 0 calc(0px + 48px);
+    padding-bottom: 15px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    @media (max-width: 768px) {
+      margin-left: 0;
+      text-align: center;
+    }
+    h2 {
+      font-weight: 600;
+      margin-bottom: 0;
+      text-transform: capitalize;
+    }
+    Button {
+      margin: 0px 5px;
     }
   }
 `;
@@ -511,7 +533,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
       let tipToAddresses: { address: string; amount: string }[] = [
         {
           address: page.pageAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
         }
       ];
 
@@ -739,6 +761,37 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                 </Button>
               </div>
             )}
+          </div>
+          <div className="description-profile">
+            {pageDetailData.description && (
+              <p>
+                <InfoCircleOutlined /> {pageDetailData.description}
+              </p>
+            )}
+
+            {(pageDetailData.address || pageDetailData.stateName || pageDetailData.countryName) && (
+              <p>
+                <HomeOutlined />{' '}
+                {[pageDetailData.address, pageDetailData.stateName, pageDetailData.countryName]
+                  .filter(Boolean)
+                  .join(', ')}
+              </p>
+            )}
+
+            {pageDetailData.website && (
+              <p>
+                <CompassOutlined />
+                {<a href={pageDetailData.website}> {pageDetailData.website}</a>}
+              </p>
+            )}
+
+            <p>
+              {' '}
+              <FireOutlined />{' '}
+              {pageDetailData?.totalBurnForPage > 0
+                ? `${pageDetailData?.totalBurnForPage} ${intl.get('page.xpiHasBurned')}`
+                : intl.get('page.noXpiHasBurned')}
+            </p>
           </div>
         </ProfileCardHeader>
         <ProfileContentContainer>
