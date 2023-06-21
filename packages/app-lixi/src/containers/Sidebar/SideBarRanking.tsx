@@ -9,7 +9,7 @@ import { getAllAccounts, getSelectedAccount, getLeaderBoard } from '@store/accou
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { fetchNotifications } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
-import { Badge, Button, Space, Form, Input, Layout, Modal, Tabs, Collapse } from 'antd';
+import { Badge, Button, Space, Form, Input, Layout, Modal, Tabs, Collapse, Skeleton } from 'antd';
 import * as _ from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -164,6 +164,25 @@ const RankingSideBar = styled(Sider)`
         }
       }
     }
+  }
+`;
+
+const SkeletonStyled = styled(Skeleton)`
+  padding: 0px;
+  margin-bottom: 0.5rem;
+
+  .ant-skeleton-header {
+    .ant-skeleton-avatar {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  .ant-skeleton-title {
+    margin-bottom: 0px !important;
+  }
+  .ant-skeleton-paragraph {
+    margin-top: 0.6rem !important;
   }
 `;
 
@@ -333,7 +352,7 @@ const SidebarRanking = () => {
 
   const [form] = Form.useForm();
 
-  const { data: topPagesData } = useInfinitePagesQuery(
+  const { data: topPagesData, isLoading: isLoadingPage } = useInfinitePagesQuery(
     {
       first: 5,
       orderBy: [
@@ -411,53 +430,15 @@ const SidebarRanking = () => {
 
   return (
     <RankingSideBar id="ranking-sidebar" ref={refSidebarRanking} onScroll={e => triggerSrollbar(e)}>
-      {/* TODO: loggin-session */}
-      {/* <div className="login-session">
-        <InfoCardUser imgUrl={null} name={'Anonymous'} title={'@anonymous'}></InfoCardUser>
-        {!selectedAccount && (
-          <Link href="/admin/register-account" passHref>
-            <SmartButton>Sign in to connect wallet</SmartButton>
-          </Link>
-        )}
-        {selectedAccount && (
-          <Logged>
-            <div className="account-logged">
-              <img src="/images/xpi.svg" alt="" />
-              <span>{selectedAccount?.name || ''}</span>
-            </div>
-            <div className="address-logged">
-              {selectedAccount?.address.slice(6, 11) + '...' + selectedAccount?.address.slice(-5)}
-            </div>
-          </Logged>
-        )}
-        {selectedAccount && (
-          <StyledPopover
-            content={NotificationPopup(notifications, selectedAccount)}
-            placement="bottomRight"
-            getPopupContainer={trigger => trigger}
-            trigger={notifications.length != 0 && router.pathname !== '/notifications' ? 'click' : ''}
-            title={intl.get('general.notifications')}
-          >
-            <StyledBadge
-              count={notifications.length}
-              overflowCount={9}
-              offset={[notifications.length < 10 ? 0 : 5, 25]}
-              color="var(--color-primary)"
-            >
-              <StyledBell twoToneColor="#6f2dbd" />
-            </StyledBadge>
-          </StyledPopover>
-        )}
-      </div> */}
-
       {(router?.pathname == '/wallet' || router?.pathname == '/') && (
         <div className="right-bar">
           <div className="container-right-bar your-shortcuts">
             <div className="content">
               <h3>{intl.get('general.topPages')}</h3>
-              {topPagesData.slice(0, 5).map((item, index) => {
+              {isLoadingPage ? <SkeletonStyled active avatar paragraph={{rows:1}} /> :
+              topPagesData.slice(0, 5).map((item, index) => {
                 return (
-                  <h4 className="distance" key={`${item.id}`}>
+                  <h4 className="distance" key={`${item.id}`}> 
                     <ShortcutItemAccess
                       burnValue={item.totalBurnForPage}
                       icon={item.avatar ? item.avatar : item.name}
@@ -477,7 +458,8 @@ const SidebarRanking = () => {
           <div className="container-right-bar your-shortcuts">
             <div className="content">
               <h3>{intl.get('general.topAccounts')}</h3>
-              {leaderboard.map((item, index) => {
+              {isLoadingPage ? <SkeletonStyled active avatar paragraph={{rows:1}} /> :
+              leaderboard.map((item, index) => {
                 return (
                   <h4 className="distance" key={`${item.id}-${item.address}`}>
                     <ShortcutItemAccess
