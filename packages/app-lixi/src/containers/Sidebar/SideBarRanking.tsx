@@ -343,56 +343,59 @@ const SidebarRanking = () => {
           <div className="container-right-bar your-shortcuts card">
             <div className="content">
               <h3 className="title-card">{intl.get('general.topPages')}</h3>
-              {isLoadingPage ? <SkeletonStyled active avatar paragraph={{rows:1}} /> :
-              topPagesData.slice(0, 5).map((item, index) => {
-                return (
-                  <>
-                    {index === 0 && (
-                      <h4 className="distance" key={`${item.id}`}>
-                        <ShortcutItemAccess
-                          burnValue={item.totalBurnForPage}
-                          icon={item.avatar ? item.avatar : item.name}
-                          text={item.name}
-                          href={`/page/${item.id}`}
-                          icoRanking="/images/ico-circled-1-ranking.png"
-                        />
-                      </h4>
-                    )}
-                    {index === 1 && (
-                      <h4 className="distance" key={`${item.id}`}>
-                        <ShortcutItemAccess
-                          burnValue={item.totalBurnForPage}
-                          icon={item.avatar ? item.avatar : item.name}
-                          text={item.name}
-                          href={`/page/${item.id}`}
-                          icoRanking="/images/ico-circled-2-ranking.png"
-                        />
-                      </h4>
-                    )}
-                    {index === 2 && (
-                      <h4 className="distance" key={`${item.id}`}>
-                        <ShortcutItemAccess
-                          burnValue={item.totalBurnForPage}
-                          icon={item.avatar ? item.avatar : item.name}
-                          text={item.name}
-                          href={`/page/${item.id}`}
-                          icoRanking="/images/ico-circled-3-ranking.png"
-                        />
-                      </h4>
-                    )}
-                    {index > 2 && (
-                      <h4 className="distance" key={`${item.id}`}>
-                        <ShortcutItemAccess
-                          burnValue={item.totalBurnForPage}
-                          icon={item.avatar ? item.avatar : item.name}
-                          text={item.name}
-                          href={`/page/${item.id}`}
-                        />
-                      </h4>
-                    )}
-                  </>
-                );
-              })}
+              {isLoadingPage ? (
+                <SkeletonStyled active avatar paragraph={{ rows: 1 }} />
+              ) : (
+                topPagesData.slice(0, 5).map((item, index) => {
+                  return (
+                    <>
+                      {index === 0 && (
+                        <h4 className="distance" key={`${item.id}`}>
+                          <ShortcutItemAccess
+                            burnValue={item.totalBurnForPage}
+                            icon={item.avatar ? item.avatar : item.name}
+                            text={item.name}
+                            href={`/page/${item.id}`}
+                            icoRanking="/images/ico-circled-1-ranking.png"
+                          />
+                        </h4>
+                      )}
+                      {index === 1 && (
+                        <h4 className="distance" key={`${item.id}`}>
+                          <ShortcutItemAccess
+                            burnValue={item.totalBurnForPage}
+                            icon={item.avatar ? item.avatar : item.name}
+                            text={item.name}
+                            href={`/page/${item.id}`}
+                            icoRanking="/images/ico-circled-2-ranking.png"
+                          />
+                        </h4>
+                      )}
+                      {index === 2 && (
+                        <h4 className="distance" key={`${item.id}`}>
+                          <ShortcutItemAccess
+                            burnValue={item.totalBurnForPage}
+                            icon={item.avatar ? item.avatar : item.name}
+                            text={item.name}
+                            href={`/page/${item.id}`}
+                            icoRanking="/images/ico-circled-3-ranking.png"
+                          />
+                        </h4>
+                      )}
+                      {index > 2 && (
+                        <h4 className="distance" key={`${item.id}`}>
+                          <ShortcutItemAccess
+                            burnValue={item.totalBurnForPage}
+                            icon={item.avatar ? item.avatar : item.name}
+                            text={item.name}
+                            href={`/page/${item.id}`}
+                          />
+                        </h4>
+                      )}
+                    </>
+                  );
+                })
+              )}
             </div>
             <img className="animation-top-ranking" src="/images/ico-fire-animation.gif" alt="" />
           </div>
@@ -404,56 +407,59 @@ const SidebarRanking = () => {
           <div className="container-right-bar your-shortcuts card">
             <div className="content">
               <h3 className="title-card">{intl.get('general.topAccounts')}</h3>
-              {isLoadingPage ? <SkeletonStyled active avatar paragraph={{rows:1}} /> :
-              leaderboard.map((item, index) => {
-                return (
-                  <>
-                    {index === 0 && (
-                      <h4 className="distance" key={`${item.id}-${item.address}`}>
-                        <ShortcutItemAccess
-                          burnValue={item.totalBurned}
-                          icon={''}
-                          text={item.name}
-                          href={`/profile/${item.address}`}
-                          icoRanking="/images/ico-circled-1-ranking.png"
-                        />
-                      </h4>
-                    )}
-                    {index === 1 && (
-                      <h4 className="distance" key={`${item.id}-${item.address}`}>
-                        <ShortcutItemAccess
-                          burnValue={item.totalBurned}
-                          icon={''}
-                          text={item.name}
-                          href={`/profile/${item.address}`}
-                          icoRanking="/images/ico-circled-2-ranking.png"
-                        />
-                      </h4>
-                    )}
-                    {index === 2 && (
-                      <h4 className="distance" key={`${item.id}-${item.address}`}>
-                        <ShortcutItemAccess
-                          burnValue={item.totalBurned}
-                          icon={''}
-                          text={item.name}
-                          href={`/profile/${item.address}`}
-                          icoRanking="/images/ico-circled-3-ranking.png"
-                        />
-                      </h4>
-                    )}
-                    {index > 2 && (
-                      <h4 className="distance" key={`${item.id}-${item.address}`}>
-                        <ShortcutItemAccess
-                          burnValue={item.totalBurned}
-                          icon={''}
-                          text={item.name}
-                          href={`/profile/${item.address}`}
-                        />
-                      </h4>
-                    )}
-                  </>
-                );
-              })}
+              {isLoadingPage ? (
+                <SkeletonStyled active avatar paragraph={{ rows: 1 }} />
+              ) : (
+                leaderboard.map((item, index) => {
+                  return (
+                    <>
+                      {index === 0 && (
+                        <h4 className="distance" key={`${item.id}-${item.address}`}>
+                          <ShortcutItemAccess
+                            burnValue={item.totalBurned}
+                            icon={''}
+                            text={item.name}
+                            href={`/profile/${item.address}`}
+                            icoRanking="/images/ico-circled-1-ranking.png"
+                          />
+                        </h4>
+                      )}
+                      {index === 1 && (
+                        <h4 className="distance" key={`${item.id}-${item.address}`}>
+                          <ShortcutItemAccess
+                            burnValue={item.totalBurned}
+                            icon={''}
+                            text={item.name}
+                            href={`/profile/${item.address}`}
+                            icoRanking="/images/ico-circled-2-ranking.png"
+                          />
+                        </h4>
+                      )}
+                      {index === 2 && (
+                        <h4 className="distance" key={`${item.id}-${item.address}`}>
+                          <ShortcutItemAccess
+                            burnValue={item.totalBurned}
+                            icon={''}
+                            text={item.name}
+                            href={`/profile/${item.address}`}
+                            icoRanking="/images/ico-circled-3-ranking.png"
+                          />
+                        </h4>
+                      )}
+                      {index > 2 && (
+                        <h4 className="distance" key={`${item.id}-${item.address}`}>
+                          <ShortcutItemAccess
+                            burnValue={item.totalBurned}
+                            icon={''}
+                            text={item.name}
+                            href={`/profile/${item.address}`}
+                          />
+                        </h4>
+                      )}
+                    </>
+                  );
+                })
+              )}
             </div>
             <img className="animation-top-ranking" src="/images/ico-fire-heart-animation.gif" alt="" />
           </div>
@@ -550,8 +556,7 @@ const SidebarRanking = () => {
           <Form style={{ width: 'auto' }} form={form}>
             <Form.Item
               name="mnemonic"
-              validateStatus={isValidMnemonic 
-              null || isValidMnemonic ? '' : 'error'}
+              validateStatus={isValidMnemonic === null || isValidMnemonic ? '' : 'error'}
               help={isValidMnemonic === null || isValidMnemonic ? '' : intl.get('account.mnemonicRequired')}
             >
               <Input
