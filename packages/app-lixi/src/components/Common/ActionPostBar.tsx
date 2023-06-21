@@ -64,33 +64,36 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment }: ActionPo
 
   useEffect(() => {
     selectedKey.includes('post') ? setBorderBottom(true) : setBorderBottom(false);
-  }, [selectedKey])
+  }, [selectedKey]);
 
   const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
     useRepostMutation();
 
   const handleRepost = async (post: PostItem) => {
-    console.log('repost: ', post);
     try {
       let txHex;
 
-      if (selectedAccount.id != Number(post.page.pageAccount.id) && parseFloat(post.page.createPostFee) != 0) {
-        const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
-        txHex = await sendXpi(
-          XPI,
-          chronik,
-          walletPaths,
-          slpBalancesAndUtxos.nonSlpUtxos,
-          currency.defaultFee,
-          '',
-          false, // indicate send mode is one to one
-          null,
-          post.page.pageAccount.address,
-          post.page.createPostFee,
-          true,
-          fundingWif,
-          true
-        );
+      try {
+        if (selectedAccount.id != Number(post.page.pageAccount.id) && parseFloat(post.page.createPostFee) != 0) {
+          const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+          txHex = await sendXpi(
+            XPI,
+            chronik,
+            walletPaths,
+            slpBalancesAndUtxos.nonSlpUtxos,
+            currency.defaultFee,
+            '',
+            false, // indicate send mode is one to one
+            null,
+            post.page.pageAccount.address,
+            post.page.createPostFee,
+            true,
+            fundingWif,
+            true
+          );
+        }
+      } catch (error) {
+        throw new Error(intl.get('post.insufficientFeeCreatePost'));
       }
 
       const repostInput: RepostInput = {
@@ -112,6 +115,9 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment }: ActionPo
       let message = e.message || e.error || JSON.stringify(e);
       if (isErrorRepost) {
         message = intl.get('post.repostFailure');
+      }
+      if (e.message === intl.get('post.insufficientFeeCreatePost')) {
+        message = e.message;
       }
       dispatch(
         showToast('error', {

@@ -66,5 +66,5 @@ export class Post {
   postHashtags?: [PostHashtag];
 
   @Field(() => [Repost], { nullable: true })
-  repost?: [Repost];
+  reposts?: [Repost];
 }

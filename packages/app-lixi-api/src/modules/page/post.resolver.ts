@@ -332,7 +332,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true, comments: true, repost: { select: { account: true, accountId: true } } },
+            include: { postAccount: true, comments: true, reposts: { select: { account: true, accountId: true } } },
             where: {
               OR: [
                 {
@@ -365,7 +365,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true, comments: true, repost: { select: { account: true, accountId: true } } },
+            include: { postAccount: true, comments: true, reposts: { select: { account: true, accountId: true } } },
             where: {
               OR: [
                 {
@@ -1044,8 +1044,7 @@ export class PostResolver {
       },
       data: {
         content: htmlContent,
-        updatedAt: new Date(),
-        updatedRepostAt: new Date()
+        updatedAt: new Date()
       }
     });
 
@@ -1093,16 +1092,22 @@ export class PostResolver {
         txid = broadcastResponse.txid;
       }
 
-      const createRepost = await prisma.repost.create({
+      const updatePost = await prisma.post.update({
+        where: { id: data.postId },
+
         data: {
-          accountId: account.id,
-          postId: data.postId,
-          repostFee: repostFee,
-          txid: txid
+          lastRepostAt: new Date(),
+          reposts: {
+            create: {
+              accountId: account.id,
+              repostFee: repostFee,
+              txid: txid
+            }
+          }
         }
       });
 
-      return createRepost;
+      return updatePost;
     });
 
     return reposted ? true : false;

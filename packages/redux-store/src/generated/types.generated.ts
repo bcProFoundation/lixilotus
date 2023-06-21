@@ -504,7 +504,7 @@ export type Post = {
   postAccount: Account;
   postAccountId: Scalars['Int'];
   postHashtags?: Maybe<Array<PostHashtag>>;
-  repost?: Maybe<Array<Repost>>;
+  reposts?: Maybe<Array<Repost>>;
   token?: Maybe<Token>;
   tokenId?: Maybe<Scalars['String']>;
   totalComments: Scalars['Int'];

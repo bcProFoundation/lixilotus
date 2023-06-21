@@ -58,7 +58,7 @@ export type PostQuery = {
       pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     } | null;
     token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-    repost?: Array<{
+    reposts?: Array<{
       __typename?: 'Repost';
       accountId?: number | null;
       account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -121,7 +121,7 @@ export type PostsQuery = {
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-        repost?: Array<{
+        reposts?: Array<{
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -193,7 +193,7 @@ export type OrphanPostsQuery = {
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-        repost?: Array<{
+        reposts?: Array<{
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -265,7 +265,7 @@ export type PostsByPageIdQuery = {
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-        repost?: Array<{
+        reposts?: Array<{
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -337,7 +337,7 @@ export type PostsByUserIdQuery = {
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-        repost?: Array<{
+        reposts?: Array<{
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -409,7 +409,7 @@ export type PostsByHashtagIdQuery = {
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-        repost?: Array<{
+        reposts?: Array<{
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -481,7 +481,7 @@ export type PostsByTokenIdQuery = {
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-        repost?: Array<{
+        reposts?: Array<{
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -550,7 +550,7 @@ export type PostsBySearchQuery = {
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-        repost?: Array<{
+        reposts?: Array<{
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -621,7 +621,7 @@ export type PostsBySearchWithHashtagQuery = {
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-        repost?: Array<{
+        reposts?: Array<{
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -693,7 +693,7 @@ export type PostsBySearchWithHashtagAtPageQuery = {
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-        repost?: Array<{
+        reposts?: Array<{
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -765,7 +765,7 @@ export type PostsBySearchWithHashtagAtTokenQuery = {
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-        repost?: Array<{
+        reposts?: Array<{
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -818,7 +818,7 @@ export type PostFieldsFragment = {
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
   } | null;
   token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-  repost?: Array<{
+  reposts?: Array<{
     __typename?: 'Repost';
     accountId?: number | null;
     account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -861,7 +861,7 @@ export type PostMeiliFieldsFragment = {
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
   } | null;
   token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-  repost?: Array<{
+  reposts?: Array<{
     __typename?: 'Repost';
     accountId?: number | null;
     account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -910,7 +910,7 @@ export type CreatePostMutation = {
       pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     } | null;
     token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-    repost?: Array<{
+    reposts?: Array<{
       __typename?: 'Repost';
       accountId?: number | null;
       account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -960,7 +960,7 @@ export type UpdatePostMutation = {
       pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     } | null;
     token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
-    repost?: Array<{
+    reposts?: Array<{
       __typename?: 'Repost';
       accountId?: number | null;
       account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -1013,7 +1013,7 @@ export const PostFieldsFragmentDoc = `
     name
     tokenId
   }
-  repost {
+  reposts {
     accountId
     account {
       id
@@ -1068,7 +1068,7 @@ export const PostMeiliFieldsFragmentDoc = `
     name
     tokenId
   }
-  repost {
+  reposts {
     accountId
     account {
       id

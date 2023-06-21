@@ -365,7 +365,7 @@ fragment PostFields on Post {
     name
     tokenId
   }
-  repost {
+  reposts {
     accountId
     account {
       id
@@ -419,7 +419,7 @@ fragment PostMeiliFields on Post {
     name
     tokenId
   }
-  repost {
+  reposts {
     accountId
     account {
       id

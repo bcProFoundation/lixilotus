@@ -424,7 +424,7 @@ type Post {
   postAccount: Account!
   postAccountId: Int!
   postHashtags: [PostHashtag!]
-  repost: [Repost!]
+  reposts: [Repost!]
   token: Token
   tokenId: String
   totalComments: Int!
