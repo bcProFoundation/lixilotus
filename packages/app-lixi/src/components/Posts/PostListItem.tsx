@@ -130,6 +130,7 @@ const Content = styled.div`
     max-height: 300px;
   }
   .images-post {
+    position: relative;
     cursor: pointer;
     width: 100%;
     margin: 1rem 0;
@@ -144,6 +145,14 @@ const Content = styled.div`
       opacity: 0.9;
     }
     .show-more-image {
+    }
+    .show-more-desktop {
+      color: #fff;
+      position: absolute;
+      top: 75%;
+      right: 30%;
+      font-size: 26px;
+      font-weight: 500;
     }
   }
 `;
@@ -329,7 +338,12 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
           </div>
           {item.uploads.length != 0 && !showMoreImage && (
             <div className="images-post">
-              <Gallery photos={imagesList} />
+              <Gallery photos={imagesList.length > 3 ? imagesList.slice(0, 3) : imagesList} />
+              {item.uploads.length > 3 && (
+                <Button type="link" className="show-more-desktop show-more-image no-border-btn">
+                  {'+ ' + (item.uploads.length - 1)}
+                </Button>
+              )}
             </div>
           )}
           {item.uploads.length != 0 && showMoreImage && (

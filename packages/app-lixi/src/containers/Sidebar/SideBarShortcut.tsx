@@ -363,6 +363,19 @@ const SpaceShorcutItem = styled(Space)`
   }
 `;
 
+const transformCreatedAt = date => {
+  let dateFormated = '';
+  const today = new Date();
+  if (moment(date).isSame(today, 'day')) {
+    dateFormated = moment(date).format('HH:SS');
+  } else if (moment(date).isSame(today, 'week')) {
+    dateFormated = moment(date).format('ddd');
+  } else {
+    dateFormated = moment(date).format('DD/MM');
+  }
+  return dateFormated;
+};
+
 export const ShortCutItem = ({
   item,
   classStyle,
@@ -398,7 +411,7 @@ export const ShortCutItem = ({
             </p>
           </div>
           <div className="time-score">
-            <p className="create-date">{moment(item?.createdAt).format('HH:SS')}</p>
+            <p className="create-date">{transformCreatedAt(item?.createdAt)}</p>
             <div className="content-score">
               <p className="lotus-burn-score">{item?.lotusBurnScore}</p>
             </div>
