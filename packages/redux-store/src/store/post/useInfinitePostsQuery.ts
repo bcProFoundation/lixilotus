@@ -16,6 +16,7 @@ const { selectAll } = postsAdapter.getSelectors();
 export interface PostListParams extends PaginationArgs {
   accountId: number;
   orderBy?: PostOrder;
+  isTop?: boolean;
 }
 
 export function useInfinitePostsQuery(

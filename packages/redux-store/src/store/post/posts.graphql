@@ -17,6 +17,7 @@ query Posts(
   $skip: Int
   $accountId: Int
   $minBurnFilter: Int
+  $isTop: Boolean
 ) {
   allPosts(
     after: $after
@@ -27,6 +28,7 @@ query Posts(
     skip: $skip
     accountId: $accountId
     minBurnFilter: $minBurnFilter
+    isTop: $isTop
   ) {
     totalCount
     edges {
@@ -370,6 +372,7 @@ fragment PostFields on Post {
   totalComments
   createdAt
   updatedAt
+  isFollow
 }
 
 fragment PostMeiliFields on Post {
@@ -420,6 +423,7 @@ fragment PostMeiliFields on Post {
   totalComments
   createdAt
   updatedAt
+  isFollow
 }
 
 mutation createPost($input: CreatePostInput!) {

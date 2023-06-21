@@ -52,3 +52,8 @@ export const getFilterPostsProfile = createSelector(
 export const getDeviceId = createSelector(getWebPushNotifConfig, (state: WebPushNotifConfig) =>
   state && state.deviceId ? state.deviceId : undefined
 );
+
+export const getIsTopPosts = createSelector(
+  (state: RootState) => state.settings,
+  (state: SettingsState) => state.isTopPosts
+);

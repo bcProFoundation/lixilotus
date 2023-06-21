@@ -507,7 +507,7 @@ export default {
 
   /* 15.Post */
   'general.allPost': 'Tất cả',
-  'general.followsPost': 'Theo dõi',
+  'general.topPost': 'Nổi bật',
   'post.createNewPage': 'tạo bài viết mới',
   'post.createPage': 'tạo bài viết',
   'post.editPost': 'Sửa bài viết chưa đốt',
@@ -546,7 +546,7 @@ export default {
   'post.public': 'Công khai',
   'post.on': 'trên',
   'post.insufficientFeeCreatePost': 'Bạn cần Lotus để thực hiện hành động này.',
-  'post.postTitle' : 'Bài viết',
+  'post.postTitle': 'Bài viết',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',

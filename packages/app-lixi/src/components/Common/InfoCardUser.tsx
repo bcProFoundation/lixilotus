@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { GlobalOutlined, DollarOutlined, ShopOutlined } from '@ant-design/icons';
+import Icon, { GlobalOutlined, DollarOutlined, ShopOutlined } from '@ant-design/icons';
 import { Avatar, Dropdown, Menu } from 'antd';
 import { AvatarUser } from './AvatarUser';
 import intl from 'react-intl-universal';
@@ -9,6 +9,7 @@ import { useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
 import type { MenuProps } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
+import FollowSvg from '@assets/icons/follow.svg';
 
 type InfoCardProps = {
   imgUrl: any;
@@ -23,6 +24,7 @@ type InfoCardProps = {
   postEdited?: boolean;
   isDropdown?: boolean;
   lotusBurnScore?: number;
+  isFollow?: boolean;
 };
 
 const CardUser = styled.div`
@@ -48,6 +50,14 @@ const CardUser = styled.div`
         letter-spacing: 0.25px;
         margin: 0;
         color: rgba(30, 26, 29, 0.38);
+
+        svg {
+          width: 12px;
+          height: 12px;
+          letter-spacing: 0.25px;
+          margin: 0;
+          filter: invert(73%) sepia(12%) saturate(19%) hue-rotate(251deg) brightness(92%) contrast(85%);
+        }
       }
     }
     .ant-avatar-image {
@@ -98,7 +108,8 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     postAccountAddress,
     postEdited,
     isDropdown,
-    lotusBurnScore
+    lotusBurnScore,
+    isFollow
   } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const history = useRouter();
@@ -149,7 +160,9 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
               )}
               <p className="title">
                 {title}
-                <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()}</span>
+                <span style={{ marginLeft: '4px', fontSize: '10px' }}>
+                  {activatePostLocation && postLocation()} {isFollow && <Icon component={() => <FollowSvg />} />}
+                </span>
                 <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
                   {postEdited && intl.get('post.edited')}
                 </span>

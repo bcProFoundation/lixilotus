@@ -4,6 +4,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
   saveAllowPushNotification,
   saveBurnFilter,
+  saveTopPostsFilter,
   saveWebAuthnConfig,
   saveWebPushNotifConfig,
   setInitIntlStatus,
@@ -24,7 +25,8 @@ const initialState: SettingsState = {
   filterPostsHome: 10,
   filterPostsPage: 10,
   filterPostsToken: 1,
-  filterPostsProfile: 1
+  filterPostsProfile: 1,
+  isTopPosts: false
 };
 
 export const settingsReducer = createReducer(initialState, builder => {
@@ -63,5 +65,8 @@ export const settingsReducer = createReducer(initialState, builder => {
           state.filterPostsProfile = filterValue;
           break;
       }
+    })
+    .addCase(saveTopPostsFilter, (state, action) => {
+      state.isTopPosts = action.payload;
     });
 });

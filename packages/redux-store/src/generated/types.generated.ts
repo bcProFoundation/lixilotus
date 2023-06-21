@@ -491,6 +491,7 @@ export type Post = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
+  isFollow?: Maybe<Scalars['Boolean']>;
   lotusBurnDown: Scalars['Float'];
   lotusBurnScore: Scalars['Float'];
   lotusBurnUp: Scalars['Float'];
@@ -733,6 +734,7 @@ export type QueryAllPostsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
+  isTop?: InputMaybe<Scalars['Boolean']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;

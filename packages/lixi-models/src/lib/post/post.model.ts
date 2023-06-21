@@ -62,4 +62,7 @@ export class Post {
 
   @Field(() => [PostHashtag], { nullable: true })
   postHashtags?: [PostHashtag];
+
+  @Field(() => Boolean, { nullable: true })
+  isFollow?: boolean;
 }

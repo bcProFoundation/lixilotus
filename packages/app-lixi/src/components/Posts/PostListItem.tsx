@@ -318,6 +318,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
             postEdited={post.createdAt !== post.updatedAt}
             isDropdown={true}
             lotusBurnScore={post.lotusBurnScore}
+            isFollow={post.isFollow}
           />
         </CardHeader>
         <Content onClick={e => handlePostClick(e)}>

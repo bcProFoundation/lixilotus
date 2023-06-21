@@ -17,7 +17,7 @@ import {
   clearFailQueue
 } from '@store/burn';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
-import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space, Select, Button } from 'antd';
+import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space, Select, Button, Switch } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -40,12 +40,13 @@ import { showToast } from '@store/toast/actions';
 import { Spin } from 'antd';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
-import { getFilterPostsHome } from '@store/settings/selectors';
+import { getFilterPostsHome, getIsTopPosts } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
 import { setSelectedPost } from '@store/post/actions';
 import { getSelectedPostId } from '@store/post/selectors';
+import { saveTopPostsFilter } from '@store/settings/actions';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
@@ -132,7 +133,7 @@ const StyledHeader = styled.div`
           font-weight: 500;
         }
         &::after {
-          border-bottom: 2px solid #9e2a9c !important;
+          border-bottom: none;
         }
       }
     }
@@ -141,6 +142,7 @@ const StyledHeader = styled.div`
     display: flex;
     justify-content: space-between;
     margin-botton: 1rem;
+    text-wrap: nowrap;
   }
 `;
 
@@ -178,8 +180,25 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const postIdSelected = useAppSelector(getSelectedPostId);
   const [hashtags, setHashtags] = useState([]);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
+  let isTop = useAppSelector(getIsTopPosts);
 
-  const menuItems = [{ label: intl.get('general.allPost'), key: 'all' }];
+  const HandleMenuPosts = (checked: boolean) => {
+    dispatch(saveTopPostsFilter(checked));
+  };
+
+  const menuItems = [
+    {
+      label: (
+        <Switch
+          checkedChildren={intl.get('general.allPost')}
+          unCheckedChildren={intl.get('general.topPost')}
+          defaultChecked={isTop}
+          onChange={HandleMenuPosts}
+        />
+      ),
+      key: 'all'
+    }
+  ];
 
   useEffect(() => dispatch(getLeaderboard()), []);
   const refs = useRef([]);
@@ -192,6 +211,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       first: 20,
       minBurnFilter: filterValue,
       accountId: selectedAccountId ?? null,
+      isTop: isTop,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -282,8 +302,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
             style={{
               border: 'none',
               position: 'relative',
-              marginBottom: '1rem',
-              background: 'var(--bg-color-light-theme)'
+              background: 'var(--bg-color-light-theme)',
+              width: '-webkit-fill-available'
             }}
             mode="horizontal"
             defaultSelectedKeys={['all']}

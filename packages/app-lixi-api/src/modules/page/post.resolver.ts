@@ -74,12 +74,8 @@ export class PostResolver {
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'accountId', type: () => Number, nullable: true }) accountId: number,
-    @Args({
-      name: 'orderBy',
-      type: () => PostOrder,
-      nullable: true
-    })
-    orderBy: PostOrder
+    @Args({ name: 'orderBy', type: () => PostOrder, nullable: true }) orderBy: PostOrder,
+    @Args({ name: 'isTop', type: () => Boolean, nullable: true }) isTop: boolean
   ) {
     let result;
 
@@ -101,91 +97,50 @@ export class PostResolver {
       });
       const listFollowingsPageIds = followingPagesAccount.map(item => item.pageId);
 
-      result = await findManyCursorConnection(
-        args =>
-          this.prisma.post.findMany({
-            include: { postAccount: true, comments: true },
-            where: {
-              OR: [
-                {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
-                },
-                {
-                  postAccount: {
-                    id: account.id
-                  }
-                },
-                {
-                  AND: [
-                    {
-                      postAccount: {
-                        id: { in: listFollowingsAccountIds }
-                      }
-                    },
-                    {
-                      lotusBurnScore: {
-                        gte: 0
-                      }
-                    }
-                  ]
-                },
-                {
-                  AND: [
-                    { pageId: { in: listFollowingsPageIds } },
-                    {
-                      lotusBurnScore: {
-                        gte: 1
-                      }
-                    }
-                  ]
-                }
+      const queryPosts = {
+        OR: [
+          {
+            lotusBurnScore: { gte: minBurnFilter ?? 0 }
+          },
+          {
+            postAccount: { id: account.id }
+          },
+          ...(isTop ? [
+            {
+              AND: [
+                { postAccount: { id: { in: listFollowingsAccountIds } } },
+                { lotusBurnScore: { gte: 0 } }
               ]
             },
-            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-            ...args
-          }),
-        () =>
-          this.prisma.post.count({
-            where: {
-              OR: [
-                {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
-                },
-                {
-                  postAccount: {
-                    id: account.id
-                  }
-                },
-                {
-                  AND: [
-                    {
-                      postAccount: {
-                        id: { in: listFollowingsAccountIds }
-                      }
-                    },
-                    {
-                      lotusBurnScore: {
-                        gte: 0
-                      }
-                    }
-                  ]
-                },
-                {
-                  AND: [
-                    { pageId: { in: listFollowingsPageIds } },
-                    {
-                      lotusBurnScore: {
-                        gte: 1
-                      }
-                    }
-                  ]
-                }
+            {
+              AND: [
+                { pageId: { in: listFollowingsPageIds } },
+                { lotusBurnScore: { gte: 1 } }
               ]
             }
+          ] : [])
+        ]
+      };
+
+      result = await findManyCursorConnection(
+        async args => {
+          const posts = await this.prisma.post.findMany({
+            include: { postAccount: true, comments: true },
+            where: queryPosts,
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            ...args
+          });
+
+          const result = posts.map(post => ({
+            ...post,
+            isFollow: listFollowingsAccountIds.includes(post.postAccountId) ? true : false
+          }));
+
+          return result;
+        },
+        () =>
+          this.prisma.post.count({
+            where: queryPosts
           }),
         { first, last, before, after }
       );

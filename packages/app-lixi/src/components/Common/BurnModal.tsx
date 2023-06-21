@@ -388,7 +388,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
               name: getName(BurnForType.Page)
             })
           : intl.get('burn.sendXpi') +
-          currency.burnFee +
+            currency.burnFee +
             ' XPI' +
             intl.get('burn.owner', {
               name: getName(BurnForType.Account)
