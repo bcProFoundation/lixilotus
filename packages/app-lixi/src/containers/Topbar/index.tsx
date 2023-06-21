@@ -448,14 +448,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
         {pathDirection[1] != '' && <h3>{pathDirection[1]}</h3>}
       </PathDirection>
       <div className="filter-bar">
-        <SearchBox
-          searchPost={searchPost}
-          searchValue={searchValue}
-          hashtags={hashtags}
-          onDeleteHashtag={onDeleteHashtag}
-          onDeleteQuery={onDeleteQuery}
-          searchType={SearchBoxType()}
-        />
+        <SearchBox />
       </div>
       <SpaceStyled direction="horizontal" size={15}>
         <div className="action-bar-header">

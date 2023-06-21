@@ -34,12 +34,13 @@ import { currency } from '@components/Common/Ticker';
 import { fromSmallestDenomination, fromXpiToSatoshis, toSmallestDenomination } from '@utils/cashMethods';
 import BigNumber from 'bignumber.js';
 import { showToast } from '@store/toast/actions';
-import { getFilterPostsHome, getSearchPosts } from '@store/settings/selectors';
+import { getFilterPostsHome } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
 import { setSelectedPost } from '@store/post/actions';
 import { getSelectedPostId } from '@store/post/selectors';
+import { useRouter } from 'next/router';
 
 export const OPTION_BURN_VALUE = {
   LIKE: '1',
@@ -141,6 +142,7 @@ const StyledHeader = styled.div`
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const refPostsListing = useRef<HTMLDivElement | null>(null);
@@ -157,11 +159,23 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
   const recentTagAtHome = useAppSelector(getRecentHashtagAtHome);
   const postIdSelected = useAppSelector(getSelectedPostId);
-  const [hashtags, setHashtags] = useState([]);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
-  const [searchValuePosts, setSearchValuePosts] = useState<string | null>(null);
-  const [hashtagsPosts, setHashtagsPosts] = useState([]);
-  const searchDataPost = useAppSelector(getSearchPosts);
+  const [query, setQuery] = useState<any>('');
+  const [hashtags, setHashtags] = useState<any>([]);
+
+  useEffect(() => {
+    if (router.query.q) {
+      setQuery(router.query.q);
+    } else {
+      setQuery(null);
+    }
+
+    if (router.query.hashtags) {
+      setHashtags((router.query.hashtags as string).split(' '));
+    } else {
+      setHashtags([]);
+    }
+  }, [router.query]);
 
   const menuItems = [{ label: intl.get('general.allPost'), key: 'all' }];
 
@@ -185,11 +199,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   );
 
   useEffect(() => {
-    searchDataPost?.searchValue ? setSearchValuePosts(searchDataPost.searchValue) : setSearchValuePosts('');
-    searchDataPost?.hashtags ? setHashtagsPosts(searchDataPost.hashtags) : setHashtagsPosts([]);
-  }, [searchDataPost]);
-
-  useEffect(() => {
     if (refs.current[postIdSelected]) {
       const heightPost = refs.current[postIdSelected].clientHeight;
       _.delay(() => {
@@ -199,15 +208,15 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       dispatch(setSelectedPost(''));
     }
   }, [data]);
-  
+
   //#region QueryVirtuoso
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
     useInfinitePostsBySearchQueryWithHashtag(
       {
         first: 20,
         minBurnFilter: filterValue ?? 1,
-        query: searchValuePosts,
-        hashtags: hashtagsPosts,
+        query: query,
+        hashtags: hashtags,
         orderBy: {
           direction: OrderDirection.Desc,
           field: PostOrderField.UpdatedAt
@@ -263,9 +272,9 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const Header = () => {
     return (
       <StyledHeader>
-        <CreatePostCard hashtags={hashtagsPosts} query={searchValuePosts} />
+        <CreatePostCard hashtags={hashtags} query={query} />
         <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
-          {searchValuePosts && intl.get('general.searchResults', { text: searchValuePosts })}
+          {query && intl.get('general.searchResults', { text: query })}
         </h1>
       </StyledHeader>
     );
@@ -291,37 +300,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   }, [data]);
 
-  const addHashtag = hashtag => {
-    if (!hashtags.includes(hashtag)) {
-      setHashtags(prevHashtag => {
-        return [...prevHashtag, hashtag];
-      });
-    }
-  };
-
-  const searchPost = (value: string, hashtagsValue?: string[]) => {
-    setSearchValue(value);
-
-    if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
-
-    hashtagsValue.map(hashtag => {
-      dispatch(addRecentHashtagAtHome(hashtag.substring(1)));
-    });
-  };
-
-  const onDeleteQuery = () => {
-    setSearchValue(null);
-    setHashtags([]);
-  };
-
-  const onDeleteHashtag = (hashtagsValue: string[]) => {
-    setHashtags([...hashtagsValue]);
-  };
-
   const showPosts = () => {
     return (
       <React.Fragment>
-        {!searchValuePosts && hashtagsPosts.length === 0 ? (
+        {!query && hashtags.length === 0 ? (
           <InfiniteScroll
             dataLength={data.length}
             next={loadMoreItems}
@@ -347,7 +329,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
                     item={item}
                     key={item.id}
                     handleBurnForPost={handleBurnForPost}
-                    addHashtag={addHashtag}
+                    addToRecentHashtags={hashtag => dispatch(addRecentHashtagAtHome(hashtag.substring(1)))}
                   />
                 </div>
               );
@@ -369,7 +351,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
                   item={item}
                   key={item.id}
                   handleBurnForPost={handleBurnForPost}
-                  addHashtag={addHashtag}
+                  addToRecentHashtags={hashtag => dispatch(addRecentHashtagAtHome(hashtag.substring(1)))}
                 />
               );
             })}
@@ -449,15 +431,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   return (
     <StyledPostsListing>
-      <SearchBox
-        searchPost={searchPost}
-        searchValue={searchValue}
-        hashtags={hashtags}
-        onDeleteHashtag={onDeleteHashtag}
-        onDeleteQuery={onDeleteQuery}
-        suggestedHashtag={suggestedHashtag}
-        searchType="posts"
-      />
+      <SearchBox />
       <Header />
 
       {graphqlRequestLoading ? <Skeleton avatar active /> : showPosts()}

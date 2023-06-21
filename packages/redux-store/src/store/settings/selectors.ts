@@ -40,20 +40,6 @@ export const getFilterPostsToken = createSelector(
   (state: SettingsState) => state.filterPostsToken
 );
 
-export const getSearchPosts = createSelector(
-  (state: RootState) => state.settings,
-  (state: SettingsState) => state.searchPosts
-);
-
-export const getSearchPage = createSelector(
-  (state: RootState) => state.settings,
-  (state: SettingsState) => state.searchPage
-);
-
-export const getSearchToken = createSelector(
-  (state: RootState) => state.settings,
-  (state: SettingsState) => state.searchToken
-);
 export const getWebPushNotifConfig = createSelector(
   (state: RootState) => state.settings,
   (state: SettingsState) => state.webPushNotifConfig
@@ -64,8 +50,6 @@ export const getFilterPostsProfile = createSelector(
   (state: SettingsState) => state.filterPostsProfile
 );
 
-export const getDeviceId = createSelector(
-  getWebPushNotifConfig,
-  (state: WebPushNotifConfig) =>
-    state && state.deviceId ? state.deviceId : undefined
+export const getDeviceId = createSelector(getWebPushNotifConfig, (state: WebPushNotifConfig) =>
+  state && state.deviceId ? state.deviceId : undefined
 );

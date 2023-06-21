@@ -3,7 +3,7 @@ import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import CreatePostCard from '@components/Common/CreatePostCard';
-import SearchBox, { SearchType } from '@components/Common/SearchBox';
+import SearchBox from '@components/Common/SearchBox';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { currency } from '@components/Common/Ticker';
 import PostListItem from '@components/Posts/PostListItem';
@@ -27,11 +27,11 @@ import { useCreateFollowPageMutation, useDeleteFollowPageMutation } from '@store
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
-import { getFilterPostsPage, getSearchPage } from '@store/settings/selectors';
+import { getFilterPostsPage } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
-import { Button, Skeleton, Space, Tabs } from 'antd';
+import { Button, Skeleton, Space, Tabs, Tag } from 'antd';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { useRouter } from 'next/router';
@@ -380,6 +380,24 @@ const StyledMenu = styled(Tabs)`
   }
 `;
 
+const TagContainer = styled.div`
+  display: flex;
+  margin-bottom: 11px;
+  @media (max-width: 576px) {
+    display: none;
+  }
+`;
+
+const StyledTag = styled(Tag)`
+  font-weight: bold;
+  font-style: italic;
+  font-size: 15px;
+  height: 24px;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+`;
+
 const SubAbout = ({
   icon,
   text,
@@ -415,22 +433,23 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
   const recentTagAtPages = useAppSelector(getRecentHashtagAtPages);
   const [searchValue, setSearchValue] = useState<string | null>(null);
-  const [hashtags, setHashtags] = useState([]);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
-  const [searchValuePage, setSearchValuePage] = useState<string | null>(null);
-  const [hashtagsPage, setHashtagsPage] = useState([]);
-  const searchDataPage = useAppSelector(getSearchPage);
+  const [query, setQuery] = useState<any>('');
+  const [hashtags, setHashtags] = useState<any>([]);
 
   useEffect(() => {
-    if (router.query.hashtag) {
-      addHashtag(`#${router.query.hashtag}`);
+    if (router.query.q) {
+      setQuery(router.query.q);
+    } else {
+      setQuery(null);
     }
-  }, []);
 
-  useEffect(() => {
-    searchDataPage?.searchValue ? setSearchValuePage(searchDataPage.searchValue) : setSearchValuePage('');
-    searchDataPage?.hashtags ? setHashtagsPage(searchDataPage.hashtags) : setHashtagsPage([]);
-  }, [searchDataPage]);
+    if (router.query.hashtags) {
+      setHashtags((router.query.hashtags as string).split(' '));
+    } else {
+      setHashtags([]);
+    }
+  }, [router.query]);
 
   const [
     createFollowPageTrigger,
@@ -592,33 +611,14 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     await deleteFollowPageTrigger({ input: deleteFollowPageInput });
   };
 
-  const searchPost = (value: string, hashtagsValue?: string[]) => {
-    setSearchValue(value);
-
-    if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
-
-    hashtagsValue.map(hashtag => {
-      dispatch(addRecentHashtagAtPages({ id: page.id, hashtag: hashtag.substring(1) }));
-    });
-  };
-
-  const onDeleteQuery = () => {
-    setSearchValue(null);
-    setHashtags([]);
-  };
-
-  const onDeleteHashtag = (hashtagsValue: string[]) => {
-    setHashtags([...hashtagsValue]);
-  };
-
   //#region QueryVirtuoso
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading, noMoreQuery } =
     useInfinitePostsBySearchQueryWithHashtagAtPage(
       {
         first: 20,
         minBurnFilter: filterValue ?? 1,
-        query: searchValuePage,
-        hashtags: hashtagsPage,
+        query: query,
+        hashtags: hashtags,
         pageId: page.id,
         orderBy: {
           direction: OrderDirection.Desc,
@@ -650,18 +650,38 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     );
   };
   //#endregion
-  const addHashtag = hashtag => {
-    if (!hashtags.includes(hashtag)) {
-      setHashtags(prevHashtag => {
-        return [...prevHashtag, hashtag];
+  const onTopHashtagClick = e => {
+    const hashtag = e.currentTarget.innerText;
+    if (router.query.hashtags) {
+      //Check dup before adding to query
+      const queryHashtags = (router.query.hashtags as string).split(' ');
+      const hashtagExistedIndex = queryHashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+
+      if (hashtagExistedIndex === -1) {
+        router.replace({
+          query: {
+            ...router.query,
+            hashtags: router.query.hashtags + ' ' + hashtag
+          }
+        });
+      }
+    } else {
+      router.replace({
+        query: {
+          ...router.query,
+          q: '',
+          hashtags: hashtag
+        }
       });
     }
+
+    dispatch(addRecentHashtagAtPages({ id: page.id, hashtag: hashtag.substring(1) }));
   };
 
   const showPosts = () => {
     return (
       <React.Fragment>
-        {!searchValuePage && hashtagsPage.length === 0 ? (
+        {!query && hashtags.length === 0 ? (
           <InfiniteScroll
             dataLength={data.length}
             next={loadMoreItems}
@@ -681,7 +701,9 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   item={item}
                   key={item.id}
                   handleBurnForPost={handleBurnForPost}
-                  addHashtag={addHashtag}
+                  addToRecentHashtags={hashtag =>
+                    dispatch(addRecentHashtagAtPages({ id: page.id, hashtag: hashtag.substring(1) }))
+                  }
                 />
               );
             })}
@@ -702,7 +724,9 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   item={item}
                   key={item.id}
                   handleBurnForPost={handleBurnForPost}
-                  addHashtag={addHashtag}
+                  addToRecentHashtags={hashtag =>
+                    dispatch(addRecentHashtagAtPages({ id: page.id, hashtag: hashtag.substring(1) }))
+                  }
                 />
               );
             })}
@@ -909,18 +933,19 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
               </LegacyProfile> */}
               <ContentTimeline>
                 <div className="search-bar">
-                  <SearchBox
-                    searchPost={searchPost}
-                    searchValue={searchValue}
-                    hashtags={hashtags}
-                    onDeleteHashtag={onDeleteHashtag}
-                    onDeleteQuery={onDeleteQuery}
-                    suggestedHashtag={suggestedHashtag}
-                    searchType="page"
-                  />
+                  <SearchBox />
                   {/* <FilterBurnt filterForType={FilterType.PostsPage} /> */}
                 </div>
-                <CreatePostCard page={page} hashtags={hashtagsPage} query={searchValuePage} />
+                <CreatePostCard page={page} hashtags={hashtags} query={query} />
+                <TagContainer>
+                  {hashtagData &&
+                    hashtagData.map(tag => (
+                      <StyledTag key={tag.id} color="green" onClick={onTopHashtagClick}>
+                        {`#${tag.normalizedContent}`}
+                      </StyledTag>
+                    ))}
+                </TagContainer>
+
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">

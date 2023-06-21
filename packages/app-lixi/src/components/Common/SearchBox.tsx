@@ -1,26 +1,19 @@
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Input, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch } from '@store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import intl from 'react-intl-universal';
-import { saveSearchBox } from '../../../../redux-store/src/store/settings';
-
-export type SearchType = {
-  value: string | null;
-  hashtags?: string[];
-};
-
-type SearchProps = {
-  searchValue?: any;
-  searchPost: (value: any, hashtags?: string[]) => void;
-  hashtags?: string[];
-  onDeleteHashtag: (hashtags?: string[]) => void;
-  onDeleteQuery?: () => void;
-  suggestedHashtag?: string[];
-  searchType?: string;
-};
+import { useRouter } from 'next/router';
+import {
+  addRecentHashtagAtHome,
+  addRecentHashtagAtPages,
+  addRecentHashtagAtToken,
+  getRecentHashtagAtHome,
+  getRecentHashtagAtPages,
+  getRecentHashtagAtToken
+} from '@store/account';
 
 const Container = styled.div`
   display: flex;
@@ -38,7 +31,6 @@ const SearchBoxContainer = styled.div`
   height: 40px;
   background: var(--bg-color-light-theme);
   justify-content: space-between;
-  flex-direction: row-reverse;
   padding: 0 8px !important;
   margin: 2px;
   border-radius: var(--border-radius-primary);
@@ -93,80 +85,136 @@ const StyledTag = styled(Tag)`
   margin-right: 5px;
 `;
 
-const SearchBox = (props: SearchProps) => {
+const SearchBox = () => {
   const [tags, setTags] = useState([]);
-  const [suggestedTags, setSuggestedTags] = useState(props.suggestedHashtag);
-
+  const [recentTags, setRecentTags] = useState<string[]>();
+  const recentTagAtHome = useAppSelector(getRecentHashtagAtHome);
+  const recentTagAtPages = useAppSelector(getRecentHashtagAtPages);
+  const recentTagAtToken = useAppSelector(getRecentHashtagAtToken);
+  const [query, setQuery] = useState<any>('');
+  const router = useRouter();
   const numberOfTags = 3;
   const dispatch = useAppDispatch();
 
   const { control, getValues, setValue } = useForm({
     defaultValues: {
-      search: props.searchValue ? props.searchValue : null
+      search: query ? query : null
     }
   });
+
+  useEffect(() => {
+    if (router.query.q) {
+      setQuery(router.query.q);
+      setValue('search', router.query.q);
+    }
+
+    if (router.query.hashtags) {
+      setTags((router.query.hashtags as string).split(' '));
+    }
+  }, [router.query]);
+
+  useEffect(() => {
+    //code is so ugly but work for now!
+    if (router.pathname.includes('/page')) {
+      const pageRecentHashtag = recentTagAtPages.find((page: any) => page.id === router.query.slug);
+      const recentHashtags: string[] = pageRecentHashtag?.hashtags || [];
+
+      setRecentTags(recentHashtags);
+    } else if (router.pathname.includes('/token')) {
+      const tokenRecentHashtag = recentTagAtToken.find((token: any) => token.id === router.query.slug);
+      const recentHashtags: string[] = tokenRecentHashtag?.hashtags || [];
+
+      setRecentTags(recentHashtags);
+    } else {
+      setRecentTags(recentTagAtHome);
+    }
+  }, [recentTagAtPages, recentTagAtToken, recentTagAtHome]);
+
+  const saveTagsToStore = (tags: string[]) => {
+    if (router.pathname.includes('/page')) {
+      tags.map(tag => {
+        dispatch(addRecentHashtagAtPages({ id: router.query.slug as string, hashtag: tag.substring(1) }));
+      });
+    } else if (router.pathname.includes('/token')) {
+      tags.map(tag => {
+        dispatch(addRecentHashtagAtToken({ id: router.query.slug as string, hashtag: tag.substring(1) }));
+      });
+    } else {
+      tags.map(tag => {
+        dispatch(addRecentHashtagAtHome(tag.substring(1)));
+      });
+    }
+  };
 
   const handleTagClose = removedTag => {
     const updatedTags = tags.filter(tag => tag !== removedTag);
     setTags([...updatedTags]);
-    props.onDeleteHashtag(updatedTags);
+    if (updatedTags.length === 0) {
+      const { pathname, query } = router;
+      delete query.hashtags; // Replace 'paramName' with the actual query parameter name you want to remove
+
+      router.push({
+        pathname,
+        query
+      });
+    } else {
+      router.replace({
+        query: {
+          ...router.query,
+          hashtags: updatedTags.join(' ')
+        }
+      });
+    }
   };
-
-  useEffect(() => {
-    if (props.hashtags.length > 0) {
-      setTags([...props.hashtags]);
-    }
-  }, [props.hashtags]);
-
-  useEffect(() => {
-    if (props.suggestedHashtag && props.suggestedHashtag.length > 0) {
-      setSuggestedTags([...props.suggestedHashtag]);
-    }
-  }, [props.suggestedHashtag]);
 
   const onPressKeydown = e => {
     const { value } = e.target;
     //Automatic remove the last tag when press backspace
     if (e.key === 'Backspace' && value === '' && tags.length > 0) {
       setTags(tags.slice(0, tags.length - 1));
-      props.onDeleteHashtag(tags.slice(0, tags.length - 1));
     }
 
     //Automatic return to default when press backspace
     if (e.key === 'Backspace' && value === '' && tags.length === 0) {
       setValue('search', '');
       setTags([]);
-      props.searchPost(null, []);
+      resetQuery();
     }
   };
 
-  const setSearchType = () => {
-    switch (props?.searchType) {
-      case 'posts':
-        return 'searchPosts';
-      case 'page':
-        return 'searchPage';
-      case 'token':
-        return 'searchToken';
-      default:
-        return 'searchPosts';
+  const resetQuery = () => {
+    if (router.query.slug) {
+      router.push(
+        {
+          query: {
+            slug: router.query.slug
+          }
+        },
+        undefined,
+        { shallow: true }
+      );
+    } else {
+      router.push('/', undefined, { shallow: true });
     }
   };
 
-  const saveSearchData = (value, hashtags) => {
-    const searchData = {
-      searchType: setSearchType(),
-      searchValue: {
-        searchValue: value,
-        hashtags: hashtags
-      }
-    };
-    dispatch(saveSearchBox(searchData));
-  };
+  function findHashtagDifferences(currentTags, newTags): string[] {
+    // Convert all strings to lowercase
+    const lowercasedCurrentTags = currentTags.map(str => str.toLowerCase());
+    const lowercasedNewTags = newTags.map(str => str.toLowerCase());
+
+    //find the differences between new tags and old tags
+    const uniqueStrings = lowercasedNewTags.filter(str => !lowercasedCurrentTags.includes(str));
+
+    //return the original newTags that we pass to this func for comfort
+    const originalStrings: string[] = uniqueStrings.map(str => newTags[lowercasedNewTags.indexOf(str)]);
+
+    return originalStrings;
+  }
 
   const onPressEnter = e => {
     const { value } = e.target;
-    if (value !== '') {
+    if (value !== '' || tags.length > 0) {
       const regex = /#(\w+)/g;
       const parts = value.split(regex);
 
@@ -176,59 +224,77 @@ const SearchBox = (props: SearchProps) => {
         .filter(tag => tag.trim() !== '' && !tags.includes(tag))
         .map(tag => `#${tag}`);
 
-      //And normal text
-      const normalTexts = parts.filter((part, index) => index % 2 === 0 && part.trim() !== '').join('');
+      const addTag: string[] = findHashtagDifferences(tags, newTags);
 
-      if (newTags.length > 0) {
-        setTags([...tags, ...newTags]);
+      //And normal text
+      const normalTexts = parts
+        .filter((part, index) => index % 2 === 0 && part.trim() !== '')
+        .join('')
+        .trimStart();
+
+      const combinedTags = [...tags, ...addTag];
+
+      if (addTag.length > 0) {
+        setTags(combinedTags);
+        saveTagsToStore(addTag);
       }
 
-      props.searchPost(normalTexts, [...tags, ...newTags]);
       setValue('search', normalTexts);
-      saveSearchData(getValues('search'), [...tags, ...newTags]);
+      router.replace({
+        query: {
+          ...router.query,
+          q: normalTexts,
+          hashtags: combinedTags.join(' ')
+        }
+      });
     }
   };
 
-  const onClickSuggestedTag = (e: React.MouseEvent<HTMLElement>) => {
-    const newTag: string = e.currentTarget.innerText;
+  const onClickRecentTag = (e: React.MouseEvent<HTMLElement>) => {
+    const hashtag: string = e.currentTarget.innerText;
     setTags(prevTag => {
-      return [...prevTag, newTag];
+      return [...prevTag, hashtag];
     });
-    props.searchPost('', [...tags, newTag]);
+
+    if (router.query.hashtags) {
+      //Check dup before adding to query
+      const queryHashtags = (router.query.hashtags as string).split(' ');
+      const hashtagExistedIndex = queryHashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+
+      if (hashtagExistedIndex === -1) {
+        router.replace({
+          query: {
+            ...router.query,
+            hashtags: router.query.hashtags + ' ' + hashtag
+          }
+        });
+      }
+    } else {
+      router.replace({
+        query: {
+          ...router.query,
+          q: '',
+          hashtags: hashtag
+        }
+      });
+    }
   };
 
   const onDeleteQuery = () => {
     setValue('search', '');
     setTags([]);
-    props.onDeleteQuery();
-    saveSearchData('', []);
+    resetQuery();
   };
 
   return (
     <Container className="search-container">
-      {suggestedTags && suggestedTags.length > 0 && (
-        <SuggestedTagContainer>
-          <div style={{ fontSize: '15px', marginBottom: '0px' }}>{intl.get('general.suggested')}</div>
-          {suggestedTags.map(tag => (
-            <StyledTag
-              onClose={() => handleTagClose(tag)}
-              key={tag}
-              color="geekblue"
-              onClick={onClickSuggestedTag}
-              style={{ cursor: 'pointer' }}
-            >
-              {`#${tag}`}
-            </StyledTag>
-          ))}
-        </SuggestedTagContainer>
-      )}
       <SearchBoxContainer>
         <div className="btn-search">
           <SearchOutlined />
         </div>
         <TagContainer>
           {tags.slice(0, numberOfTags).map(tag => (
-            <StyledTag closable onClose={() => handleTagClose(tag)} key={tag} color="green">
+            <StyledTag closable onClose={() => handleTagClose(tag)} key={tag} color="magenta">
               {tag}
             </StyledTag>
           ))}
@@ -244,7 +310,7 @@ const SearchBox = (props: SearchProps) => {
               onChange={onChange}
               onBlur={onBlur}
               value={value}
-              placeholder="Now supported #hashtag"
+              placeholder="Search Lixi"
               onKeyDown={onPressKeydown}
               onPressEnter={onPressEnter}
             />

@@ -467,7 +467,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
             <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
             <Input
               bordered={false}
-              placeholder={hashtags && hashtags.length > 0 ? hashtags.join(' ') : `What's on your mind?`}
+              placeholder={hashtags && hashtags.length > 0 ? hashtags.join(' ') : `Write about #hashtag...`}
               value=""
             />
           </div>

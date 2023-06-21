@@ -1,7 +1,7 @@
 export enum SearchBoxType {
   SearchPosts = 'searchPosts',
   SearchPage = 'searchPage',
-  SearchToken = 'searchToken',
+  SearchToken = 'searchToken'
 }
 
 interface SearchConfig {

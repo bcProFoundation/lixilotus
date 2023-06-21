@@ -586,9 +586,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const handleHashtagClick = e => {
     if (e.target.className === 'hashtag-link') {
       if (post.page) {
-        router.push(`/page/${post.page.id}?hashtag=${e.target.id.substring(1)}`);
+        router.push(`/page/${post.page.id}?q=&hashtags=%23${e.target.id.substring(1)}`);
       } else if (post.token) {
-        router.push(`/token/${post.token.tokenId}?hashtag=${e.target.id.substring(1)}`);
+        router.push(`/token/${post.token.tokenId}?q=&hashtags=%23${e.target.id.substring(1)}`);
       } else {
         router.push(`/hashtag/${e.target.id.substring(1)}`);
       }

@@ -240,10 +240,10 @@ type PostListItemProps = {
   item: PostItem;
   searchValue?: string;
   handleBurnForPost?: (isUpVote: boolean, post: any, optionBurn?: string) => Promise<void>;
-  addHashtag?: (hashtag: string) => any;
+  addToRecentHashtags?: (hashtag: string) => any;
 };
 
-const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag }: PostListItemProps) => {
+const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecentHashtags }: PostListItemProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const post: PostItem = item;
@@ -288,7 +288,32 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
   const handlePostClick = e => {
     if (e.target.className === 'hashtag-link') {
       e.stopPropagation();
-      addHashtag(e.target.id);
+      const hashtag = e.target.id;
+      if (router.query.hashtags) {
+        //Check dup before adding to query
+        const queryHashtags = (router.query.hashtags as string).split(' ');
+        const hashtagExistedIndex = queryHashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+
+        if (hashtagExistedIndex === -1) {
+          router.replace({
+            query: {
+              ...router.query,
+              hashtags: router.query.hashtags + ' ' + hashtag
+            }
+          });
+        }
+      } else {
+        router.replace({
+          query: {
+            ...router.query,
+            q: '',
+            hashtags: hashtag
+          }
+        });
+      }
+
+      addToRecentHashtags(hashtag);
+
       return;
     }
     if (e.target.className === 'read-more-more-module_btn__33IaH') {
