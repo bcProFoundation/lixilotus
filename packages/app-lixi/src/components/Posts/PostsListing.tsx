@@ -7,7 +7,6 @@ import {
   getSelectedAccountId
 } from '@store/account/selectors';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { WalletContext } from '@context/index';
 import {
   addBurnQueue,
   addBurnTransaction,
@@ -212,10 +211,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       minBurnFilter: filterValue,
       accountId: selectedAccountId ?? null,
       isTop: String(isTop),
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      ]
     },
     false
   );

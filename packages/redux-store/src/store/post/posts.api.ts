@@ -172,7 +172,8 @@ const enhancedApi = api.enhanceEndpoints({
     },
 
     createPost: {},
-    updatePost: {}
+    updatePost: {},
+    repost: {}
   }
 });
 
@@ -202,5 +203,6 @@ export const {
   useLazyPostsBySearchWithHashtagAtTokenQuery,
   usePostsBySearchWithHashtagAtTokenQuery,
   useCreatePostMutation,
-  useUpdatePostMutation
+  useUpdatePostMutation,
+  useRepostMutation
 } = enhancedApi;

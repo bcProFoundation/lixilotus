@@ -54,10 +54,16 @@ export type PostQuery = {
       avatar?: string | null;
       name: string;
       id: string;
+      createPostFee: string;
       createCommentFee: string;
       pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     } | null;
     token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+    reposts?: Array<{
+      __typename?: 'Repost';
+      accountId?: number | null;
+      account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    }> | null;
   };
 };
 
@@ -66,7 +72,7 @@ export type PostsQueryVariables = Types.Exact<{
   before?: Types.InputMaybe<Types.Scalars['String']>;
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
-  orderBy?: Types.InputMaybe<Types.PostOrder>;
+  orderBy?: Types.InputMaybe<Array<Types.PostOrder> | Types.PostOrder>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
   accountId?: Types.InputMaybe<Types.Scalars['Int']>;
   minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
@@ -113,10 +119,16 @@ export type PostsQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+        reposts?: Array<{
+          __typename?: 'Repost';
+          accountId?: number | null;
+          account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
       };
     }> | null;
     pageInfo: {
@@ -180,10 +192,16 @@ export type OrphanPostsQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+        reposts?: Array<{
+          __typename?: 'Repost';
+          accountId?: number | null;
+          account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
       };
     }> | null;
     pageInfo: {
@@ -201,7 +219,7 @@ export type PostsByPageIdQueryVariables = Types.Exact<{
   before?: Types.InputMaybe<Types.Scalars['String']>;
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
-  orderBy?: Types.InputMaybe<Types.PostOrder>;
+  orderBy?: Types.InputMaybe<Array<Types.PostOrder> | Types.PostOrder>;
   id?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
   minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
@@ -247,10 +265,16 @@ export type PostsByPageIdQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+        reposts?: Array<{
+          __typename?: 'Repost';
+          accountId?: number | null;
+          account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
       };
     }> | null;
     pageInfo: {
@@ -314,10 +338,16 @@ export type PostsByUserIdQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+        reposts?: Array<{
+          __typename?: 'Repost';
+          accountId?: number | null;
+          account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
       };
     }> | null;
     pageInfo: {
@@ -381,10 +411,16 @@ export type PostsByHashtagIdQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+        reposts?: Array<{
+          __typename?: 'Repost';
+          accountId?: number | null;
+          account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
       };
     }> | null;
     pageInfo: {
@@ -448,10 +484,16 @@ export type PostsByTokenIdQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+        reposts?: Array<{
+          __typename?: 'Repost';
+          accountId?: number | null;
+          account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
       };
     }> | null;
     pageInfo: {
@@ -512,10 +554,16 @@ export type PostsBySearchQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+        reposts?: Array<{
+          __typename?: 'Repost';
+          accountId?: number | null;
+          account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
       } | null;
     }> | null;
     pageInfo?: {
@@ -578,10 +626,16 @@ export type PostsBySearchWithHashtagQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+        reposts?: Array<{
+          __typename?: 'Repost';
+          accountId?: number | null;
+          account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
       } | null;
     }> | null;
     pageInfo?: {
@@ -645,10 +699,16 @@ export type PostsBySearchWithHashtagAtPageQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+        reposts?: Array<{
+          __typename?: 'Repost';
+          accountId?: number | null;
+          account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
       } | null;
     }> | null;
     pageInfo?: {
@@ -712,10 +772,16 @@ export type PostsBySearchWithHashtagAtTokenQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+        reposts?: Array<{
+          __typename?: 'Repost';
+          accountId?: number | null;
+          account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
       } | null;
     }> | null;
     pageInfo?: {
@@ -760,10 +826,16 @@ export type PostFieldsFragment = {
     avatar?: string | null;
     name: string;
     id: string;
+    createPostFee: string;
     createCommentFee: string;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
   } | null;
   token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+  reposts?: Array<{
+    __typename?: 'Repost';
+    accountId?: number | null;
+    account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+  }> | null;
 };
 
 export type PostMeiliFieldsFragment = {
@@ -798,10 +870,16 @@ export type PostMeiliFieldsFragment = {
     avatar?: string | null;
     name: string;
     id: string;
+    createPostFee: string;
     createCommentFee: string;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
   } | null;
   token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+  reposts?: Array<{
+    __typename?: 'Repost';
+    accountId?: number | null;
+    account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+  }> | null;
 };
 
 export type CreatePostMutationVariables = Types.Exact<{
@@ -842,10 +920,16 @@ export type CreatePostMutation = {
       avatar?: string | null;
       name: string;
       id: string;
+      createPostFee: string;
       createCommentFee: string;
       pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     } | null;
     token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+    reposts?: Array<{
+      __typename?: 'Repost';
+      accountId?: number | null;
+      account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    }> | null;
   };
 };
 
@@ -887,12 +971,24 @@ export type UpdatePostMutation = {
       avatar?: string | null;
       name: string;
       id: string;
+      createPostFee: string;
       createCommentFee: string;
       pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     } | null;
     token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+    reposts?: Array<{
+      __typename?: 'Repost';
+      accountId?: number | null;
+      account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    }> | null;
   };
 };
+
+export type RepostMutationVariables = Types.Exact<{
+  input: Types.RepostInput;
+}>;
+
+export type RepostMutation = { __typename?: 'Mutation'; repost: boolean };
 
 export const PostFieldsFragmentDoc = `
     fragment PostFields on Post {
@@ -920,6 +1016,7 @@ export const PostFieldsFragmentDoc = `
     avatar
     name
     id
+    createPostFee
     createCommentFee
     pageAccount {
       id
@@ -931,6 +1028,14 @@ export const PostFieldsFragmentDoc = `
     id
     name
     tokenId
+  }
+  reposts {
+    accountId
+    account {
+      id
+      name
+      address
+    }
   }
   lotusBurnUp
   lotusBurnDown
@@ -967,6 +1072,7 @@ export const PostMeiliFieldsFragmentDoc = `
     avatar
     name
     id
+    createPostFee
     createCommentFee
     pageAccount {
       id
@@ -979,10 +1085,13 @@ export const PostMeiliFieldsFragmentDoc = `
     name
     tokenId
   }
-  token {
-    id
-    name
-    tokenId
+  reposts {
+    accountId
+    account {
+      id
+      name
+      address
+    }
   }
   lotusBurnUp
   lotusBurnDown
@@ -1001,7 +1110,7 @@ export const PostDocument = `
 }
     ${PostFieldsFragmentDoc}`;
 export const PostsDocument = `
-    query Posts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $skip: Int, $accountId: Int, $minBurnFilter: Int, $isTop: String) {
+    query Posts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: [PostOrder!], $skip: Int, $accountId: Int, $minBurnFilter: Int, $isTop: String) {
   allPosts(
     after: $after
     before: $before
@@ -1054,7 +1163,7 @@ export const OrphanPostsDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const PostsByPageIdDocument = `
-    query PostsByPageId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int, $minBurnFilter: Int) {
+    query PostsByPageId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: [PostOrder!], $id: String, $skip: Int, $minBurnFilter: Int) {
   allPostsByPageId(
     after: $after
     before: $before
@@ -1271,6 +1380,11 @@ export const UpdatePostDocument = `
   }
 }
     ${PostFieldsFragmentDoc}`;
+export const RepostDocument = `
+    mutation repost($input: RepostInput!) {
+  repost(data: $input)
+}
+    `;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: build => ({
@@ -1320,6 +1434,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     updatePost: build.mutation<UpdatePostMutation, UpdatePostMutationVariables>({
       query: variables => ({ document: UpdatePostDocument, variables })
+    }),
+    repost: build.mutation<RepostMutation, RepostMutationVariables>({
+      query: variables => ({ document: RepostDocument, variables })
     })
   })
 });
@@ -1349,5 +1466,6 @@ export const {
   usePostsBySearchWithHashtagAtTokenQuery,
   useLazyPostsBySearchWithHashtagAtTokenQuery,
   useCreatePostMutation,
-  useUpdatePostMutation
+  useUpdatePostMutation,
+  useRepostMutation
 } = injectedRtkApi;
