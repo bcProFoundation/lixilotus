@@ -933,25 +933,13 @@ code {
   }
 }
 
-.slick-active {
-  z-index: 1;
-}
-@keyframes activePostAnimation {
-  0% {
-    border-width: 3px;
-    border-color: #ffd7f6;
+.popover-recent-search {
+  min-width: 350px;
+  @media (max-width: 968px) {
+    width: 95%;
   }
-  40% {
-    border-width: 3px;
-    border-color: #ffd7f6;
-  }
-  70%{
-    border-width: 3px;
-    border-color: transparent;
-  }
-  100% {
-    border-width: 3px;
-    border-color: transparent;  
+  .ant-popover-inner {
+    padding: 0;
   }
 }
 
@@ -967,15 +955,37 @@ code {
     border-width: 3px;
     border-color: #ffd7f6;
   }
-  70%{
+  70% {
     border-width: 3px;
     border-color: transparent;
   }
   100% {
     border-width: 3px;
-    border-color: transparent;  
+    border-color: transparent;
   }
 }
-.active-post{
+
+.slick-active {
+  z-index: 1;
+}
+@keyframes activePostAnimation {
+  0% {
+    border-width: 3px;
+    border-color: #ffd7f6;
+  }
+  40% {
+    border-width: 3px;
+    border-color: #ffd7f6;
+  }
+  70% {
+    border-width: 3px;
+    border-color: transparent;
+  }
+  100% {
+    border-width: 3px;
+    border-color: transparent;
+  }
+}
+.active-post {
   animation: activePostAnimation 5s;
 }

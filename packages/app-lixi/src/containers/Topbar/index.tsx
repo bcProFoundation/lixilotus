@@ -438,7 +438,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           </picture>
         )}
         <div onClick={handleMenuClick} className="menu-hamburger">
-          <input className="checkbox" type="checkbox" name="" id="" />
+          <input className="checkbox" type="checkbox" name="" id="" checked={navCollapsed} />
           <div className="hamburger-lines">
             <span className="line line1"></span>
             <span className="line line2"></span>

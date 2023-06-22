@@ -22,6 +22,7 @@ import { transformShortName } from '@components/Common/AvatarUser';
 import { stripHtml } from 'string-strip-html';
 import moment from 'moment';
 import { currency } from '@components/Common/Ticker';
+import { toggleCollapsedSideNav } from '@store/settings/actions';
 
 const { Sider } = Layout;
 
@@ -516,6 +517,11 @@ const SidebarShortcut = () => {
       dispatch(push(newPath));
     }
   };
+
+  const handleMenuClick = e => {
+    dispatch(toggleCollapsedSideNav(!navCollapsed));
+  };
+
   const classNameShortCut = () => {
     let className = '';
     if (!navCollapsed) {
@@ -561,7 +567,7 @@ const SidebarShortcut = () => {
             )}
             {navCollapsed && (
               <>
-                <h3 style={{ marginBottom: '0' }}>
+                <h3 style={{ marginBottom: '0' }} onClick={handleMenuClick}>
                   <img width={22} height={22} src="/images/ico-hambuger.svg" alt="" />
                 </h3>
                 <div className="social-feature" style={{ padding: navCollapsed ? '0.5rem' : '1rem' }}>

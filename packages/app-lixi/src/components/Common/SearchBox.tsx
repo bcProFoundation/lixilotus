@@ -1,6 +1,6 @@
-import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { Input, Tag } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { SearchOutlined, CloseCircleOutlined, CloseOutlined, HistoryOutlined } from '@ant-design/icons';
+import { Input, Popover, Tag } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
@@ -10,9 +10,15 @@ import {
   addRecentHashtagAtHome,
   addRecentHashtagAtPages,
   addRecentHashtagAtToken,
+  clearRecentHashtagAtHome,
+  clearRecentHashtagAtPages,
+  clearRecentHashtagAtToken,
   getRecentHashtagAtHome,
   getRecentHashtagAtPages,
-  getRecentHashtagAtToken
+  getRecentHashtagAtToken,
+  removeRecentHashtagAtHome,
+  removeRecentHashtagAtPages,
+  removeRecentHashtagAtToken
 } from '@store/account';
 
 const Container = styled.div`
@@ -83,6 +89,57 @@ const StyledTag = styled(Tag)`
   height: 24px;
   margin-bottom: 5px;
   margin-right: 5px;
+`;
+
+const RecentContainer = styled.div`
+  &.empty-recent {
+    padding: 1rem;
+    .message {
+      font-size: 12px;
+      color: rgba(30, 26, 29, 0.38);
+    }
+  }
+  .header-recent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    .title {
+      font-size: 17px;
+      font-weight: 500;
+    }
+    .btn-clear {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-primary);
+      cursor: pointer;
+    }
+  }
+  .content-recent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    cursor: pointer;
+    .item-recent {
+      display: flex;
+    }
+    &:hover {
+      background: var(--bg-color-light-theme);
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+    .recent-ico {
+      font-size: 18px;
+    }
+    .close-ico {
+      font-size: 11px;
+    }
+    .text {
+      margin-left: 1rem;
+      font-size: 12px;
+    }
+  }
 `;
 
 const SearchBox = () => {
@@ -286,40 +343,111 @@ const SearchBox = () => {
     resetQuery();
   };
 
+  const clearRecent = (recent: string, clearAll: boolean) => {
+    if (router.pathname.includes('/page')) {
+      if (clearAll) {
+        dispatch(clearRecentHashtagAtPages({ id: router.query.slug as string }));
+      } else {
+        if (recentTags.includes(recent)) {
+          dispatch(removeRecentHashtagAtPages({ id: router.query.slug as string, hashtag: recent }));
+        }
+      }
+    } else if (router.pathname.includes('/token')) {
+      if (clearAll) {
+        dispatch(clearRecentHashtagAtToken({ id: router.query.slug as string }));
+      } else {
+        if (recentTags.includes(recent)) {
+          dispatch(removeRecentHashtagAtToken({ id: router.query.slug as string, hashtag: recent }));
+        }
+      }
+    } else {
+      if (clearAll) {
+        dispatch(clearRecentHashtagAtHome());
+      } else {
+        if (recentTags.includes(recent)) {
+          dispatch(removeRecentHashtagAtHome(recent));
+        }
+      }
+    }
+  };
+
+  const recentComponent = () => {
+    return (
+      <>
+        {recentTags.length > 0 && (
+          <RecentContainer>
+            <div className="header-recent">
+              <span className="title">Recent</span>
+              <span className="btn-clear" onClick={() => clearRecent(null, true)}>
+                Clear all
+              </span>
+            </div>
+            {recentTags.map(item => {
+              return (
+                <div className="content-recent" onClick={e => onClickRecentTag(e)}>
+                  <div className="item-recent">
+                    <HistoryOutlined className="recent-ico" />
+                    <span className="text">{item}</span>
+                  </div>
+                  <CloseOutlined className="close-ico" onClick={() => clearRecent(item, false)} />
+                </div>
+              );
+            })}
+          </RecentContainer>
+        )}
+        {recentTags.length === 0 && (
+          <RecentContainer className="empty-recent">
+            <span className="message">Try searching some hashtag...</span>
+          </RecentContainer>
+        )}
+      </>
+    );
+  };
+
+  const recentContent = recentComponent;
+
   return (
     <Container className="search-container">
-      <SearchBoxContainer>
-        <div className="btn-search">
-          <SearchOutlined />
-        </div>
-        <TagContainer>
-          {tags.slice(0, numberOfTags).map(tag => (
-            <StyledTag closable onClose={() => handleTagClose(tag)} key={tag} color="magenta">
-              {tag}
-            </StyledTag>
-          ))}
-          {tags.length > numberOfTags && <StyledTag color="magenta">{`+${tags.length - numberOfTags}`}</StyledTag>}
-        </TagContainer>
-        <Controller
-          name="search"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              style={{ paddingLeft: '0px' }}
-              bordered={false}
-              onChange={onChange}
-              onBlur={onBlur}
-              value={value}
-              placeholder="Search Lixi"
-              onKeyDown={onPressKeydown}
-              onPressEnter={onPressEnter}
-            />
+      <Popover
+        overlayClassName="popover-recent-search"
+        trigger="click"
+        arrow={false}
+        content={recentContent}
+        placement="bottomLeft"
+      >
+        <SearchBoxContainer>
+          <div className="btn-search">
+            <SearchOutlined />
+          </div>
+          <TagContainer>
+            {tags.slice(0, numberOfTags).map(tag => (
+              <StyledTag closable onClose={() => handleTagClose(tag)} key={tag} color="magenta">
+                {tag}
+              </StyledTag>
+            ))}
+            {tags.length > numberOfTags && <StyledTag color="magenta">{`+${tags.length - numberOfTags}`}</StyledTag>}
+          </TagContainer>
+          <Controller
+            name="search"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                style={{ paddingLeft: '0px' }}
+                bordered={false}
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value}
+                placeholder="Search Lixi"
+                onKeyDown={onPressKeydown}
+                onPressEnter={onPressEnter}
+              />
+            )}
+          />
+          {(getValues('search') || tags.length > 0) && (
+            <CloseCircleOutlined style={{ fontSize: '18px', color: '#7342cc' }} onClick={() => onDeleteQuery()} />
           )}
-        />
-        {(getValues('search') || tags.length > 0) && (
-          <CloseCircleOutlined style={{ fontSize: '18px', color: '#7342cc' }} onClick={() => onDeleteQuery()} />
-        )}
-      </SearchBoxContainer>
+        </SearchBoxContainer>
+      </Popover>
       <MobileTagContainer style={{ margin: tags.length > 0 ? '10px' : '0px' }}>
         {tags.map(tag => (
           <StyledTag closable onClose={() => handleTagClose(tag)} key={tag} color="magenta">
