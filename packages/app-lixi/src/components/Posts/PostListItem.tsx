@@ -318,12 +318,12 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
   };
 
   const reposted = () => {
-    if (!_.isNil(post.repost) && post.repost.length != 0) {
-      if (post.repost.length - 1 == 0) {
+    if (!_.isNil(post.reposts) && post.reposts.length != 0) {
+      if (post.reposts.length - 1 == 0) {
         return (
           <p className="retweet">
             <RetweetOutlined />{' '}
-            {intl.get('post.singleReposted', { repostName: post.repost[post.repost.length - 1].account.name })}
+            {intl.get('post.singleReposted', { repostName: post.reposts[post.reposts.length - 1].account.name })}
           </p>
         );
       } else {
@@ -331,7 +331,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
           <p className="retweet">
             <RetweetOutlined />{' '}
             {intl.get('post.multiReposted', {
-              repostName: `${post.repost[post.repost.length - 1].account.name} + ${post.repost.length - 1}`
+              repostName: `${post.reposts[post.reposts.length - 1].account.name} + ${post.reposts.length - 1}`
             })}
           </p>
         );
