@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FilterOutlined, BellOutlined, HomeOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import { FilterOutlined, BellOutlined, HomeOutlined, UserSwitchOutlined, AppstoreOutlined } from '@ant-design/icons';
 import { Space, Badge, Button, Popover } from 'antd';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
@@ -472,11 +472,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             </Badge>
           </Popover>
           <Popover className="more-btn" arrow={false} content={contentMoreAction} placement="bottom">
-            <Button
-              className="animate__animated animate__heartBeat"
-              type="text"
-              icon={<img src="/images/ico-grid.svg" />}
-            />
+            <Button className="animate__animated animate__heartBeat" type="text" icon={<AppstoreOutlined />} />
           </Popover>
         </div>
         <div className="account-bar">
