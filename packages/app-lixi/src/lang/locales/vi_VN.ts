@@ -110,6 +110,7 @@ export default {
   'general.topPages': 'Xếp hạng trang',
   'general.burned': 'Đã đốt',
   'general.fee': 'Phí: ',
+  'general.createPost': 'Bạn đang nghĩ gì vậy?...',
   'general.suggested': 'Đề xuất: ',
 
   /* 02.Account */
@@ -489,6 +490,7 @@ export default {
   'page.inputAddress': 'Vui lòng nhập địa chỉ',
   'page.createPostFee': 'Phí viết bài',
   'page.createCommentFee': 'Phí bình luận',
+  'page.repostFee': 'Phí đăng lại',
   'page.couldNotpostPage': 'Tạo trang không thành công',
   'page.createPageSuccessful': 'Trang đã tạo thành công',
   'page.updatePageSuccessful': 'Trang đã được cập nhật thành công',
@@ -545,6 +547,10 @@ export default {
   'post.page': 'Trang',
   'post.token': 'Token',
   'post.public': 'Công khai',
+  'post.singleReposted': '{repostName} đã đăng lại',
+  'post.multiReposted': '{repostName} người khác đã đăng lại',
+  'post.repostSuccessful': 'Đăng lại bài viết thành công',
+  'post.repostFailure': 'Không thể đăng lại bài viết',
   'post.on': 'trên',
   'post.insufficientFeeCreatePost': 'Bạn cần Lotus để thực hiện hành động này.',
   'post.postTitle' : 'Bài viết',

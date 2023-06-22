@@ -163,6 +163,8 @@ model Post {
   postHashtags   PostHashtag[]
   createFee      Float?         @map("create_fee")
   txid           String?
+  reposts        Repost[]
+  lastRepostAt   DateTime       @default(now()) @map("updated_repost_at") @db.Timestamptz
 
   @@map("post")
 }
@@ -214,6 +216,7 @@ model Account {
   followings         FollowAccount[]     @relation("followingAccount")
   followingPages     FollowPage[]
   webpushSubscribers WebpushSubscriber[]
+  reposts            Repost[]
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")
@@ -734,4 +737,18 @@ model Hashtag {
 
   @@index(content)
   @@map("hashtag")
+}
+
+model Repost {
+  id        String   @id @default(cuid())
+  account   Account  @relation(fields: [accountId], references: [id])
+  accountId Int      @map("account_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String   @map("post_id")
+  txid      String?
+  repostFee Float?   @default(0) @map("repost_fee")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("repost")
 }

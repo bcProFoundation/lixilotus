@@ -6,6 +6,7 @@ import {
   Post,
   PostConnection,
   PostOrder,
+  RepostInput,
   Token,
   UpdatePostInput
 } from '@bcpros/lixi-models';
@@ -73,13 +74,14 @@ export class PostResolver {
   async allPosts(
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
+    @Args() args: ConnectionArgs,
     @Args({ name: 'accountId', type: () => Number, nullable: true }) accountId: number,
     @Args({
       name: 'orderBy',
-      type: () => PostOrder,
+      type: () => [PostOrder!],
       nullable: true
     })
-    orderBy: PostOrder
+    orderBy: PostOrder[]
   ) {
     let result;
 
@@ -104,7 +106,10 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true, comments: true },
+            include: {
+              postAccount: true,
+              comments: true
+            },
             where: {
               OR: [
                 {
@@ -143,7 +148,7 @@ export class PostResolver {
                 }
               ]
             },
-            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
             ...args
           }),
         () =>
@@ -183,6 +188,16 @@ export class PostResolver {
                       }
                     }
                   ]
+                },
+                {
+                  AND: [
+                    { pageId: { in: listFollowingsPageIds } },
+                    {
+                      lotusBurnScore: {
+                        gte: 1
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -199,7 +214,7 @@ export class PostResolver {
                 gte: minBurnFilter ?? 0
               }
             },
-            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
             ...args
           }),
         () =>
@@ -301,10 +316,10 @@ export class PostResolver {
     id: string,
     @Args({
       name: 'orderBy',
-      type: () => PostOrder,
+      type: () => [PostOrder!],
       nullable: true
     })
-    orderBy: PostOrder
+    orderBy: PostOrder[]
   ) {
     let result;
     const page = await this.prisma.page.findFirst({
@@ -317,7 +332,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true, comments: true },
+            include: { postAccount: true, comments: true, reposts: { select: { account: true, accountId: true } } },
             where: {
               OR: [
                 {
@@ -328,7 +343,7 @@ export class PostResolver {
                 }
               ]
             },
-            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
             ...args
           }),
         () =>
@@ -350,7 +365,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true },
+            include: { postAccount: true, comments: true, reposts: { select: { account: true, accountId: true } } },
             where: {
               OR: [
                 {
@@ -361,7 +376,7 @@ export class PostResolver {
                 }
               ]
             },
-            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
             ...args
           }),
         () =>
@@ -1043,6 +1058,59 @@ export class PostResolver {
 
     pubSub.publish('postUpdated', { postUpdated: updatedPost });
     return updatedPost;
+  }
+
+  @SkipThrottle()
+  @UseGuards(GqlJwtAuthGuard)
+  @Mutation(() => Boolean)
+  async repost(@PostAccountEntity() account: Account, @Args('data') data: RepostInput) {
+    if (!account) {
+      const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
+      throw new Error(couldNotFindAccount);
+    }
+
+    if (account.id !== data.accountId) {
+      const noPermission = await this.i18n.t('account.messages.noPermission');
+      throw new Error(noPermission);
+    }
+
+    let repostFee: any;
+    if (data.txHex) {
+      const txData = await this.XPI.RawTransactions.decodeRawTransaction(data.txHex);
+      repostFee = txData['vout'][0].value;
+      if (Number(repostFee) <= 0) {
+        throw new Error('Syntax error. Number cannot be less than or equal to 0');
+      }
+    }
+
+    const reposted = await this.prisma.$transaction(async prisma => {
+      let txid = null;
+      if (data.txHex) {
+        const broadcastResponse = await this.chronik.broadcastTx(data.txHex).catch(async err => {
+          throw new Error('Empty chronik broadcast response');
+        });
+        txid = broadcastResponse.txid;
+      }
+
+      const updatePost = await prisma.post.update({
+        where: { id: data.postId },
+
+        data: {
+          lastRepostAt: new Date(),
+          reposts: {
+            create: {
+              accountId: account.id,
+              repostFee: repostFee,
+              txid: txid
+            }
+          }
+        }
+      });
+
+      return updatePost;
+    });
+
+    return reposted ? true : false;
   }
 
   @ResolveField('postAccount', () => Account)

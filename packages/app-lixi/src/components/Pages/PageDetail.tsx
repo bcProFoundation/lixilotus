@@ -12,7 +12,8 @@ import {
   DeleteFollowPageInput,
   HashtagOrderField,
   OrderDirection,
-  PostOrderField
+  PostOrderField,
+  RepostInput
 } from '@generated/types.generated';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import {
@@ -42,6 +43,7 @@ import { useInfiniteHashtagByPageQuery } from '@store/hashtag/useInfiniteHashtag
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { PageQuery } from '@store/page/pages.generated';
+import { useRepostMutation } from '@store/post/posts.api';
 import _ from 'lodash';
 
 export type PageItem = PageQuery['page'];
@@ -484,10 +486,16 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
       first: 10,
       minBurnFilter: filterValue ?? 1,
       accountId: selectedAccountId ?? undefined,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      },
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedRepostAt
+        },
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      ],
       id: page.id
     },
     false
