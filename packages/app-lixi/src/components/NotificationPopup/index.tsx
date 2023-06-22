@@ -90,6 +90,7 @@ const StyledComment = styled(Comment)`
   }
 
   .ant-comment-inner {
+    display: flex;
     padding: 0px;
     color: black;
   }

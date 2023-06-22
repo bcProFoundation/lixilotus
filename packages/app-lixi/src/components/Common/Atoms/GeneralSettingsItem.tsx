@@ -4,6 +4,7 @@ export const GeneralSettingsItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0.4em 0;
   .title {
     color: ${props => props.theme.generalSettings.item.title};
   }
