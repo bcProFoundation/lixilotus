@@ -268,11 +268,11 @@ const SpaceShorcutItem = styled(Space)`
   width: 100%;
   gap: 8px !important;
   padding: 8px;
-  border: 1px solid #f1f1f1;
+  border: 1px solid var(--border-color-base);
   cursor: pointer;
   margin-bottom: 0.5rem;
   &:hover {
-    background: #f1f1f1;
+    background: var(--border-color-base);
     .page-name {
       color: var(--color-primary);
     }
@@ -500,10 +500,12 @@ const SidebarShortcut = () => {
       first: 20,
       minBurnFilter: filterValue,
       accountId: selectedAccountId,
-      orderBy: [{
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }]
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      ]
     },
     false
   );

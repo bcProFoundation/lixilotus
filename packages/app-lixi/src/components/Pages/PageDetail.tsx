@@ -1,4 +1,11 @@
-import { CameraOutlined, CompassOutlined, EditOutlined, HomeOutlined, InfoCircleOutlined, FireOutlined } from '@ant-design/icons';
+import {
+  CameraOutlined,
+  CompassOutlined,
+  EditOutlined,
+  HomeOutlined,
+  InfoCircleOutlined,
+  FireOutlined
+} from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
@@ -65,7 +72,7 @@ const StyledContainerProfileDetail = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 0.5rem;
-    border: 1px solid #c5c5c5;
+    border: 1px solid var(--border-color);
     border-left: 0;
     border-right: 0;
   }

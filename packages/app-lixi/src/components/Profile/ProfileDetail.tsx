@@ -49,7 +49,7 @@ const StyledContainerProfileDetail = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 0.5rem;
-    border: 1px solid #c5c5c5;
+    border: 1px solid var(--border-color);
     border-left: 0;
     border-right: 0;
   }
@@ -633,8 +633,9 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
               <Button onClick={() => openFollowModal(Follow.Followees)}>{`${userDetailData.followingsCount} ${intl.get(
                 'general.youFollow'
               )}`}</Button>
-              <Button onClick={() => openFollowModal(Follow.FollowingPages)}>{`${userDetailData.followingPagesCount
-                } ${intl.get('general.followingPages')}`}</Button>
+              <Button onClick={() => openFollowModal(Follow.FollowingPages)}>{`${
+                userDetailData.followingPagesCount
+              } ${intl.get('general.followingPages')}`}</Button>
             </div>
           )}
         </ProfileCardHeader>

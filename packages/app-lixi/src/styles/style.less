@@ -314,8 +314,11 @@ code {
   --text-color-1: rgba(30, 26, 29, 0.38);
 
   // Boder color
-  --border-color: rgba(30, 26, 29, 0.12);
-  --border-color-base: #80747c;
+  --border-color: #c5c5c5;
+  --border-color-base: #f1f1f1;
+  --border-item-dark: #e9eaed;
+  --border-item-light: none;
+  --border-item-primary: rgba(128, 116, 124, 0.12);
 
   /** Dark theme **/
   --color-primary-dark: #9e2a9c;
@@ -325,9 +328,6 @@ code {
   --color-success-dark: #006c44;
   --color-info-dark: #5476eb;
 
-  --border-item-dark: #e9eaed;
-  --border-item-light: none;
-  --border-item-primary: rgba(128, 116, 124, 0.12);
   --filter-color-primary: invert(27%) sepia(69%) saturate(2185%) hue-rotate(279deg) brightness(50%) contrast(96%);
   --border-radius-primary: 5px;
   --border-radius-item: 18px;
@@ -499,7 +499,7 @@ code {
   &.outline-btn {
     color: var(--color-primary);
     background: #ffffff;
-    border: 1px solid #f1f1f1;
+    border: 1px solid var(--border-color-base);
 
     &:hover {
       background: rgba(158, 42, 156, 0.08);
@@ -816,7 +816,7 @@ code {
   .title-card {
     font-size: 18px;
     color: #3f414d;
-    border-bottom: 1px solid #f1f1f1;
+    border-bottom: 1px solid var(--border-color-base);
     padding: 1rem;
     margin-bottom: 0;
     text-align: left;

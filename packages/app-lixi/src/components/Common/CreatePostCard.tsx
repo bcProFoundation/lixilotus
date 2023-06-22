@@ -93,7 +93,7 @@ const DesktopCreatePost = styled.div`
   .functional-images-bar {
     display: flex;
     margin-top: 1rem;
-    border-top: 1px solid #f1f1f1;
+    border-top: 1px solid var(--border-color-base);
     padding-top: 1rem;
     gap: 8px;
   }
@@ -126,7 +126,7 @@ const UserCreate = styled.div`
         align-items: baseline;
       }
       .btn-select {
-        background: var(--border-item-light);
+        background: var(--border-color-base);
         border-radius: var(--border-radius-primary);
         padding: 0 8px;
         border: none;

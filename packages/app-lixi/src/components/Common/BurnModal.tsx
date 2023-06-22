@@ -83,7 +83,7 @@ const RadioStyle = styled(Radio.Group)`
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #c5c5c5;
+    border: 1px solid var(--border-color);
     color: #1e1a1d;
     font-weight: 500;
     font-size: 16px;
@@ -388,7 +388,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
               name: getName(BurnForType.Page)
             })
           : intl.get('burn.sendXpi') +
-          currency.burnFee +
+            currency.burnFee +
             ' XPI' +
             intl.get('burn.owner', {
               name: getName(BurnForType.Account)

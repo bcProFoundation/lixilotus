@@ -33,7 +33,7 @@ const Container = styled.div`
 const SearchBoxContainer = styled.div`
   display: flex;
   flex-grow: 1;
-  border: 1px solid #f1f1f1;
+  border: 1px solid var(--border-color-base);
   height: 40px;
   background: var(--bg-color-light-theme);
   justify-content: space-between;
@@ -41,7 +41,7 @@ const SearchBoxContainer = styled.div`
   margin: 2px;
   border-radius: var(--border-radius-primary);
   align-items: center;
-  border: 1px solid #f1f1f1;
+  border: 1px solid var(--border-color-base);
   .btn-search {
     display: flex;
     margin-right: 5px;

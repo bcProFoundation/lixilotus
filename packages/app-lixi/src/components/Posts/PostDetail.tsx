@@ -169,29 +169,6 @@ const CommentInputContainer = styled.div`
   }
 `;
 
-const ActionBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  border: 1px solid #c5c5c5;
-  padding: 4px 0;
-  border-left: 0;
-  border-right: 0;
-  .ant-space {
-    gap: 4px !important;
-  }
-  .reaction-func {
-    color: rgba(30, 26, 29, 0.6);
-    cursor: pointer;
-    display: flex;
-    gap: 1rem;
-    img {
-      width: 28px;
-      height: 28px;
-      margin-right: 4px;
-    }
-  }
-`;
-
 const PostContentDetail = styled.div`
   text-align: left;
   .description-post {
@@ -240,7 +217,7 @@ const StyledContainerPostDetail = styled.div`
   header {
     padding: 0 !important;
     margin-bottom: 1rem;
-    border-color: #c5c5c5;
+    border-color: var(--border-color-base);
   }
   .comment-item-meta {
     margin-bottom: 0.5rem;
