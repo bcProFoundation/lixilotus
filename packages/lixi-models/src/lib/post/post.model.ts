@@ -64,5 +64,5 @@ export class Post {
   postHashtags?: [PostHashtag];
 
   @Field(() => Boolean, { nullable: true })
-  isFollow?: boolean;
+  followPostOwner?: boolean;
 }

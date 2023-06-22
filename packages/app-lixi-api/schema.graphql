@@ -414,8 +414,8 @@ type Post {
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
+  followPostOwner: Boolean
   id: ID!
-  isFollow: Boolean
   lotusBurnDown: Float!
   lotusBurnScore: Float!
   lotusBurnUp: Float!
@@ -513,7 +513,7 @@ type Query {
   allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: [PageOrder!], query: String, skip: Int): PageConnection!
   allPagesByFollower(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
   allPagesByUserId(after: String, before: String, first: Int, id: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
-  allPosts(accountId: Int, after: String, before: String, first: Int, isTop: Boolean, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allPosts(accountId: Int, after: String, before: String, first: Int, isTop: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByHashtagId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsBySearch(

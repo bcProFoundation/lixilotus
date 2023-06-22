@@ -75,7 +75,7 @@ export class PostResolver {
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'accountId', type: () => Number, nullable: true }) accountId: number,
     @Args({ name: 'orderBy', type: () => PostOrder, nullable: true }) orderBy: PostOrder,
-    @Args({ name: 'isTop', type: () => Boolean, nullable: true }) isTop: boolean
+    @Args({ name: 'isTop', type: () => String, nullable: true }) isTop: string
   ) {
     let result;
 
@@ -105,27 +105,23 @@ export class PostResolver {
           {
             postAccount: { id: account.id }
           },
-          ...(isTop ? [
-            {
-              AND: [
-                { postAccount: { id: { in: listFollowingsAccountIds } } },
-                { lotusBurnScore: { gte: 0 } }
+          ...(isTop == 'true'
+            ? [
+                {
+                  AND: [{ postAccount: { id: { in: listFollowingsAccountIds } } }, { lotusBurnScore: { gte: 0 } }]
+                },
+                {
+                  AND: [{ pageId: { in: listFollowingsPageIds } }, { lotusBurnScore: { gte: 1 } }]
+                }
               ]
-            },
-            {
-              AND: [
-                { pageId: { in: listFollowingsPageIds } },
-                { lotusBurnScore: { gte: 1 } }
-              ]
-            }
-          ] : [])
+            : [])
         ]
       };
 
       result = await findManyCursorConnection(
         async args => {
           const posts = await this.prisma.post.findMany({
-            include: { postAccount: true, comments: true },
+            include: { postAccount: true, comments: true, page: true },
             where: queryPosts,
             orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
             ...args
@@ -133,7 +129,11 @@ export class PostResolver {
 
           const result = posts.map(post => ({
             ...post,
-            isFollow: listFollowingsAccountIds.includes(post.postAccountId) ? true : false
+            followPostOwner:
+              listFollowingsAccountIds.includes(post.postAccountId) ||
+              (post.page && listFollowingsPageIds.includes(post.page.id))
+                ? true
+                : false
           }));
 
           return result;

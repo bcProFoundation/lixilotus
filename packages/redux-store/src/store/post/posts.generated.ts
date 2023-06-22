@@ -32,7 +32,7 @@ export type PostQuery = {
     totalComments: number;
     createdAt: any;
     updatedAt: any;
-    isFollow?: boolean | null;
+    followPostOwner?: boolean | null;
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
@@ -70,7 +70,7 @@ export type PostsQueryVariables = Types.Exact<{
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
   accountId?: Types.InputMaybe<Types.Scalars['Int']>;
   minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
-  isTop?: Types.InputMaybe<Types.Scalars['Boolean']>;
+  isTop?: Types.InputMaybe<Types.Scalars['String']>;
 }>;
 
 export type PostsQuery = {
@@ -91,7 +91,7 @@ export type PostsQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        isFollow?: boolean | null;
+        followPostOwner?: boolean | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -158,7 +158,7 @@ export type OrphanPostsQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        isFollow?: boolean | null;
+        followPostOwner?: boolean | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -225,7 +225,7 @@ export type PostsByPageIdQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        isFollow?: boolean | null;
+        followPostOwner?: boolean | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -292,7 +292,7 @@ export type PostsByUserIdQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        isFollow?: boolean | null;
+        followPostOwner?: boolean | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -359,7 +359,7 @@ export type PostsByHashtagIdQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        isFollow?: boolean | null;
+        followPostOwner?: boolean | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -426,7 +426,7 @@ export type PostsByTokenIdQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        isFollow?: boolean | null;
+        followPostOwner?: boolean | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -490,7 +490,7 @@ export type PostsBySearchQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        isFollow?: boolean | null;
+        followPostOwner?: boolean | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -556,7 +556,7 @@ export type PostsBySearchWithHashtagQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        isFollow?: boolean | null;
+        followPostOwner?: boolean | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -623,7 +623,7 @@ export type PostsBySearchWithHashtagAtPageQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        isFollow?: boolean | null;
+        followPostOwner?: boolean | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -690,7 +690,7 @@ export type PostsBySearchWithHashtagAtTokenQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        isFollow?: boolean | null;
+        followPostOwner?: boolean | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -738,7 +738,7 @@ export type PostFieldsFragment = {
   totalComments: number;
   createdAt: any;
   updatedAt: any;
-  isFollow?: boolean | null;
+  followPostOwner?: boolean | null;
   uploads?: Array<{
     __typename?: 'UploadDetail';
     id: string;
@@ -776,7 +776,7 @@ export type PostMeiliFieldsFragment = {
   totalComments: number;
   createdAt: any;
   updatedAt: any;
-  isFollow?: boolean | null;
+  followPostOwner?: boolean | null;
   uploads?: Array<{
     __typename?: 'UploadDetail';
     id: string;
@@ -820,7 +820,7 @@ export type CreatePostMutation = {
     totalComments: number;
     createdAt: any;
     updatedAt: any;
-    isFollow?: boolean | null;
+    followPostOwner?: boolean | null;
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
@@ -865,7 +865,7 @@ export type UpdatePostMutation = {
     totalComments: number;
     createdAt: any;
     updatedAt: any;
-    isFollow?: boolean | null;
+    followPostOwner?: boolean | null;
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
@@ -938,7 +938,7 @@ export const PostFieldsFragmentDoc = `
   totalComments
   createdAt
   updatedAt
-  isFollow
+  followPostOwner
 }
     `;
 export const PostMeiliFieldsFragmentDoc = `
@@ -990,7 +990,7 @@ export const PostMeiliFieldsFragmentDoc = `
   totalComments
   createdAt
   updatedAt
-  isFollow
+  followPostOwner
 }
     `;
 export const PostDocument = `
@@ -1001,7 +1001,7 @@ export const PostDocument = `
 }
     ${PostFieldsFragmentDoc}`;
 export const PostsDocument = `
-    query Posts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $skip: Int, $accountId: Int, $minBurnFilter: Int, $isTop: Boolean) {
+    query Posts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $skip: Int, $accountId: Int, $minBurnFilter: Int, $isTop: String) {
   allPosts(
     after: $after
     before: $before

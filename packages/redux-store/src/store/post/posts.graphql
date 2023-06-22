@@ -17,7 +17,7 @@ query Posts(
   $skip: Int
   $accountId: Int
   $minBurnFilter: Int
-  $isTop: Boolean
+  $isTop: String
 ) {
   allPosts(
     after: $after
@@ -372,7 +372,7 @@ fragment PostFields on Post {
   totalComments
   createdAt
   updatedAt
-  isFollow
+  followPostOwner
 }
 
 fragment PostMeiliFields on Post {
@@ -423,7 +423,7 @@ fragment PostMeiliFields on Post {
   totalComments
   createdAt
   updatedAt
-  isFollow
+  followPostOwner
 }
 
 mutation createPost($input: CreatePostInput!) {

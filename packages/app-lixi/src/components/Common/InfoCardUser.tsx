@@ -24,7 +24,7 @@ type InfoCardProps = {
   postEdited?: boolean;
   isDropdown?: boolean;
   lotusBurnScore?: number;
-  isFollow?: boolean;
+  followPostOwner?: boolean;
 };
 
 const CardUser = styled.div`
@@ -109,7 +109,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     postEdited,
     isDropdown,
     lotusBurnScore,
-    isFollow
+    followPostOwner
   } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const history = useRouter();
@@ -161,7 +161,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
               <p className="title">
                 {title}
                 <span style={{ marginLeft: '4px', fontSize: '10px' }}>
-                  {activatePostLocation && postLocation()} {isFollow && <Icon component={() => <FollowSvg />} />}
+                  {activatePostLocation && postLocation()} {followPostOwner && <Icon component={() => <FollowSvg />} />}
                 </span>
                 <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
                   {postEdited && intl.get('post.edited')}
