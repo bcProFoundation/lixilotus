@@ -34,6 +34,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { HASHTAG, POSTS } from './constants/meili.constants';
 import { MeiliService } from './meili.service';
 import { GqlThrottlerGuard } from '../auth/guards/gql-throttler.guard';
+import { FollowCacheService } from '../account/follow-cache.service';
 
 const pubSub = new PubSub();
 
@@ -44,6 +45,7 @@ export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
   constructor(
+    private readonly followCacheService: FollowCacheService,
     private prisma: PrismaService,
     private meiliService: MeiliService,
     private readonly notificationService: NotificationService,
@@ -51,7 +53,7 @@ export class PostResolver {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -847,10 +849,10 @@ export class PostResolver {
         connect:
           uploadDetailIds.length > 0
             ? uploadDetailIds.map((uploadDetail: any) => {
-              return {
-                id: uploadDetail
-              };
-            })
+                return {
+                  id: uploadDetail
+                };
+              })
             : undefined
       },
       page: {
@@ -940,7 +942,7 @@ export class PostResolver {
     await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, savedPost.id);
 
     pubSub.publish('postCreated', { postCreated: savedPost });
-
+    let listAccountFollowerIds: number[] = [];
     // Notification
     if (pageId && savedPost) {
       const page = await this.prisma.page.findFirst({
@@ -982,26 +984,40 @@ export class PostResolver {
       };
       createNotif.senderId !== createNotif.recipientId &&
         (await this.notificationService.saveAndDispatchNotification(jobData.notification));
+
+      const followerPageIds = await this.followCacheService.getPageFollowers(page.id);
+      console.log('followerPageIds', followerPageIds);
+      if (followerPageIds && followerPageIds.length > 0) {
+        const followerPageIdsMapped = followerPageIds.filter(id => Number(id) < 100).map(id => Number(id));
+        console.log('followerPageIdsMapped', followerPageIdsMapped);
+        listAccountFollowerIds = listAccountFollowerIds.concat(followerPageIdsMapped);
+      }
+      console.log('listAccountFollowerIds', listAccountFollowerIds);
     }
-    const followingAccounts = await this.prisma.followAccount.findMany({
-      where: { followingAccountId: account.id },
-      select: { followerAccountId: true }
-    });
-    console.log(account.id);
-    // const listFollowerAccountId = followingAccounts.map(item => item.followerAccountId);
-    // console.log('listFollowerAccountId', listFollowerAccountId);
-    // const followerAccountDetails = await this.prisma.account.findMany({
-    //   where: { id: { in: listFollowerAccountId } },
-    //   select: { address: true }
-    // });
-    // console.log('followerAccountDetails', followerAccountDetails);
-    // const addressFollowerAccountDetails = followerAccountDetails.map(item => item.address);
-    // get list address
-    const createNotiNewPost = {
-      recipientAddresses: ['lotus_16PSJQYsPAuj9A9JtaamJabiZXdrMxgbnrGsGJQVh']
-    };
-    console.log(createNotiNewPost.recipientAddresses);
-    await this.notificationService.saveAnddDispathNotificationNewPost(createNotiNewPost);
+    const followerAccountIds = await this.followCacheService.getAccountFollowers(account.id);
+    if (followerAccountIds && followerAccountIds.length > 0) {
+      const followerAccountIdsMapped = followerAccountIds.filter(id => Number(id) < 100).map(id => Number(id));
+      listAccountFollowerIds = listAccountFollowerIds.concat(followerAccountIdsMapped);
+    }
+    console.log('listAccountFollowerIds 2nd', listAccountFollowerIds);
+    if (listAccountFollowerIds && listAccountFollowerIds.length > 0) {
+      listAccountFollowerIds = listAccountFollowerIds.filter(
+        (value, index) => listAccountFollowerIds.indexOf(value) === index
+      );
+      const followerDetails = await this.prisma.account.findMany({
+        where: { id: { in: listAccountFollowerIds } },
+        select: { address: true }
+      });
+      if (followerDetails && followerDetails.length > 0) {
+        const addressFollowerAccountDetails = followerDetails.map(item => item.address);
+        const createNotiNewPost = {
+          recipientAddresses: addressFollowerAccountDetails
+        };
+        console.log('addressFollowerAccountDetails', addressFollowerAccountDetails);
+        await this.notificationService.saveAnddDispathNotificationNewPost(createNotiNewPost);
+      }
+    }
+
     return savedPost;
   }
 

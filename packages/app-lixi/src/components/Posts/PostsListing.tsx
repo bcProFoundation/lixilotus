@@ -189,7 +189,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
   };
-
+  useEffect(() => {
+    // when refresh page , or first time go in => no show new post for account
+    if (!!newPostAvailable) {
+      dispatch(setNewPostAvailable(false));
+    }
+  }, []);
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
       first: 20,
@@ -287,31 +292,46 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   const Header = () => {
     return (
-      <StyledHeader>
-        {!!showNewPost && <button onClick={() => setShowNewPost(false)}>New post</button>}
-        <CreatePostCard hashtags={hashtags} query={searchValue} />
-        <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
-          {searchValue && intl.get('general.searchResults', { text: searchValue })}
-        </h1>
-        <div className="filter-bar">
-          <Menu
-            className="menu-post-listing"
-            style={{
-              border: 'none',
-              position: 'relative',
-              marginBottom: '1rem',
-              background: 'var(--bg-color-light-theme)'
+      <>
+        {!!showNewPost && (
+          <button
+            style={{ position: 'absolute', top: '5px' }}
+            onClick={async () => {
+              setShowNewPost(false);
+              dispatch(setNewPostAvailable(false));
+              dispatch(postApi.util.resetApiState());
+              refetch();
+              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
             }}
-            mode="horizontal"
-            defaultSelectedKeys={['all']}
-            selectedKeys={tab}
-            onClick={onClickMenu}
-            items={menuItems}
-          ></Menu>
+          >
+            New post
+          </button>
+        )}
+        <StyledHeader>
+          <CreatePostCard hashtags={hashtags} query={searchValue} />
+          <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
+            {searchValue && intl.get('general.searchResults', { text: searchValue })}
+          </h1>
+          <div className="filter-bar">
+            <Menu
+              className="menu-post-listing"
+              style={{
+                border: 'none',
+                position: 'relative',
+                marginBottom: '1rem',
+                background: 'var(--bg-color-light-theme)'
+              }}
+              mode="horizontal"
+              defaultSelectedKeys={['all']}
+              selectedKeys={tab}
+              onClick={onClickMenu}
+              items={menuItems}
+            ></Menu>
 
-          <FilterBurnt filterForType={FilterType.PostsHome} />
-        </div>
-      </StyledHeader>
+            <FilterBurnt filterForType={FilterType.PostsHome} />
+          </div>
+        </StyledHeader>
+      </>
     );
   };
 
