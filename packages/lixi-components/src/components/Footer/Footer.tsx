@@ -13,7 +13,7 @@ const StyledFooter = styled.div`
   bottom: 0;
   width: 100%;
   padding: 0;
-  background: ${props => props.theme.footer.background};
+  background: #fff;
   justify-content: space-around;
   display: none;
   z-index: 9999;

@@ -1,5 +1,4 @@
 import { Button, Input } from 'antd';
-import { useEffect, useState } from 'react';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { saveBurnFilter } from '@store/settings/actions';
@@ -12,6 +11,7 @@ import {
   getFilterPostsToken
 } from '@store/settings/selectors';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import 'animate.css';
 
 const FilterStyle = styled.div`
   display: flex;
@@ -64,6 +64,11 @@ const FilterStyle = styled.div`
   }
 `;
 
+const FilterContainer = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+`;
+
 type FilterBurntProps = {
   filterForType: FilterType;
 };
@@ -102,23 +107,27 @@ export const FilterBurnt = (props: FilterBurntProps) => {
   };
 
   return (
-    <FilterStyle>
-      <p>{intl.get('general.level')} &nbsp;</p>
-      <Input.Group>
-        <Button
-          className="down-value"
-          icon={<MinusOutlined />}
-          onClick={() => handleUpDownBtn(false)}
-          disabled={valueForType === 0}
-        />
-        <Input disabled value={valueForType} />
-        <Button
-          className="up-value"
-          icon={<PlusOutlined />}
-          onClick={() => handleUpDownBtn(true)}
-          disabled={valueForType === 1000}
-        />
-      </Input.Group>
-    </FilterStyle>
+    <>
+      <FilterContainer>
+        <FilterStyle>
+          <p>{intl.get('general.level')} &nbsp;</p>
+          <Input.Group>
+            <Button
+              className="down-value"
+              icon={<MinusOutlined />}
+              onClick={() => handleUpDownBtn(false)}
+              disabled={valueForType === 0}
+            />
+            <Input disabled value={valueForType} />
+            <Button
+              className="up-value"
+              icon={<PlusOutlined />}
+              onClick={() => handleUpDownBtn(true)}
+              disabled={valueForType === 1000}
+            />
+          </Input.Group>
+        </FilterStyle>
+      </FilterContainer>
+    </>
   );
 };

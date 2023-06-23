@@ -87,13 +87,13 @@ const cover = css`
 const PendingCover = styled.div`
   ${cover};
   border: 1px solid ${colors.pending700};
-  border-radius: 5px;
+  border-radius: var(--border-radius-primary);
   background-color: ${colors.pending500};
 `;
 
 const CompleteCover = styled.div`
   ${cover};
-  border-radius: 5px;
+  border-radius: var(--border-radius-primary);
   border: 1px solid ${colors.success700};
   background-color: ${colors.success500};
 `;

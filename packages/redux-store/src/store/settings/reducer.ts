@@ -11,6 +11,7 @@ import {
   updateLocale
 } from './actions';
 import { SettingsState } from './state';
+// import { SearchBoxType } from '@bcpros/lixi-models/src/lib/search';
 
 const initialState: SettingsState = {
   navCollapsed: true,

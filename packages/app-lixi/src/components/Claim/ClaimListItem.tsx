@@ -11,7 +11,7 @@ const ClaimItemWrapper = styled.div`
   align-items: center;
   padding: 15px 25px;
   margin-bottom: 3px;
-  border-radius: 3px;
+  border-radius: var(--border-radius-primary);
   background: ${props => props.theme.listItem.background};
   box-shadow: ${props => props.theme.listItem.boxShadow};
   border: 1px solid ${props => props.theme.listItem.border};

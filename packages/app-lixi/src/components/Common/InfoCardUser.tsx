@@ -8,7 +8,7 @@ import intl from 'react-intl-universal';
 import { useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
 import type { MenuProps } from 'antd';
-import { CaretRightOutlined } from '@ant-design/icons';
+import { currency } from '@components/Common/Ticker';
 
 type InfoCardProps = {
   imgUrl: any;
@@ -34,6 +34,7 @@ const CardUser = styled.div`
     .card-info {
       text-align: left;
       .name {
+        font-size: 14px;
         font-weight: 500;
         letter-spacing: 0.15px;
         margin: 0;
@@ -44,17 +45,41 @@ const CardUser = styled.div`
         }
       }
       .title {
-        font-size: 12px;
+        font-size: 11px;
         letter-spacing: 0.25px;
         margin: 0;
         color: rgba(30, 26, 29, 0.38);
+        .account-name {
+          cursor: pointer;
+          color: var(--text-color-on-background);
+        }
       }
     }
     .ant-avatar-image {
-      width: 48px;
-      height: 48px;
-      margin-right: 1rem;
+      width: 43px;
+      height: 43px;
+      margin-right: 10px;
       border: 0;
+    }
+    .page-bar {
+      position: relative;
+      margin-right: 10px;
+      .ant-avatar {
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        right: -4px;
+        top: 25px;
+        margin-right: 0 !important;
+        background: #bfbfbf;
+        font-size: 12px;
+      }
+    }
+    .image-page {
+      object-fit: cover;
+      border-radius: 8px;
+      width: 45px;
+      height: 45px;
     }
   }
 `;
@@ -72,8 +97,8 @@ const InfoCardUserContainer = styled.div`
     margin-bottom: 1rem;
     align-items: initial;
     .avatar-ico {
-      width: 48px;
-      height: 48px;
+      width: 43px;
+      height: 43px;
     }
   }
 `;
@@ -82,6 +107,7 @@ const Action = styled.div`
   cursor: pointer;
   img {
     width: 27px;
+    transform: rotate(90deg);
   }
 `;
 
@@ -126,36 +152,73 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     <>
       <InfoCardUserContainer className={type === 'card' ? 'card' : ''}>
         <CardUser>
-          <div className="card-container">
-            <div onClick={() => history.push(`/profile/${postAccountAddress}`)}>
-              {imgUrl ? <Avatar src={imgUrl} /> : <AvatarUser name={name} isMarginRight={true} />}
+          {!page && !token && (
+            <div className="card-container">
+              <div onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+                {imgUrl ? <Avatar src={imgUrl} /> : <AvatarUser name={name} isMarginRight={true} />}
+              </div>
+              <div className="card-info">
+                <span className="name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+                  {name}
+                </span>
+                <p className="title">
+                  {title}
+                  <span style={{ marginLeft: '4px', fontSize: '10px' }}>
+                    · {activatePostLocation && postLocation()}
+                  </span>
+                  <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
+                    {postEdited && intl.get('post.edited')}
+                  </span>
+                </p>
+              </div>
             </div>
-            <div className="card-info">
-              {/* pageName or tokenName */}
-              <span className="name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
-                {name}
-              </span>
-              {page && (
+          )}
+          {page && page?.name && (
+            <div className="card-container">
+              <div className="page-bar" onClick={() => history.push(`/page/${page.id}}`)}>
+                <img className="image-page" src={page?.avatar ? page?.avatar : '/images/default-avatar.jpg'} />
+                <AvatarUser name={name} isMarginRight={true} />
+              </div>
+              <div className="card-info">
                 <span className="name" onClick={() => history.push(`/page/${page.id}`)}>
-                  <CaretRightOutlined style={{ marginLeft: '1px' }} />
-                  {page.name}
+                  {page?.name}
                 </span>
-              )}
-              {token && (
-                <span className="name" onClick={() => history.push(`/token/${token.tokenId}`)}>
-                  <CaretRightOutlined style={{ marginLeft: '1px' }} />
-                  {token.name}
-                </span>
-              )}
-              <p className="title">
-                {title}
-                <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()}</span>
-                <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
-                  {postEdited && intl.get('post.edited')}
-                </span>
-              </p>
+                <p className="title">
+                  <span className="account-name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+                    {name}
+                  </span>{' '}
+                  · {title} ·
+                  <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()}</span>
+                  <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
+                    {postEdited && intl.get('post.edited')}
+                  </span>
+                </p>
+              </div>
             </div>
-          </div>
+          )}
+          {token && token?.name && (
+            <div className="card-container">
+              <div className="page-bar" onClick={() => history.push(`/token/${token?.tokenId}}`)}>
+                <img className="image-page" src={`${currency.tokenIconsUrl}/64/${token.tokenId}.png`} />
+                <AvatarUser name={name} isMarginRight={true} />
+              </div>
+              <div className="card-info">
+                <span className="name" onClick={() => history.push(`/token/${token?.tokenId}`)}>
+                  {token?.name}
+                </span>
+                <p className="title">
+                  <span className="account-name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+                    {name}
+                  </span>{' '}
+                  · {title} ·
+                  <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()}</span>
+                  <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
+                    {postEdited && intl.get('post.edited')}
+                  </span>
+                </p>
+              </div>
+            </div>
+          )}
         </CardUser>
         {isDropdown && (
           <>

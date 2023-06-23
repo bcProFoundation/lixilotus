@@ -4,10 +4,18 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
 import { getNavCollapsed } from '@store/settings/selectors';
 import SidebarContent from './SidebarContent';
+import styled from 'styled-components';
 
 export type SidebarProps = {
   className?: string;
 };
+
+const DrawerStyled = styled(Drawer)`
+  display: none;
+  @media (max-width: 960px) {
+    display: block;
+  }
+`;
 
 const Sidebar = ({ className }: SidebarProps) => {
   const dispatch = useAppDispatch();
@@ -19,8 +27,7 @@ const Sidebar = ({ className }: SidebarProps) => {
   };
 
   return (
-    <Drawer
-      rootStyle={{ position: 'absolute' }}
+    <DrawerStyled
       className={`${className} lixi-drawer-sidebar`}
       placement="left"
       closable={false}
@@ -29,7 +36,7 @@ const Sidebar = ({ className }: SidebarProps) => {
       open={!navCollapsed}
     >
       <SidebarContent sidebarCollapsed={sidebarCollapsed} setSidebarCollapsed={setSidebarCollapsed} />
-    </Drawer>
+    </DrawerStyled>
   );
 };
 
