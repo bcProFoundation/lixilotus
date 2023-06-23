@@ -48,7 +48,7 @@ const LixiApp = ({ Component, ...rest }) => {
   const { postId, isMobile, postAsString } = pageProps;
 
   const canonicalUrl = postId ? process.env.NEXT_PUBLIC_LIXI_URL + `post/${postId}` : process.env.NEXT_PUBLIC_LIXI_URL;
-  const description = postId ? getDescription(postAsString) : 'Change your attention change the world!';
+  const description = postId ? getDescription(postAsString) : 'Save your attention save the world!';
   const sitename = postId ? getSitename(postAsString) : 'lixilotus.com';
 
   // const router = useRouter();
