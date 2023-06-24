@@ -139,7 +139,7 @@ const RankingSideBar = styled(Sider)`
 `;
 
 const SkeletonStyled = styled(Skeleton)`
-  padding: 0px;
+  padding: 1rem;
   margin-bottom: 0.5rem;
 
   .ant-skeleton-header {
