@@ -5,11 +5,11 @@ import { ShareSocialButton } from '@components/Common/ShareSocialButton';
 import { openModal } from '@store/modal/actions';
 import { PostsQuery } from '@store/post/posts.generated';
 import { formatBalance } from '@utils/cashMethods';
-import { List, Button, Space } from 'antd';
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { List, Button, Space, Image, Carousel } from 'antd';
+import { PlusCircleOutlined, LeftOutlined, RightOutlined, RetweetOutlined } from '@ant-design/icons';
 import _, { truncate } from 'lodash';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
 import { useAppDispatch } from '@store/hooks';
 import styled from 'styled-components';
@@ -19,9 +19,8 @@ import useWindowDimensions from '@hooks/useWindowDimensions';
 import { formatRelativeTime } from '@utils/formatting';
 import { Counter } from '@components/Common/Counter';
 import Reaction from '@components/Common/Reaction';
-import parse from 'html-react-parser';
-import { ReadMoreMore } from 'read-more-more';
 import PostContent from './PostContent';
+import ActionPostBar from '@components/Common/ActionPostBar';
 import { setSelectedPost } from '@store/post/actions';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
@@ -33,7 +32,7 @@ export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   />
 );
 
-const SpaceIconNoneHover = styled(Space)`
+export const SpaceIconNoneHover = styled(Space)`
   min-height: 38px;
   padding: 8px;
   img {
@@ -52,6 +51,12 @@ const CardContainer = styled.div`
   flex-direction: column;
   padding: 1rem 1rem 0 1rem;
   width: 100%;
+
+  .retweet {
+    display: flex;
+    margin: 0px 0px 5px 5px;
+    color: gray;
+  }
 `;
 
 const CardHeader = styled.div`
@@ -84,6 +89,13 @@ const Content = styled.div`
       @media (max-width: 960px) {
         max-height: 500px;
       }
+    }
+    p {
+      font-size: 14px;
+      line-height: 22px;
+    }
+    .read-more-more-module_btn__33IaH {
+      font-size: 14px;
     }
     @media (max-width: 960px) {
       div {
@@ -126,21 +138,29 @@ const Content = styled.div`
     max-height: 300px;
   }
   .images-post {
+    position: relative;
     cursor: pointer;
     width: 100%;
-    padding: 1rem;
     margin: 1rem 0;
-    background: var(--bg-color-light-theme);
     transition: 0.5s ease;
     img {
       max-width: 100%;
       max-height: 45vh;
       object-fit: cover;
+      border-radius: var(--border-radius-primary);
     }
     &:hover {
       opacity: 0.9;
     }
     .show-more-image {
+    }
+    .show-more-desktop {
+      color: #fff;
+      position: absolute;
+      top: 50%;
+      right: 50%;
+      font-size: 26px;
+      font-weight: 500;
     }
   }
 `;
@@ -155,7 +175,7 @@ const ActionBar = styled.div`
   border-top: 1px solid #efeeef;
   button {
     margin-right: 1rem;
-    border-radius: 20px;
+    border-radius: var(--border-radius-primary);
   }
 `;
 
@@ -170,6 +190,14 @@ export const GroupIconText = styled.div`
     cursor: pointer;
     @media (max-width: 960px) {
       margin-right: 1rem;
+    }
+
+    &.repost {
+      svg {
+        color: var(--color-primary);
+        width: 28px;
+        height: 28px;
+      }
     }
   }
   img {
@@ -186,12 +214,13 @@ const PostListItemContainer = styled(List.Item)`
   display: flex;
   flex-direction: column;
   height: fit-content !important;
-  margin: 2px 2px 1rem 2px;
-  border-radius: 24px;
+  margin-bottom: 1rem;
+  box-shadow: 1rem 1rem 2.5rem 0 rgb(0 0 0 / 5%);
+  border-radius: var(--border-radius-primary);
   background: white;
   padding: 0;
   border: none;
-  border: 1px solid var(--boder-item-light);
+  border: 1px solid var(--border-item-light);
   &:hover {
     background: rgb(252, 252, 252);
   }
@@ -226,10 +255,10 @@ type PostListItemProps = {
   item: PostItem;
   searchValue?: string;
   handleBurnForPost?: (isUpVote: boolean, post: any, optionBurn?: string) => Promise<void>;
-  addHashtag?: (hashtag: string) => any;
+  addToRecentHashtags?: (hashtag: string) => any;
 };
 
-const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag }: PostListItemProps) => {
+const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecentHashtags }: PostListItemProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const post: PostItem = item;
@@ -274,7 +303,32 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
   const handlePostClick = e => {
     if (e.target.className === 'hashtag-link') {
       e.stopPropagation();
-      addHashtag(e.target.id);
+      const hashtag = e.target.id;
+      if (router.query.hashtags) {
+        //Check dup before adding to query
+        const queryHashtags = (router.query.hashtags as string).split(' ');
+        const hashtagExistedIndex = queryHashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+
+        if (hashtagExistedIndex === -1) {
+          router.replace({
+            query: {
+              ...router.query,
+              hashtags: router.query.hashtags + ' ' + hashtag
+            }
+          });
+        }
+      } else {
+        router.replace({
+          query: {
+            ...router.query,
+            q: '',
+            hashtags: hashtag
+          }
+        });
+      }
+
+      addToRecentHashtags(hashtag);
+
       return;
     }
     if (e.target.className === 'read-more-more-module_btn__33IaH') {
@@ -302,9 +356,33 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
     dispatch(openModal('EditPostModalPopup', editPostProps));
   };
 
+  const reposted = () => {
+    if (!_.isNil(post.reposts) && post.reposts.length != 0) {
+      if (post.reposts.length - 1 == 0) {
+        return (
+          <p className="retweet">
+            <RetweetOutlined />{' '}
+            {intl.get('post.singleReposted', { repostName: post.reposts[post.reposts.length - 1].account.name })}
+          </p>
+        );
+      } else {
+        return (
+          <p className="retweet">
+            <RetweetOutlined />{' '}
+            {intl.get('post.multiReposted', {
+              repostName: `${post.reposts[post.reposts.length - 1].account.name} + ${post.reposts.length - 1}`
+            })}
+          </p>
+        );
+      }
+    }
+    return '';
+  };
+
   return (
     <PostListItemContainer key={post.id} ref={ref}>
       <CardContainer>
+        {reposted()}
         <CardHeader>
           <InfoCardUser
             imgUrl={post.page ? post.page.avatar : ''}
@@ -318,6 +396,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
             postEdited={post.createdAt !== post.updatedAt}
             isDropdown={true}
             lotusBurnScore={post.lotusBurnScore}
+            followPostOwner={post.followPostOwner}
           />
         </CardHeader>
         <Content onClick={e => handlePostClick(e)}>
@@ -326,7 +405,12 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
           </div>
           {item.uploads.length != 0 && !showMoreImage && (
             <div className="images-post">
-              <Gallery photos={imagesList} />
+              <Gallery photos={imagesList.length > 3 ? imagesList.slice(0, 3) : imagesList} />
+              {item.uploads.length > 3 && (
+                <Button type="link" className="show-more-desktop show-more-image no-border-btn">
+                  {'+ ' + (item.uploads.length - 1)}
+                </Button>
+              )}
             </div>
           )}
           {item.uploads.length != 0 && showMoreImage && (
@@ -344,20 +428,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
           )}
         </Content>
       </CardContainer>
-      <ActionBar>
-        <GroupIconText>
-          <Reaction post={post} handleBurnForPost={handleBurnForPost} />
-          <IconNoneHover
-            value={formatBalance(post?.totalComments ?? 0)}
-            imgUrl="/images/ico-comments.svg"
-            key={`list-vertical-comment-o-${item.id}`}
-            classStyle="custom-comment"
-            onClickIcon={e => handlePostClick(e)}
-          />
-        </GroupIconText>
-
-        <ShareSocialButton slug={post.id} content={post.content} postAccountName={post.postAccount.name} />
-      </ActionBar>
+      <ActionPostBar post={post} handleBurnForPost={handleBurnForPost} onClickIconComment={e => handlePostClick(e)} />
     </PostListItemContainer>
   );
 };

@@ -8,6 +8,8 @@ import { Page } from '../page';
 import { Token } from '../token';
 import { UploadDetail } from '../upload';
 
+import { Repost } from './repost.model';
+
 @ObjectType()
 export class Post {
   @Field(() => ID)
@@ -62,4 +64,10 @@ export class Post {
 
   @Field(() => [PostHashtag], { nullable: true })
   postHashtags?: [PostHashtag];
+
+  @Field(() => Boolean, { nullable: true })
+  followPostOwner?: boolean;
+
+  @Field(() => [Repost], { nullable: true })
+  reposts?: [Repost];
 }

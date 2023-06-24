@@ -6,7 +6,7 @@ import { getPostCoverUploads, getSelectedAccount } from '@store/account/selector
 import { api as postApi, useCreatePostMutation } from '@store/post/posts.api';
 import { CreatePostMutation } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
-import { Button, Input, Modal } from 'antd';
+import { Button, Input, Modal, Space } from 'antd';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
@@ -48,7 +48,7 @@ const MobileCreatePost = styled.div`
     .fab-btn {
       padding: 16px;
       background: #ffdbd1;
-      border-radius: 16px;
+      border-radius: var(--border-radius-primary);
     }
   }
 `;
@@ -59,32 +59,43 @@ const WrapEditor = styled.div`
 `;
 
 const DesktopCreatePost = styled.div`
-  display: flex;
-  justify-content: space-between;
   padding: 1.5rem 1rem;
   background: #fff;
-  border-radius: 20px;
-  align-items: center;
+  border-radius: var(--border-radius-primary);
   margin: 1rem 0;
-  border: 1px solid var(--boder-item-light);
-  .avatar {
-    flex: 2 auto;
+  border: 1px solid var(--border-item-light);
+  box-shadow: 1rem 1rem 2.5rem 0 rgb(0 0 0 / 5%);
+  cursor: pointer;
+  .box-create-post {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    .ant-avatar {
-      min-width: 50px;
+    .avatar {
+      flex: 2 auto;
+      display: flex;
+      align-items: center;
+      input {
+        font-size: 11px;
+        line-height: 24px;
+        letter-spacing: 0.3px;
+      }
+      .ant-avatar {
+        min-width: 46px;
+      }
+    }
+    .btn-create {
+      .anticon {
+        font-size: 18px;
+        color: var(--color-primary);
+      }
     }
   }
-  .btn-create {
-    .anticon {
-      font-size: 22px;
-      color: #7342cc;
-    }
-  }
-  input {
-    font-size: 14px;
-    line-height: 24px;
-    letter-spacing: 0.5px;
+  .functional-images-bar {
+    display: flex;
+    margin-top: 1rem;
+    border-top: 1px solid var(--border-color-base);
+    padding-top: 1rem;
+    gap: 8px;
   }
   @media (max-width: 968px) {
     display: none;
@@ -115,8 +126,8 @@ const UserCreate = styled.div`
         align-items: baseline;
       }
       .btn-select {
-        background: var(--boder-item-light);
-        border-radius: 8px;
+        background: var(--border-color-base);
+        border-radius: var(--border-radius-primary);
         padding: 0 8px;
         border: none;
         margin-top: 4px;
@@ -146,6 +157,22 @@ const UserCreate = styled.div`
   }
 `;
 
+const SpaceIconNoneHover = styled(Space)`
+  gap: 8px;
+  padding: 6px;
+  background: #faf0fa;
+  color: var(--color-primary);
+  border-radius: var(--border-radius-primary);
+  img {
+    width: 25px;
+  }
+  span {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+`;
+
 type CreatePostCardProp = {
   page?: PageItem;
   tokenPrimaryId?: string;
@@ -155,6 +182,25 @@ type CreatePostCardProp = {
   hashtagId?: string; // hashtagId here for the url /hashtag/{hashtag}
   query?: string;
 };
+
+const IconWImage = ({
+  value,
+  imgUrl,
+  onClickIcon
+}: {
+  value?: string;
+  imgUrl?: string;
+  onClickIcon: (e: any) => void;
+}) => (
+  <SpaceIconNoneHover onClick={onClickIcon} size={5}>
+    {imgUrl && (
+      <picture>
+        <img alt="icon" src={imgUrl} />
+      </picture>
+    )}
+    <span>{value}</span>
+  </SpaceIconNoneHover>
+);
 
 const CreatePostCard = (props: CreatePostCardProp) => {
   const dispatch = useAppDispatch();
@@ -293,56 +339,61 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   };
 
   const handleCreateNewPost = async ({ htmlContent, pureContent }) => {
-    let filterValue: number;
-    if (pureContent === '' || _.isNil(pureContent)) {
-      return;
-    }
-
-    let createFeeHex;
-    if (pathname.includes('/token')) {
-      filterValue = filterToken;
-    } else if (pathname.includes('/page')) {
-      filterValue = filterPage;
-
-      if (selectedAccount.id != page.pageAccountId && parseFloat(page.createPostFee) != 0) {
-        const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
-        createFeeHex = await sendXpi(
-          XPI,
-          chronik,
-          walletPaths,
-          slpBalancesAndUtxos.nonSlpUtxos,
-          currency.defaultFee,
-          '',
-          false, // indicate send mode is one to one
-          null,
-          page.pageAccount.address,
-          page.createPostFee,
-          true,
-          fundingWif,
-          true
-        );
-      }
-    } else {
-      filterValue = filterHome;
-    }
-
-    const createPostInput: CreatePostInput = {
-      uploadCovers: postCoverUploads.map(upload => upload.id),
-      htmlContent: htmlContent,
-      pureContent: pureContent,
-      pageId: pageId || undefined,
-      tokenPrimaryId: tokenPrimaryId || undefined,
-      createFeeHex: createFeeHex
-    };
-
+    let patches: PatchCollection;
     const params = {
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
       }
     };
-    let patches: PatchCollection;
+
     try {
+      let filterValue: number;
+      if (pureContent === '' || _.isNil(pureContent)) {
+        return;
+      }
+
+      let createFeeHex;
+      if (pathname.includes('/token')) {
+        filterValue = filterToken;
+      } else if (pathname.includes('/page')) {
+        filterValue = filterPage;
+
+        try {
+          if (selectedAccount.id != page.pageAccountId && parseFloat(page.createPostFee) != 0) {
+            const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+            createFeeHex = await sendXpi(
+              XPI,
+              chronik,
+              walletPaths,
+              slpBalancesAndUtxos.nonSlpUtxos,
+              currency.defaultFee,
+              '',
+              false, // indicate send mode is one to one
+              null,
+              page.pageAccount.address,
+              page.createPostFee,
+              true,
+              fundingWif,
+              true
+            );
+          }
+        } catch (error) {
+          throw new Error(intl.get('post.insufficientFeeCreatePost'));
+        }
+      } else {
+        filterValue = filterHome;
+      }
+
+      const createPostInput: CreatePostInput = {
+        uploadCovers: postCoverUploads.map(upload => upload.id),
+        htmlContent: htmlContent,
+        pureContent: pureContent,
+        pageId: pageId || undefined,
+        tokenPrimaryId: tokenPrimaryId || undefined,
+        createFeeHex: createFeeHex
+      };
+
       const result = await createPostTrigger({ input: createPostInput }).unwrap();
       let tag: string;
 
@@ -367,7 +418,12 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       dispatch(removeAllUpload());
       dispatch(deleteEditorTextFromCache());
     } catch (error) {
-      const message = intl.get('post.unableCreatePostServer');
+      let message;
+      if (error.message === intl.get('post.insufficientFeeCreatePost')) {
+        message = error.message;
+      } else {
+        message = intl.get('post.unableCreatePostServer');
+      }
       if (patches) {
         dispatch(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
       }
@@ -406,16 +462,31 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   return (
     <React.Fragment>
       <DesktopCreatePost onClick={() => setEnableEditor(!enableEditor)}>
-        <div className="avatar">
-          <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
-          <Input
-            bordered={false}
-            placeholder={hashtags && hashtags.length > 0 ? hashtags.join(' ') : `What's on your mind?`}
-            value=""
-          />
+        <div className="box-create-post">
+          <div className="avatar">
+            <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
+            <Input
+              bordered={false}
+              placeholder={hashtags && hashtags.length > 0 ? hashtags.join(' ') : `Write about #hashtag...`}
+              value=""
+            />
+          </div>
+          <div className="btn-create">
+            <PlusCircleOutlined />
+          </div>
         </div>
-        <div className="btn-create">
-          <PlusCircleOutlined />
+        <div className="functional-images-bar">
+          <IconWImage imgUrl={'/images/ico-images-color.png'} value={'Photo'} onClickIcon={() => console.log('Null')} />
+          <IconWImage
+            imgUrl={'/images/ico-link-url-color.png'}
+            value={'Link Url'}
+            onClickIcon={() => console.log('Null')}
+          />
+          <IconWImage
+            imgUrl={'/images/ico-twitter-color.png'}
+            value={'Embed Twitter'}
+            onClickIcon={() => console.log('Null')}
+          />
         </div>
       </DesktopCreatePost>
 

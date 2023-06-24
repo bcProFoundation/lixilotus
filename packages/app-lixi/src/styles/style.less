@@ -22,6 +22,7 @@ body {
     padding-bottom: 60px;
     background: var(--bg-color-light-theme);
   }
+  background: var(--bg-color-light-theme);
 }
 
 /* Hide up and down arros on input type="number" */
@@ -54,7 +55,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: 'source-code-pro, Menlo, Monaco, Consolas, Courier New, monospace';
 }
 
 /* Hide scroll bars on antd modals*/
@@ -78,7 +79,7 @@ code {
 }
 
 .ant-modal-content {
-  border-radius: 30px !important;
+  border-radius: var(--border-radius-primary) !important;
   padding: 0 !important;
   background: #fff !important;
 
@@ -173,7 +174,7 @@ code {
   top: 2rem;
 
   .ant-modal-content {
-    border-radius: 20px;
+    border-radius: var(--border-radius-primary);
     text-align: center;
     width: 60% !important;
     margin: auto;
@@ -185,7 +186,7 @@ code {
     }
 
     .ant-modal-header {
-      border-radius: 20px;
+      border-radius: var(--border-radius-primary);
       padding: 24px;
       border-bottom: 0;
       padding-bottom: 0;
@@ -313,8 +314,11 @@ code {
   --text-color-1: rgba(30, 26, 29, 0.38);
 
   // Boder color
-  --border-color: rgba(30, 26, 29, 0.12);
-  --border-color-base: #80747c;
+  --border-color: #c5c5c5;
+  --border-color-base: #f1f1f1;
+  --border-item-dark: #e9eaed;
+  --border-item-light: none;
+  --border-item-primary: rgba(128, 116, 124, 0.12);
 
   /** Dark theme **/
   --color-primary-dark: #9e2a9c;
@@ -324,9 +328,9 @@ code {
   --color-success-dark: #006c44;
   --color-info-dark: #5476eb;
 
-  --border-item-dark: #e9eaed;
-  // --boder-item-light: none;
-  --boder-item-light: rgba(128, 116, 124, 0.12);
+  --filter-color-primary: invert(27%) sepia(69%) saturate(2185%) hue-rotate(279deg) brightness(50%) contrast(96%);
+  --border-radius-primary: 5px;
+  --border-radius-item: 18px;
 }
 
 .ant-modal {
@@ -353,8 +357,8 @@ code {
 
     .ant-modal-body {
       text-align: end;
-      border-bottom-left-radius: 24px;
-      border-bottom-right-radius: 24px;
+      border-bottom-left-radius: var(--border-radius-primary);
+      border-bottom-right-radius: var(--border-radius-primary);
 
       @media (max-width: 768px) {
         text-align: center;
@@ -373,8 +377,8 @@ code {
 
 .custom-edit-page-modal {
   .ant-modal-body {
-    border-bottom-left-radius: 24px;
-    border-bottom-right-radius: 24px;
+    border-bottom-left-radius: var(--border-radius-primary);
+    border-bottom-right-radius: var(--border-radius-primary);
     padding: 24px 32px;
   }
 
@@ -404,7 +408,7 @@ code {
 
     .banner-count-burn {
       border: 1px solid rgba(128, 116, 124, 0.12);
-      border-radius: 24px;
+      border-radius: var(--border-radius-primary);
       display: flex;
       width: 100%;
       justify-content: space-between;
@@ -458,6 +462,7 @@ code {
 
 .ant-drawer-body {
   background: #fffbff;
+  padding: 8px !important;
 }
 
 .ant-table {
@@ -494,7 +499,7 @@ code {
   &.outline-btn {
     color: var(--color-primary);
     background: #ffffff;
-    border: 1px solid #80747d;
+    border: 1px solid var(--border-color-base);
 
     &:hover {
       background: rgba(158, 42, 156, 0.08);
@@ -667,7 +672,7 @@ code {
 
 .ant-table-container {
   table {
-    border: 1px solid var(--boder-item-light);
+    border: 1px solid var(--border-item-light);
     box-shadow: 0px 0px 20px rgb(0 0 0 / 6%);
     border-radius: 18px;
 
@@ -676,12 +681,12 @@ code {
         font-weight: 500;
         font-size: 14px;
         line-height: 20px;
-        border-color: var(--boder-item-light);
+        border-color: var(--border-item-light);
         padding: 12px 16px;
       }
 
       td {
-        border-color: var(--boder-item-light);
+        border-color: var(--border-item-light);
       }
 
       &:first-child {
@@ -712,7 +717,7 @@ code {
 .table-tokens {
   .ant-table-container {
     .ant-table-cell {
-      border-bottom: 1px solid var(--boder-item-light);
+      border-bottom: 1px solid var(--border-item-light);
     }
   }
 }
@@ -734,7 +739,7 @@ code {
 
   .ant-modal-body {
     padding: 0;
-    border-radius: 20px;
+    border-radius: var(--border-radius-primary);
 
     aside {
       width: 100% !important;
@@ -758,12 +763,12 @@ code {
 
     .ant-popover-inner {
       min-width: 280px;
-      border-radius: 24px;
+      border-radius: var(--border-radius-primary);
 
       .ant-popover-inner-content {
         background: #fffbff;
         box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.12);
-        border-radius: 24px;
+        border-radius: var(--border-radius-primary);
 
         .popover-content-more {
           display: flex;
@@ -800,6 +805,21 @@ code {
         }
       }
     }
+  }
+}
+
+.card {
+  border-radius: 0.313rem;
+  box-shadow: 1rem 1rem 2.5rem 0 rgb(0 0 0 / 5%);
+  margin-bottom: 1rem;
+  border: 0;
+  .title-card {
+    font-size: 18px;
+    color: #3f414d;
+    border-bottom: 1px solid var(--border-color-base);
+    padding: 1rem;
+    margin-bottom: 0;
+    text-align: left;
   }
 }
 
@@ -913,25 +933,13 @@ code {
   }
 }
 
-.slick-active {
-  z-index: 1;
-}
-@keyframes activePostAnimation {
-  0% {
-    border-width: 3px;
-    border-color: #ffd7f6;
+.popover-recent-search {
+  min-width: 350px;
+  @media (max-width: 968px) {
+    width: 95%;
   }
-  40% {
-    border-width: 3px;
-    border-color: #ffd7f6;
-  }
-  70%{
-    border-width: 3px;
-    border-color: transparent;
-  }
-  100% {
-    border-width: 3px;
-    border-color: transparent;  
+  .ant-popover-inner {
+    padding: 0;
   }
 }
 
@@ -947,15 +955,37 @@ code {
     border-width: 3px;
     border-color: #ffd7f6;
   }
-  70%{
+  70% {
     border-width: 3px;
     border-color: transparent;
   }
   100% {
     border-width: 3px;
-    border-color: transparent;  
+    border-color: transparent;
   }
 }
-.active-post{
+
+.slick-active {
+  z-index: 1;
+}
+@keyframes activePostAnimation {
+  0% {
+    border-width: 3px;
+    border-color: #ffd7f6;
+  }
+  40% {
+    border-width: 3px;
+    border-color: #ffd7f6;
+  }
+  70% {
+    border-width: 3px;
+    border-color: transparent;
+  }
+  100% {
+    border-width: 3px;
+    border-color: transparent;
+  }
+}
+.active-post {
   animation: activePostAnimation 5s;
 }

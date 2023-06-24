@@ -50,7 +50,7 @@ const UpDownButton = styled(Button)`
   font-size: 14px;
   width: 49%;
   height: 40px;
-  border-radius: 16px !important;
+  border-radius: var(--border-radius-primary) !important;
   justify-content: center;
 
   &.upVote {
@@ -79,11 +79,11 @@ const RadioStyle = styled(Radio.Group)`
   .ant-radio-button-wrapper {
     width: 48px;
     height: 48px;
-    border-radius: 8px !important;
+    border-radius: var(--border-radius-primary) !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #c5c5c5;
+    border: 1px solid var(--border-color);
     color: #1e1a1d;
     font-weight: 500;
     font-size: 16px;
@@ -128,8 +128,6 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const [selectedAmount, setSelectedAmount] = useState(1);
-  const feeAccount = selectedAmount * 0.08;
-  const feePage = selectedAmount * 0.04;
   const burnQueue = useAppSelector(getBurnQueue);
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
@@ -171,13 +169,13 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
             }
             tipToAddresses.push({
               address: post.postAccount.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.08)).valueOf().toString()
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
             });
           } else if (post.page) {
             tag = PostsQueryTag.PostsByPageId;
             tipToAddresses.push({
               address: post.page.pageAccount.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
             });
           } else if (post.token) {
             tag = PostsQueryTag.PostsByTokenId;
@@ -196,9 +194,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
           const postAddress = comment.commentTo.postAccount.address;
           tipToAddresses.push({
             address: pageAddress ?? postAddress,
-            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(comment.commentTo.page ? 0.04 : 0.08))
-              .valueOf()
-              .toString()
+            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
           });
 
           queryParams = {
@@ -386,13 +382,13 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
           ? null
           : isPage
           ? intl.get('burn.sendXpi') +
-            feePage +
+            currency.burnFee +
             ' XPI' +
             intl.get('burn.owner', {
               name: getName(BurnForType.Page)
             })
           : intl.get('burn.sendXpi') +
-            feeAccount +
+            currency.burnFee +
             ' XPI' +
             intl.get('burn.owner', {
               name: getName(BurnForType.Account)

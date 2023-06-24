@@ -335,6 +335,7 @@ export type Mutation = {
   deleteFollowAccount: Scalars['Boolean'];
   deleteFollowPage: Scalars['Boolean'];
   importAccount: Account;
+  repost: Scalars['Boolean'];
   updatePage: Page;
   updatePost: Post;
 };
@@ -393,6 +394,10 @@ export type MutationDeleteFollowPageArgs = {
 
 export type MutationImportAccountArgs = {
   data: ImportAccountInput;
+};
+
+export type MutationRepostArgs = {
+  data: RepostInput;
 };
 
 export type MutationUpdatePageArgs = {
@@ -490,6 +495,7 @@ export type Post = {
   content: Scalars['String'];
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
+  followPostOwner?: Maybe<Scalars['Boolean']>;
   id: Scalars['ID'];
   lotusBurnDown: Scalars['Float'];
   lotusBurnScore: Scalars['Float'];
@@ -499,6 +505,7 @@ export type Post = {
   postAccount: Account;
   postAccountId: Scalars['Int'];
   postHashtags?: Maybe<Array<PostHashtag>>;
+  reposts?: Maybe<Array<Repost>>;
   token?: Maybe<Token>;
   tokenId?: Maybe<Scalars['String']>;
   totalComments: Scalars['Int'];
@@ -558,7 +565,8 @@ export enum PostOrderField {
   CreatedAt = 'createdAt',
   Id = 'id',
   LotusBurnScore = 'lotusBurnScore',
-  UpdatedAt = 'updatedAt'
+  UpdatedAt = 'updatedAt',
+  UpdatedRepostAt = 'updatedRepostAt'
 }
 
 export type PostResponse = {
@@ -733,9 +741,10 @@ export type QueryAllPostsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
+  isTop?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<PostOrder>;
+  orderBy?: InputMaybe<Array<PostOrder>>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 
@@ -757,7 +766,7 @@ export type QueryAllPostsByPageIdArgs = {
   id?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<PostOrder>;
+  orderBy?: InputMaybe<Array<PostOrder>>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 
@@ -961,6 +970,25 @@ export type QueryWorshipArgs = {
 
 export type QueryWorshipedPersonArgs = {
   id: Scalars['String'];
+};
+
+export type Repost = {
+  __typename?: 'Repost';
+  account?: Maybe<Account>;
+  accountId?: Maybe<Scalars['Int']>;
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  id?: Maybe<Scalars['ID']>;
+  post?: Maybe<Post>;
+  postId?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type RepostInput = {
+  accountId: Scalars['Int'];
+  postId: Scalars['String'];
+  txHex?: InputMaybe<Scalars['String']>;
 };
 
 export type State = {

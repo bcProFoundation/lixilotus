@@ -1,4 +1,5 @@
 import { FilterBurnCommand } from '@bcpros/lixi-models/src/lib/filter';
+import { SearchBoxCommand } from '@bcpros/lixi-models/src/lib/search';
 import { createAction } from '@reduxjs/toolkit';
 
 import { WebAuthnConfig, WebPushNotifConfig } from './model';
@@ -11,5 +12,6 @@ export const loadLocaleSuccess = createAction<string>('settings/loadLocaleSucces
 export const loadLocaleFailure = createAction<string>('settings/loadLocaleFailure');
 export const saveWebAuthnConfig = createAction<WebAuthnConfig>('settings/saveWebAuthnConfig');
 export const saveBurnFilter = createAction<FilterBurnCommand>('settings/saveBurnFilter');
+export const saveTopPostsFilter = createAction<boolean>('settings/saveTopPostsFilter');
 export const saveWebPushNotifConfig = createAction<WebPushNotifConfig>('settings/saveWebPushNotifConfig');
 export const saveAllowPushNotification = createAction<boolean>('settings/saveAllowPushNotification');

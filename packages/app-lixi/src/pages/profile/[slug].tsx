@@ -1,4 +1,5 @@
 import { PrismaClient } from '@bcpros/lixi-prisma';
+import MainLayout from '@components/Layout/MainLayout';
 import PageDetailLayout from '@components/Layout/PageDetailLayout';
 import ProfileDetail from '@components/Profile/ProfileDetail';
 import { useGetAccountByAddressQuery } from '@store/account/accounts.api';
@@ -83,6 +84,6 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   };
 });
 
-ProfileDetailPage.Layout = ({ children }) => <PageDetailLayout children={children} />;
+ProfileDetailPage.Layout = ({ children }) => <MainLayout children={children} />;
 
 export default ProfileDetailPage;

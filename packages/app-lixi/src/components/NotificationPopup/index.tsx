@@ -1,28 +1,23 @@
-import React from 'react';
-import { CloseCircleOutlined } from '@ant-design/icons';
-import { Space, Popover, Menu, notification } from 'antd';
 import { Comment } from '@ant-design/compatible';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import styled from 'styled-components';
 import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';
-import SwipeToDelete from 'react-swipe-to-delete-ios';
-import moment from 'moment';
-import { isMobile } from 'react-device-detect';
+import { AvatarUser } from '@components/Common/AvatarUser';
+import { getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { downloadExportedLixi } from '@store/lixi/actions';
 import {
   deleteNotification,
   fetchNotifications,
   readAllNotifications,
   readNotification
 } from '@store/notification/actions';
-import { downloadExportedLixi } from '@store/lixi/actions';
-import { useRouter } from 'next/router';
-import intl from 'react-intl-universal';
-import { push } from 'connected-next-router';
-import { getAllNotifications } from '@store/notification/selectors';
-import { getSelectedAccount } from '@store/account/selectors';
-import { AvatarUser } from '@components/Common/AvatarUser';
-import { InfoSubCard } from '@components/Lixi';
 import { formatRelativeTime } from '@utils/formatting';
+import { Menu, Popover, Space } from 'antd';
+import { push } from 'connected-next-router';
+import { useRouter } from 'next/router';
+import { isMobile } from 'react-device-detect';
+import intl from 'react-intl-universal';
+import SwipeToDelete from 'react-swipe-to-delete-ios';
+import styled from 'styled-components';
 
 export type NotificationMenuProps = {
   notifications: Notification[];
@@ -81,8 +76,8 @@ export const StyledPopover = styled(Popover)`
 `;
 
 const StyledComment = styled(Comment)`
-  border-radius: 5px;
-  border: 1px solid var(--boder-item-light);
+  border-radius: var(--border-radius-primary);
+  border: 1px solid var(--border-item-primary);
   padding: 8px;
 
   &:hover {
@@ -90,6 +85,7 @@ const StyledComment = styled(Comment)`
   }
 
   .ant-comment-inner {
+    display: flex;
     padding: 0px;
     color: black;
   }
@@ -110,6 +106,7 @@ const StyledComment = styled(Comment)`
 `;
 
 const StyledTitlePage = styled.h1`
+  font-size: 18px;
   @media (max-width: 576px) {
     display: none;
   }
@@ -144,7 +141,6 @@ const StyledSwipeToDelete = styled(SwipeToDelete)`
 const StyledHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1rem;
   .menu-post-listing {
     background: none !important;
     .ant-menu-item {
@@ -170,6 +166,7 @@ const StyledReadAll = styled.div`
   color: ${props => props.theme.primary};
   padding-left: 10px;
   padding-right: 10px;
+  margin-bottom: 1rem;
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -243,6 +240,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                   <StyledComment
                     key={notification.id}
                     style={{ backgroundColor: notification.readAt == null ? '#eceff5' : '#fff', borderRadius: '0px' }}
+                    className="card"
                     author={
                       <StyledAuthor>
                         <StyledTextLeft></StyledTextLeft>
@@ -263,7 +261,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 key={notification.id}
                 style={{
                   borderRadius: '10px',
-                  backgroundColor: notification.readAt == null ? '#eceff5' : '#fff',
+                  backgroundColor: notification && notification.readAt == null ? '#eceff5' : '#fff',
                   marginBottom: '8px'
                 }}
                 author={

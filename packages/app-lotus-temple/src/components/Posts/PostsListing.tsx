@@ -202,10 +202,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       first: 20,
       minBurnFilter: filterValue,
       accountId: selectedAccountId ?? null,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      ]
     },
     false
   );

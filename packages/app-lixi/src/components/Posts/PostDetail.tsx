@@ -13,7 +13,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { addBurnQueue, addBurnTransaction, burnForUpDownVote, createTxHex, clearFailQueue } from '@store/burn/actions';
 import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
-import { PostsQuery } from '@store/post/posts.generated';
+import { PostsQuery, useRepostMutation } from '@store/post/posts.generated';
 import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
@@ -27,7 +27,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
-import { CommentOrderField, CreateCommentInput, OrderDirection } from '@generated/types.generated';
+import { CommentOrderField, CreateCommentInput, OrderDirection, RepostInput } from '@generated/types.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import CommentListItem, { CommentItem } from './CommentListItem';
@@ -45,6 +45,7 @@ import { OPTION_BURN_VALUE } from './PostsListing';
 import { GroupIconText, IconNoneHover } from './PostListItem';
 import parse from 'html-react-parser';
 import ReactDomServer from 'react-dom/server';
+import ActionPostBar from '@components/Common/ActionPostBar';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -168,29 +169,6 @@ const CommentInputContainer = styled.div`
   }
 `;
 
-const ActionBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  border: 1px solid #c5c5c5;
-  padding: 4px 0;
-  border-left: 0;
-  border-right: 0;
-  .ant-space {
-    gap: 4px !important;
-  }
-  .reaction-func {
-    color: rgba(30, 26, 29, 0.6);
-    cursor: pointer;
-    display: flex;
-    gap: 1rem;
-    img {
-      width: 28px;
-      height: 28px;
-      margin-right: 4px;
-    }
-  }
-`;
-
 const PostContentDetail = styled.div`
   text-align: left;
   .description-post {
@@ -227,7 +205,7 @@ const StyledContainerPostDetail = styled.div`
   margin: 1rem auto;
   width: 100%;
   max-width: 816px;
-  border-radius: 5px;
+  border-radius: var(--border-radius-primary);
   background: white;
   padding: 0rem 1rem 1rem 1rem;
   margin-top: 1rem;
@@ -239,7 +217,7 @@ const StyledContainerPostDetail = styled.div`
   header {
     padding: 0 !important;
     margin-bottom: 1rem;
-    border-color: #c5c5c5;
+    border-color: var(--border-color-base);
   }
   .comment-item-meta {
     margin-bottom: 0.5rem;
@@ -295,6 +273,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const walletStatus = useAppSelector(getWalletStatus);
   const [open, setOpen] = useState(false);
   const filterValue = useAppSelector(getFilterPostsHome);
+
+  const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
+    useRepostMutation();
 
   const dataSource = [
     {
@@ -361,9 +342,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           const post = data as PostItem;
           tipToAddresses.push({
             address: post.page ? post.page.pageAccount.address : post.postAccount.address,
-            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(post.page ? 0.04 : 0.08))
-              .valueOf()
-              .toString()
+            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
           });
           break;
         case BurnForType.Comment:
@@ -372,9 +351,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           const postAddress = comment.commentTo.postAccount.address;
           tipToAddresses.push({
             address: pageAddress ?? postAddress,
-            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(comment.commentTo.page ? 0.04 : 0.08))
-              .valueOf()
-              .toString()
+            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
           });
 
           queryParams = {
@@ -590,9 +567,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const handleHashtagClick = e => {
     if (e.target.className === 'hashtag-link') {
       if (post.page) {
-        router.push(`/page/${post.page.id}?hashtag=${e.target.id.substring(1)}`);
+        router.push(`/page/${post.page.id}?q=&hashtags=%23${e.target.id.substring(1)}`);
       } else if (post.token) {
-        router.push(`/token/${post.token.tokenId}?hashtag=${e.target.id.substring(1)}`);
+        router.push(`/token/${post.token.tokenId}?q=&hashtags=%23${e.target.id.substring(1)}`);
       } else {
         router.push(`/hashtag/${e.target.id.substring(1)}`);
       }
@@ -617,13 +594,40 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     }
   });
 
+  const handleRepost = async (post: any) => {
+    const repostInput: RepostInput = {
+      accountId: selectedAccount.id,
+      postId: post.id
+    };
+
+    try {
+      await repostTrigger({ input: repostInput });
+      isSuccessRepost &&
+        dispatch(
+          showToast('success', {
+            message: 'Success',
+            description: intl.get('post.repostSuccessful'),
+            duration: 5
+          })
+        );
+    } catch (error) {
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: intl.get('post.repostFailure'),
+          duration: 5
+        })
+      );
+    }
+  };
+
   return (
     <>
       <StyledContainerPostDetail>
         <NavBarHeader onClick={() => router.back()}>
           <LeftOutlined />
           <PathDirection>
-            <h2>Post</h2>
+            <h2>{intl.get('post.postTitle')}</h2>
           </PathDirection>
         </NavBarHeader>
         <InfoCardUser
@@ -648,20 +652,11 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
               </Image.PreviewGroup>
             </div>
           )}
-          <ActionBar>
-            <GroupIconText>
-              <Reaction post={post} handleBurnForPost={handleBurnForPost} />
-              <IconNoneHover
-                value={formatBalance(totalCount ?? 0)}
-                imgUrl="/images/ico-comments.svg"
-                key={`list-vertical-comment-o-${post.id}`}
-                classStyle="custom-comment"
-                onClickIcon={e => setFocus('comment', { shouldSelect: true })}
-              />
-            </GroupIconText>
-
-            <ShareSocialButton slug={post.id} content={post.content} postAccountName={post.postAccount.name} />
-          </ActionBar>
+          <ActionPostBar
+            post={post}
+            handleBurnForPost={handleBurnForPost}
+            onClickIconComment={e => setFocus('comment', { shouldSelect: true })}
+          />
         </PostContentDetail>
 
         <CommentContainer>

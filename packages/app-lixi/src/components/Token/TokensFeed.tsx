@@ -23,7 +23,7 @@ import { showToast } from '@store/toast/actions';
 import { TokenQuery } from '@store/token/tokens.generated';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { formatBalance, fromSmallestDenomination } from '@utils/cashMethods';
-import { Image, Menu, MenuProps, Skeleton, Tabs, message, notification } from 'antd';
+import { Image, Menu, MenuProps, Skeleton, Tabs, message, notification, Tag } from 'antd';
 import makeBlockie from 'ethereum-blockies-base64';
 import moment from 'moment';
 import { useRouter } from 'next/router';
@@ -72,8 +72,8 @@ const BannerTicker = styled.div`
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border: 1px solid var(--boder-item-light);
-  border-radius: 24px;
+  border: 1px solid var(--border-item-light);
+  border-radius: var(--border-radius-primary);
   .banner-detail {
     display: flex;
     gap: 2rem;
@@ -168,13 +168,27 @@ const BannerTicker = styled.div`
 `;
 
 const SearchBar = styled.div`
-  display: grid;
-  grid-template-columns: 75% 25%;
-
-  @media (max-width: 650px) {
-    display: flex;
-    flex-direction: column-reverse;
+  @media (min-width: 960px) {
+    display: none;
   }
+`;
+
+const TagContainer = styled.div`
+  display: flex;
+  margin-bottom: 11px;
+  @media (max-width: 576px) {
+    display: none;
+  }
+`;
+
+const StyledTag = styled(Tag)`
+  font-weight: bold;
+  font-style: italic;
+  font-size: 15px;
+  height: 24px;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  cursor: pointer;
 `;
 
 type TokenProps = {
@@ -196,11 +210,24 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const filterValue = useAppSelector(getFilterPostsToken);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
   const recentTagAtToken = useAppSelector(getRecentHashtagAtToken);
-  const [searchValue, setSearchValue] = useState<string | null>(null);
-  const [hashtags, setHashtags] = useState([]);
-  const [suggestedHashtag, setSuggestedTags] = useState([]);
+  const [query, setQuery] = useState<any>('');
+  const [hashtags, setHashtags] = useState<any>([]);
 
   let options = ['Withdraw', 'Rename', 'Export'];
+
+  useEffect(() => {
+    if (router.query.q) {
+      setQuery(router.query.q);
+    } else {
+      setQuery(null);
+    }
+
+    if (router.query.hashtags) {
+      setHashtags((router.query.hashtags as string).split(' '));
+    } else {
+      setHashtags([]);
+    }
+  }, [router.query]);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByTokenIdQuery(
     {
@@ -228,16 +255,16 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
     false
   );
 
-  useEffect(() => {
-    const tokenId = token.id;
-    const topHashtags = _.map(hashtagData, 'content');
-    const tokenRecentHashtag = recentTagAtToken.find((page: any) => page.id === tokenId);
-    const recentHashtags: string[] = tokenRecentHashtag?.hashtags || [];
+  // useEffect(() => {
+  //   const tokenId = token.id;
+  //   const topHashtags = _.map(hashtagData, 'content');
+  //   const tokenRecentHashtag = recentTagAtToken.find((page: any) => page.id === tokenId);
+  //   const recentHashtags: string[] = tokenRecentHashtag?.hashtags || [];
 
-    const combinedHashtags = [...topHashtags, ...recentHashtags.filter(tag => !topHashtags.includes(tag))];
+  //   const combinedHashtags = [...topHashtags, ...recentHashtags.filter(tag => !topHashtags.includes(tag))];
 
-    setSuggestedTags(combinedHashtags);
-  }, [recentTagAtToken, hashtagData]);
+  //   setSuggestedTags(combinedHashtags);
+  // }, [recentTagAtToken, hashtagData]);
 
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
@@ -252,7 +279,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       {
         first: 20,
         minBurnFilter: filterValue ?? 1,
-        query: searchValue,
+        query: query,
         hashtags: hashtags,
         tokenId: token.id,
         orderBy: {
@@ -278,12 +305,6 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       placement: 'top'
     });
   };
-
-  useEffect(() => {
-    if (router.query.hashtag) {
-      addHashtag(`#${router.query.hashtag}`);
-    }
-  }, []);
 
   const menus = options.map(option => <Menu.Item key={option}>{option}</Menu.Item>);
 
@@ -344,37 +365,38 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
     }
   };
 
-  const searchPost = (value: string, hashtagsValue?: string[]) => {
-    setSearchValue(value);
+  const onTopHashtagClick = e => {
+    const hashtag = e.currentTarget.innerText;
+    if (router.query.hashtags) {
+      //Check dup before adding to query
+      const queryHashtags = (router.query.hashtags as string).split(' ');
+      const hashtagExistedIndex = queryHashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
 
-    if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
-
-    hashtagsValue.map(hashtag => {
-      dispatch(addRecentHashtagAtToken({ id: token.id, hashtag: hashtag.substring(1) }));
-    });
-  };
-
-  const onDeleteQuery = () => {
-    setSearchValue(null);
-    setHashtags([]);
-  };
-
-  const onDeleteHashtag = (hashtagsValue: string[]) => {
-    setHashtags([...hashtagsValue]);
-  };
-
-  const addHashtag = hashtag => {
-    if (!hashtags.includes(hashtag)) {
-      setHashtags(prevHashtag => {
-        return [...prevHashtag, hashtag];
+      if (hashtagExistedIndex === -1) {
+        router.replace({
+          query: {
+            ...router.query,
+            hashtags: router.query.hashtags + ' ' + hashtag
+          }
+        });
+      }
+    } else {
+      router.replace({
+        query: {
+          ...router.query,
+          q: '',
+          hashtags: hashtag
+        }
       });
     }
+
+    dispatch(addRecentHashtagAtToken({ id: token.id, hashtag: hashtag.substring(1) }));
   };
 
   const showPosts = () => {
     return (
       <React.Fragment>
-        {!searchValue && hashtags.length === 0 ? (
+        {!query && hashtags.length === 0 ? (
           <InfiniteScroll
             dataLength={data.length}
             next={loadMoreItems}
@@ -394,7 +416,9 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
                   item={item}
                   key={item.id}
                   handleBurnForPost={handleBurnForPost}
-                  addHashtag={addHashtag}
+                  addToRecentHashtags={hashtag =>
+                    dispatch(addRecentHashtagAtToken({ id: token.id, hashtag: hashtag.substring(1) }))
+                  }
                 />
               );
             })}
@@ -418,8 +442,10 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
                   index={index}
                   item={item}
                   key={item.id}
-                  addHashtag={addHashtag}
                   handleBurnForPost={handleBurnForPost}
+                  addToRecentHashtags={hashtag =>
+                    dispatch(addRecentHashtagAtToken({ id: token.id, hashtag: hashtag.substring(1) }))
+                  }
                 />
               );
             })}
@@ -483,17 +509,17 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       </BannerTicker>
 
       <SearchBar>
-        <SearchBox
-          searchPost={searchPost}
-          searchValue={searchValue}
-          hashtags={hashtags}
-          onDeleteHashtag={onDeleteHashtag}
-          onDeleteQuery={onDeleteQuery}
-          suggestedHashtag={suggestedHashtag}
-        />
-        <FilterBurnt filterForType={FilterType.PostsToken} />
+        <SearchBox />
       </SearchBar>
-      <CreatePostCard hashtags={hashtags} tokenPrimaryId={tokenDetailData.id} query={searchValue} />
+      <CreatePostCard hashtags={hashtags} tokenPrimaryId={tokenDetailData.id} query={query} />
+      <TagContainer>
+        {hashtagData &&
+          hashtagData.map(tag => (
+            <StyledTag key={tag.id} color="green" onClick={onTopHashtagClick}>
+              {`#${tag.normalizedContent}`}
+            </StyledTag>
+          ))}
+      </TagContainer>
       <div className="content">
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Top discussions" key="1">

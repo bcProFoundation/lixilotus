@@ -96,14 +96,14 @@ const Hashtag = ({ hashtag, isMobile }: HashtagProps) => {
       let tipToAddresses: { address: string; amount: string }[] = [
         {
           address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
         }
       ];
 
       if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
         tipToAddresses.push({
           address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
         });
       }
 

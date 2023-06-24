@@ -179,7 +179,7 @@ hr {
   background-color: #3498db;
   border-color: #3498db;
   color: #ffffff;
-  border-radius: 5px;
+  border-radius: var(--border-radius-primary);
   box-sizing: border-box;
   cursor: pointer;
   display: inline-block;

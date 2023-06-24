@@ -136,7 +136,7 @@ const FullWalletWrapper = styled.div`
   max-width: 816px;
   margin: 1rem auto;
   background: var(--bg-color-light-theme);
-  border-radius: 20px;
+  border-radius: var(--border-radius-primary);
   @media (max-width: 768px) {
     border: none;
     padding-bottom: 9rem;

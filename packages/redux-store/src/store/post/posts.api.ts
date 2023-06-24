@@ -15,8 +15,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, minBurnFilter, ...otherArgs } = queryArgs;
-          return { orderBy, minBurnFilter };
+          const { orderBy, minBurnFilter, isTop, ...otherArgs } = queryArgs;
+          return { orderBy, minBurnFilter, isTop };
         }
         return { queryArgs };
       },
@@ -172,7 +172,8 @@ const enhancedApi = api.enhanceEndpoints({
     },
 
     createPost: {},
-    updatePost: {}
+    updatePost: {},
+    repost: {}
   }
 });
 
@@ -202,5 +203,6 @@ export const {
   useLazyPostsBySearchWithHashtagAtTokenQuery,
   usePostsBySearchWithHashtagAtTokenQuery,
   useCreatePostMutation,
-  useUpdatePostMutation
+  useUpdatePostMutation,
+  useRepostMutation
 } = enhancedApi;

@@ -26,6 +26,7 @@ import { injectStore } from 'src/utils/axiosClient';
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
+import 'animate.css';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
@@ -92,7 +93,6 @@ export const AppContainer = styled.div`
     width: 100%;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
-    padding: 0 4px;
   }
   .ant-layout.ant-layout-has-sider {
     display: flex;
@@ -105,10 +105,11 @@ export const AppContainer = styled.div`
     flex-grow: 1;
     display: flex;
     flex-direction: row;
-    gap: 2rem;
+    gap: 1rem;
     justify-content: flex-start;
     @media (max-width: 960px) {
       margin-left: 0 !important;
+      padding: 0 8px;
     }
 
     @media (min-width: 960px) {
@@ -127,7 +128,16 @@ export const AppContainer = styled.div`
     .content-child {
       width: 100%;
       margin: 0 auto;
+      > div {
+        padding-bottom: 5rem;
+      }
     }
+  }
+  .ant-drawer {
+    position: inherit;
+  }
+  @media (max-width: 960px) {
+    position: absolute;
   }
 `;
 
@@ -270,7 +280,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
               <AppBody>
                 <ModalManager />
                 <AppContainer>
-                  <Sidebar />
+                  <Sidebar className="sidebar-mobile" />
                   {/* Need to reimplement top bar */}
                   {/* <Topbar ref={ref}/> */}
                   <Topbar ref={setRef} />
@@ -296,7 +306,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                           </Layout> 
                         */}
                     <SidebarShortcut />
-                    <div className="content-child">{children}</div>
+                    <div className="content-child animate__animated animate__fadeIn">{children}</div>
                     {/* This below is just a dummy sidebar */}
                     {/* TODO: Implement SidebarRanking in future */}
                     {(selectedKey === '/wallet' || selectedKey === '/') && <SidebarRanking></SidebarRanking>}

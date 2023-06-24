@@ -316,7 +316,7 @@ const SendComponent: React.FC = () => {
           })}
         </p>
       </Modal>
-      <WrapperPage>
+      <WrapperPage className="card">
         {!walletBalances ? (
           <ZeroBalanceHeader>
             {intl.get('zeroBalanceHeader.noBalance', { ticker: currency.ticker })}

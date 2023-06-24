@@ -86,7 +86,7 @@ const SpaceContentBurn = styled(Space)`
     justify-content: center;
     align-items: end;
     background: none;
-    border-radius: 24px;
+    border-radius: var(--border-radius-primary);
   }
 
   .container-ico-hover {
