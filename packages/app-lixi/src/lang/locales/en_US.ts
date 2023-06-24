@@ -511,7 +511,7 @@ export default {
 
   /* 15.Post */
   'general.allPost': 'All',
-  'general.followsPost': 'Follows',
+  'general.topPost': 'Top',
   'post.createNewPage': 'Create new post',
   'post.createPost': 'Create post',
   'post.editPost': 'Edit unburnt post',
@@ -555,7 +555,7 @@ export default {
   'post.repostFailure': 'Unable to repost',
   'post.on': 'on',
   'post.insufficientFeeCreatePost': 'You need Lotus to perform this action.',
-  'post.postTitle' : 'Post',
+  'post.postTitle': 'Post',
 
   /* 16.Token */
   'token.importToken': 'Import token',

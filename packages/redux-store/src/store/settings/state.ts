@@ -10,4 +10,5 @@ export interface SettingsState {
   filterPostsPage: number;
   filterPostsToken: number;
   filterPostsProfile: number;
+  isTopPosts: boolean;
 }

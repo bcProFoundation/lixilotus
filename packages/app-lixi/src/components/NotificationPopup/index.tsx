@@ -1,28 +1,23 @@
-import React from 'react';
-import { CloseCircleOutlined } from '@ant-design/icons';
-import { Space, Popover, Menu, notification } from 'antd';
 import { Comment } from '@ant-design/compatible';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import styled from 'styled-components';
 import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';
-import SwipeToDelete from 'react-swipe-to-delete-ios';
-import moment from 'moment';
-import { isMobile } from 'react-device-detect';
+import { AvatarUser } from '@components/Common/AvatarUser';
+import { getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { downloadExportedLixi } from '@store/lixi/actions';
 import {
   deleteNotification,
   fetchNotifications,
   readAllNotifications,
   readNotification
 } from '@store/notification/actions';
-import { downloadExportedLixi } from '@store/lixi/actions';
-import { useRouter } from 'next/router';
-import intl from 'react-intl-universal';
-import { push } from 'connected-next-router';
-import { getAllNotifications } from '@store/notification/selectors';
-import { getSelectedAccount } from '@store/account/selectors';
-import { AvatarUser } from '@components/Common/AvatarUser';
-import { InfoSubCard } from '@components/Lixi';
 import { formatRelativeTime } from '@utils/formatting';
+import { Menu, Popover, Space } from 'antd';
+import { push } from 'connected-next-router';
+import { useRouter } from 'next/router';
+import { isMobile } from 'react-device-detect';
+import intl from 'react-intl-universal';
+import SwipeToDelete from 'react-swipe-to-delete-ios';
+import styled from 'styled-components';
 
 export type NotificationMenuProps = {
   notifications: Notification[];
@@ -266,7 +261,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 key={notification.id}
                 style={{
                   borderRadius: '10px',
-                  backgroundColor: notification.readAt == null ? '#eceff5' : '#fff',
+                  backgroundColor: notification && notification.readAt == null ? '#eceff5' : '#fff',
                   marginBottom: '8px'
                 }}
                 author={

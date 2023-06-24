@@ -1,4 +1,10 @@
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import CreatePostCard from '@components/Common/CreatePostCard';
+import { currency } from '@components/Common/Ticker';
+import { OrderDirection, PostOrderField } from '@generated/types.generated';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
+import { addRecentHashtagAtHome, getLeaderboard, setGraphqlRequestDone } from '@store/account/actions';
 import {
   getGraphqlRequestStatus,
   getLeaderBoard,
@@ -6,41 +12,34 @@ import {
   getSelectedAccount,
   getSelectedAccountId
 } from '@store/account/selectors';
-import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import {
   addBurnQueue,
   addBurnTransaction,
+  clearFailQueue,
   getBurnQueue,
   getFailQueue,
-  getLatestBurnForPost,
-  clearFailQueue
+  getLatestBurnForPost
 } from '@store/burn';
-import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space, Select, Button } from 'antd';
-import _ from 'lodash';
-import React, { useRef, useState, useEffect } from 'react';
-import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, Post, PostOrderField } from '@generated/types.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import styled from 'styled-components';
-import SearchBox from '../Common/SearchBox';
-import intl from 'react-intl-universal';
-import PostListItem from './PostListItem';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { setGraphqlRequestDone, setTransactionReady, addRecentHashtagAtHome } from '@store/account/actions';
-import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
-import { currency } from '@components/Common/Ticker';
-import { fromSmallestDenomination, fromXpiToSatoshis, toSmallestDenomination } from '@utils/cashMethods';
-import BigNumber from 'bignumber.js';
-import { showToast } from '@store/toast/actions';
-import { getFilterPostsHome } from '@store/settings/selectors';
-import { getLeaderboard } from '@store/account/actions';
-import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
 import { setSelectedPost } from '@store/post/actions';
 import { getSelectedPostId } from '@store/post/selectors';
+import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
+import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { saveTopPostsFilter } from '@store/settings/actions';
+import { getFilterPostsHome, getIsTopPosts } from '@store/settings/selectors';
+import { showToast } from '@store/toast/actions';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
+import { MenuProps, Skeleton, Switch } from 'antd';
+import BigNumber from 'bignumber.js';
+import _ from 'lodash';
 import { useRouter } from 'next/router';
+import React, { useEffect, useRef, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import intl from 'react-intl-universal';
+import styled from 'styled-components';
+import SearchBox from '../Common/SearchBox';
+import PostListItem from './PostListItem';
 
 export const OPTION_BURN_VALUE = {
   LIKE: '1',
@@ -128,7 +127,7 @@ const StyledHeader = styled.div`
           font-weight: 500;
         }
         &::after {
-          border-bottom: 2px solid #9e2a9c !important;
+          border-bottom: none;
         }
       }
     }
@@ -136,7 +135,8 @@ const StyledHeader = styled.div`
   .filter-bar {
     display: flex;
     justify-content: space-between;
-    margin-botton: 1rem;
+    margin-bottom: 1rem;
+    text-wrap: nowrap;
   }
 `;
 
@@ -160,6 +160,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const recentTagAtHome = useAppSelector(getRecentHashtagAtHome);
   const postIdSelected = useAppSelector(getSelectedPostId);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
+  let isTop = useAppSelector(getIsTopPosts);
+
+  const HandleMenuPosts = (checked: boolean) => {
+    dispatch(saveTopPostsFilter(checked));
+  };
   const [query, setQuery] = useState<any>('');
   const [hashtags, setHashtags] = useState<any>([]);
 
@@ -177,7 +182,19 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   }, [router.query]);
 
-  const menuItems = [{ label: intl.get('general.allPost'), key: 'all' }];
+  const menuItems = [
+    {
+      label: (
+        <Switch
+          checkedChildren={intl.get('general.allPost')}
+          unCheckedChildren={intl.get('general.topPost')}
+          defaultChecked={isTop}
+          onChange={HandleMenuPosts}
+        />
+      ),
+      key: 'all'
+    }
+  ];
 
   useEffect(() => dispatch(getLeaderboard()), []);
   const refs = useRef([]);
@@ -190,6 +207,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       first: 20,
       minBurnFilter: filterValue,
       accountId: selectedAccountId ?? null,
+      isTop: String(isTop),
       orderBy: [
         {
           direction: OrderDirection.Desc,

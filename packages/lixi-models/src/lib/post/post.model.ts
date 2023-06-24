@@ -65,6 +65,9 @@ export class Post {
   @Field(() => [PostHashtag], { nullable: true })
   postHashtags?: [PostHashtag];
 
+  @Field(() => Boolean, { nullable: true })
+  followPostOwner?: boolean;
+
   @Field(() => [Repost], { nullable: true })
   reposts?: [Repost];
 }

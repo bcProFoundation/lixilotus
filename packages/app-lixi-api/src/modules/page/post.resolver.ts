@@ -74,14 +74,9 @@ export class PostResolver {
   async allPosts(
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
-    @Args() args: ConnectionArgs,
     @Args({ name: 'accountId', type: () => Number, nullable: true }) accountId: number,
-    @Args({
-      name: 'orderBy',
-      type: () => [PostOrder!],
-      nullable: true
-    })
-    orderBy: PostOrder[]
+    @Args({ name: 'isTop', type: () => String, nullable: true }) isTop: string,
+    @Args({ name: 'orderBy', type: () => [PostOrder!], nullable: true }) orderBy: PostOrder[]
   ) {
     let result;
 
@@ -103,104 +98,50 @@ export class PostResolver {
       });
       const listFollowingsPageIds = followingPagesAccount.map(item => item.pageId);
 
-      result = await findManyCursorConnection(
-        args =>
-          this.prisma.post.findMany({
-            include: {
-              postAccount: true,
-              comments: true
-            },
-            where: {
-              OR: [
+      const queryPosts = {
+        OR: [
+          {
+            lotusBurnScore: { gte: minBurnFilter ?? 0 }
+          },
+          {
+            postAccount: { id: account.id }
+          },
+          ...(isTop == 'true'
+            ? [
                 {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
+                  AND: [{ postAccount: { id: { in: listFollowingsAccountIds } } }, { lotusBurnScore: { gte: 0 } }]
                 },
                 {
-                  postAccount: {
-                    id: account.id
-                  }
-                },
-                {
-                  AND: [
-                    {
-                      postAccount: {
-                        id: { in: listFollowingsAccountIds }
-                      }
-                    },
-                    {
-                      lotusBurnScore: {
-                        gte: 0
-                      }
-                    }
-                  ]
-                },
-                {
-                  AND: [
-                    { pageId: { in: listFollowingsPageIds } },
-                    {
-                      lotusBurnScore: {
-                        gte: 1
-                      }
-                    }
-                  ]
+                  AND: [{ pageId: { in: listFollowingsPageIds } }, { lotusBurnScore: { gte: 1 } }]
                 }
               ]
-            },
+            : [])
+        ]
+      };
+
+      result = await findManyCursorConnection(
+        async args => {
+          const posts = await this.prisma.post.findMany({
+            include: { postAccount: true, comments: true, page: true },
+            where: queryPosts,
             orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
             ...args
-          }),
+          });
+
+          const result = posts.map(post => ({
+            ...post,
+            followPostOwner:
+              listFollowingsAccountIds.includes(post.postAccountId) ||
+              (post.page && listFollowingsPageIds.includes(post.page.id))
+                ? true
+                : false
+          }));
+
+          return result;
+        },
         () =>
           this.prisma.post.count({
-            where: {
-              OR: [
-                {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
-                },
-                {
-                  postAccount: {
-                    id: account.id
-                  }
-                },
-                {
-                  AND: [
-                    {
-                      postAccount: {
-                        id: { in: listFollowingsAccountIds }
-                      }
-                    },
-                    {
-                      lotusBurnScore: {
-                        gte: 0
-                      }
-                    }
-                  ]
-                },
-                {
-                  AND: [
-                    { pageId: { in: listFollowingsPageIds } },
-                    {
-                      lotusBurnScore: {
-                        gte: 1
-                      }
-                    }
-                  ]
-                },
-                {
-                  AND: [
-                    { pageId: { in: listFollowingsPageIds } },
-                    {
-                      lotusBurnScore: {
-                        gte: 1
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
+            where: queryPosts
           }),
         { first, last, before, after }
       );
