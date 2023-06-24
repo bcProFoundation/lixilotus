@@ -28,7 +28,7 @@ export class NotificationService {
     @InjectQueue(WEBPUSH_NOTIFICATION_QUEUE) private webpushQueue: Queue,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   async saveAndDispatchNotification(notification: NotificationDto) {
     if (!notification.recipientId) {
@@ -139,7 +139,7 @@ export class NotificationService {
       const deviceIds = await this.redis.smembers(`online:user:${address}`);
       console.log('deviceIds', deviceIds);
       allListDeviceIds.push(...deviceIds);
-    };
+    }
     // The rooms are the list of devices
     // Each room is a device
     console.log('allListDeviceIds', allListDeviceIds);

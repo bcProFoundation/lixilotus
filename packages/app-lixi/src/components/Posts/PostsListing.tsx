@@ -21,8 +21,8 @@ import {
   getLatestBurnForPost
 } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { setSelectedPost } from '@store/post/actions';
-import { getSelectedPostId } from '@store/post/selectors';
+import { setNewPostAvailable, setSelectedPost } from '@store/post/actions';
+import { getNewPostAvailable, getSelectedPostId } from '@store/post/selectors';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { saveTopPostsFilter } from '@store/settings/actions';
