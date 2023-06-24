@@ -28,7 +28,7 @@ export class NotificationService {
     @InjectQueue(WEBPUSH_NOTIFICATION_QUEUE) private webpushQueue: Queue,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   async saveAndDispatchNotification(notification: NotificationDto) {
     if (!notification.recipientId) {
@@ -154,7 +154,7 @@ export class NotificationService {
         room,
         notification: { notificationTypeId: 14 } as NotificationDto
       };
-      await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
+      await this.notificationOutboundQueue.add('new-post', sendNotifJobData);
     }
   }
 

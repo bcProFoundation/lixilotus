@@ -18,6 +18,7 @@ import { isMobile } from 'react-device-detect';
 import intl from 'react-intl-universal';
 import SwipeToDelete from 'react-swipe-to-delete-ios';
 import styled from 'styled-components';
+import _ from 'lodash';
 
 export type NotificationMenuProps = {
   notifications: Notification[];
@@ -228,7 +229,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
       </StyledHeader>
       {notifications &&
         notifications.length > 0 &&
-        notifications.map(notification => (
+        _.compact(notifications).map(notification => (
           <>
             {isMobile ? (
               <div onClick={() => handleRead(account, notification)}>

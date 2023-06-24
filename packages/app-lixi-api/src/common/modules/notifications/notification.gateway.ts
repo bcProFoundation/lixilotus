@@ -29,7 +29,7 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
   private logger: Logger = new Logger('NotificationGateway');
 
-  constructor(@InjectRedis() private readonly redis: Redis) {}
+  constructor(@InjectRedis() private readonly redis: Redis) { }
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
@@ -102,5 +102,9 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
   sendNotification(room: string, notification: Notification) {
     this.server.to(room).emit('notification', notification);
+  }
+
+  sendNewPostEvent(room: string, data: any) {
+    this.server.to(room).emit('newpost', data);
   }
 }

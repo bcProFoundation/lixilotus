@@ -329,9 +329,13 @@ function createSocketChannel(socket: Socket) {
     const handler = (data: Notification) => {
       emit(data);
     };
+    const handlerNewPost = (data: any) => {
+    }
     socket.on('notification', handler);
+    socket.on('newpost', handlerNewPost);
     return () => {
       socket.off('notification', handler);
+      socket.off('newpost', handlerNewPost);
     };
   });
 }
