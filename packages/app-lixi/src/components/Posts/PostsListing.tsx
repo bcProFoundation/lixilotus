@@ -25,7 +25,6 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
 import intl from 'react-intl-universal';
-import { FireTwoTone, LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { setGraphqlRequestDone, setTransactionReady, addRecentHashtagAtHome } from '@store/account/actions';
@@ -36,9 +35,6 @@ import { currency } from '@components/Common/Ticker';
 import { fromSmallestDenomination, fromXpiToSatoshis, toSmallestDenomination } from '@utils/cashMethods';
 import BigNumber from 'bignumber.js';
 import { showToast } from '@store/toast/actions';
-import { Spin } from 'antd';
-import { FilterBurnt } from '@components/Common/FilterBurn';
-import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { getFilterPostsHome, getIsTopPosts } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
@@ -46,9 +42,8 @@ import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinit
 import { setSelectedPost } from '@store/post/actions';
 import { getSelectedPostId } from '@store/post/selectors';
 import { saveTopPostsFilter } from '@store/settings/actions';
+import { useRouter } from 'next/router';
 
-const { Panel } = Collapse;
-const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
 export const OPTION_BURN_VALUE = {
   LIKE: '1',
   DISLIKE: '1',
@@ -68,7 +63,7 @@ type PostsListingProps = {
 const StyledPostsListing = styled.div`
   margin: 1rem auto;
   width: 100%;
-  max-width: 816px;
+  max-width: 700px;
   &::-webkit-scrollbar {
     width: 5px;
   }
@@ -114,8 +109,11 @@ const StyledPostsListing = styled.div`
       opacity: 1;
     }
   }
-  @media (max-width: 960px) {
-    padding-bottom: 9rem;
+
+  @media (min-width: 960px) {
+    .search-container {
+      display: none !important;
+    }
   }
 `;
 
@@ -145,22 +143,9 @@ const StyledHeader = styled.div`
   }
 `;
 
-const StyledCollapse = styled(Collapse)`
-  .ant-collapse-header {
-    font-size: 16px;
-    padding: 0px 0px 5px 0px !important;
-  }
-  .ant-collapse-content-box {
-    padding: 5px 0px 5px 0px !important;
-  }
-`;
-
-const StyledNotificationContent = styled.div`
-  font-size: 14px;
-`;
-
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const refPostsListing = useRef<HTMLDivElement | null>(null);
@@ -177,15 +162,31 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
   const recentTagAtHome = useAppSelector(getRecentHashtagAtHome);
   const postIdSelected = useAppSelector(getSelectedPostId);
-  const [hashtags, setHashtags] = useState([]);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
   let isTop = useAppSelector(getIsTopPosts);
 
   const HandleMenuPosts = (checked: boolean) => {
     dispatch(saveTopPostsFilter(checked));
   };
+  const [query, setQuery] = useState<any>('');
+  const [hashtags, setHashtags] = useState<any>([]);
 
-  const menuItems = [
+  useEffect(() => {
+    if (router.query.q) {
+      setQuery(router.query.q);
+    } else {
+      setQuery(null);
+    }
+
+    if (router.query.hashtags) {
+      setHashtags((router.query.hashtags as string).split(' '));
+    } else {
+      setHashtags([]);
+    }
+  ];
+  }, [router.query]);
+
+const menuItems = [
     {
       label: (
         <Switch
@@ -220,6 +221,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     },
     false
   );
+
   useEffect(() => {
     if (refs.current[postIdSelected]) {
       const heightPost = refs.current[postIdSelected].clientHeight;
@@ -230,13 +232,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       dispatch(setSelectedPost(''));
     }
   }, [data]);
+
   //#region QueryVirtuoso
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
     useInfinitePostsBySearchQueryWithHashtag(
       {
         first: 20,
         minBurnFilter: filterValue ?? 1,
-        query: searchValue,
+        query: query,
         hashtags: hashtags,
         orderBy: {
           direction: OrderDirection.Desc,
@@ -293,28 +296,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const Header = () => {
     return (
       <StyledHeader>
-        <CreatePostCard hashtags={hashtags} query={searchValue} />
+        <CreatePostCard hashtags={hashtags} query={query} />
         <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
-          {searchValue && intl.get('general.searchResults', { text: searchValue })}
+          {query && intl.get('general.searchResults', { text: query })}
         </h1>
-        <div className="filter-bar">
-          <Menu
-            className="menu-post-listing"
-            style={{
-              border: 'none',
-              position: 'relative',
-              background: 'var(--bg-color-light-theme)',
-              width: '-webkit-fill-available'
-            }}
-            mode="horizontal"
-            defaultSelectedKeys={['all']}
-            selectedKeys={tab}
-            onClick={onClickMenu}
-            items={menuItems}
-          ></Menu>
-
-          <FilterBurnt filterForType={FilterType.PostsHome} />
-        </div>
       </StyledHeader>
     );
   };
@@ -339,37 +324,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   }, [data]);
 
-  const addHashtag = hashtag => {
-    if (!hashtags.includes(hashtag)) {
-      setHashtags(prevHashtag => {
-        return [...prevHashtag, hashtag];
-      });
-    }
-  };
-
-  const searchPost = (value: string, hashtagsValue?: string[]) => {
-    setSearchValue(value);
-
-    if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
-
-    hashtagsValue.map(hashtag => {
-      dispatch(addRecentHashtagAtHome(hashtag.substring(1)));
-    });
-  };
-
-  const onDeleteQuery = () => {
-    setSearchValue(null);
-    setHashtags([]);
-  };
-
-  const onDeleteHashtag = (hashtagsValue: string[]) => {
-    setHashtags([...hashtagsValue]);
-  };
-
   const showPosts = () => {
     return (
       <React.Fragment>
-        {!searchValue && hashtags.length === 0 ? (
+        {!query && hashtags.length === 0 ? (
           <InfiniteScroll
             dataLength={data.length}
             next={loadMoreItems}
@@ -395,7 +353,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
                     item={item}
                     key={item.id}
                     handleBurnForPost={handleBurnForPost}
-                    addHashtag={addHashtag}
+                    addToRecentHashtags={hashtag => dispatch(addRecentHashtagAtHome(hashtag.substring(1)))}
                   />
                 </div>
               );
@@ -417,7 +375,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
                   item={item}
                   key={item.id}
                   handleBurnForPost={handleBurnForPost}
-                  addHashtag={addHashtag}
+                  addToRecentHashtags={hashtag => dispatch(addRecentHashtagAtHome(hashtag.substring(1)))}
                 />
               );
             })}
@@ -497,14 +455,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   return (
     <StyledPostsListing>
-      <SearchBox
-        searchPost={searchPost}
-        searchValue={searchValue}
-        hashtags={hashtags}
-        onDeleteHashtag={onDeleteHashtag}
-        onDeleteQuery={onDeleteQuery}
-        suggestedHashtag={suggestedHashtag}
-      />
+      <SearchBox />
       <Header />
 
       {graphqlRequestLoading ? <Skeleton avatar active /> : showPosts()}

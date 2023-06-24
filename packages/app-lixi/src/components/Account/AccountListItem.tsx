@@ -26,7 +26,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 15px 25px;
-  border-radius: 3px;
+  border-radius: var(--border-radius-primary);
   margin-bottom: 3px;
   box-shadow: ${props => props.theme.listItem.boxShadow};
   border: 1px solid ${props => props.theme.listItem.border};

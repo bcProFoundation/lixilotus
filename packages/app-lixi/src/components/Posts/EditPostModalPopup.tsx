@@ -35,7 +35,7 @@ const UserCreate = styled.div`
         color: var(--text-color-on-background);
       }
       .btn-select {
-        background: var(--boder-item-light);
+        background: var(--border-color-base);
         border-radius: 8px;
         padding: 0 8px;
         border: none;

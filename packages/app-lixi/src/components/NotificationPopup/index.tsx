@@ -81,8 +81,8 @@ export const StyledPopover = styled(Popover)`
 `;
 
 const StyledComment = styled(Comment)`
-  border-radius: 5px;
-  border: 1px solid var(--boder-item-light);
+  border-radius: var(--border-radius-primary);
+  border: 1px solid var(--border-item-primary);
   padding: 8px;
 
   &:hover {
@@ -90,6 +90,7 @@ const StyledComment = styled(Comment)`
   }
 
   .ant-comment-inner {
+    display: flex;
     padding: 0px;
     color: black;
   }
@@ -110,6 +111,7 @@ const StyledComment = styled(Comment)`
 `;
 
 const StyledTitlePage = styled.h1`
+  font-size: 18px;
   @media (max-width: 576px) {
     display: none;
   }
@@ -144,7 +146,6 @@ const StyledSwipeToDelete = styled(SwipeToDelete)`
 const StyledHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1rem;
   .menu-post-listing {
     background: none !important;
     .ant-menu-item {
@@ -170,6 +171,7 @@ const StyledReadAll = styled.div`
   color: ${props => props.theme.primary};
   padding-left: 10px;
   padding-right: 10px;
+  margin-bottom: 1rem;
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -243,6 +245,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                   <StyledComment
                     key={notification.id}
                     style={{ backgroundColor: notification.readAt == null ? '#eceff5' : '#fff', borderRadius: '0px' }}
+                    className="card"
                     author={
                       <StyledAuthor>
                         <StyledTextLeft></StyledTextLeft>

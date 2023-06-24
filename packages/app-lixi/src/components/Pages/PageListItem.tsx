@@ -148,7 +148,7 @@ const ActionBar = styled.div`
   width: 100%;
   button {
     margin-right: 1rem;
-    border-radius: 20px;
+    border-radius: var(--border-radius-primary);
   }
 `;
 
@@ -156,7 +156,7 @@ const CountBar = styled.div`
   display: grid;
   grid-template-columns: 70% 15% 15%;
   margin-top: 1rem;
-  border-bottom: 1px solid var(--boder-item-light);
+  border-bottom: 1px solid var(--border-item-light);
   padding-bottom: 1rem;
   .ant-space-item {
     font-size: 14px;
