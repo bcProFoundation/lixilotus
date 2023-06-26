@@ -13,7 +13,7 @@ import {
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { Inject, Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { ChronikClient } from 'chronik-client';
@@ -393,45 +393,52 @@ export class PostResolver {
       nullable: true
     })
     orderBy: PostOrder
-  ): Promise<PostResponse> {
-    const { limit, offset } = getPagingParameters(args);
+  ): Promise<PostResponse | undefined> {
+    try {
+      const { limit, offset } = getPagingParameters(args);
 
-    const count = await this.hashtagService.searchByQueryEstimatedTotalHits(
-      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
-      query,
-      hashtags
-    );
+      const count = await this.hashtagService.searchByQueryEstimatedTotalHits(
+        `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+        query,
+        hashtags
+      );
 
-    const posts = await this.hashtagService.searchByQueryHits(
-      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
-      query,
-      hashtags,
-      offset!,
-      limit!
-    );
+      const posts = await this.hashtagService.searchByQueryHits(
+        `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+        query,
+        hashtags,
+        offset!,
+        limit!
+      );
 
-    const postsId = _.map(posts, 'id');
+      const postsId = _.map(posts, 'id');
 
-    const searchPosts = await this.prisma.post.findMany({
-      where: {
-        AND: [
-          {
-            id: { in: postsId }
-          },
-          {
-            lotusBurnScore: {
-              gte: minBurnFilter ?? 0
+      const searchPosts = await this.prisma.post.findMany({
+        where: {
+          AND: [
+            {
+              id: { in: postsId }
+            },
+            {
+              lotusBurnScore: {
+                gte: minBurnFilter ?? 0
+              }
             }
-          }
-        ]
-      },
-      orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
-    });
+          ]
+        },
+        orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
+      });
 
-    return connectionFromArraySlice(searchPosts, args, {
-      arrayLength: count || 0,
-      sliceStart: offset || 0
-    });
+      return connectionFromArraySlice(searchPosts, args, {
+        arrayLength: count || 0,
+        sliceStart: offset || 0
+      });
+    } catch (err) {
+      this.logger.error(err);
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
   }
 
   @SkipThrottle()

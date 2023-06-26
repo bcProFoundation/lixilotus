@@ -112,6 +112,7 @@ export default {
   'general.fee': 'Phí: ',
   'general.createPost': 'Bạn đang nghĩ gì vậy?...',
   'general.suggested': 'Đề xuất: ',
+  'general.postFilter': 'Lọc bài viết: ',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',

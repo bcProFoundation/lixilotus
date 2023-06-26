@@ -1,16 +1,15 @@
-import styled from 'styled-components';
-import { ShortCutItem } from './SideBarShortcut';
-import intl from 'react-intl-universal';
-import { useState, useEffect } from 'react';
-import _ from 'lodash';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
-import { toggleCollapsedSideNav } from '@store/settings/actions';
-import { push } from 'connected-next-router';
-import { useRouter } from 'next/router';
 import { OrderDirection, PostOrderField } from '@generated/types.generated';
 import { getSelectedAccountId } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { toggleCollapsedSideNav } from '@store/settings/actions';
+import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
+import { push } from 'connected-next-router';
+import _ from 'lodash';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { ShortCutItem } from './SideBarShortcut';
 
 type SidebarContentProps = {
   className?: string;
@@ -45,10 +44,12 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
       first: 30,
       minBurnFilter: filterValue,
       accountId: selectedAccountId ?? null,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      ]
     },
     false
   );

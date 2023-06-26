@@ -1,16 +1,13 @@
-import React, { useEffect } from 'react';
-import { WrapperPage } from '@components/Settings';
-import NotificationPopup, { StyledPopover } from '@components/NotificationPopup';
-import { getAllNotifications } from '@store/notification/selectors';
-import { fetchNotifications } from '@store/notification/actions';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getSelectedAccount } from '@store/account/selectors';
-import styled from 'styled-components';
-import SwipeToDelete from 'react-swipe-to-delete-ios';
-import moment from 'moment';
-import { isMobile } from 'react-device-detect';
-import { Space, Popover } from 'antd';
 import { Comment } from '@ant-design/compatible';
+import NotificationPopup from '@components/NotificationPopup';
+import { WrapperPage } from '@components/Settings';
+import { getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { fetchNotifications } from '@store/notification/actions';
+import { getAllNotifications } from '@store/notification/selectors';
+import { useEffect } from 'react';
+import SwipeToDelete from 'react-swipe-to-delete-ios';
+import styled from 'styled-components';
 
 const StyledComment = styled(Comment)`
   border-radius: 5px;

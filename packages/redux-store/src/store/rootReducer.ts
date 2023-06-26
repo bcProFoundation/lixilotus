@@ -56,7 +56,19 @@ const persistConfig = {
   key: 'root',
   version: 0,
   storage: storage('lixi-indexeddb'),
-  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'pages', 'burn', 'loading'],
+  blacklist: [
+    'accounts',
+    'router',
+    'modal',
+    'wallet',
+    'api',
+    'root',
+    'posts',
+    'pages',
+    'burn',
+    'loading',
+    'notifications'
+  ],
   migrate: createMigrate(migration, { debug: false })
 };
 

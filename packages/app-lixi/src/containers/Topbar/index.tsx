@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { FilterOutlined, BellOutlined, HomeOutlined, UserSwitchOutlined, AppstoreOutlined } from '@ant-design/icons';
-import { Space, Badge, Button, Popover } from 'antd';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { toggleCollapsedSideNav } from '@store/settings/actions';
-import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
-import { Header } from 'antd/lib/layout/layout';
-import styled from 'styled-components';
-import { getAllAccounts, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
-import { fetchNotifications, startChannel, stopChannel } from '@store/notification/actions';
-import { useRouter } from 'next/router';
-import { AvatarUser } from '@components/Common/AvatarUser';
-import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { OrderDirection, PostOrderField } from '@generated/types.generated';
-import { api as postApi } from '@store/post/posts.api';
-import { selectAccount, setGraphqlRequestLoading } from '@store/account/actions';
-import SearchBox from '@components/Common/SearchBox';
-import { FilterBurnt } from '@components/Common/FilterBurn';
-import { FilterType } from '@bcpros/lixi-models/lib/filter';
-import { getAllNotifications } from '@store/notification/selectors';
-import NotificationPopup from '@components/NotificationPopup';
+import { AppstoreOutlined, BellOutlined, FilterOutlined, HomeOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { Account } from '@bcpros/lixi-models';
-import * as _ from 'lodash';
-import { fromSmallestDenomination } from 'src/utils/cashMethods';
-import { push } from 'connected-next-router';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import { AvatarUser } from '@components/Common/AvatarUser';
+import { FilterBurnt } from '@components/Common/FilterBurn';
+import SearchBox from '@components/Common/SearchBox';
+import NotificationPopup from '@components/NotificationPopup';
 import { ItemAccess } from '@containers/Sidebar/SideBarShortcut';
+import { OrderDirection, PostOrderField } from '@generated/types.generated';
+import { selectAccount, setGraphqlRequestLoading } from '@store/account/actions';
+import { getAllAccounts, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { fetchNotifications, startChannel, stopChannel } from '@store/notification/actions';
+import { getAllNotifications } from '@store/notification/selectors';
+import { api as postApi } from '@store/post/posts.api';
+import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { saveTopPostsFilter, toggleCollapsedSideNav } from '@store/settings/actions';
+import { getFilterPostsHome, getIsTopPosts, getNavCollapsed } from '@store/settings/selectors';
+import { Badge, Button, Popover, Space, Switch } from 'antd';
+import { Header } from 'antd/lib/layout/layout';
+import { push } from 'connected-next-router';
+import * as _ from 'lodash';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
+import { fromSmallestDenomination } from 'src/utils/cashMethods';
+import styled from 'styled-components';
 
 export type TopbarProps = {
   className?: string;
@@ -221,6 +221,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const [hashtags, setHashtags] = useState([]);
   const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
+  let isTop = useAppSelector(getIsTopPosts);
 
   useEffect(() => {
     if (selectedAccount) {
@@ -325,12 +326,29 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     }
   };
 
+  const HandleMenuPosts = (checked: boolean) => {
+    dispatch(saveTopPostsFilter(checked));
+  };
+
   const contentNotification = <PopoverStyled>{NotificationPopup(notifications, selectedAccount)}</PopoverStyled>;
 
   const contentFilterBurn = (
-    <PopoverStyled>
-      <FilterBurnt filterForType={filterType()} />
-    </PopoverStyled>
+    <>
+      {
+        router?.pathname == '/' && <PopoverStyled>
+          {intl.get('general.postFilter')}
+          <Switch
+            checkedChildren={intl.get('general.allPost')}
+            unCheckedChildren={intl.get('general.topPost')}
+            defaultChecked={isTop}
+            onChange={HandleMenuPosts}
+          />
+        </PopoverStyled>
+      }
+      <PopoverStyled>
+        <FilterBurnt filterForType={filterType()} />
+      </PopoverStyled>
+    </>
   );
 
   const contentSelectAccount = (
