@@ -51,7 +51,7 @@ export const Counter = (props: CounterProps) => {
   });
 
   return (
-    <GridDiv className="grid">
+    <GridDiv className="grid count-component">
       <div className="count">
         <span style={{ fontSize: '13px' }} className={animationCounter}>
           {count} {props.isShowXPI ? 'XPI' : ''}

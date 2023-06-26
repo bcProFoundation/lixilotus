@@ -7,9 +7,10 @@ import {
   saveTopPostsFilter,
   saveWebAuthnConfig,
   saveWebPushNotifConfig,
+  setDarkTheme,
   setInitIntlStatus,
   toggleCollapsedSideNav,
-  updateLocale
+  updateLocale,
 } from './actions';
 import { SettingsState } from './state';
 // import { SearchBoxType } from '@bcpros/lixi-models/src/lib/search';
@@ -21,16 +22,17 @@ const initialState: SettingsState = {
   webAuthnConfig: null,
   webPushNotifConfig: {
     allowPushNotification: false,
-    deviceId: null
+    deviceId: null,
   },
   filterPostsHome: 10,
   filterPostsPage: 10,
   filterPostsToken: 1,
   filterPostsProfile: 1,
-  isTopPosts: false
+  isTopPosts: false,
+  darkThemes: false,
 };
 
-export const settingsReducer = createReducer(initialState, builder => {
+export const settingsReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(toggleCollapsedSideNav, (state, action) => {
       state.navCollapsed = action.payload;
@@ -69,5 +71,8 @@ export const settingsReducer = createReducer(initialState, builder => {
     })
     .addCase(saveTopPostsFilter, (state, action) => {
       state.isTopPosts = action.payload;
+    })
+    .addCase(setDarkTheme, (state, action) => {
+      state.darkThemes = action.payload;
     });
 });

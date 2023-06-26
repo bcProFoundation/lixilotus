@@ -722,7 +722,7 @@ const Lixi = props => {
       case ClaimType.OneTime:
         return (
           <>
-            <DetailLixiContainer>
+            <DetailLixiContainer className="detail-lixi">
               <div className="detail-lixi-single">
                 <LabelHeader>{intl.get('lixi.detail')}</LabelHeader>
                 <div className="info-detail-lixi">
@@ -826,7 +826,7 @@ const Lixi = props => {
               <LabelHeader>{intl.get('lixi.overview')}</LabelHeader>
               <div className="overview-one-time">
                 <div className="info-chart-overview">
-                  <Text style={{ color: 'rgba(30, 26, 29, 0.38)', alignItems: 'baseline' }}>
+                  <Text className="type-claim" style={{ color: 'rgba(30, 26, 29, 0.38)', alignItems: 'baseline' }}>
                     <div
                       style={{
                         width: '12px',
@@ -837,10 +837,10 @@ const Lixi = props => {
                     />
                     &nbsp; {intl.get('lixi.claimed')}
                   </Text>
-                  <Text style={{ color: '#1E1A1D', paddingBottom: '24px' }}>
+                  <Text className="claim-amount" style={{ color: '#1E1A1D', paddingBottom: '24px' }}>
                     {selectedLixi.subLixiTotalClaim.toFixed(2)} {currency.ticker}
                   </Text>
-                  <Text style={{ color: 'rgba(30, 26, 29, 0.38)', alignItems: 'baseline' }}>
+                  <Text className="type-claim" style={{ color: 'rgba(30, 26, 29, 0.38)', alignItems: 'baseline' }}>
                     <div
                       style={{
                         width: '12px',
@@ -851,7 +851,7 @@ const Lixi = props => {
                     />
                     &nbsp; {intl.get('lixi.remaining')}
                   </Text>
-                  <Text style={{ color: '#1E1A1D' }}>
+                  <Text className="claim-amount" style={{ color: '#1E1A1D' }}>
                     {(selectedLixi.subLixiBalance - selectedLixi.subLixiTotalClaim).toFixed(2)} {currency.ticker}
                   </Text>
                 </div>
@@ -879,7 +879,7 @@ const Lixi = props => {
           claimReportSingleCode.length === 0 ? (
             <>
               <LabelHeader>{intl.get('claim.claimReport')}</LabelHeader>
-              <BlankClaim>
+              <BlankClaim className="blank-claim">
                 <b>No one has claimed yet</b>
               </BlankClaim>
             </>
@@ -895,7 +895,7 @@ const Lixi = props => {
           subLixies.length === 0 ? (
             <>
               <LabelHeader>{intl.get('claim.claimReport')}</LabelHeader>
-              <BlankClaim>
+              <BlankClaim className="blank-claim">
                 <b>No one has claimed yet</b>
               </BlankClaim>
             </>
@@ -913,7 +913,7 @@ const Lixi = props => {
     <>
       {selectedLixi && selectedLixi.address ? (
         <React.Fragment>
-          <WrapperDetailLixi>
+          <WrapperDetailLixi className="detail-lixi">
             {DetailLixi()}
             {ClaimReport()}
 

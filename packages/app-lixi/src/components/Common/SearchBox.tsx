@@ -20,6 +20,7 @@ import {
   removeRecentHashtagAtPages,
   removeRecentHashtagAtToken
 } from '@store/account';
+import { getCurrentThemes } from '@store/settings';
 
 const Container = styled.div`
   display: flex;
@@ -152,6 +153,7 @@ const SearchBox = () => {
   const router = useRouter();
   const numberOfTags = 3;
   const dispatch = useAppDispatch();
+  const currentTheme = useAppSelector(getCurrentThemes);
 
   const { control, getValues, setValue } = useForm({
     defaultValues: {
@@ -409,13 +411,13 @@ const SearchBox = () => {
   return (
     <Container className="search-container">
       <Popover
-        overlayClassName="popover-recent-search"
+        overlayClassName={`${currentTheme ? 'popover-dark' : ''} popover-recent-search`}
         trigger="click"
         arrow={false}
         content={recentContent}
         placement="bottomLeft"
       >
-        <SearchBoxContainer>
+        <SearchBoxContainer className="searchbox-container">
           <div className="btn-search">
             <SearchOutlined />
           </div>

@@ -43,6 +43,7 @@ import { Controller, useForm } from 'react-hook-form';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { TokenItem } from './TokensFeed';
+import { getCurrentThemes } from '@store/settings';
 
 const StyledTokensListing = styled.div`
   .table-tokens {
@@ -55,6 +56,7 @@ const StyledTokensListing = styled.div`
     padding-bottom: 7rem;
   }
   .ant-btn {
+    background: none !important;
     &:hover {
       background: transparent !important;
     }
@@ -141,6 +143,7 @@ const TokensListing = () => {
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
+  const currentTheme = useAppSelector(getCurrentThemes);
   const { currentData: tokens, isLoading } = useTokensQuery({
     orderBy: {
       direction: OrderDirection.Desc,
@@ -533,7 +536,7 @@ const TokensListing = () => {
       </div>
 
       <Modal
-        className="modal-import-token"
+        className={`${currentTheme ? 'ant-modal-dark' : ''} modal-import-token`}
         title={intl.get('token.importToken')}
         open={isModalVisible}
         onOk={handleSubmit(addTokenbyId)}

@@ -15,10 +15,11 @@ import { useEffect } from 'react';
 export interface UploadAvatarCoverProps {
   page: Page;
   isAvatar: boolean;
+  classStyle?: string;
 }
 
 export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: UploadAvatarCoverProps) => {
-  const { page, isAvatar } = props;
+  const { page, isAvatar, classStyle } = props;
 
   const [
     updatePageTrigger,
@@ -82,7 +83,7 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
   return (
     <Modal
       width={500}
-      className="custom-edit-page-modal"
+      className={`${classStyle} custom-edit-page-modal`}
       title={isAvatar ? intl.get('page.avatar') : intl.get('page.cover')}
       open={true}
       onCancel={handleOnCancel}

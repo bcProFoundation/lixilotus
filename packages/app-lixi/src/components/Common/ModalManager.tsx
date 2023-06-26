@@ -15,6 +15,8 @@ import { BurnModal } from './BurnModal';
 import { ConfigProvider } from 'antd';
 import lightTheme from 'src/styles/themes/lightTheme';
 import { FollowModal } from './FollowModal';
+import { getCurrentThemes } from '@store/settings';
+import darkTheme from 'src/styles/themes/darkTheme';
 
 const modalComponentLookupTable = {
   CreateLixiConfirmationModal,
@@ -33,14 +35,16 @@ const modalComponentLookupTable = {
 
 const ModalManager = () => {
   const currentModals = useAppSelector(getModals);
-
+  const currentTheme = useAppSelector(getCurrentThemes);
   const renderedModals = currentModals.map((modalDescription, index) => {
     const { modalType, modalProps = {} } = modalDescription;
+    let newModalProps = { ...modalProps };
+    newModalProps.classStyle = currentTheme ? 'ant-modal-dark' : '';
     const ModalComponent = modalComponentLookupTable[modalType];
 
     return (
-      <ConfigProvider theme={lightTheme}>
-        <ModalComponent {...modalProps} key={modalType + index} />
+      <ConfigProvider theme={currentTheme ? darkTheme : lightTheme}>
+        <ModalComponent {...newModalProps} key={modalType + index} />
       </ConfigProvider>
     );
   });

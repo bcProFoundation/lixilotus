@@ -158,6 +158,11 @@ export const WrapperPage = styled.div`
     padding: 1rem;
     padding-bottom: 8rem;
   }
+  .ant-alert-with-description {
+    padding: 1rem;
+    align-items: center;
+    font-size: 13px;
+  }
 `;
 
 export const WrapperPost = styled.div`
@@ -327,7 +332,7 @@ const Settings: React.FC = () => {
 
   return (
     <>
-      <WrapperPage className="card">
+      <WrapperPage className="card setting-page">
         <Spin spinning={isLoading} indicator={CashLoadingIcon}>
           <SettingBar>
             <h2 style={{ color: 'var(--color-primary)' }}>

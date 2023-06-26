@@ -30,7 +30,7 @@ const Footer = ({ notifications }: { notifications?: any }) => {
 
   return (
     <>
-      <StyledFooter>
+      <StyledFooter className="footer-component">
         <Link href="/" passHref>
           <NavButton active={currentPathName == '/'}>
             <img

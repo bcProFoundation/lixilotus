@@ -20,7 +20,12 @@ import { removeAllUpload } from '@store/account/actions';
 import { AvatarUser } from './AvatarUser';
 import { getEditorCache } from '@store/account/selectors';
 import { deleteEditorTextFromCache } from '@store/account/actions';
-import { getFilterPostsHome, getFilterPostsPage, getFilterPostsToken } from '@store/settings/selectors';
+import {
+  getCurrentThemes,
+  getFilterPostsHome,
+  getFilterPostsPage,
+  getFilterPostsToken
+} from '@store/settings/selectors';
 import router from 'next/router';
 import { Page } from '@bcpros/lixi-models';
 import { currency } from './Ticker';
@@ -217,6 +222,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const Wallet = React.useContext(WalletContext);
+  const currentTheme = useAppSelector(getCurrentThemes);
   const { XPI, chronik } = Wallet;
   const { sendXpi } = useXPI();
 
@@ -461,7 +467,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
   return (
     <React.Fragment>
-      <DesktopCreatePost onClick={() => setEnableEditor(!enableEditor)}>
+      <DesktopCreatePost className="create-post-card-container" onClick={() => setEnableEditor(!enableEditor)}>
         <div className="box-create-post">
           <div className="avatar">
             <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
@@ -490,7 +496,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         </div>
       </DesktopCreatePost>
 
-      <MobileCreatePost onClick={() => setEnableEditor(!enableEditor)}>
+      <MobileCreatePost className="create-post-card-container" onClick={() => setEnableEditor(!enableEditor)}>
         <div className="fab-btn">
           <img src="/images/ico-create-post.svg" alt="" />
         </div>
@@ -498,7 +504,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
       <WrapEditor>
         <Modal
-          className="custom-modal-editor"
+          className={`${currentTheme ? 'ant-modal-dark' : ''} custom-modal-editor`}
           title="Create Post"
           open={enableEditor}
           footer={null}
