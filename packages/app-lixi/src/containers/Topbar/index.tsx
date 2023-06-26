@@ -14,9 +14,9 @@ import { fetchNotifications, startChannel, stopChannel } from '@store/notificati
 import { getAllNotifications } from '@store/notification/selectors';
 import { api as postApi } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { toggleCollapsedSideNav } from '@store/settings/actions';
-import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
-import { Badge, Button, Popover, Space } from 'antd';
+import { saveTopPostsFilter, toggleCollapsedSideNav } from '@store/settings/actions';
+import { getFilterPostsHome, getIsTopPosts, getNavCollapsed } from '@store/settings/selectors';
+import { Badge, Button, Popover, Space, Switch } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import { push } from 'connected-next-router';
 import * as _ from 'lodash';
@@ -221,6 +221,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const [hashtags, setHashtags] = useState([]);
   const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
+  let isTop = useAppSelector(getIsTopPosts);
 
   useEffect(() => {
     if (selectedAccount) {
@@ -325,12 +326,29 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     }
   };
 
+  const HandleMenuPosts = (checked: boolean) => {
+    dispatch(saveTopPostsFilter(checked));
+  };
+
   const contentNotification = <PopoverStyled>{NotificationPopup(notifications, selectedAccount)}</PopoverStyled>;
 
   const contentFilterBurn = (
-    <PopoverStyled>
-      <FilterBurnt filterForType={filterType()} />
-    </PopoverStyled>
+    <>
+      {
+        router?.pathname == '/' && <PopoverStyled>
+          {intl.get('general.postFilter')}
+          <Switch
+            checkedChildren={intl.get('general.allPost')}
+            unCheckedChildren={intl.get('general.topPost')}
+            defaultChecked={isTop}
+            onChange={HandleMenuPosts}
+          />
+        </PopoverStyled>
+      }
+      <PopoverStyled>
+        <FilterBurnt filterForType={filterType()} />
+      </PopoverStyled>
+    </>
   );
 
   const contentSelectAccount = (

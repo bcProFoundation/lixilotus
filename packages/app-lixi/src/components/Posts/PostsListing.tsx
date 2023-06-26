@@ -161,10 +161,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const postIdSelected = useAppSelector(getSelectedPostId);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
   let isTop = useAppSelector(getIsTopPosts);
-
-  const HandleMenuPosts = (checked: boolean) => {
-    dispatch(saveTopPostsFilter(checked));
-  };
   const [query, setQuery] = useState<any>('');
   const [hashtags, setHashtags] = useState<any>([]);
 
@@ -181,20 +177,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       setHashtags([]);
     }
   }, [router.query]);
-
-  const menuItems = [
-    {
-      label: (
-        <Switch
-          checkedChildren={intl.get('general.allPost')}
-          unCheckedChildren={intl.get('general.topPost')}
-          defaultChecked={isTop}
-          onChange={HandleMenuPosts}
-        />
-      ),
-      key: 'all'
-    }
-  ];
 
   useEffect(() => dispatch(getLeaderboard()), []);
   const refs = useRef([]);

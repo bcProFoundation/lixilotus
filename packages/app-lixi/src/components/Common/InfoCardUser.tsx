@@ -53,16 +53,16 @@ const CardUser = styled.div`
         margin: 0;
         color: rgba(30, 26, 29, 0.38);
 
+        .account-name {
+          cursor: pointer;
+          color: var(--text-color-on-background);
+        }
         svg {
           width: 12px;
           height: 12px;
           letter-spacing: 0.25px;
           margin: 0;
           filter: invert(73%) sepia(12%) saturate(19%) hue-rotate(251deg) brightness(92%) contrast(85%);
-        }
-        .account-name {
-          cursor: pointer;
-          color: var(--text-color-on-background);
         }
       }
     }
@@ -200,47 +200,40 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                     {name}
                   </span>{' '}
                   · {title} ·
-                  <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()}</span>
+                  <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()} {followPostOwner && <Icon component={() => <FollowSvg />} />}</span>
                   <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
                     {postEdited && intl.get('post.edited')}
                   </span>
                 </p>
               </div>
-            </div>
+            </div >
           )}
-          {token && token?.name && (
-            <div className="card-container">
-              <div className="page-bar" onClick={() => history.push(`/token/${token?.tokenId}}`)}>
-                <img className="image-page" src={`${currency.tokenIconsUrl}/64/${token.tokenId}.png`} />
-                <AvatarUser name={name} isMarginRight={true} />
-              </div>
-              <div className="card-info">
-                <span className="name" onClick={() => history.push(`/token/${token?.tokenId}`)}>
-                  {token?.name}
-                </span>
-                <p className="title">
-                  <span className="account-name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
-                    {name}
-                  </span>{' '}
-                  · {title} ·
-                  <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()}</span>
-                  <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
-                    {postEdited && intl.get('post.edited')}
+          {
+            token && token?.name && (
+              <div className="card-container">
+                <div className="page-bar" onClick={() => history.push(`/token/${token?.tokenId}}`)}>
+                  <img className="image-page" src={`${currency.tokenIconsUrl}/64/${token.tokenId}.png`} />
+                  <AvatarUser name={name} isMarginRight={true} />
+                </div>
+                <div className="card-info">
+                  <span className="name" onClick={() => history.push(`/token/${token?.tokenId}`)}>
+                    {token?.name}
                   </span>
-                </p>
+                  <p className="title">
+                    <span className="account-name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+                      {name}
+                    </span>{' '}
+                    · {title} ·
+                    <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()}</span>
+                    <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
+                      {postEdited && intl.get('post.edited')}
+                    </span>
+                  </p>
+                </div>
               </div>
-              <p className="title">
-                {title}
-                <span style={{ marginLeft: '4px', fontSize: '10px' }}>
-                  {activatePostLocation && postLocation()} {followPostOwner && <Icon component={() => <FollowSvg />} />}
-                </span>
-                <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
-                  {postEdited && intl.get('post.edited')}
-                </span>
-              </p>
-            </div>
-          )}
-        </CardUser>
+            )
+          }
+        </CardUser >
         {isDropdown && (
           <>
             <Dropdown
@@ -255,7 +248,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
             </Dropdown>
           </>
         )}
-      </InfoCardUserContainer>
+      </InfoCardUserContainer >
     </>
   );
 };
