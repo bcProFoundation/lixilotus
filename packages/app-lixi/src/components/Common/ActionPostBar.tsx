@@ -23,10 +23,10 @@ import { useRouter } from 'next/router';
 const ActionBar = styled.div`
   display: flex;
   justify-content: space-between;
-  border-top: 1px solid #c5c5c5;
-  padding: 0px 0.5rem;
+  border-top: 1px solid var(--border-color-base);
+  padding: 0.5rem;
   &.border-bottom {
-    border-bottom: 1px solid #c5c5c5;
+    border-bottom: 1px solid var(--border-color-base);
   }
   .ant-space {
     gap: 4px !important;

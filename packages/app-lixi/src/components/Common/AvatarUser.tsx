@@ -3,37 +3,38 @@ import { Avatar } from 'antd';
 import styled from 'styled-components';
 
 const StyledAvatar = styled(Avatar)`
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   font-size: 18px;
   display: flex;
   align-items: center;
 `;
 
 type AvatarUserProps = {
-  name: string;
+  name?: string;
   isMarginRight?: boolean;
+  icon?: string;
+};
+
+export const transformShortName = (name: string) => {
+  let shortName = '';
+  let nameArr = name.split(' ');
+  if (nameArr.length > 1) {
+    nameArr = [nameArr[0], nameArr[nameArr.length - 1]];
+  }
+  shortName = nameArr.reduce((rs, name) => {
+    return (rs += name.charAt(0).toUpperCase());
+  }, '');
+  return shortName;
 };
 
 export const AvatarUser = (props: AvatarUserProps) => {
-  const { name, isMarginRight } = props;
-
-  const transformShortName = (name: string) => {
-    let shortName = '';
-    let nameArr = name.split(' ');
-    if (nameArr.length > 1) {
-      nameArr = [nameArr[0], nameArr[nameArr.length - 1]];
-    }
-    shortName = nameArr.reduce((rs, name) => {
-      return (rs += name.charAt(0).toUpperCase());
-    }, '');
-    return shortName;
-  };
+  const { name, isMarginRight, icon } = props;
 
   return (
     <>
       {name && (
-        <StyledAvatar style={{ marginRight: `${isMarginRight ? '1rem' : '0'}` }}>
+        <StyledAvatar src={icon} style={{ marginRight: `${isMarginRight ? '10px' : '0'}` }}>
           {transformShortName(name)}
         </StyledAvatar>
       )}

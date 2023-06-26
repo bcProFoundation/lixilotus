@@ -93,7 +93,7 @@ const CustomInput = styled.div<CustomInputProps>`
   margin-bottom: 0px;
   padding: 6px 0;
   font-family: 'Roboto Mono', monospace;
-  border-radius: 5px;
+  border-radius: var(--border-radius-primary);
 
   span {
     color: ${props => props.theme.wallet.text.primary};

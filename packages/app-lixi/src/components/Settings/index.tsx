@@ -148,10 +148,10 @@ export const WrapperPage = styled.div`
   width: 100%;
   max-width: 816px;
   margin: 1rem auto;
-  padding: 20px 30px;
+  padding: 1rem;
   background: #fff;
-  border-radius: 20px;
-  border: 1px solid var(--boder-item-light);
+  border-radius: var(--border-radius-primary);
+  border: 1px solid var(--border-item-light);
   height: max-content;
   display: block;
   @media (max-width: 768px) {
@@ -161,15 +161,15 @@ export const WrapperPage = styled.div`
 `;
 
 export const WrapperPost = styled.div`
-  padding: 20px 30px;
+  padding: 1rem;
   background: #fff;
-  border-radius: 20px;
+  border-radius: var(--border-radius-primary);
 `;
 
 const SettingBar = styled.div`
   padding: 1rem;
   border: 1px solid rgba(128, 116, 124, 0.12);
-  border-radius: 24px;
+  border-radius: var(--border-radius-primary);
   margin-bottom: 2rem;
   &.language-bar {
     margin-top: 2rem;
@@ -327,7 +327,7 @@ const Settings: React.FC = () => {
 
   return (
     <>
-      <WrapperPage>
+      <WrapperPage className="card">
         <Spin spinning={isLoading} indicator={CashLoadingIcon}>
           <SettingBar>
             <h2 style={{ color: 'var(--color-primary)' }}>

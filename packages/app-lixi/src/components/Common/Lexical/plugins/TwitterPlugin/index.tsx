@@ -114,6 +114,8 @@ const TwitterPlugin: React.FC = () => {
       id = afterStatus.slice(0, afterStatus.indexOf('/'));
     } else if (afterStatus.includes('?')) {
       id = afterStatus.slice(0, afterStatus.indexOf('?'));
+    } else {
+      id = afterStatus;
     }
     const result = `${beforeStatus}status/${id}`;
     return result;

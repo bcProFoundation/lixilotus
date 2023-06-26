@@ -47,6 +47,7 @@ export default {
   'burn.feeMiner': 'Chưa tính phí thợ đào',
 
   /* 01.General */
+  'general.newsfeed': 'Bảng tin',
   'general.tokens': 'Tokens',
   'general.home': 'Trang chủ',
   'general.accounts': 'Tài khoản',

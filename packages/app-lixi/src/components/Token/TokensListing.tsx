@@ -114,6 +114,7 @@ const StyledNavBarHeader = styled.div`
     display: flex;
     justify-content: space-between;
     margin-bottom: 1rem;
+    margin-top: 1rem;
   }
   h2 {
     font-size: 32px;
@@ -456,78 +457,80 @@ const TokensListing = () => {
 
   return (
     <>
-      <StyledNavBarHeader>
-        <div className="navbar-token">
-          <h2>Tokens</h2>
-          <Button type="primary" className="outline-btn" onClick={() => setIsModalVisible(!isModalVisible)}>
-            {intl.get('token.importToken')}
-          </Button>
-        </div>
-      </StyledNavBarHeader>
-      <StyledTokensListing>
-        <Table
-          loading={isLoading}
-          className="table-tokens"
-          columns={columns}
-          scroll={{ x: true }}
-          dataSource={tokens && tokens.allTokens.edges}
-          pagination={tokens && tokens.allTokens.totalCount >= 30 ? {} : false}
-          rowKey={record => {
-            return record.node.id;
-          }}
-        />
-        <StyledTokensListingMobile>
-          {tokens &&
-            tokens.allTokens.edges.length > 0 &&
-            tokens.allTokens.edges.map(({ node: token }) => {
-              return (
-                <React.Fragment key={token.id}>
-                  <CardItemToken>
-                    <InfoCardUser
-                      name={token.ticker}
-                      title={token.name}
-                      imgUrl={`${currency.tokenIconsUrl}/32/${token.tokenId}.png`}
-                      isDropdown={false}
-                    />
-                    <div className="detail-token">
-                      <InfoSubCard
-                        typeName={'Short ID:'}
-                        content={token.id.slice(0, 4) + '...' + token.id.slice(-4)}
-                        icon={CopyOutlined}
-                        onClickIcon={() => handleOnCopy(token.tokenId)}
+      <div className="container-token-listing">
+        <StyledNavBarHeader>
+          <div className="navbar-token">
+            <h2></h2>
+            <Button type="primary" className="outline-btn" onClick={() => setIsModalVisible(!isModalVisible)}>
+              {intl.get('token.importToken')}
+            </Button>
+          </div>
+        </StyledNavBarHeader>
+        <StyledTokensListing>
+          <Table
+            loading={isLoading}
+            className="table-tokens"
+            columns={columns}
+            scroll={{ x: true }}
+            dataSource={tokens && tokens.allTokens.edges}
+            pagination={tokens && tokens.allTokens.totalCount >= 30 ? {} : false}
+            rowKey={record => {
+              return record.node.id;
+            }}
+          />
+          <StyledTokensListingMobile>
+            {tokens &&
+              tokens.allTokens.edges.length > 0 &&
+              tokens.allTokens.edges.map(({ node: token }) => {
+                return (
+                  <React.Fragment key={token.id}>
+                    <CardItemToken>
+                      <InfoCardUser
+                        name={token.ticker}
+                        title={token.name}
+                        imgUrl={`${currency.tokenIconsUrl}/32/${token.tokenId}.png`}
+                        isDropdown={false}
                       />
-                      <InfoSubCard typeName={'Total Quantity:'} content={formatBalance(token.initialTokenQuantity)} />
-                      <InfoSubCard
-                        typeName={'Created:'}
-                        content={moment(token.createdDate).format('YYYY-MM-DD HH:MM')}
-                      />
-                    </div>
-                    <div className="group-action-btn">
-                      <IconBurn
-                        icon={UpvoteIcon}
-                        burnValue={formatBalance(token?.lotusBurnUp ?? 0)}
-                        key={`list-vertical-upvote-o-${token.id}`}
-                        dataItem={token}
-                        onClickIcon={e => burnToken(token.id, token.tokenId)}
-                      />
-                      <Button type="text" onClick={() => openBurnModal(token)}>
-                        <img src="/images/ico-burn-up.svg" alt="" />
-                      </Button>
+                      <div className="detail-token">
+                        <InfoSubCard
+                          typeName={'Short ID:'}
+                          content={token.id.slice(0, 4) + '...' + token.id.slice(-4)}
+                          icon={CopyOutlined}
+                          onClickIcon={() => handleOnCopy(token.tokenId)}
+                        />
+                        <InfoSubCard typeName={'Total Quantity:'} content={formatBalance(token.initialTokenQuantity)} />
+                        <InfoSubCard
+                          typeName={'Created:'}
+                          content={moment(token.createdDate).format('YYYY-MM-DD HH:MM')}
+                        />
+                      </div>
+                      <div className="group-action-btn">
+                        <IconBurn
+                          icon={UpvoteIcon}
+                          burnValue={formatBalance(token?.lotusBurnUp ?? 0)}
+                          key={`list-vertical-upvote-o-${token.id}`}
+                          dataItem={token}
+                          onClickIcon={e => burnToken(token.id, token.tokenId)}
+                        />
+                        <Button type="text" onClick={() => openBurnModal(token)}>
+                          <img src="/images/ico-burn-up.svg" alt="" />
+                        </Button>
 
-                      <Button
-                        type="primary"
-                        className="no-border-btn open-detail"
-                        onClick={() => handleNavigateToken(token)}
-                      >
-                        Open <RightOutlined />
-                      </Button>
-                    </div>
-                  </CardItemToken>
-                </React.Fragment>
-              );
-            })}
-        </StyledTokensListingMobile>
-      </StyledTokensListing>
+                        <Button
+                          type="primary"
+                          className="no-border-btn open-detail"
+                          onClick={() => handleNavigateToken(token)}
+                        >
+                          Open <RightOutlined />
+                        </Button>
+                      </div>
+                    </CardItemToken>
+                  </React.Fragment>
+                );
+              })}
+          </StyledTokensListingMobile>
+        </StyledTokensListing>
+      </div>
 
       <Modal
         className="modal-import-token"

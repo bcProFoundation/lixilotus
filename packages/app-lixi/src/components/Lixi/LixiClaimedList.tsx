@@ -7,7 +7,7 @@ const StyledTable = styled.div`
 
   .lixi-claimed-list {
     border: 1px solid #e0e0e0;
-    border-radius: 20px;
+    border-radius: var(--border-radius-primary);
     width: 100%;
     border-collapse: collapse;
   }
