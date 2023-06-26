@@ -229,11 +229,13 @@ const NetworkSelect = styled(Select)`
 
 type CreateLixiFormModalProps = {
   account?: Account;
+  classStyle?: string;
 } & React.HTMLProps<HTMLElement>;
 
 export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   account,
-  disabled
+  disabled,
+  classStyle
 }: CreateLixiFormModalProps) => {
   const dispatch = useAppDispatch();
   const envelopes = useAppSelector(getAllEnvelopes);
@@ -970,7 +972,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     <>
       <Modal
         width={1240}
-        className="custom-create-lixi-modal"
+        className={`${classStyle} custom-create-lixi-modal`}
         title={intl.get('lixi.createLixi')}
         open={true}
         onCancel={handleOnCancel}
@@ -1133,7 +1135,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
             </Form.Item>
 
             <Form.Item label={intl.get('account.envelope')}>
-              <Envelope>
+              <Envelope className="create-lixi-envelop">
                 <Row>
                   <Col span={18} push={6} style={{ padding: '35px 0px 35px 0px', textAlign: 'center' }}>
                     {/* <Button type="link" onClick={}> */}
@@ -1180,10 +1182,10 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
                       }
                       style={{
                         position: 'absolute',
-                        width: '110px',
-                        height: '110px',
+                        width: '90px',
+                        height: '90px',
                         left: '16px',
-                        top: '16px'
+                        top: '20px'
                       }}
                     ></img>
                   </Col>

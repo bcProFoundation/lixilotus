@@ -425,6 +425,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <ActionBarLixi>
               <StyledSearchLixi
+                className="search-lixi"
                 placeholder="Search lixi"
                 value={queryLixi}
                 onChange={e => setQueryLixi(e.target.value)}

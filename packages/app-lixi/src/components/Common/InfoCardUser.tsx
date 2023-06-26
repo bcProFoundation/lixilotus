@@ -162,7 +162,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
   //if not token or page, nothing will be displayed. If it is a page, it will display the page name and have an Arrow. If it is a token, it will show the token name and have an Arrow
   return (
     <>
-      <InfoCardUserContainer className={type === 'card' ? 'card' : ''}>
+      <InfoCardUserContainer className={`info-card-user ${type === 'card' ? 'card' : ''}`}>
         <CardUser>
           {!page && !token && (
             <div className="card-container">
@@ -243,7 +243,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
               placement="bottomRight"
             >
               <Action>
-                <img src="/images/ico-more-vertical.svg" alt="" />
+                <img className="action-post" src="/images/ico-more-vertical.svg" alt="" />
               </Action>
             </Dropdown>
           </>

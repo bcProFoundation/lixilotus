@@ -557,7 +557,7 @@ const SidebarShortcut = () => {
         ref={refSidebarShortcut}
         onScroll={e => triggerSrollbar(e)}
       >
-        <ContainerAccess>
+        <ContainerAccess className="container-access">
           <div className="wrapper">
             {!navCollapsed && (
               <>

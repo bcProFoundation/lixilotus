@@ -380,8 +380,8 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
   };
 
   return (
-    <PostListItemContainer key={post.id} ref={ref}>
-      <CardContainer>
+    <PostListItemContainer className="post-list-item" key={post.id} ref={ref}>
+      <CardContainer className="card-container-post">
         {reposted()}
         <CardHeader>
           <InfoCardUser

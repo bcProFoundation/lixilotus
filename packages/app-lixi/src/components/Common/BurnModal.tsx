@@ -113,9 +113,10 @@ interface BurnModalProps {
   id?: string;
   burnForType: BurnForType;
   isPage?: boolean;
+  classStyle?: string;
 }
 
-export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
+export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProps) => {
   const {
     formState: { errors },
     control
@@ -301,7 +302,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
   return (
     <Modal
       width={450}
-      className="custom-burn-modal"
+      className={`${classStyle} custom-burn-modal`}
       open={true}
       onCancel={handleOnCancel}
       title={

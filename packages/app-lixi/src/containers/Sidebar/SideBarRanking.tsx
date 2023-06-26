@@ -18,6 +18,7 @@ import styled from 'styled-components';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 import { OrderDirection, PageOrderField } from '@generated/types.generated';
 import { AvatarUser } from '@components/Common/AvatarUser';
+import { getCurrentThemes } from '../../../../redux-store/src/store/settings';
 const { Sider } = Layout;
 
 export const ShortcutItemAccess = ({
@@ -247,7 +248,7 @@ const SidebarRanking = () => {
   const [isCollapse, setIsCollapse] = useState(false);
   const leaderboard = useAppSelector(getLeaderBoard);
   const { Panel } = Collapse;
-
+  const currentTheme = useAppSelector(getCurrentThemes);
   const [open, setOpen] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
   const [formData, setFormData] = useState({
@@ -337,7 +338,12 @@ const SidebarRanking = () => {
   };
 
   return (
-    <RankingSideBar id="ranking-sidebar" ref={refSidebarRanking} onScroll={e => triggerSrollbar(e)}>
+    <RankingSideBar
+      className="sidebar-ranking"
+      id="ranking-sidebar"
+      ref={refSidebarRanking}
+      onScroll={e => triggerSrollbar(e)}
+    >
       {router?.pathname == '/' && (
         <div className="right-bar">
           <div className="container-right-bar your-shortcuts card">
@@ -397,7 +403,11 @@ const SidebarRanking = () => {
                 })
               )}
             </div>
-            <img className="animation-top-ranking" src="/images/ico-fire-animation.gif" alt="" />
+            <img
+              className="animation-top-ranking"
+              src={`${currentTheme ? '/images/ico-fire-static.png' : '/images/ico-fire-animation.gif'}`}
+              alt=""
+            />
           </div>
         </div>
       )}
@@ -461,7 +471,11 @@ const SidebarRanking = () => {
                 })
               )}
             </div>
-            <img className="animation-top-ranking" src="/images/ico-fire-heart-animation.gif" alt="" />
+            <img
+              className="animation-top-ranking"
+              src={`${currentTheme ? '/images/ico-fire-heart-static.png' : '/images/ico-fire-heart-animation.gif'}`}
+              alt=""
+            />
           </div>
         </div>
       )}
@@ -550,7 +564,13 @@ const SidebarRanking = () => {
         </ManageAccounts>
       )}
 
-      <StyledModal title="Import account" open={open} footer={null} onCancel={() => setOpen(false)}>
+      <StyledModal
+        className={`${currentTheme ? 'ant-modal-dark' : ''}`}
+        title="Import account"
+        open={open}
+        footer={null}
+        onCancel={() => setOpen(false)}
+      >
         <p>{intl.get('settings.backupAccountHint')}</p>
         <AntdFormWrapper>
           <Form style={{ width: 'auto' }} form={form}>

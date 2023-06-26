@@ -184,7 +184,7 @@ const WalletInfoComponent: React.FC = () => {
 
   return (
     <>
-      <CardContainer>
+      <CardContainer className="card-container">
         <WalletCard>
           <div className="wallet-name">
             <img src="../images/xpi.svg" alt="" />

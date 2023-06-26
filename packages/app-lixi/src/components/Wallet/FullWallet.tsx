@@ -122,7 +122,7 @@ const TransactionHistory = styled.div`
         }
       }
       .icon-reply {
-        margin-top: 6.5px;
+        margin: 0;
       }
     }
   }
@@ -209,10 +209,10 @@ const FullWalletComponent: React.FC = () => {
 
   return (
     <>
-      <FullWalletWrapper>
+      <FullWalletWrapper className="full-wallet">
         <WalletInfoComponent />
         <ClaimComponent isClaimFromAccount={true}></ClaimComponent>
-        <TransactionHistory>
+        <TransactionHistory className="transaction-history">
           <div className="header-transaction">
             {intl.get('account.transactionHistory')}
             <SearchOutlined />

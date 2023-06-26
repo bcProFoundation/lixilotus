@@ -753,7 +753,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
 
   return (
     <React.Fragment>
-      <StyledContainerProfileDetail>
+      <StyledContainerProfileDetail className="page-detail">
         <ProfileCardHeader>
           <div className="container-img">
             <img className="cover-img" src={pageDetailData.cover || '/images/default-cover.jpg'} alt="" />
