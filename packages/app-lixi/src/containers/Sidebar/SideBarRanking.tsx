@@ -18,7 +18,7 @@ import styled from 'styled-components';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 import { OrderDirection, PageOrderField } from '@generated/types.generated';
 import { AvatarUser } from '@components/Common/AvatarUser';
-import { getCurrentThemes } from '../../../../redux-store/src/store/settings';
+import { getCurrentThemes } from '@store/settings';
 const { Sider } = Layout;
 
 export const ShortcutItemAccess = ({

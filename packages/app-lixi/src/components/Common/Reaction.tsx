@@ -9,7 +9,7 @@ import { OPTION_BURN_TYPE, OPTION_BURN_VALUE } from '@components/Posts/PostsList
 import { formatBalance } from 'src/utils/cashMethods';
 import { Counter } from './Counter';
 import { PostItem } from '@components/Posts/PostDetail';
-import { getCurrentThemes } from '../../../../redux-store/src/store/settings';
+import { getCurrentThemes } from '@store/settings';
 
 const SpaceIconBurnHover = styled(Space)`
   min-height: 38px;

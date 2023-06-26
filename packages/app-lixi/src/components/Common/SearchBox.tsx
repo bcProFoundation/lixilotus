@@ -20,7 +20,7 @@ import {
   removeRecentHashtagAtPages,
   removeRecentHashtagAtToken
 } from '@store/account';
-import { getCurrentThemes } from '../../../../redux-store/src/store/settings';
+import { getCurrentThemes } from '@store/settings';
 
 const Container = styled.div`
   display: flex;

@@ -15,7 +15,7 @@ import { BurnModal } from './BurnModal';
 import { ConfigProvider } from 'antd';
 import lightTheme from 'src/styles/themes/lightTheme';
 import { FollowModal } from './FollowModal';
-import { getCurrentThemes } from '../../../../redux-store/src/store/settings';
+import { getCurrentThemes } from '@store/settings';
 import darkTheme from 'src/styles/themes/darkTheme';
 
 const modalComponentLookupTable = {

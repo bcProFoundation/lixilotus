@@ -43,7 +43,7 @@ import { Controller, useForm } from 'react-hook-form';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { TokenItem } from './TokensFeed';
-import { getCurrentThemes } from '../../../../redux-store/src/store/settings';
+import { getCurrentThemes } from '@store/settings';
 
 const StyledTokensListing = styled.div`
   .table-tokens {
