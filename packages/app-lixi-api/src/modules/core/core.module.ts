@@ -21,6 +21,7 @@ import { WithdrawSubLixiesEventsListener } from './lixi/processors/withdraw-sub-
 import { WithdrawSubLixiesProcessor } from './lixi/processors/withdraw-sub-lixies.processor';
 import { UploadFilesController } from './upload/upload.controller';
 import { UploadService } from './upload/upload.service';
+import { MeiliService } from '../page/meili.service';
 const baseCorsConfig = cors({
   origin: process.env.BASE_URL ?? ''
 });
@@ -54,6 +55,7 @@ const baseCorsConfig = cors({
   providers: [
     LixiService,
     UploadService,
+    MeiliService,
     CreateSubLixiesProcessor,
     CreateSubLixiesEventsListener,
     WithdrawSubLixiesProcessor,

@@ -28,7 +28,6 @@ import { aesGcmDecrypt, base58ToNumber } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 
-const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
 const PROJECT_ID = 'lixilotus';
 
@@ -148,7 +147,9 @@ export class ClaimController {
     const checkingCaptcha = async () => {
       try {
         const response = await axios.post<any>(
-          `https://recaptchaenterprise.googleapis.com/v1beta1/projects/${PROJECT_ID}/assessments?key=${PRIVATE_KEY}`,
+          `https://recaptchaenterprise.googleapis.com/v1beta1/projects/${PROJECT_ID}/assessments?key=${this.config.get<string>(
+            'GOOGLE_PRIVATE_KEY'
+          )}`,
           captchaResBody
         );
 

@@ -22,6 +22,7 @@ import Reaction from '@components/Common/Reaction';
 import PostContent from './PostContent';
 import ActionPostBar from '@components/Common/ActionPostBar';
 import { setSelectedPost } from '@store/post/actions';
+import PostTranslate from './PostTranslate';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List
@@ -133,6 +134,22 @@ const Content = styled.div`
       margin: 0;
     }
   }
+  .description-translate {
+    font-weight: 400;
+    line-height: 20px;
+    text-align: left;
+    word-break: break-word;
+    border-left: var(--color-primary) 1px solid;
+    padding: 3px 3px 3px 6px;
+    margin-bottom: 1rem;
+    p {
+      font-size: 14px;
+      line-height: 22px;
+    }
+    .read-more-more-module_btn__33IaH {
+      font-size: 14px;
+    }
+  }
   .image-cover {
     width: 100%;
     max-height: 300px;
@@ -210,6 +227,14 @@ export const GroupIconText = styled.div`
   }
 `;
 
+const StyledTranslate = styled.div`
+  cursor: pointer;
+  color: var(--color-primary);
+  text-align: left;
+  margin-bottom: 5px;
+  font-size: 12px;
+`;
+
 const PostListItemContainer = styled(List.Item)`
   display: flex;
   flex-direction: column;
@@ -264,6 +289,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
   const post: PostItem = item;
   const [showMoreImage, setShowMoreImage] = useState(true);
   const [imagesList, setImagesList] = useState([]);
+  const [showTranslation, setShowTranslation] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowDimensions();
 
@@ -331,7 +357,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
 
       return;
     }
-    if (e.target.className === 'read-more-more-module_btn__33IaH') {
+    if (e.target.className === 'read-more-more-module_btn__33IaH' || e.target.className.includes('post-translation')) {
       e.stopPropagation();
     } else {
       dispatch(setSelectedPost(post.id));
@@ -379,6 +405,10 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
     return '';
   };
 
+  const translatePost = () => {
+    setShowTranslation(!showTranslation);
+  };
+
   return (
     <PostListItemContainer className="post-list-item" key={post.id} ref={ref}>
       <CardContainer className="card-container-post">
@@ -403,6 +433,23 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
           <div className="description-post">
             <PostContent postContent={post.content} />
           </div>
+
+          {post.translations &&
+            post.translations.length > 0 &&
+            (showTranslation ? (
+              <StyledTranslate onClick={translatePost} className="post-translation">
+                {intl.get('post.hideTranslate')}
+              </StyledTranslate>
+            ) : (
+              <StyledTranslate onClick={translatePost} className="post-translation">
+                {intl.get('post.showTranslate')}
+              </StyledTranslate>
+            ))}
+          {showTranslation && post.translations && post.translations.length > 0 && (
+            <div className="description-translate">
+              <PostTranslate postTranslate={post.translations[0].translateContent} />
+            </div>
+          )}
           {item.uploads.length != 0 && !showMoreImage && (
             <div className="images-post">
               <Gallery photos={imagesList.length > 3 ? imagesList.slice(0, 3) : imagesList} />
