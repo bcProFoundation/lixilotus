@@ -564,9 +564,9 @@ export enum PostOrderField {
   Content = 'content',
   CreatedAt = 'createdAt',
   Id = 'id',
+  LastRepostAt = 'lastRepostAt',
   LotusBurnScore = 'lotusBurnScore',
-  UpdatedAt = 'updatedAt',
-  UpdatedRepostAt = 'updatedRepostAt'
+  UpdatedAt = 'updatedAt'
 }
 
 export type PostResponse = {

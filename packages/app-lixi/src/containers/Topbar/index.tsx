@@ -86,7 +86,6 @@ const PathDirection = styled.div`
     position: relative;
     width: 20px;
     height: 20px;
-    margin-left: 2rem;
     @media (max-width: 960px) {
       display: none;
     }
@@ -210,6 +209,20 @@ const PopoverStyled = styled.div`
         }
       }
     }
+  }
+`;
+
+const BadgeStyled = styled(Badge)`
+  .ant-badge-count {
+    min-width: 10px !important;
+    height: 10px !important;
+    margin-top: 0 !important;
+  }
+  .ant-scroll-number-only {
+    display: none !important;
+  }
+  @media (max-width: 960px) {
+    display: none !important;
   }
 `;
 
@@ -338,7 +351,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     dispatch(saveTopPostsFilter(checked));
   };
 
-  const contentNotification = <PopoverStyled>{NotificationPopup(notifications, selectedAccount)}</PopoverStyled>;
+  const contentNotification = <PopoverStyled>{NotificationPopup(notifications, selectedAccount, true)}</PopoverStyled>;
 
   const contentFilterBurn = (
     <>
@@ -463,7 +476,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   );
 
   return (
-    <Header style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} ref={ref} className={className}>
+    <Header style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={className}>
       <PathDirection>
         <img className="menu-mobile" src="/images/ico-menu.svg" alt="" onClick={handleMenuClick} />
         {currentPathName == '/' && (
@@ -476,7 +489,11 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             />
           </picture>
         )}
-        <div onClick={handleMenuClick} className="menu-hamburger">
+        <div
+          onClick={handleMenuClick}
+          style={{ marginLeft: currentPathName == '/' ? '4rem' : '2rem' }}
+          className="menu-hamburger"
+        >
           <input className="checkbox" type="checkbox" name="" id="" checked={navCollapsed} />
           <div className="hamburger-lines">
             <span className="line line1"></span>
@@ -511,14 +528,14 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             content={contentNotification}
             placement="bottom"
           >
-            <Badge
+            <BadgeStyled
               count={notifications.filter(item => _.isNil(item.readAt)).length}
               overflowCount={9}
               offset={[notifications?.length < 10 ? 0 : 5, 8]}
               color="var(--color-primary)"
             >
               <Button className="animate__animated animate__heartBeat" type="text" icon={<BellOutlined />} />
-            </Badge>
+            </BadgeStyled>
           </Popover>
           <Popover
             overlayClassName={`${currentTheme ? 'popover-dark' : ''} more-btn`}
@@ -644,7 +661,6 @@ const StyledTopbar = styled(Topbar)`
   @media (max-width: 960px) {
     grid-template-columns: auto auto;
     .action-bar-header {
-      .nofication-btn,
       .home-btn {
         display: none !important;
       }

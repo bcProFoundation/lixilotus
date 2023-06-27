@@ -20,9 +20,9 @@ body {
   /* Firefox */
   @media (max-width: 968px) {
     padding-bottom: 60px;
-    background: var(--bg-color-light-theme);
+    background: var(--bg-color-dark-theme);
   }
-  background: var(--bg-color-light-theme);
+  background: var(--bg-color-dark-theme);
 }
 
 /* Hide up and down arros on input type="number" */
@@ -526,6 +526,7 @@ code {
 
     &:hover {
       background: rgba(158, 42, 156, 0.08);
+      color: var(--color-primary);
     }
 
     &:disabled {
@@ -1232,13 +1233,25 @@ code {
   .ant-menu-title-content {
     color: var(--text-color-primary-dark) !important;
   }
+  .ant-comment {
+    background: var(--border-color-dark-base) !important;
+    .ant-comment-content-detail {
+      color: var(--text-color-on-dark) !important;
+    }
+    &:hover {
+      background: #303031 !important;
+      .ant-comment-content-detail {
+        color: var(--text-color-primary-dark) !important;
+      }
+    }
+  }
 }
 
 .dark {
-  body {
-    background: var(--bg-color-dark-theme) !important;
+  background-color: var(--bg-color-dark-theme) !important;
+  .ant-layout {
+    background: var(--bg-color-dark-theme);
   }
-
   h1,
   h2,
   h3,
@@ -1258,22 +1271,38 @@ code {
     color: var(--text-color-primary-dark) !important;
   }
 
-  // .ant-skeleton.ant-skeleton-active .ant-skeleton-paragraph > li {
-  //   // .ant-skeleton-title {
-  //   background: linear-gradient(
-  //     90deg,
-  //     rgba(48, 48, 49, 0.7819721638655462) 25%,
-  //     rgba(48, 48, 49, 0.8239889705882353) 46%,
-  //     rgba(48, 48, 49, 1) 68%
-  //   ) !important;
-  //   // }
-  // }
+  .ant-skeleton.ant-skeleton-active {
+    .ant-skeleton-avatar,
+    .ant-skeleton-title,
+    li {
+      background: linear-gradient(
+        90deg,
+        rgba(48, 48, 49, 0.7819721638655462) 25%,
+        rgba(48, 48, 49, 0.8239889705882353) 46%,
+        rgba(48, 48, 49, 1) 68%
+      );
+      background-size: 400% 100% !important;
+    }
+  }
 
   .ant-drawer {
     .ant-drawer-content {
       background: var(--bg-color-dark-item);
       .ant-drawer-body {
         background: var(--bg-color-dark-item);
+      }
+    }
+  }
+
+  .ant-comment {
+    background: var(--border-color-dark-base) !important;
+    .ant-comment-content-detail {
+      color: var(--text-color-on-dark) !important;
+    }
+    &:hover {
+      background: #303031 !important;
+      .ant-comment-content-detail {
+        color: var(--text-color-primary-dark) !important;
       }
     }
   }
@@ -1491,6 +1520,7 @@ code {
 
   //PostListItem
   .post-list-item {
+    background: var(--bg-color-dark-item) !important;
     .ant-btn {
       background: transparent;
     }
@@ -1571,6 +1601,19 @@ code {
       }
       .type-name {
         color: var(--text-color-primary-dark) !important;
+      }
+    }
+    .lixi-claimed-list {
+      border-color: var(--border-color-dark-base) !important;
+      table {
+        th {
+          background: var(--bg-color-dark-item) !important;
+          color: var(--text-color-primary-dark);
+        }
+        td {
+          background: #303031;
+          color: var(--text-color-on-dark);
+        }
       }
     }
   }
@@ -1765,6 +1808,10 @@ code {
       }
     }
   }
+  .ant-space-item .ant-badge sup {
+    background: #303031 !important;
+    z-index: 999;
+  }
 
   //SearchBoxContainer
   .searchbox-container {
@@ -1798,8 +1845,9 @@ code {
     }
   }
 
-  //SidebarShortCut
-  .container-access {
+  //SidebarShortCut || SidebarContent
+  .container-access,
+  .side-bar-content {
     background: var(--bg-color-dark-item) !important;
     .wrapper {
       background: var(--bg-color-dark-item) !important;
@@ -1848,9 +1896,33 @@ code {
     }
   }
 
+  //Topbar
+  .menu-mobile {
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+  }
+
   .description-post {
     p {
       color: var(--text-color-on-dark) !important;
+    }
+  }
+
+  .images-post {
+    .react-photo-gallery--gallery > div {
+      background: var(--bg-color-dark-item) !important;
+    }
+  }
+
+  //Token Listing
+  .container-token-listing {
+    .card-item-token {
+      background: var(--bg-color-dark-item) !important;
+      .type-name {
+        color: var(--text-color-primary-dark);
+      }
+      .content {
+        color: var(--text-color-on-dark);
+      }
     }
   }
 }

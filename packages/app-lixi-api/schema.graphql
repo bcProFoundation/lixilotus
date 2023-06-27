@@ -481,9 +481,9 @@ enum PostOrderField {
   content
   createdAt
   id
+  lastRepostAt
   lotusBurnScore
   updatedAt
-  updatedRepostAt
 }
 
 type PostResponse {
