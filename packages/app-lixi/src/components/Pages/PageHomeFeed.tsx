@@ -128,7 +128,6 @@ const StyledCardPage = styled.div`
     border-top-right-radius: var(--border-radius-item);
     border-top-left-radius: var(--border-radius-item);
     @media (max-width: 768px) {
-      width: 185px;
       height: 75px;
       object-fit: cover;
     }

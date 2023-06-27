@@ -487,7 +487,7 @@ const TokensListing = () => {
               tokens.allTokens.edges.map(({ node: token }) => {
                 return (
                   <React.Fragment key={token.id}>
-                    <CardItemToken>
+                    <CardItemToken className="card-item-token">
                       <InfoCardUser
                         name={token.ticker}
                         title={token.name}

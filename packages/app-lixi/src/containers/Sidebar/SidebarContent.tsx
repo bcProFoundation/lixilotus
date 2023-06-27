@@ -84,7 +84,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
 
   return (
     <>
-      <ContainerSideBarContent onClick={handleOnClick}>
+      <ContainerSideBarContent className="side-bar-content" onClick={handleOnClick}>
         <div className="wrapper">
           <div className="social-digest">
             <h3>Digest</h3>
