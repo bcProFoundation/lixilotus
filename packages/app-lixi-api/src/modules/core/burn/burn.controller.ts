@@ -151,7 +151,7 @@ export class BurnController {
 
           //Translate if lotusBurnScore > 100 and hasnt been translate before
           //For now, the code below only support 2 langs (vi - en), need to rework code if support more than 2 langs
-          if (lotusBurnScore >= 0 && post?.originalLanguage === null) {
+          if (lotusBurnScore >= 100 && post?.originalLanguage === null) {
             let endpoint = 'https://api-apc.cognitive.microsofttranslator.com';
 
             const translationResult = await axios({
