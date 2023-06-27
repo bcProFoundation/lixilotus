@@ -182,21 +182,12 @@ const ProfileCardHeader = styled.div`
     width: 100%;
     background: #fff;
     padding: 0 calc(0px + 48px);
-    padding-bottom: 15px;
     text-align: left;
     display: flex;
     flex-direction: column;
     @media (max-width: 768px) {
       margin-left: 0;
       text-align: center;
-    }
-    h2 {
-      font-weight: 600;
-      margin-bottom: 0;
-      text-transform: capitalize;
-    }
-    Button {
-      margin: 0px 5px;
     }
   }
 `;
@@ -828,9 +819,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             <p>
               {' '}
               <FireOutlined />{' '}
-              {pageDetailData?.totalBurnForPage > 0
-                ? `${pageDetailData?.totalBurnForPage} ${intl.get('page.xpiHasBurned')}`
-                : intl.get('page.noXpiHasBurned')}
+              {pageDetailData?.totalBurnForPage + intl.get('general.dana')}
             </p>
           </div>
         </ProfileCardHeader>
