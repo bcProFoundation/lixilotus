@@ -13,6 +13,7 @@ import loggerConfig from './logger.config';
 import { join } from 'path';
 import { contentParser } from 'fastify-multer';
 import { FastifyHelmetOptions } from '@fastify/helmet';
+import { Logger } from '@nestjs/common';
 
 const allowedOrigins = [
   process.env.SENDLOTUS_URL,
@@ -24,7 +25,6 @@ const allowedOrigins = [
 ];
 
 async function bootstrap() {
-  const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */
 
   const fastifyAdapter = new FastifyAdapter({
     trustProxy: true
@@ -53,16 +53,21 @@ async function bootstrap() {
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local'
     ? app.enableCors()
     : app.enableCors({
-        credentials: true,
-        origin: function (origin, callback) {
-          if (!origin) return callback(null, true);
-          if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-          }
-          return callback(null, true);
+      credentials: true,
+      origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+          const msg = `The CORS policy for this site does not allow access from the specified Origin. ${origin}`;
+          Logger.warn(msg)
+          return callback(new Error(msg), false);
         }
-      });
+        return callback(null, true);
+      },
+      allowedHeaders: 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
+      methods: "GET,PUT,POST,DELETE,UPDATE,OPTIONS",
+      preflightContinue: false,
+      optionsSuccessStatus: 200
+    });
 
   // Prisma
   const prismaService: PrismaService = app.get(PrismaService);
