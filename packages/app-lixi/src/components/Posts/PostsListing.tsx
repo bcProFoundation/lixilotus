@@ -40,6 +40,7 @@ import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
 import PostListItem from './PostListItem';
+import { api as postApi } from '@store/post/posts.api';
 
 export const OPTION_BURN_VALUE = {
   LIKE: '1',
@@ -310,6 +311,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }, 700);
   };
 
+  const handleClickNewPost = () => {
+    setShowNewPost(false);
+    dispatch(setNewPostAvailable(false));
+    dispatch(postApi.util.resetApiState());
+    refetch();
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
   const Header = () => {
     return (
       <StyledHeader>
@@ -474,7 +483,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     <StyledPostsListing>
       <SearchBox />
       <Header />
-
       {graphqlRequestLoading ? <Skeleton avatar active /> : showPosts()}
     </StyledPostsListing>
   );
