@@ -959,6 +959,8 @@ export class PostResolver {
       listAccountFollowerIds = listAccountFollowerIds.filter(
         (value, index) => listAccountFollowerIds.indexOf(value) === index
       );
+      // filter out main account of follower list
+      listAccountFollowerIds = listAccountFollowerIds.filter(id => id !== account.id);
       const followerDetails = await this.prisma.account.findMany({
         where: { id: { in: listAccountFollowerIds } },
         select: { address: true }
