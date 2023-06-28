@@ -28,7 +28,6 @@ export class NotificationOutboundProcessor extends WorkerHost {
       } else if (job.name === 'new-post') {
         this.notificationGateway.sendNewPostEvent(room, notification);
       }
-
     } catch (error) {
       this.logger.error(error);
       return false;

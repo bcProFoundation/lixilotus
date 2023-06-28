@@ -84,14 +84,6 @@ const CommentComponent: React.FC<{ children?: React.ReactNode; data: any }> = ({
     setAction('liked');
   };
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  useEffect(() => {
-    console.log(comments);
-  }, [comments]);
-
   const dislike = () => {
     setLikes(0);
     setDislikes(1);
@@ -103,7 +95,6 @@ const CommentComponent: React.FC<{ children?: React.ReactNode; data: any }> = ({
   };
 
   const handleSubmit = (values: any) => {
-    console.log(values);
     if (!values.comment) return;
     setIsReply(false);
 

@@ -29,7 +29,6 @@ async function main() {
 
     let indexedHashtags: any = [];
     for (const hashtag of hashtags) {
-      console.log(hashtag);
       // We search using meilisearch so it's ok to loop here
       const hashtagUppercase = hashtag.substring(1).toUpperCase();
       const result = await prisma.hashtag.findUnique({
@@ -117,7 +116,6 @@ async function main() {
 
   await updateLotusScoreForHashtag();
 
-  console.log('Done');
 }
 
 async function updateLotusScoreForHashtag() {
