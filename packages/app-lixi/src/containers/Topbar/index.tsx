@@ -465,7 +465,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           </Popover>
           <Popover className="nofication-btn" arrow={false} content={contentNotification} placement="bottom">
             <Badge
-              count={notifications.filter(item => _.isNil(item.readAt)).length}
+              count={notifications.filter(item => item && !!item.readAt && _.isNil(item.readAt)).length}
               overflowCount={9}
               offset={[notifications?.length < 10 ? 0 : 5, 8]}
               color="var(--color-primary)"

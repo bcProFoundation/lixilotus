@@ -54,7 +54,7 @@ export class PostResolver {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -110,13 +110,13 @@ export class PostResolver {
           },
           ...(isTop == 'true'
             ? [
-              {
-                AND: [{ postAccount: { id: { in: listFollowingsAccountIds } } }, { lotusBurnScore: { gte: 0 } }]
-              },
-              {
-                AND: [{ pageId: { in: listFollowingsPageIds } }, { lotusBurnScore: { gte: 1 } }]
-              }
-            ]
+                {
+                  AND: [{ postAccount: { id: { in: listFollowingsAccountIds } } }, { lotusBurnScore: { gte: 0 } }]
+                },
+                {
+                  AND: [{ pageId: { in: listFollowingsPageIds } }, { lotusBurnScore: { gte: 1 } }]
+                }
+              ]
             : [])
         ]
       };
@@ -134,7 +134,7 @@ export class PostResolver {
             ...post,
             followPostOwner:
               listFollowingsAccountIds.includes(post.postAccountId) ||
-                (post.page && listFollowingsPageIds.includes(post.page.id))
+              (post.page && listFollowingsPageIds.includes(post.page.id))
                 ? true
                 : false
           }));
@@ -805,10 +805,10 @@ export class PostResolver {
         connect:
           uploadDetailIds.length > 0
             ? uploadDetailIds.map((uploadDetail: any) => {
-              return {
-                id: uploadDetail
-              };
-            })
+                return {
+                  id: uploadDetail
+                };
+              })
             : undefined
       },
       page: {
@@ -941,23 +941,21 @@ export class PostResolver {
       createNotif.senderId !== createNotif.recipientId &&
         (await this.notificationService.saveAndDispatchNotification(jobData.notification));
 
+      // collect account id follow page
       const followerPageIds = await this.followCacheService.getPageFollowers(page.id);
-      console.log('followerPageIds', followerPageIds);
       if (followerPageIds && followerPageIds.length > 0) {
-        const followerPageIdsMapped = followerPageIds.filter(id => Number(id) < 100).map(id => Number(id));
-        console.log('followerPageIdsMapped', followerPageIdsMapped);
+        const followerPageIdsMapped = followerPageIds.map(id => Number(id));
         listAccountFollowerIds = listAccountFollowerIds.concat(followerPageIdsMapped);
       }
-      console.log('listAccountFollowerIds', listAccountFollowerIds);
     }
+    // collect account id follow this account
     const followerAccountIds = await this.followCacheService.getAccountFollowers(account.id);
-
     if (followerAccountIds && followerAccountIds.length > 0) {
       const followerAccountIdsMapped = followerAccountIds.map(id => Number(id));
       listAccountFollowerIds = listAccountFollowerIds.concat(followerAccountIdsMapped);
     }
-    console.log('listAccountFollowerIds 2nd', listAccountFollowerIds);
     if (listAccountFollowerIds && listAccountFollowerIds.length > 0) {
+      // filter account duplicate
       listAccountFollowerIds = listAccountFollowerIds.filter(
         (value, index) => listAccountFollowerIds.indexOf(value) === index
       );
@@ -970,7 +968,6 @@ export class PostResolver {
         const createNotiNewPost = {
           recipientAddresses: addressFollowerAccountDetails
         };
-        console.log('addressFollowerAccountDetails', addressFollowerAccountDetails);
         await this.notificationService.saveAnddDispathNotificationNewPost(createNotiNewPost);
       }
     }

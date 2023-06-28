@@ -276,7 +276,10 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                   <div style={{ cursor: 'pointer' }}>
                     {' '}
                     {/* onClick={() => router.push(`/profile/${notification.additionalData.senderName}`)} */}
-                    <AvatarUser name={notification.additionalData.senderName} isMarginRight={false} />
+                    <AvatarUser
+                      name={!!notification && !!notification.additionalData && notification.additionalData.senderName}
+                      isMarginRight={false}
+                    />
                   </div>
                 }
                 content={
