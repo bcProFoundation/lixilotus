@@ -128,8 +128,10 @@ export const AppContainer = styled.div`
     .content-child {
       width: 100%;
       margin: 0 auto;
-      > div {
-        padding-bottom: 5rem;
+      height: fit-content;
+      margin-bottom: 4rem;
+      @media (max-width: 968px) {
+        margin-bottom: 7rem;
       }
     }
   }

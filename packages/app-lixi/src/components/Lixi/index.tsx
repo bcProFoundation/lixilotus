@@ -81,7 +81,7 @@ export const InfoSubCard = ({
 
 const WrapperDetailLixi = styled.div`
   @media screen and (max-width: 960px) {
-    padding-bottom: 9rem;
+    // padding-bottom: 9rem;
   }
 `;
 

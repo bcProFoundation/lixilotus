@@ -47,9 +47,6 @@ const StyledPageFeed = styled.div`
       border-radius: 100px;
     }
   }
-  @media (max-width: 960px) {
-    padding-bottom: 7rem;
-  }
 `;
 
 const BlankPage = styled.div`
