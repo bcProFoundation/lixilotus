@@ -20,6 +20,8 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { parseBurnOutput } from 'src/utils/opReturnBurn';
 import { stripHtml } from 'string-strip-html';
 import { VError } from 'verror';
+import { TranslateProvider } from '../translate/translate.constant';
+import { TranslateService } from '../translate/translate.service';
 
 @SkipThrottle()
 @Controller('burn')
@@ -32,8 +34,7 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS,
-    private readonly config: ConfigService,
-    private meiliService: MeiliService
+    private translateService: TranslateService
   ) {}
 
   @Post()
@@ -152,98 +153,7 @@ export class BurnController {
           //Translate if lotusBurnScore > 100 and hasnt been translate before
           //For now, the code below only support 2 langs (vi - en), need to rework code if support more than 2 langs
           if (lotusBurnScore >= 100 && post?.originalLanguage === null) {
-            let endpoint = 'https://api-apc.cognitive.microsofttranslator.com';
-
-            const translationResult = await axios({
-              baseURL: endpoint,
-              url: '/translate',
-              method: 'post',
-              headers: {
-                'Ocp-Apim-Subscription-Key': this.config.get<string>('AZURE_PRIVATE_KEY'),
-                'Ocp-Apim-Subscription-Region': this.config.get<string>('AZURE_REGION'),
-                'Content-type': 'application/json'
-              },
-              params: {
-                'api-version': '3.0',
-                to: ['en', 'vi']
-              },
-              data: [
-                {
-                  text: stripHtml(post!.content).result
-                }
-              ],
-              responseType: 'json'
-            })
-              .then(function (response) {
-                return response.data[0];
-              })
-              .catch(e => {
-                console.log(e);
-              });
-
-            if (translationResult) {
-              const { detectedLanguage, translations } = translationResult;
-              let translateData;
-
-              await this.prisma.$transaction(async prisma => {
-                await prisma.post.update({
-                  where: {
-                    id: post!.id
-                  },
-                  data: {
-                    originalLanguage: detectedLanguage.language
-                  }
-                });
-
-                if (detectedLanguage.language === 'vi') {
-                  // if lang = vi then translate vi => en
-                  const translateLanguage = translations.find((lang: any) => lang.to === 'en');
-
-                  translateData = await prisma.postTranslation.create({
-                    data: {
-                      post: { connect: { id: post!.id } },
-                      translateLanguage: translateLanguage.to,
-                      translateContent: translateLanguage.text
-                    }
-                  });
-                } else if (detectedLanguage.language === 'en') {
-                  // if lang = en then translate en => vi
-
-                  const translateLanguage = translations.find((lang: any) => lang.to === 'vi');
-
-                  translateData = await prisma.postTranslation.create({
-                    data: {
-                      post: { connect: { id: post!.id } },
-                      translateLanguage: translateLanguage.to,
-                      translateContent: translateLanguage.text
-                    }
-                  });
-                } else {
-                  // fallback if lang other than en or vi, then translate to en
-                  const translateLanguage = translations.find((lang: any) => lang.to === 'en');
-                  translateData = await prisma.postTranslation.create({
-                    data: {
-                      post: { connect: { id: post!.id } },
-                      translateLanguage: translateLanguage.to,
-                      translateContent: translateLanguage.text
-                    }
-                  });
-                }
-
-                const languageToUpdate = {
-                  originalLanguage: detectedLanguage.language,
-                  translations: [
-                    {
-                      id: translateData.id,
-                      translateLanguage: translateData.translateLanguage,
-                      translateContent: translateData.translateContent
-                    }
-                  ]
-                };
-
-                this.meiliService.update(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, languageToUpdate, post.id);
-              });
-            }
+            await this.translateService.translatePostAndSave(TranslateProvider.AZURE, post?.content, post.id);
           }
 
           if (post && post.page) {
