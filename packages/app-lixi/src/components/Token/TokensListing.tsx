@@ -52,9 +52,6 @@ const StyledTokensListing = styled.div`
       display: none;
     }
   }
-  @media (max-width: 768px) {
-    padding-bottom: 7rem;
-  }
   .ant-btn {
     background: none !important;
     &:hover {

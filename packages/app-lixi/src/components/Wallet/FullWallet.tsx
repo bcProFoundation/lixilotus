@@ -137,9 +137,8 @@ const FullWalletWrapper = styled.div`
   margin: 1rem auto;
   background: var(--bg-color-light-theme);
   border-radius: var(--border-radius-primary);
-  @media (max-width: 768px) {
+  @media (max-width: 968px) {
     border: none;
-    padding-bottom: 9rem;
   }
 `;
 const FullWalletComponent: React.FC = () => {

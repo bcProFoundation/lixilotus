@@ -60,9 +60,6 @@ const StyledTokensFeed = styled.div`
       top: 10px;
     }
   }
-  @media (max-width: 960px) {
-    padding-bottom: 7rem;
-  }
 `;
 
 const BannerTicker = styled.div`

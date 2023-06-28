@@ -231,6 +231,7 @@ const ShortcutSideBar = styled(Sider)`
   box-shadow: 0 0 30px rgb(80 181 255 / 5%);
   min-width: 300px !important;
   max-width: 300px !important;
+  scrollbar-width: none;
   // &::-webkit-scrollbar {
   //   width: 5px;
   // }

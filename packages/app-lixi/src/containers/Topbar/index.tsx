@@ -217,6 +217,7 @@ const BadgeStyled = styled(Badge)`
     min-width: 10px !important;
     height: 10px !important;
     margin-top: 0 !important;
+    right: 0px !important;
   }
   .ant-scroll-number-only {
     display: none !important;
@@ -411,7 +412,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const contentMoreAction = (
     <PopoverStyled>
       <div className="social-menu">
-        <h3>Socical</h3>
+        <h3>Social</h3>
         <ItemAccess
           icon={'/images/ico-newfeeds.svg'}
           text={intl.get('general.newsfeed')}
@@ -475,6 +476,11 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     </PopoverStyled>
   );
 
+  // <Header
+  //     style={{ boxShadow: 'none', position: 'fixed', zIndex: '999', top: 0, width: '100%' }}
+  //     className={className}
+  //   >
+
   return (
     <Header style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={className}>
       <PathDirection>
@@ -529,7 +535,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             placement="bottom"
           >
             <BadgeStyled
-              count={notifications.filter(item => _.isNil(item.readAt)).length}
+              count={1}
               overflowCount={9}
               offset={[notifications?.length < 10 ? 0 : 5, 8]}
               color="var(--color-primary)"

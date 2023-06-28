@@ -203,9 +203,18 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   useEffect(() => {
     if (refs.current[postIdSelected]) {
       const heightPost = refs.current[postIdSelected].clientHeight;
+      const listChildNodes = refs.current[postIdSelected].offsetParent.childNodes;
+      let headerNode = null;
+      listChildNodes.forEach(node => {
+        if (node?.localName === 'header') {
+          headerNode = node;
+        }
+      });
+      headerNode ? (headerNode.style.display = 'none') : null;
       _.delay(() => {
         refs.current[postIdSelected].firstChild.classList.add('active-post');
         refs.current[postIdSelected].scrollIntoView({ behaviour: 'smooth' });
+        headerNode ? (headerNode.style.display = 'grid') : null;
       }, 500);
       dispatch(setSelectedPost(''));
     }

@@ -211,9 +211,6 @@ const StyledContainerPostDetail = styled.div`
   margin-top: 1rem;
   height: max-content;
   border-radius: 1rem;
-  @media (max-width: 960px) {
-    padding-bottom: 9rem;
-  }
   header {
     padding: 0 !important;
     margin-bottom: 1rem;
