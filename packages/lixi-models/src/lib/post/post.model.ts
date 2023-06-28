@@ -70,4 +70,32 @@ export class Post {
 
   @Field(() => [Repost], { nullable: true })
   reposts?: [Repost];
+
+  @Field(() => String, { nullable: true })
+  originalLanguage?: string;
+
+  @Field(() => [PostTranslation], { nullable: true })
+  translations?: [PostTranslation];
+}
+
+@ObjectType()
+export class PostTranslation {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => String)
+  translateContent: string;
+
+  @Field(() => String)
+  translateLanguage: string;
+
+  @Field(() => GraphQLDateTime, {
+    description: 'Identifies the date and time when the object was created.'
+  })
+  createdAt: Date;
+
+  @Field(() => GraphQLDateTime, {
+    description: 'Identifies the date and time when the object was last updated.'
+  })
+  updatedAt: Date;
 }

@@ -3,7 +3,9 @@ import { NotificationLevel, Token } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { SkipThrottle } from '@nestjs/throttler';
+import axios from 'axios';
 import { ChronikClient } from 'chronik-client';
 import { Redis } from 'ioredis';
 import _ from 'lodash';
@@ -12,9 +14,14 @@ import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorato
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import SortedItemRepository from 'src/common/redis/sorted-repository';
+import { POSTS } from 'src/modules/page/constants/meili.constants';
+import { MeiliService } from 'src/modules/page/meili.service';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { parseBurnOutput } from 'src/utils/opReturnBurn';
+import { stripHtml } from 'string-strip-html';
 import { VError } from 'verror';
+import { TranslateProvider } from '../translate/translate.constant';
+import { TranslateService } from '../translate/translate.service';
 
 @SkipThrottle()
 @Controller('burn')
@@ -26,7 +33,8 @@ export class BurnController {
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
-    @Inject('xpijs') private XPI: BCHJS
+    @Inject('xpijs') private XPI: BCHJS,
+    private translateService: TranslateService
   ) {}
 
   @Post()
@@ -141,6 +149,12 @@ export class BurnController {
               lotusBurnScore
             }
           });
+
+          //Translate if lotusBurnScore > 100 and hasnt been translate before
+          //For now, the code below only support 2 langs (vi - en), need to rework code if support more than 2 langs
+          if (lotusBurnScore >= 100 && post?.originalLanguage === null) {
+            await this.translateService.translatePostAndSave(TranslateProvider.AZURE, post?.content, post.id);
+          }
 
           if (post && post.page) {
             await this.prisma.$transaction(async prisma => {

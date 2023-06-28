@@ -6,6 +6,7 @@ import {
   Post,
   PostConnection,
   PostOrder,
+  PostTranslation,
   RepostInput,
   Token,
   UpdatePostInput
@@ -122,7 +123,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         async args => {
           const posts = await this.prisma.post.findMany({
-            include: { postAccount: true, comments: true, page: true },
+            include: { postAccount: true, comments: true, page: true, translations: true },
             where: queryPosts,
             orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
             ...args
@@ -273,7 +274,12 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true, comments: true, reposts: { select: { account: true, accountId: true } } },
+            include: {
+              postAccount: true,
+              comments: true,
+              reposts: { select: { account: true, accountId: true } },
+              translations: true
+            },
             where: {
               OR: [
                 {
@@ -414,6 +420,7 @@ export class PostResolver {
       const postsId = _.map(posts, 'id');
 
       const searchPosts = await this.prisma.post.findMany({
+        include: { translations: true },
         where: {
           AND: [
             {
@@ -482,6 +489,7 @@ export class PostResolver {
     const postsId = _.map(posts, 'id');
 
     const searchPosts = await this.prisma.post.findMany({
+      include: { translations: true },
       where: {
         AND: [
           {
@@ -544,6 +552,7 @@ export class PostResolver {
     const postsId = _.map(posts, 'id');
 
     const searchPosts = await this.prisma.post.findMany({
+      include: { translations: true },
       where: {
         AND: [
           {
@@ -583,7 +592,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true, comments: true },
+          include: { postAccount: true, comments: true, translations: true },
           where: {
             OR: [
               {
@@ -753,7 +762,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true, comments: true, postHashtags: true },
+          include: { postAccount: true, comments: true, postHashtags: true, translations: true },
           where: {
             postHashtags: {
               some: {
@@ -1063,7 +1072,7 @@ export class PostResolver {
 
   @ResolveField('postAccount', () => Account)
   async postAccount(@Parent() post: Post) {
-    const account = this.prisma.account.findFirst({
+    const account = await this.prisma.account.findFirst({
       where: {
         id: post.postAccountId
       }
@@ -1086,7 +1095,7 @@ export class PostResolver {
   @ResolveField('page', () => Page)
   async page(@Parent() post: Post) {
     if (post.pageId) {
-      const page = this.prisma.page.findFirst({
+      const page = await this.prisma.page.findFirst({
         where: {
           id: post.pageId
         }
@@ -1100,7 +1109,7 @@ export class PostResolver {
   @ResolveField('token', () => Token)
   async token(@Parent() post: Post) {
     if (post.tokenId) {
-      const token = this.prisma.token.findFirst({
+      const token = await this.prisma.token.findFirst({
         where: {
           id: post.tokenId
         }
@@ -1111,9 +1120,23 @@ export class PostResolver {
     return null;
   }
 
+  @ResolveField('translations', () => PostTranslation)
+  async translations(@Parent() post: Post) {
+    if (post.translations) {
+      const translations = await this.prisma.postTranslation.findMany({
+        where: {
+          postId: post.id
+        }
+      });
+
+      return translations;
+    }
+    return null;
+  }
+
   @ResolveField()
   async uploads(@Parent() post: Post) {
-    const uploads = this.prisma.uploadDetail.findMany({
+    const uploads = await this.prisma.uploadDetail.findMany({
       where: {
         postId: post.id
       },
