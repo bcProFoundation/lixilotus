@@ -16,6 +16,7 @@ import { NOTIFICATION_OUTBOUND_QUEUE, WEBPUSH_NOTIFICATION_QUEUE } from './notif
 import { NotificationGateway } from './notification.gateway';
 import { PushSubscription } from 'web-push';
 import { WebpushNotificationJobData } from './webpush-notification.process';
+import { NotificationDto as Notification } from '@bcpros/lixi-models';
 
 @Injectable()
 export class NotificationService {
@@ -143,18 +144,13 @@ export class NotificationService {
     const rooms = allListDeviceIds.map(deviceId => {
       return `device:${deviceId}`;
     });
-    // console.log('rooms', rooms);
     // User currently online, we send in-app notification
     // Dispatch the notification
     for (const room of rooms) {
-      const sendNotifJobData: SendNotificationJobData = {
-        room,
-        notification: { notificationTypeId: 14 } as NotificationDto
-      };
       try {
-        await this.notificationOutboundQueue.add('new-post', sendNotifJobData).catch(e => console.log(e));
+        this.notificationGateway.sendNewPostEvent(room, { notificationTypeId: 14 } as Notification);
       } catch (e) {
-        console.log(e);
+        this.logger.error(e);
       }
     }
   }

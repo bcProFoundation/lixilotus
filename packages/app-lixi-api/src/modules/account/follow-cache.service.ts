@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class FollowCacheService {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private readonly prisma: PrismaService, @InjectRedis() private readonly redis: Redis) { }
+  constructor(private readonly prisma: PrismaService, @InjectRedis() private readonly redis: Redis) {}
 
   private async _cacheAccountFollowers(key: string, accountId: number) {
     const followers = await this.prisma.followAccount.findMany({
@@ -15,9 +15,6 @@ export class FollowCacheService {
         followingAccountId: accountId
       }
     });
-
-    console.log('followers:', followers);
-
     const promises = [];
     for (const follower of followers) {
       console.log('key', key);
