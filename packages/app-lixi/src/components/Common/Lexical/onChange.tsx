@@ -8,7 +8,6 @@ const onChange = editorState => {
     const root = $getRoot();
     const selection = $getSelection();
 
-    // console.log(root, selection);
   });
 };
 

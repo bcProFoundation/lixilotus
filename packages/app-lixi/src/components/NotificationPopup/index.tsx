@@ -18,6 +18,7 @@ import { isMobile } from 'react-device-detect';
 import intl from 'react-intl-universal';
 import SwipeToDelete from 'react-swipe-to-delete-ios';
 import styled from 'styled-components';
+import _ from 'lodash';
 
 export type NotificationMenuProps = {
   notifications: Notification[];
@@ -217,7 +218,7 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
       {!isPopover &&
         notifications &&
         notifications.length > 0 &&
-        notifications.map(notification => (
+        _.compact(notifications).map(notification => (
           <>
             {isMobile ? (
               <div onClick={() => handleRead(account, notification)}>
@@ -264,7 +265,10 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
                   <div style={{ cursor: 'pointer' }}>
                     {' '}
                     {/* onClick={() => router.push(`/profile/${notification.additionalData.senderName}`)} */}
-                    <AvatarUser name={notification.additionalData.senderName} isMarginRight={false} />
+                    <AvatarUser
+                      name={!!notification && !!notification.additionalData && notification.additionalData.senderName}
+                      isMarginRight={false}
+                    />
                   </div>
                 }
                 content={

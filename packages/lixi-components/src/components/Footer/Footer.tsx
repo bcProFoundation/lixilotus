@@ -63,7 +63,7 @@ const Footer = ({ notifications }: { notifications?: any }) => {
         <Link href="/notifications" passHref>
           <NavButton active={currentPathName == '/notifications'}>
             <Badge
-              count={notifications.filter(item => _.isNil(item.readAt)).length}
+              count={notifications.filter(item => item && _.isNil(item.readAt)).length}
               overflowCount={9}
               offset={[notifications?.length < 10 ? 0 : 5, 8]}
               color="var(--color-primary)"

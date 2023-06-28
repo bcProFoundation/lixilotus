@@ -13,9 +13,12 @@ import { BullModule } from '@nestjs/bullmq';
 import { NOTIFICATION_OUTBOUND_QUEUE } from 'src/common/modules/notifications/notification.constants';
 import { NotificationGateway } from 'src/common/modules/notifications/notification.gateway';
 import { HashtagModule } from '../hashtag/hashtag.module';
+import { AccountModule } from '../account/account.module';
+import { FollowCacheService } from '../account/follow-cache.service';
+import { Account } from 'aws-sdk';
 
 @Module({
-  imports: [AuthModule, NotificationModule, HashtagModule],
+  imports: [AuthModule, NotificationModule, HashtagModule, AccountModule],
   providers: [
     PageResolver,
     Logger,
@@ -24,8 +27,9 @@ import { HashtagModule } from '../hashtag/hashtag.module';
     CommentResolver,
     NotificationService,
     NotificationGateway,
-    HashtagModule
+    HashtagModule,
+    FollowCacheService
   ],
-  exports: [MeiliService, NotificationService, NotificationGateway]
+  exports: [MeiliService, NotificationService, NotificationGateway, FollowCacheService]
 })
 export class PageModule {}

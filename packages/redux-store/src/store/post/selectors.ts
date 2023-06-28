@@ -19,6 +19,11 @@ export const getSelectedPostId = createSelector(
   (state: PostState) => state.selectedId as string
 );
 
+export const getNewPostAvailable = createSelector(
+  (state: RootState) => state.posts,
+  (state: PostState) => state.isNewPost as boolean
+);
+
 export const postsByAccountId = createSelector(
   (state: RootState) => state.posts,
   (state: PostState) => state.postsByAccountId

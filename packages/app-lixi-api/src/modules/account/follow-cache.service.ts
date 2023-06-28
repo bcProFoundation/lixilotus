@@ -15,9 +15,9 @@ export class FollowCacheService {
         followingAccountId: accountId
       }
     });
-
     const promises = [];
     for (const follower of followers) {
+      console.log('key', key);
       promises.push(this.redis.zadd(key, follower.createdAt.getTime(), follower.followerAccountId));
     }
     return Promise.all(promises);
@@ -29,7 +29,7 @@ export class FollowCacheService {
     if (!exist) {
       await this._cacheAccountFollowers(key, accountId);
     }
-    return await this.redis.zrevrange(key, 0, -1, 'WITHSCORES');
+    return await this.redis.zrevrange(key, 0, -1);
   }
 
   private async _cacheAccountFollowings(key: string, accountId: number) {
@@ -52,7 +52,7 @@ export class FollowCacheService {
     if (!exist) {
       await this._cacheAccountFollowings(key, accountId);
     }
-    return await this.redis.zrevrange(key, 0, -1, 'WITHSCORES');
+    return await this.redis.zrevrange(key, 0, -1);
   }
 
   private async _cachePageFollowers(key: string, pageId: string) {
@@ -76,7 +76,7 @@ export class FollowCacheService {
     if (!exist) {
       await this._cachePageFollowers(key, pageId);
     }
-    return await this.redis.zrevrange(key, 0, -1, 'WITHSCORES');
+    return await this.redis.zrevrange(key, 0, -1);
   }
 
   private async _cachePageFollowingOfAccount(key: string, accountId: number) {
@@ -100,7 +100,7 @@ export class FollowCacheService {
     if (!exist) {
       await this._cachePageFollowingOfAccount(key, accountId);
     }
-    return await this.redis.zrevrange(key, 0, -1, 'WITHSCORES');
+    return await this.redis.zrevrange(key, 0, -1);
   }
 
   async checkIfAccountFollowPage(accountId: number, pageId: string) {

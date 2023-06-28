@@ -21,8 +21,8 @@ import {
   getLatestBurnForPost
 } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { setSelectedPost } from '@store/post/actions';
-import { getSelectedPostId } from '@store/post/selectors';
+import { setNewPostAvailable, setSelectedPost } from '@store/post/actions';
+import { getNewPostAvailable, getSelectedPostId } from '@store/post/selectors';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { saveTopPostsFilter } from '@store/settings/actions';
@@ -40,6 +40,7 @@ import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
 import PostListItem from './PostListItem';
+import { api as postApi } from '@store/post/posts.api';
 
 export const OPTION_BURN_VALUE = {
   LIKE: '1',
@@ -141,12 +142,14 @@ const StyledHeader = styled.div`
 `;
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
+  const [count, setCount] = useState(0);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const refPostsListing = useRef<HTMLDivElement | null>(null);
   const [tab, setTab] = useState<any>('all');
+  const [showNewPost, setShowNewPost] = useState<boolean>(false);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
@@ -160,6 +163,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const recentTagAtHome = useAppSelector(getRecentHashtagAtHome);
   const postIdSelected = useAppSelector(getSelectedPostId);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
+  const newPostAvailable = useAppSelector(getNewPostAvailable);
   let isTop = useAppSelector(getIsTopPosts);
   const [query, setQuery] = useState<any>('');
   const [hashtags, setHashtags] = useState<any>([]);
@@ -183,7 +187,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
   };
-
+  useEffect(() => {
+    // when refresh page , or first time go in => no show new post for account
+    if (!!newPostAvailable) {
+      dispatch(setNewPostAvailable(false));
+    }
+  }, []);
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
       first: 20,
@@ -262,6 +271,19 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     );
   };
   //#endregion
+  useEffect(() => {
+    if (!!newPostAvailable) {
+      setShowNewPost(true);
+      setCount(count + 1);
+    }
+  }, [newPostAvailable]);
+
+  useEffect(() => {
+    if (!showNewPost && count > 0) {
+      setShowNewPost(false);
+      dispatch(setNewPostAvailable(false));
+    }
+  }, [showNewPost]);
 
   //#region Normal Virtuoso
   const loadMoreItems = () => {
@@ -278,6 +300,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     setTimeout(() => {
       virtuosoNode.classList.remove('show-scroll');
     }, 700);
+  };
+
+  const handleClickNewPost = () => {
+    setShowNewPost(false);
+    dispatch(setNewPostAvailable(false));
+    dispatch(postApi.util.resetApiState());
+    refetch();
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   const Header = () => {
@@ -444,7 +474,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     <StyledPostsListing>
       <SearchBox />
       <Header />
-
       {graphqlRequestLoading ? <Skeleton avatar active /> : showPosts()}
     </StyledPostsListing>
   );

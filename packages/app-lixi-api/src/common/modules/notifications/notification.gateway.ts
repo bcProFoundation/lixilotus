@@ -43,13 +43,13 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
     const deviceId = await this.redis.hget(`client:${client.id}`, 'deviceId');
     if (address && deviceId) {
       await this.redis.srem(`online:user:${address}`, deviceId);
-      await this.redis.scard(`online:user:${address}`, (error, count) => {
+      await this.redis.scard(`online:user:${address}`, async (error, count) => {
         if (error) {
           this.logger.error('Redis error:', error);
           return;
         }
         if (count === 0) {
-          this.redis.del(`online:user:${address}`);
+          await this.redis.del(`online:user:${address}`);
         }
       });
     }
@@ -102,5 +102,9 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
   sendNotification(room: string, notification: Notification) {
     this.server.to(room).emit('notification', notification);
+  }
+
+  sendNewPostEvent(room: string, data: any) {
+    this.server.to(room).emit('newpost', data);
   }
 }

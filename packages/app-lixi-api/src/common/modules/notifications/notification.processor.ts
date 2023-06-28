@@ -23,7 +23,11 @@ export class NotificationOutboundProcessor extends WorkerHost {
   public async process(job: Job<SendNotificationJobData, boolean, string>): Promise<boolean> {
     try {
       const { room, notification } = job.data;
-      this.notificationGateway.sendNotification(room, notification);
+      if (job.name === 'send-notification') {
+        this.notificationGateway.sendNotification(room, notification);
+      } else if (job.name === 'new-post') {
+        this.notificationGateway.sendNewPostEvent(room, notification);
+      }
     } catch (error) {
       this.logger.error(error);
       return false;

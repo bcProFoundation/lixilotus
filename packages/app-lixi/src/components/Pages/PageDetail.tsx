@@ -693,7 +693,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     dispatch(addRecentHashtagAtPages({ id: page.id, hashtag: hashtag.substring(1) }));
   };
 
-  console.log('ahih', !!!query, !!hashtags);
   const showPosts = () => {
     return (
       <React.Fragment>
@@ -989,19 +988,19 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   <div className="about-content">
                     <SubAbout
                       dataItem={pageDetailData?.description}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={InfoCircleOutlined}
                       text={pageDetailData?.description}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.address}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={CompassOutlined}
                       text={pageDetailData?.address}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.website}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={HomeOutlined}
                       text={pageDetailData?.website}
                     />

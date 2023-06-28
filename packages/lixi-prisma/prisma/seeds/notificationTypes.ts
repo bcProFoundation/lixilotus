@@ -64,4 +64,9 @@ export const notificationTypes = [
     name: 'follow-page',
     description: 'Notification has an account to follow your page'
   },
+  {
+    id: 14,
+    name: 'new-post',
+    description: 'Notification has new post'
+  }
 ];

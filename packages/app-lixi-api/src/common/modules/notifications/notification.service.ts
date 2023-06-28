@@ -16,6 +16,7 @@ import { NOTIFICATION_OUTBOUND_QUEUE, WEBPUSH_NOTIFICATION_QUEUE } from './notif
 import { NotificationGateway } from './notification.gateway';
 import { PushSubscription } from 'web-push';
 import { WebpushNotificationJobData } from './webpush-notification.process';
+import { NotificationDto as Notification } from '@bcpros/lixi-models';
 
 @Injectable()
 export class NotificationService {
@@ -129,6 +130,29 @@ export class NotificationService {
       };
       await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
     });
+  }
+
+  async saveAnddDispathNotificationNewPost(notification: any) {
+    let listRecipientAddress: string[] = notification.recipientAddresses;
+    let allListDeviceIds: string[] = [];
+    for (const address of listRecipientAddress) {
+      const deviceIds = await this.redis.smembers(`online:user:${address}`);
+      allListDeviceIds.push(...deviceIds);
+    }
+    // The rooms are the list of devices
+    // Each room is a device
+    const rooms = allListDeviceIds.map(deviceId => {
+      return `device:${deviceId}`;
+    });
+    // User currently online, we send in-app notification
+    // Dispatch the notification
+    for (const room of rooms) {
+      try {
+        this.notificationGateway.sendNewPostEvent(room, { notificationTypeId: 14 } as Notification);
+      } catch (e) {
+        this.logger.error(e);
+      }
+    }
   }
 
   async calcFee(post: any, burn: BurnCommand) {

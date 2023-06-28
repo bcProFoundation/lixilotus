@@ -435,6 +435,7 @@ const SidebarShortcut = () => {
   const navCollapsed = useAppSelector(getNavCollapsed);
   const router = useRouter();
   const currentPathName = router.pathname ?? '';
+  const [notificationsSelected, setNotificationsSelected] = useState([]);
   const notifications = useAppSelector(getAllNotifications);
   const filterValue = useAppSelector(getFilterPostsHome);
   const selectedAccountId = useAppSelector(getSelectedAccountId);

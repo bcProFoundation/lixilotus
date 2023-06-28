@@ -194,7 +194,6 @@ const LixiList = ({ lixies }: LixiListProps) => {
 
   const mapDataListItem = () => {
     let newListLixiType = [];
-    console.log('lixies', lixies);
     lixies.forEach(lixi => {
       let objLixiType: LixiType = {
         id: lixi.id,
