@@ -33,6 +33,7 @@ export type PostQuery = {
     createdAt: any;
     updatedAt: any;
     followPostOwner?: boolean | null;
+    originalLanguage?: string | null;
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
@@ -63,6 +64,12 @@ export type PostQuery = {
       __typename?: 'Repost';
       accountId?: number | null;
       account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    }> | null;
+    translations?: Array<{
+      __typename?: 'PostTranslation';
+      id: string;
+      translateContent: string;
+      translateLanguage: string;
     }> | null;
   };
 };
@@ -98,6 +105,7 @@ export type PostsQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -128,6 +136,12 @@ export type PostsQuery = {
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
+        translations?: Array<{
+          __typename?: 'PostTranslation';
+          id: string;
+          translateContent: string;
+          translateLanguage: string;
         }> | null;
       };
     }> | null;
@@ -171,6 +185,7 @@ export type OrphanPostsQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -201,6 +216,12 @@ export type OrphanPostsQuery = {
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
+        translations?: Array<{
+          __typename?: 'PostTranslation';
+          id: string;
+          translateContent: string;
+          translateLanguage: string;
         }> | null;
       };
     }> | null;
@@ -244,6 +265,7 @@ export type PostsByPageIdQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -274,6 +296,12 @@ export type PostsByPageIdQuery = {
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
+        translations?: Array<{
+          __typename?: 'PostTranslation';
+          id: string;
+          translateContent: string;
+          translateLanguage: string;
         }> | null;
       };
     }> | null;
@@ -317,6 +345,7 @@ export type PostsByUserIdQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -347,6 +376,12 @@ export type PostsByUserIdQuery = {
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
+        translations?: Array<{
+          __typename?: 'PostTranslation';
+          id: string;
+          translateContent: string;
+          translateLanguage: string;
         }> | null;
       };
     }> | null;
@@ -390,6 +425,7 @@ export type PostsByHashtagIdQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -420,6 +456,12 @@ export type PostsByHashtagIdQuery = {
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
+        translations?: Array<{
+          __typename?: 'PostTranslation';
+          id: string;
+          translateContent: string;
+          translateLanguage: string;
         }> | null;
       };
     }> | null;
@@ -463,6 +505,7 @@ export type PostsByTokenIdQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -493,6 +536,12 @@ export type PostsByTokenIdQuery = {
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
+        translations?: Array<{
+          __typename?: 'PostTranslation';
+          id: string;
+          translateContent: string;
+          translateLanguage: string;
         }> | null;
       };
     }> | null;
@@ -532,7 +581,7 @@ export type PostsBySearchQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        followPostOwner?: boolean | null;
+        originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -604,7 +653,7 @@ export type PostsBySearchWithHashtagQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        followPostOwner?: boolean | null;
+        originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -677,7 +726,7 @@ export type PostsBySearchWithHashtagAtPageQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        followPostOwner?: boolean | null;
+        originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -750,7 +799,7 @@ export type PostsBySearchWithHashtagAtTokenQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
-        followPostOwner?: boolean | null;
+        originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
@@ -805,6 +854,7 @@ export type PostFieldsFragment = {
   createdAt: any;
   updatedAt: any;
   followPostOwner?: boolean | null;
+  originalLanguage?: string | null;
   uploads?: Array<{
     __typename?: 'UploadDetail';
     id: string;
@@ -836,6 +886,12 @@ export type PostFieldsFragment = {
     accountId?: number | null;
     account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
   }> | null;
+  translations?: Array<{
+    __typename?: 'PostTranslation';
+    id: string;
+    translateContent: string;
+    translateLanguage: string;
+  }> | null;
 };
 
 export type PostMeiliFieldsFragment = {
@@ -848,7 +904,7 @@ export type PostMeiliFieldsFragment = {
   totalComments: number;
   createdAt: any;
   updatedAt: any;
-  followPostOwner?: boolean | null;
+  originalLanguage?: string | null;
   uploads?: Array<{
     __typename?: 'UploadDetail';
     id: string;
@@ -899,6 +955,7 @@ export type CreatePostMutation = {
     createdAt: any;
     updatedAt: any;
     followPostOwner?: boolean | null;
+    originalLanguage?: string | null;
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
@@ -929,6 +986,12 @@ export type CreatePostMutation = {
       __typename?: 'Repost';
       accountId?: number | null;
       account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    }> | null;
+    translations?: Array<{
+      __typename?: 'PostTranslation';
+      id: string;
+      translateContent: string;
+      translateLanguage: string;
     }> | null;
   };
 };
@@ -950,6 +1013,7 @@ export type UpdatePostMutation = {
     createdAt: any;
     updatedAt: any;
     followPostOwner?: boolean | null;
+    originalLanguage?: string | null;
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
@@ -980,6 +1044,12 @@ export type UpdatePostMutation = {
       __typename?: 'Repost';
       accountId?: number | null;
       account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    }> | null;
+    translations?: Array<{
+      __typename?: 'PostTranslation';
+      id: string;
+      translateContent: string;
+      translateLanguage: string;
     }> | null;
   };
 };
@@ -1044,6 +1114,12 @@ export const PostFieldsFragmentDoc = `
   createdAt
   updatedAt
   followPostOwner
+  originalLanguage
+  translations {
+    id
+    translateContent
+    translateLanguage
+  }
 }
     `;
 export const PostMeiliFieldsFragmentDoc = `
@@ -1099,7 +1175,7 @@ export const PostMeiliFieldsFragmentDoc = `
   totalComments
   createdAt
   updatedAt
-  followPostOwner
+  originalLanguage
 }
     `;
 export const PostDocument = `

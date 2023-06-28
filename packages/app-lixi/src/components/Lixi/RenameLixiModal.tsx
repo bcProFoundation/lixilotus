@@ -14,6 +14,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 export type RenameLixiModalProps = {
   lixi: Lixi;
   onOkAction?: AnyAction;
+  classStyle?: string;
 };
 
 export const RenameLixiModal: React.FC<RenameLixiModalProps> = (props: RenameLixiModalProps) => {
@@ -52,6 +53,7 @@ export const RenameLixiModal: React.FC<RenameLixiModalProps> = (props: RenameLix
   return (
     <>
       <Modal
+        className={`${props?.classStyle}`}
         title={`${intl.get('lixi.renameLixi')} ${lixi.name}`}
         open={true}
         onOk={handleOnOk}

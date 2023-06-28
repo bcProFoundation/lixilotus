@@ -286,7 +286,7 @@ const PageListItem = ({ index, item }) => {
         }}
         key={item.id}
       >
-        <CardContainer>
+        <CardContainer className="card-container-page">
           <CardHeader onClick={() => routerShopDetail(item.id)}>
             <InfoCardUser
               imgUrl={item.avatar || '/images/default-avatar.jpg'}

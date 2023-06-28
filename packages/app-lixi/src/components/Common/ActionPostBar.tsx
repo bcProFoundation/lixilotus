@@ -130,7 +130,7 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment }: ActionPo
   };
 
   return (
-    <ActionBar className={borderBottom ? 'border-bottom' : ''}>
+    <ActionBar className={`action-post-bar ${borderBottom ? 'border-bottom' : ''}`}>
       <GroupIconText>
         <Reaction post={post} handleBurnForPost={handleBurnForPost} />
         <IconNoneHover
@@ -144,7 +144,7 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment }: ActionPo
         {/* Currently only apply repost to posts in the page */}
         {post.page && (
           <Tooltip title={`${intl.get('page.repostFee')}: ${post.page.createPostFee} ${currency.ticker}`}>
-            <Space className="repost" size={5} onClick={() => handleRepost(post)}>
+            <Space style={{ padding: '8px' }} className="repost" size={5} onClick={() => handleRepost(post)}>
               <RetweetOutlined />
             </Space>
           </Tooltip>

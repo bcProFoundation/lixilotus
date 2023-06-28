@@ -6,6 +6,7 @@ import {
   Post,
   PostConnection,
   PostOrder,
+  PostTranslation,
   RepostInput,
   Token,
   UpdatePostInput
@@ -13,7 +14,7 @@ import {
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { Inject, Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { ChronikClient } from 'chronik-client';
@@ -124,7 +125,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         async args => {
           const posts = await this.prisma.post.findMany({
-            include: { postAccount: true, comments: true, page: true },
+            include: { postAccount: true, comments: true, page: true, translations: true },
             where: queryPosts,
             orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
             ...args
@@ -275,7 +276,12 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true, comments: true, reposts: { select: { account: true, accountId: true } } },
+            include: {
+              postAccount: true,
+              comments: true,
+              reposts: { select: { account: true, accountId: true } },
+              translations: true
+            },
             where: {
               OR: [
                 {
@@ -395,45 +401,53 @@ export class PostResolver {
       nullable: true
     })
     orderBy: PostOrder
-  ): Promise<PostResponse> {
-    const { limit, offset } = getPagingParameters(args);
+  ): Promise<PostResponse | undefined> {
+    try {
+      const { limit, offset } = getPagingParameters(args);
 
-    const count = await this.hashtagService.searchByQueryEstimatedTotalHits(
-      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
-      query,
-      hashtags
-    );
+      const count = await this.hashtagService.searchByQueryEstimatedTotalHits(
+        `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+        query,
+        hashtags
+      );
 
-    const posts = await this.hashtagService.searchByQueryHits(
-      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
-      query,
-      hashtags,
-      offset!,
-      limit!
-    );
+      const posts = await this.hashtagService.searchByQueryHits(
+        `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+        query,
+        hashtags,
+        offset!,
+        limit!
+      );
 
-    const postsId = _.map(posts, 'id');
+      const postsId = _.map(posts, 'id');
 
-    const searchPosts = await this.prisma.post.findMany({
-      where: {
-        AND: [
-          {
-            id: { in: postsId }
-          },
-          {
-            lotusBurnScore: {
-              gte: minBurnFilter ?? 0
+      const searchPosts = await this.prisma.post.findMany({
+        include: { translations: true },
+        where: {
+          AND: [
+            {
+              id: { in: postsId }
+            },
+            {
+              lotusBurnScore: {
+                gte: minBurnFilter ?? 0
+              }
             }
-          }
-        ]
-      },
-      orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
-    });
+          ]
+        },
+        orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
+      });
 
-    return connectionFromArraySlice(searchPosts, args, {
-      arrayLength: count || 0,
-      sliceStart: offset || 0
-    });
+      return connectionFromArraySlice(searchPosts, args, {
+        arrayLength: count || 0,
+        sliceStart: offset || 0
+      });
+    } catch (err) {
+      this.logger.error(err);
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
   }
 
   @SkipThrottle()
@@ -477,6 +491,7 @@ export class PostResolver {
     const postsId = _.map(posts, 'id');
 
     const searchPosts = await this.prisma.post.findMany({
+      include: { translations: true },
       where: {
         AND: [
           {
@@ -539,6 +554,7 @@ export class PostResolver {
     const postsId = _.map(posts, 'id');
 
     const searchPosts = await this.prisma.post.findMany({
+      include: { translations: true },
       where: {
         AND: [
           {
@@ -578,7 +594,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true, comments: true },
+          include: { postAccount: true, comments: true, translations: true },
           where: {
             OR: [
               {
@@ -748,7 +764,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true, comments: true, postHashtags: true },
+          include: { postAccount: true, comments: true, postHashtags: true, translations: true },
           where: {
             postHashtags: {
               some: {
@@ -1088,7 +1104,7 @@ export class PostResolver {
 
   @ResolveField('postAccount', () => Account)
   async postAccount(@Parent() post: Post) {
-    const account = this.prisma.account.findFirst({
+    const account = await this.prisma.account.findFirst({
       where: {
         id: post.postAccountId
       }
@@ -1111,7 +1127,7 @@ export class PostResolver {
   @ResolveField('page', () => Page)
   async page(@Parent() post: Post) {
     if (post.pageId) {
-      const page = this.prisma.page.findFirst({
+      const page = await this.prisma.page.findFirst({
         where: {
           id: post.pageId
         }
@@ -1125,7 +1141,7 @@ export class PostResolver {
   @ResolveField('token', () => Token)
   async token(@Parent() post: Post) {
     if (post.tokenId) {
-      const token = this.prisma.token.findFirst({
+      const token = await this.prisma.token.findFirst({
         where: {
           id: post.tokenId
         }
@@ -1136,9 +1152,23 @@ export class PostResolver {
     return null;
   }
 
+  @ResolveField('translations', () => PostTranslation)
+  async translations(@Parent() post: Post) {
+    if (post.translations) {
+      const translations = await this.prisma.postTranslation.findMany({
+        where: {
+          postId: post.id
+        }
+      });
+
+      return translations;
+    }
+    return null;
+  }
+
   @ResolveField()
   async uploads(@Parent() post: Post) {
-    const uploads = this.prisma.uploadDetail.findMany({
+    const uploads = await this.prisma.uploadDetail.findMany({
       where: {
         postId: post.id
       },

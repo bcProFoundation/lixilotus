@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { BurnForType } from '@bcpros/lixi-models/lib/burn';
-import { useAppDispatch } from '@store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Space, Popover } from 'antd';
 import { openModal } from '@store/modal/actions';
 import React, { useEffect, useState } from 'react';
@@ -9,6 +9,7 @@ import { OPTION_BURN_TYPE, OPTION_BURN_VALUE } from '@components/Posts/PostsList
 import { formatBalance } from 'src/utils/cashMethods';
 import { Counter } from './Counter';
 import { PostItem } from '@components/Posts/PostDetail';
+import { getCurrentThemes } from '@store/settings';
 
 const SpaceIconBurnHover = styled(Space)`
   min-height: 38px;
@@ -128,6 +129,7 @@ const Reaction = ({ post, handleBurnForPost }: ReactionProps) => {
   const [clicked, setClicked] = useState(false);
   const [hovered, setHovered] = useState(false);
   const { width } = useWindowDimensions();
+  const currentTheme = useAppSelector(getCurrentThemes);
 
   useEffect(() => {
     const isMobile = width < 868 ? true : false;
@@ -168,7 +170,12 @@ const Reaction = ({ post, handleBurnForPost }: ReactionProps) => {
 
   const openBurnModal = (e: React.MouseEvent<HTMLElement>, dataItem: any) => {
     dispatch(
-      openModal('BurnModal', { burnForType: BurnForType.Post, id: dataItem.id, isPage: dataItem.page ? true : false })
+      openModal('BurnModal', {
+        burnForType: BurnForType.Post,
+        id: dataItem.id,
+        isPage: dataItem.page ? true : false,
+        classStyle: 'ahihi'
+      })
     );
     hideReact();
   };
@@ -310,6 +317,7 @@ const Reaction = ({ post, handleBurnForPost }: ReactionProps) => {
   const IconBurnHover = ({ burnValue, classStyle }: { burnValue?: number; classStyle?: string }) => (
     <SpaceIconBurnHover wrap size={5}>
       <Popover
+        overlayClassName={`${currentTheme ? 'popover-dark' : ''}`}
         arrow={false}
         overlayInnerStyle={{
           display: 'flex',

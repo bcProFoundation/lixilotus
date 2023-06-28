@@ -127,7 +127,7 @@ export const ShareSocialButton = (props: ShareSocialProps) => {
       }}
       onClick={() => {}}
     >
-      <ShareButton>
+      <ShareButton className="share-social-btn">
         <ShareAltOutlined />
       </ShareButton>
     </RWebShare>

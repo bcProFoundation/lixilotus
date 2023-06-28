@@ -35,9 +35,14 @@ const TextCustom = styled.p`
 
 type CreatePageModalProps = {
   accountId?: Number;
+  classStyle?: string;
 } & React.HTMLProps<HTMLElement>;
 
-export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, disabled }: CreatePageModalProps) => {
+export const CreatePageModal: React.FC<CreatePageModalProps> = ({
+  accountId,
+  disabled,
+  classStyle
+}: CreatePageModalProps) => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
 
@@ -142,7 +147,7 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
       {selectedAccount && selectedAccount.address ? (
         <Modal
           width={400}
-          className="custom-create-page-modal"
+          className={`${classStyle} custom-create-page-modal`}
           title={intl.get('page.createNewPage')}
           open={true}
           onCancel={handleOnCancel}

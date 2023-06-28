@@ -574,7 +574,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
 
   return (
     <>
-      <StyledContainerProfileDetail>
+      <StyledContainerProfileDetail className="profile-detail">
         <ProfileCardHeader>
           <div className="container-img">
             <img className="cover-img" src={userDetailData.cover || '/images/default-cover.jpg'} alt="" />

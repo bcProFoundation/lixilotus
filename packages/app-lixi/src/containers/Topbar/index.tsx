@@ -1,4 +1,11 @@
-import { AppstoreOutlined, BellOutlined, FilterOutlined, HomeOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import {
+  AppstoreOutlined,
+  BellOutlined,
+  FilterOutlined,
+  HomeOutlined,
+  SwapOutlined,
+  UserSwitchOutlined
+} from '@ant-design/icons';
 import { Account } from '@bcpros/lixi-models';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { AvatarUser } from '@components/Common/AvatarUser';
@@ -14,9 +21,9 @@ import { fetchNotifications, startChannel, stopChannel } from '@store/notificati
 import { getAllNotifications } from '@store/notification/selectors';
 import { api as postApi } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { toggleCollapsedSideNav } from '@store/settings/actions';
-import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
-import { Badge, Button, Popover, Space } from 'antd';
+import { saveTopPostsFilter, setDarkTheme, toggleCollapsedSideNav } from '@store/settings/actions';
+import { getCurrentThemes, getFilterPostsHome, getIsTopPosts, getNavCollapsed } from '@store/settings/selectors';
+import { Badge, Button, Popover, Space, Switch } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import { push } from 'connected-next-router';
 import * as _ from 'lodash';
@@ -79,7 +86,6 @@ const PathDirection = styled.div`
     position: relative;
     width: 20px;
     height: 20px;
-    margin-left: 2rem;
     @media (max-width: 960px) {
       display: none;
     }
@@ -160,7 +166,7 @@ const PopoverStyled = styled.div`
     }
 
     .active-item-access {
-      padding: 4px !important;
+      padding: 4px;
     }
 
     img {
@@ -206,6 +212,21 @@ const PopoverStyled = styled.div`
   }
 `;
 
+const BadgeStyled = styled(Badge)`
+  .ant-badge-count {
+    min-width: 10px !important;
+    height: 10px !important;
+    margin-top: 0 !important;
+    right: 0px !important;
+  }
+  .ant-scroll-number-only {
+    display: none !important;
+  }
+  @media (max-width: 960px) {
+    display: none !important;
+  }
+`;
+
 // eslint-disable-next-line react/display-name
 const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallback<HTMLElement>) => {
   const dispatch = useAppDispatch();
@@ -221,6 +242,8 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const [hashtags, setHashtags] = useState([]);
   const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
+  let isTop = useAppSelector(getIsTopPosts);
+  const currentTheme = useAppSelector(getCurrentThemes);
 
   useEffect(() => {
     if (selectedAccount) {
@@ -325,12 +348,29 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     }
   };
 
-  const contentNotification = <PopoverStyled>{NotificationPopup(notifications, selectedAccount)}</PopoverStyled>;
+  const HandleMenuPosts = (checked: boolean) => {
+    dispatch(saveTopPostsFilter(checked));
+  };
+
+  const contentNotification = <PopoverStyled>{NotificationPopup(notifications, selectedAccount, true)}</PopoverStyled>;
 
   const contentFilterBurn = (
-    <PopoverStyled>
-      <FilterBurnt filterForType={filterType()} />
-    </PopoverStyled>
+    <>
+      {router?.pathname == '/' && (
+        <PopoverStyled>
+          {intl.get('general.postFilter')}
+          <Switch
+            checkedChildren={intl.get('general.allPost')}
+            unCheckedChildren={intl.get('general.topPost')}
+            defaultChecked={isTop}
+            onChange={HandleMenuPosts}
+          />
+        </PopoverStyled>
+      )}
+      <PopoverStyled>
+        <FilterBurnt filterForType={filterType()} />
+      </PopoverStyled>
+    </>
   );
 
   const contentSelectAccount = (
@@ -355,13 +395,24 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             </div>
           );
         })}
+      <h3>Switch Theme</h3>
+      <Button
+        type="primary"
+        className="outline-btn"
+        icon={<SwapOutlined />}
+        onClick={() => {
+          dispatch(setDarkTheme(!currentTheme));
+        }}
+      >
+        {!currentTheme ? 'Dark theme' : 'Light theme'}
+      </Button>
     </AccountBox>
   );
 
   const contentMoreAction = (
     <PopoverStyled>
       <div className="social-menu">
-        <h3>Socical</h3>
+        <h3>Social</h3>
         <ItemAccess
           icon={'/images/ico-newfeeds.svg'}
           text={intl.get('general.newsfeed')}
@@ -425,8 +476,13 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     </PopoverStyled>
   );
 
+  // <Header
+  //     style={{ boxShadow: 'none', position: 'fixed', zIndex: '999', top: 0, width: '100%' }}
+  //     className={className}
+  //   >
+
   return (
-    <Header style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} ref={ref} className={className}>
+    <Header style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={className}>
       <PathDirection>
         <img className="menu-mobile" src="/images/ico-menu.svg" alt="" onClick={handleMenuClick} />
         {currentPathName == '/' && (
@@ -439,7 +495,11 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             />
           </picture>
         )}
-        <div onClick={handleMenuClick} className="menu-hamburger">
+        <div
+          onClick={handleMenuClick}
+          style={{ marginLeft: currentPathName == '/' ? '4rem' : '2rem' }}
+          className="menu-hamburger"
+        >
           <input className="checkbox" type="checkbox" name="" id="" checked={navCollapsed} />
           <div className="hamburger-lines">
             <span className="line line1"></span>
@@ -460,25 +520,45 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             type="text"
             icon={<HomeOutlined />}
           />
-          <Popover className="filter-btn" arrow={false} content={contentFilterBurn} placement="bottom">
+          <Popover
+            overlayClassName={`${currentTheme ? 'popover-dark' : ''} filter-btn`}
+            arrow={false}
+            content={contentFilterBurn}
+            placement="bottom"
+          >
             <Button className="animate__animated animate__heartBeat" type="text" icon={<FilterOutlined />} />
           </Popover>
-          <Popover className="nofication-btn" arrow={false} content={contentNotification} placement="bottom">
-            <Badge
-              count={notifications.filter(item => item && !!item.readAt && _.isNil(item.readAt)).length}
+          <Popover
+            overlayClassName={`${currentTheme ? 'popover-dark' : ''} nofication-btn`}
+            arrow={false}
+            content={contentNotification}
+            placement="bottom"
+          >
+            <BadgeStyled
+              count={1}
               overflowCount={9}
               offset={[notifications?.length < 10 ? 0 : 5, 8]}
               color="var(--color-primary)"
             >
               <Button className="animate__animated animate__heartBeat" type="text" icon={<BellOutlined />} />
-            </Badge>
+            </BadgeStyled>
           </Popover>
-          <Popover className="more-btn" arrow={false} content={contentMoreAction} placement="bottom">
+          <Popover
+            overlayClassName={`${currentTheme ? 'popover-dark' : ''} more-btn`}
+            arrow={false}
+            content={contentMoreAction}
+            placement="bottom"
+          >
             <Button className="animate__animated animate__heartBeat" type="text" icon={<AppstoreOutlined />} />
           </Popover>
         </div>
         <div className="account-bar">
-          <Popover arrow={false} content={contentSelectAccount} placement="bottom">
+          <Popover
+            overlayClassName={`${currentTheme ? 'popover-dark' : ''}`}
+            arrow={false}
+            content={contentSelectAccount}
+            placement="bottom"
+          >
             <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
             <p className="account-info">
               <span className="account-name">{selectedAccount?.name}</span>
@@ -512,9 +592,6 @@ const SpaceStyled = styled(Space)`
     &:hover {
       .account-name {
         color: var(--color-primary);
-      }
-      .account-balance {
-        color: #000 !important;
       }
     }
 
@@ -571,7 +648,7 @@ const StyledTopbar = styled(Topbar)`
   }
   .action-bar-header {
     display: flex;
-    align-items: center;
+    align-items: baseline !important;
     gap: 8px;
     .anticon {
       font-size: 20px;
@@ -590,7 +667,6 @@ const StyledTopbar = styled(Topbar)`
   @media (max-width: 960px) {
     grid-template-columns: auto auto;
     .action-bar-header {
-      .nofication-btn,
       .home-btn {
         display: none !important;
       }

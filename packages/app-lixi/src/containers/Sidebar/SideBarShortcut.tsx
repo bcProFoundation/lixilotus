@@ -229,8 +229,9 @@ const ShortcutSideBar = styled(Sider)`
   overflow: auto;
   background: var(--bg-color-light-theme);
   box-shadow: 0 0 30px rgb(80 181 255 / 5%);
-  min-width: 250px !important;
-  max-width: 250px !important;
+  min-width: 300px !important;
+  max-width: 300px !important;
+  scrollbar-width: none;
   // &::-webkit-scrollbar {
   //   width: 5px;
   // }
@@ -260,6 +261,7 @@ const ShortcutSideBar = styled(Sider)`
     }
     h3 {
       text-align: center;
+      margin-top: 1rem;
     }
   }
 `;
@@ -558,7 +560,7 @@ const SidebarShortcut = () => {
         ref={refSidebarShortcut}
         onScroll={e => triggerSrollbar(e)}
       >
-        <ContainerAccess>
+        <ContainerAccess className="container-access">
           <div className="wrapper">
             {!navCollapsed && (
               <>

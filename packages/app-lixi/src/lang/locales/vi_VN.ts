@@ -112,6 +112,7 @@ export default {
   'general.fee': 'Phí: ',
   'general.createPost': 'Bạn đang nghĩ gì vậy?...',
   'general.suggested': 'Đề xuất: ',
+  'general.postFilter': 'Lọc bài viết: ',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -554,6 +555,8 @@ export default {
   'post.on': 'trên',
   'post.insufficientFeeCreatePost': 'Bạn cần Lotus để thực hiện hành động này.',
   'post.postTitle': 'Bài viết',
+  'post.showTranslate': 'Hiện bài dịch',
+  'post.hideTranslate': 'Ẩn bài dịch',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',

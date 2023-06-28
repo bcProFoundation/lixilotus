@@ -7,6 +7,7 @@ import {
   saveTopPostsFilter,
   saveWebAuthnConfig,
   saveWebPushNotifConfig,
+  setDarkTheme,
   setInitIntlStatus,
   toggleCollapsedSideNav,
   updateLocale
@@ -27,7 +28,8 @@ const initialState: SettingsState = {
   filterPostsPage: 10,
   filterPostsToken: 1,
   filterPostsProfile: 1,
-  isTopPosts: false
+  isTopPosts: false,
+  darkThemes: false
 };
 
 export const settingsReducer = createReducer(initialState, builder => {
@@ -69,5 +71,8 @@ export const settingsReducer = createReducer(initialState, builder => {
     })
     .addCase(saveTopPostsFilter, (state, action) => {
       state.isTopPosts = action.payload;
+    })
+    .addCase(setDarkTheme, (state, action) => {
+      state.darkThemes = action.payload;
     });
 });

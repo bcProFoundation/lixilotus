@@ -165,10 +165,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [suggestedHashtag, setSuggestedTags] = useState([]);
   const newPostAvailable = useAppSelector(getNewPostAvailable);
   let isTop = useAppSelector(getIsTopPosts);
-
-  const HandleMenuPosts = (checked: boolean) => {
-    dispatch(saveTopPostsFilter(checked));
-  };
   const [query, setQuery] = useState<any>('');
   const [hashtags, setHashtags] = useState<any>([]);
 
@@ -185,20 +181,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       setHashtags([]);
     }
   }, [router.query]);
-
-  const menuItems = [
-    {
-      label: (
-        <Switch
-          checkedChildren={intl.get('general.allPost')}
-          unCheckedChildren={intl.get('general.topPost')}
-          defaultChecked={isTop}
-          onChange={HandleMenuPosts}
-        />
-      ),
-      key: 'all'
-    }
-  ];
 
   useEffect(() => dispatch(getLeaderboard()), []);
   const refs = useRef([]);
@@ -230,9 +212,18 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   useEffect(() => {
     if (refs.current[postIdSelected]) {
       const heightPost = refs.current[postIdSelected].clientHeight;
+      const listChildNodes = refs.current[postIdSelected].offsetParent.childNodes;
+      let headerNode = null;
+      listChildNodes.forEach(node => {
+        if (node?.localName === 'header') {
+          headerNode = node;
+        }
+      });
+      headerNode ? (headerNode.style.display = 'none') : null;
       _.delay(() => {
         refs.current[postIdSelected].firstChild.classList.add('active-post');
         refs.current[postIdSelected].scrollIntoView({ behaviour: 'smooth' });
+        headerNode ? (headerNode.style.display = 'grid') : null;
       }, 500);
       dispatch(setSelectedPost(''));
     }

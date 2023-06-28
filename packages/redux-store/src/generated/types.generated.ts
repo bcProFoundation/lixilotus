@@ -500,6 +500,7 @@ export type Post = {
   lotusBurnDown: Scalars['Float'];
   lotusBurnScore: Scalars['Float'];
   lotusBurnUp: Scalars['Float'];
+  originalLanguage?: Maybe<Scalars['String']>;
   page?: Maybe<Page>;
   pageId?: Maybe<Scalars['String']>;
   postAccount: Account;
@@ -509,6 +510,7 @@ export type Post = {
   token?: Maybe<Token>;
   tokenId?: Maybe<Scalars['String']>;
   totalComments: Scalars['Int'];
+  translations?: Maybe<Array<PostTranslation>>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   uploads?: Maybe<Array<UploadDetail>>;
@@ -564,15 +566,26 @@ export enum PostOrderField {
   Content = 'content',
   CreatedAt = 'createdAt',
   Id = 'id',
+  LastRepostAt = 'lastRepostAt',
   LotusBurnScore = 'lotusBurnScore',
-  UpdatedAt = 'updatedAt',
-  UpdatedRepostAt = 'updatedRepostAt'
+  UpdatedAt = 'updatedAt'
 }
 
 export type PostResponse = {
   __typename?: 'PostResponse';
   edges?: Maybe<Array<PostMeiliEdge>>;
   pageInfo?: Maybe<PostMeiliPageInfo>;
+};
+
+export type PostTranslation = {
+  __typename?: 'PostTranslation';
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  translateContent: Scalars['String'];
+  translateLanguage: Scalars['String'];
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
 };
 
 export type Query = {

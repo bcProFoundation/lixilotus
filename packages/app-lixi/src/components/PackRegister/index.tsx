@@ -66,7 +66,7 @@ const RegisterComponent: React.FC = () => {
 
   return (
     <>
-      <WrapperPage className="card">
+      <WrapperPage className="card register-pack-component">
         <Row
           style={{
             display: 'flex'

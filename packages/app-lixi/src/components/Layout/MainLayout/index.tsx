@@ -1,6 +1,6 @@
 import { getGraphqlRequestStatus, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { Layout, Spin } from 'antd';
+import { Button, Layout, Spin } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
@@ -19,7 +19,7 @@ import { getIsGlobalLoading } from '@store/loading/selectors';
 import { fetchNotifications } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
 import { loadLocale } from '@store/settings/actions';
-import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
+import { getCurrentLocale, getCurrentThemes, getIntlInitStatus } from '@store/settings/selectors';
 import { getSlpBalancesAndUtxos } from '@store/wallet';
 import { Header } from 'antd/lib/layout/layout';
 import { injectStore } from 'src/utils/axiosClient';
@@ -128,8 +128,10 @@ export const AppContainer = styled.div`
     .content-child {
       width: 100%;
       margin: 0 auto;
-      > div {
-        padding-bottom: 5rem;
+      height: fit-content;
+      margin-bottom: 4rem;
+      @media (max-width: 968px) {
+        margin-bottom: 7rem;
       }
     }
   }
@@ -202,6 +204,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
   const scrollRef = useRef(null);
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
+  const currentTheme = useAppSelector(getCurrentThemes);
 
   useEffect(() => {
     if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
@@ -275,11 +278,11 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
       <GlobalStyle />
       {intlInitDone && (
         <Spin spinning={loading} indicator={LoadingIcon}>
-          <LixiApp>
+          <LixiApp className={currentTheme ? 'dark' : ''}>
             <Layout>
               <AppBody>
                 <ModalManager />
-                <AppContainer>
+                <AppContainer className="app-container">
                   <Sidebar className="sidebar-mobile" />
                   {/* Need to reimplement top bar */}
                   {/* <Topbar ref={ref}/> */}

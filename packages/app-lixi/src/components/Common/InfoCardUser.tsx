@@ -53,16 +53,16 @@ const CardUser = styled.div`
         margin: 0;
         color: rgba(30, 26, 29, 0.38);
 
+        .account-name {
+          cursor: pointer;
+          color: var(--text-color-on-background);
+        }
         svg {
           width: 12px;
           height: 12px;
           letter-spacing: 0.25px;
           margin: 0;
           filter: invert(73%) sepia(12%) saturate(19%) hue-rotate(251deg) brightness(92%) contrast(85%);
-        }
-        .account-name {
-          cursor: pointer;
-          color: var(--text-color-on-background);
         }
       }
     }
@@ -162,7 +162,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
   //if not token or page, nothing will be displayed. If it is a page, it will display the page name and have an Arrow. If it is a token, it will show the token name and have an Arrow
   return (
     <>
-      <InfoCardUserContainer className={type === 'card' ? 'card' : ''}>
+      <InfoCardUserContainer className={`info-card-user ${type === 'card' ? 'card' : ''}`}>
         <CardUser>
           {!page && !token && (
             <div className="card-container">
@@ -200,7 +200,10 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                     {name}
                   </span>{' '}
                   · {title} ·
-                  <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()}</span>
+                  <span style={{ marginLeft: '4px', fontSize: '10px' }}>
+                    {activatePostLocation && postLocation()}{' '}
+                    {followPostOwner && <Icon component={() => <FollowSvg />} />}
+                  </span>
                   <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
                     {postEdited && intl.get('post.edited')}
                   </span>
@@ -229,15 +232,6 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                   </span>
                 </p>
               </div>
-              <p className="title">
-                {title}
-                <span style={{ marginLeft: '4px', fontSize: '10px' }}>
-                  {activatePostLocation && postLocation()} {followPostOwner && <Icon component={() => <FollowSvg />} />}
-                </span>
-                <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
-                  {postEdited && intl.get('post.edited')}
-                </span>
-              </p>
             </div>
           )}
         </CardUser>
@@ -250,7 +244,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
               placement="bottomRight"
             >
               <Action>
-                <img src="/images/ico-more-vertical.svg" alt="" />
+                <img className="action-post" src="/images/ico-more-vertical.svg" alt="" />
               </Action>
             </Dropdown>
           </>

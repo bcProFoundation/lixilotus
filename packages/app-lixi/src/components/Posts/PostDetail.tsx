@@ -129,6 +129,7 @@ const CommentContainer = styled.div`
         .ant-avatar {
           width: 37px !important;
           height: 37px !important;
+          font-size: 14px;
         }
       }
     }
@@ -184,7 +185,6 @@ const PostContentDetail = styled.div`
   .images-post {
     cursor: pointer;
     width: 100%;
-    padding: 1rem;
     margin: 1rem 0;
     box-sizing: border-box;
     box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
@@ -211,9 +211,6 @@ const StyledContainerPostDetail = styled.div`
   margin-top: 1rem;
   height: max-content;
   border-radius: 1rem;
-  @media (max-width: 960px) {
-    padding-bottom: 9rem;
-  }
   header {
     padding: 0 !important;
     margin-bottom: 1rem;
@@ -623,7 +620,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   return (
     <>
-      <StyledContainerPostDetail>
+      <StyledContainerPostDetail className="post-detail">
         <NavBarHeader onClick={() => router.back()}>
           <LeftOutlined />
           <PathDirection>
@@ -703,6 +700,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 style={{ width: '-webkit-fill-available', textAlign: 'left' }}
               >
                 <Search
+                  style={{ fontSize: '12px' }}
                   ref={ref}
                   className="input-comment"
                   onChange={onChange}

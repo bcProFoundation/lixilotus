@@ -11,4 +11,5 @@ export interface SettingsState {
   filterPostsToken: number;
   filterPostsProfile: number;
   isTopPosts: boolean;
+  darkThemes: boolean;
 }

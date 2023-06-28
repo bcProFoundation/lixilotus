@@ -496,7 +496,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
       orderBy: [
         {
           direction: OrderDirection.Desc,
-          field: PostOrderField.UpdatedRepostAt
+          field: PostOrderField.LastRepostAt
         },
         {
           direction: OrderDirection.Desc,
@@ -693,6 +693,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     dispatch(addRecentHashtagAtPages({ id: page.id, hashtag: hashtag.substring(1) }));
   };
 
+  console.log('ahih', !!!query, !!hashtags);
   const showPosts = () => {
     return (
       <React.Fragment>
@@ -753,7 +754,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
 
   return (
     <React.Fragment>
-      <StyledContainerProfileDetail>
+      <StyledContainerProfileDetail className="page-detail">
         <ProfileCardHeader>
           <div className="container-img">
             <img className="cover-img" src={pageDetailData.cover || '/images/default-cover.jpg'} alt="" />

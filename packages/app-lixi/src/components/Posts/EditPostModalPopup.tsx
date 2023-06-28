@@ -59,6 +59,7 @@ export type EditPostModalProps = {
   postAccountAddress: string;
   content: string;
   postId: string;
+  classStyle?: string;
 };
 
 export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
@@ -124,7 +125,7 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
 
   return (
     <Modal
-      className="custom-modal-editor"
+      className={`${props?.classStyle} custom-modal-editor`}
       title={intl.get('post.editPost')}
       open={true}
       footer={null}

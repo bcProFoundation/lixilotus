@@ -54,6 +54,11 @@ export const getDeviceId = createSelector(getWebPushNotifConfig, (state: WebPush
   state && state.deviceId ? state.deviceId : undefined
 );
 
+export const getCurrentThemes = createSelector(
+  (state: RootState) => state.settings,
+  (state: SettingsState) => state.darkThemes
+);
+
 export const getIsTopPosts = createSelector(
   (state: RootState) => state.settings,
   (state: SettingsState) => state.isTopPosts

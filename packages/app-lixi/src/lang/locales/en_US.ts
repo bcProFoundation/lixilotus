@@ -113,6 +113,7 @@ export default {
   'general.fee': 'Fee: ',
   'general.createPost': 'What do you think?...',
   'general.suggested': 'Suggested: ',
+  'general.postFilter': 'Posts Filter: ',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -556,6 +557,8 @@ export default {
   'post.on': 'on',
   'post.insufficientFeeCreatePost': 'You need Lotus to perform this action.',
   'post.postTitle': 'Post',
+  'post.showTranslate': 'Show translation',
+  'post.hideTranslate': 'Hide translation',
 
   /* 16.Token */
   'token.importToken': 'Import token',

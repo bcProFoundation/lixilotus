@@ -25,9 +25,10 @@ const { Option } = Select;
 
 type EditPageModalProps = {
   page: Page;
+  classStyle?: string;
 } & React.HTMLProps<HTMLElement>;
 
-export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: EditPageModalProps) => {
+export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled, classStyle }: EditPageModalProps) => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
 
@@ -120,7 +121,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
     <>
       <Modal
         width={1192}
-        className="custom-edit-page-modal"
+        className={`${classStyle} custom-edit-page-modal`}
         title={intl.get('page.updatePage')}
         open={true}
         onCancel={handleOnCancel}
