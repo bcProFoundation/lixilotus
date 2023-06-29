@@ -9,7 +9,7 @@ import _ from 'lodash';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ShortCutItem } from './SideBarShortcut';
+import { ItemQuickAccess, ShortCutItem } from './SideBarShortcut';
 
 type SidebarContentProps = {
   className?: string;
@@ -25,6 +25,39 @@ const ContainerSideBarContent = styled.div`
     padding-bottom: 5rem;
     h3 {
       margin-bottom: 1rem !important;
+    }
+    .item-quick-access {
+      width: 100%;
+      gap: 8px !important;
+      padding: 0 8px;
+      border: 1px solid var(--border-color-base);
+      cursor: pointer;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      .icon-quick-item {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+          width: 25px;
+          height: 25px;
+        }
+      }
+      .title-item {
+        font-size: 14px;
+        font-weight: 500;
+      }
+      &:hover {
+        border-color: var(--color-primary);
+        img {
+          filter: var(--filter-color-primary) !important;
+        }
+        .title-item {
+          color: var(--color-primary);
+        }
+      }
     }
   }
 `;
@@ -88,6 +121,12 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
         <div className="wrapper">
           <div className="social-digest">
             <h3>Digest</h3>
+            <ItemQuickAccess
+              icon={'/images/ico-newfeeds.svg'}
+              text={'Feeds'}
+              direction="horizontal"
+              onClickItem={() => handleIconClick('/')}
+            />
             {filterGroup.map(item => {
               return <ShortCutItem item={item} onClickIcon={path => router.push(pathShortcutItem(item, path))} />;
             })}

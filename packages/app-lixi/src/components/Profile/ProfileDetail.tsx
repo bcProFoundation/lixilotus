@@ -719,9 +719,9 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                   {listsFriend && listsFriend.length == 0 && (
                     <div className="blank-friend">
                       <img src="/images/friend-blank.svg" alt="" />
-                      <p>Connect with people you know in LixiLotus.</p>
+                      <p>Connect with people you know in Lixi.</p>
                       <Button type="primary" className="outline-btn">
-                        Discover LixiLotus social network
+                        Discover Lixi social network
                       </Button>
                     </div>
                   )}

@@ -158,7 +158,7 @@ const LixiClaimed = ({ className, claim, isMobile, lixi }: LixiClaimProps) => {
       data={{
         text: intl.get('claim.titleShared'),
         url: shareUrl,
-        title: 'LixiLotus'
+        title: 'Lixi'
       }}
       onClick={() => {}}
     >

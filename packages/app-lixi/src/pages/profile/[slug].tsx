@@ -38,9 +38,9 @@ const ProfileDetailPage = props => {
             canonical={canonicalUrl}
             openGraph={{
               url: canonicalUrl,
-              title: 'LixiLotus',
+              title: 'Lixi',
               images: [{ url: '' }],
-              site_name: 'LixiLotus'
+              site_name: 'Lixi'
             }}
             twitter={{
               handle: '@handle',

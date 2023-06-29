@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/bcProFoundation/lixilotus/tree/master/packages/app-lixi-api/" target="blank"><img src="https://lixilotus.com/images/lixi_logo.svg" width="160" alt="LixiLotus Logo" /></a>
+  <a href="https://github.com/bcProFoundation/lixilotus/tree/master/packages/app-lixi-api/" target="blank"><img src="https://lixilotus.com/images/lixi_logo.svg" width="160" alt="Lixi Logo" /></a>
 </p>
 
 ## Description

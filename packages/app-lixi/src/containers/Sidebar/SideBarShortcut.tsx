@@ -53,6 +53,35 @@ export const ItemAccess = ({
   );
 };
 
+export const ItemQuickAccess = ({
+  icon,
+  text,
+  direction,
+  isCollapse,
+  onClickItem
+}: {
+  icon: string;
+  text?: string;
+  direction?: string;
+  isCollapse?: boolean;
+  onClickItem?: () => void;
+}) => {
+  return (
+    <div onClick={onClickItem}>
+      <Space
+        direction={direction === 'horizontal' ? 'horizontal' : 'vertical'}
+        className={'item-quick-access'}
+        style={{ padding: isCollapse ? '0' : '' }}
+      >
+        <div className={classNames('icon-quick-item')}>
+          <img src={icon} />
+        </div>
+        {!isCollapse && text && <span className="title-item">{text}</span>}
+      </Space>
+    </div>
+  );
+};
+
 export const ItemAccessNotification = ({
   icon,
   text,
@@ -206,6 +235,39 @@ export const ContainerAccess = styled.div`
       h3 {
         padding: 1rem 0;
         margin: 0;
+      }
+    }
+    .item-quick-access {
+      width: 100%;
+      gap: 8px !important;
+      padding: 0 8px;
+      border: 1px solid var(--border-color-base);
+      cursor: pointer;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      .icon-quick-item {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+          width: 25px;
+          height: 25px;
+        }
+      }
+      .title-item {
+        font-size: 14px;
+        font-weight: 500;
+      }
+      &:hover {
+        border-color: var(--color-primary);
+        img {
+          filter: var(--filter-color-primary) !important;
+        }
+        .title-item {
+          color: var(--color-primary);
+        }
       }
     }
   }
@@ -566,6 +628,13 @@ const SidebarShortcut = () => {
               <>
                 <div className="social-digest">
                   <h3>Digest</h3>
+                  <ItemQuickAccess
+                    icon={'/images/ico-newfeeds.svg'}
+                    text={'Feeds'}
+                    direction="horizontal"
+                    isCollapse={navCollapsed}
+                    onClickItem={() => handleIconClick('/')}
+                  />
                   {filterGroup.map(item => {
                     return <ShortCutItem item={item} onClickIcon={path => router.push(pathShortcutItem(item, path))} />;
                   })}
@@ -578,6 +647,13 @@ const SidebarShortcut = () => {
                   <img width={22} height={22} src="/images/ico-hambuger.svg" alt="" />
                 </h3>
                 <div className="social-feature" style={{ padding: navCollapsed ? '0.5rem' : '1rem' }}>
+                  <ItemQuickAccess
+                    icon={'/images/ico-newfeeds.svg'}
+                    text={'Feeds'}
+                    direction="horizontal"
+                    isCollapse={navCollapsed}
+                    onClickItem={() => handleIconClick('/')}
+                  />
                   {filterGroup.map(item => {
                     return (
                       <ShortCutItem

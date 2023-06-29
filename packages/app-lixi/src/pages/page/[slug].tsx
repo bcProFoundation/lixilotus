@@ -35,10 +35,10 @@ const PageDetailPage = props => {
             canonical={canonicalUrl}
             openGraph={{
               url: canonicalUrl,
-              title: 'LixiLotus',
+              title: 'Lixi',
               description: currentPage.description || 'Save your attention save the world!',
               images: [{ url: '' }],
-              site_name: 'LixiLotus'
+              site_name: 'Lixi'
             }}
             twitter={{
               handle: '@handle',
