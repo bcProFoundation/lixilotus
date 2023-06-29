@@ -34,16 +34,16 @@ export default {
   'text.createPageDescription':
     'Write about what your business does, the services that you provide or the purpose of the Page.',
   'text.post': 'this post',
-  'text.selectXpi': 'How many XPI you want to burn for {name}?',
+  'text.selectXpi': 'How many Dana do you want to offer?',
   'burn.selectXpi': 'Please select Xpi you want to burn for {name}',
-  'burn.youBurning': 'You are burning ',
+  'burn.youOffering': 'You are offering ',
   'burn.post': 'post',
   'burn.comment': 'comment',
   'burn.token': 'token',
   'burn.page': 'page',
   'burn.account': 'account',
   'burn.doneBurning': 'Burning completed!',
-  'burn.sendXpi': 'You will send ',
+  'burn.sendDana': 'You will pay {cost} Dana (Including fees) ',
   'burn.owner': ' to {name} owner',
   'burn.feeMiner': "Miners' fees excluded",
 
@@ -97,8 +97,8 @@ export default {
   'general.goBackToHome': 'Go back',
   'general.searchResults': 'Search results for "{text}"',
   'general.post': 'Post',
-  'general.burnUp': 'Burn up',
-  'general.burnDown': 'Burn down',
+  'general.voteUp': 'Vote up',
+  'general.voteDown': 'Vote down',
   'general.more': 'More',
   'general.goodOrNot': 'Good or not? Burn for it',
   'general.customBurn': 'Custom burn',
@@ -114,6 +114,7 @@ export default {
   'general.createPost': 'What do you think?...',
   'general.suggested': 'Suggested: ',
   'general.postFilter': 'Posts Filter: ',
+  'general.dana': ' Dana',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',

@@ -33,16 +33,16 @@ export default {
   'text.createPageDescription':
     'Viết về hoạt động kinh doanh của bạn, các dịch vụ bạn cung cấp hoặc mục đích của Trang.',
   'text.post': 'bài viết',
-  'text.selectXpi': 'Bạn muốn đốt bao nhiêu XPI cho {name}?',
+  'text.selectXpi': 'Bạn muốn ủng hộ bao nhiêu Dana?',
   'burn.selectXpi': 'Vui lòng chọn số lượng XPI bạn muốn đốt cho {name}',
-  'burn.youBurning': 'Bạn đang đốt ',
+  'burn.youOffering': 'Bạn đang ủng hộ ',
   'burn.post': 'bài viết',
   'burn.comment': 'bình luận',
   'burn.token': 'token',
   'burn.page': 'trang',
   'burn.account': 'tài khoản',
   'burn.doneBurning': 'Đốt thành công!',
-  'burn.sendXpi': 'Bạn sẽ gửi ',
+  'burn.sendDana': 'Bạn sẽ trả {cost} (Đã bao gồm phí) ',
   'burn.owner': ' tới chủ {name} ',
   'burn.feeMiner': 'Chưa tính phí thợ đào',
 
@@ -96,8 +96,8 @@ export default {
   'general.goBackToHome': 'Trở về trang chủ',
   'general.searchResults': 'Kết quả tìm kiếm của "{text}"',
   'general.post': 'Đăng',
-  'general.burnUp': 'Đốt lên',
-  'general.burnDown': 'Đốt xuống',
+  'general.voteUp': 'Ủng hộ',
+  'general.voteDown': 'Phản đối',
   'general.more': 'Thêm',
   'general.goodOrNot': 'Tốt hay không?',
   'general.customBurn': 'Tùy chọn đốt',
@@ -113,6 +113,7 @@ export default {
   'general.createPost': 'Bạn đang nghĩ gì vậy?...',
   'general.suggested': 'Đề xuất: ',
   'general.postFilter': 'Lọc bài viết: ',
+  'general.dana': ' Dana',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',

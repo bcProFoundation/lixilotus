@@ -313,13 +313,13 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
             <div className="banner-item">
               <LikeOutlined />
               <div className="count-bar">
-                <p className="title">{getLotusBurnUp(burnForType) + ' XPI'}</p>
+                <p className="title">{getLotusBurnUp(burnForType) + intl.get('general.dana')}</p>
               </div>
             </div>
             <div className="banner-item">
               <DislikeOutlined />
               <div className="count-bar">
-                <p className="title">{getLotusBurnDown(burnForType) + ' XPI'}</p>
+                <p className="title">{getLotusBurnDown(burnForType) + intl.get('general.dana')}</p>
               </div>
             </div>
           </div>
@@ -329,11 +329,11 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
         <Button.Group style={{ width: '100%' }}>
           <UpDownButton className="upVote" onClick={() => handleBurn(true)}>
             <UpVoteSvg />
-            &nbsp; {intl.get('general.burnUp')}
+            &nbsp; {intl.get('general.voteUp')}
           </UpDownButton>
           <UpDownButton className="downVote" onClick={() => handleBurn(false)}>
             <DownVoteSvg />
-            &nbsp; {intl.get('general.burnDown')}
+            &nbsp; {intl.get('general.voteDown')}
           </UpDownButton>
         </Button.Group>
       }
@@ -341,9 +341,7 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
     >
       <Form>
         <p className="question-txt">
-          {intl.get('text.selectXpi', {
-            name: getName(burnForType)
-          })}
+          {intl.get('text.selectXpi')}
         </p>
 
         <Controller
@@ -352,9 +350,7 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
           rules={{
             required: {
               value: true,
-              message: intl.get('burn.selectXpi', {
-                name: getName(burnForType)
-              })
+              message: intl.get('burn.selectXpi')
             }
           }}
           render={({ field: { value, onChange, ...fieldProps } }) => (
@@ -376,26 +372,15 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
           {errors.burnedValue && errors.burnedValue.message}
         </p>
       </Form>
-      <p className="amount-burn">{intl.get('burn.youBurning') + selectedAmount + ' XPI'}</p>
+      <p className="amount-burn">{intl.get('burn.youOffering') + selectedAmount + intl.get('general.dana')}</p>
 
       <p className="fee-burn">
         {burnForType == BurnForType.Token
           ? null
-          : isPage
-          ? intl.get('burn.sendXpi') +
-            currency.burnFee +
-            ' XPI' +
-            intl.get('burn.owner', {
-              name: getName(BurnForType.Page)
-            })
-          : intl.get('burn.sendXpi') +
-            currency.burnFee +
-            ' XPI' +
-            intl.get('burn.owner', {
-              name: getName(BurnForType.Account)
-            })}
+          : intl.get('burn.sendDana', {
+            cost: currency.burnFee * selectedAmount + selectedAmount
+          })}
       </p>
-      <p className="fee-burn">{intl.get('burn.feeMiner')}</p>
     </Modal>
   );
 };
