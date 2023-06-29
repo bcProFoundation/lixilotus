@@ -13,9 +13,9 @@ import loggerConfig from './logger.config';
 import { join } from 'path';
 import { contentParser } from 'fastify-multer';
 import { FastifyHelmetOptions } from '@fastify/helmet';
-import { Logger } from '@nestjs/common';
+import _ from 'lodash';
 
-const allowedOrigins = [
+const whitelistOrigins = [
   process.env.SENDLOTUS_URL,
   process.env.BASE_URL,
   process.env.ABCPAY_URL,
@@ -23,6 +23,10 @@ const allowedOrigins = [
   process.env.LOTUSTEMPLE_URL,
   process.env.LIXI_SOCIAL_URL
 ];
+
+function stripTrailingSlash(str: string) {
+  return str.replace(/\/$/, '')
+}
 
 async function bootstrap() {
 
@@ -50,13 +54,15 @@ async function bootstrap() {
     console.log(err);
   });
 
+  const allowedOrigins = _.compact(whitelistOrigins).map(origin => stripTrailingSlash(origin))
+
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local'
     ? app.enableCors()
     : app.enableCors({
       credentials: true,
       origin: function (origin, callback) {
         if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
+        if (allowedOrigins.indexOf(stripTrailingSlash(origin)) === -1) {
           const msg = `The CORS policy for this site does not allow access from the specified Origin. ${origin}`;
           console.log(msg);
           return callback(new Error(msg), false);
