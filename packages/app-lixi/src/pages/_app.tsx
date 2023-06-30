@@ -49,7 +49,7 @@ const LixiApp = ({ Component, ...rest }) => {
 
   const canonicalUrl = postId ? process.env.NEXT_PUBLIC_LIXI_URL + `post/${postId}` : process.env.NEXT_PUBLIC_LIXI_URL;
   const description = postId ? getDescription(postAsString) : 'Save your attention save the world!';
-  const sitename = postId ? getSitename(postAsString) : 'lixilotus.com';
+  const sitename = postId ? getSitename(postAsString) : 'lixi.social';
 
   // const router = useRouter();
 

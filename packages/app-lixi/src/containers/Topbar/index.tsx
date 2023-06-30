@@ -241,6 +241,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const selectedAccount = useAppSelector(getSelectedAccount);
   const router = useRouter();
   const currentPathName = router.pathname ?? '';
+  const currentAbsolutePathName = router.asPath ?? '';
   const pathDirection = currentPathName.split('/', 2);
   const filterValue = useAppSelector(getFilterPostsHome);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
@@ -430,7 +431,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
         <ItemAccess
           icon={'/images/ico-page.svg'}
           text={intl.get('general.page')}
-          active={currentPathName.includes('/page')}
+          active={
+            currentPathName.includes('/page') && !currentAbsolutePathName.includes('page/clbm6r1v91486308n7w6za1qcu')
+          }
           direction="horizontal"
           key="page-feed"
           onClickItem={() => handleIconClick('/page/feed')}
@@ -442,6 +445,14 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           direction="horizontal"
           key="notifications"
           onClickItem={() => handleIconClick('/notifications')}
+        />
+        <ItemAccess
+          icon={'/images/ico-support.png'}
+          text={intl.get('general.support')}
+          active={currentAbsolutePathName.includes('page/clbm6r1v91486308n7w6za1qcu')}
+          direction="horizontal"
+          key="support"
+          onClickItem={() => handleIconClick('/page/clbm6r1v91486308n7w6za1qcu')}
         />
       </div>
       <div className="social-feature">

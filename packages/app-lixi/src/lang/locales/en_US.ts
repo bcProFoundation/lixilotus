@@ -43,7 +43,7 @@ export default {
   'burn.page': 'page',
   'burn.account': 'account',
   'burn.doneBurning': 'Burning completed!',
-  'burn.sendDana': "You will pay {cost} Dana (Excluding miner's fees).",
+  'burn.sendDana': "You will pay {cost} XPI (Excluding miner's fees).",
   'burn.owner': ' to {name} owner',
   'burn.feeMiner': "Miners' fees excluded",
 
@@ -113,8 +113,9 @@ export default {
   'general.fee': 'Fee: ',
   'general.createPost': 'What do you think?...',
   'general.suggested': 'Suggested: ',
-  'general.postFilter': 'Posts Filter: ',
+  'general.postFilter': 'Show Followed Posts: ',
   'general.dana': ' Dana',
+  'general.support': 'Support',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -512,8 +513,8 @@ export default {
   'country.unablegetStates': 'Unable to get states',
 
   /* 15.Post */
-  'general.allPost': 'All',
-  'general.topPost': 'Top',
+  'general.allPost': 'On',
+  'general.topPost': 'Off',
   'post.createNewPage': 'Create new post',
   'post.createPost': 'Create post',
   'post.editPost': 'Edit unburnt post',
