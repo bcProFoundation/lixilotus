@@ -43,6 +43,9 @@ const PathDirection = styled.div`
   align-items: center;
   @media (max-width: 960px) {
     gap: 0;
+    .logo-app {
+      width: 80%;
+    }
   }
   h3 {
     text-transform: capitalize;
@@ -414,14 +417,6 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       <div className="social-menu">
         <h3>Social</h3>
         <ItemAccess
-          icon={'/images/ico-newfeeds.svg'}
-          text={intl.get('general.newsfeed')}
-          active={currentPathName === '/' || currentPathName.includes('/post')}
-          direction="horizontal"
-          key="home"
-          onClickItem={() => handleIconClick('/')}
-        />
-        <ItemAccess
           icon={'/images/ico-page.svg'}
           text={intl.get('general.page')}
           active={currentPathName.includes('/page')}
@@ -488,6 +483,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
         {currentPathName == '/' && (
           <picture>
             <img
+              className="logo-app"
               height={'64px'}
               src="/images/lixilotus-logo.svg"
               alt="lixilotus-logo"

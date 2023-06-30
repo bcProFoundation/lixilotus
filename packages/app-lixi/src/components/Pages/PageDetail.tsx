@@ -152,6 +152,7 @@ const ProfileCardHeader = styled.div`
     .title-profile {
       margin-left: calc(160px + 48px);
       text-align: left;
+      line-height: 28px;
       @media (max-width: 768px) {
         margin-left: 0;
         margin-top: 4rem;
@@ -185,6 +186,8 @@ const ProfileCardHeader = styled.div`
     text-align: left;
     display: flex;
     flex-direction: column;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
     @media (max-width: 768px) {
       margin-left: 0;
       text-align: center;
@@ -312,14 +315,7 @@ const FriendBox = styled.div`
 
 const ContentTimeline = styled.div`
   .search-bar {
-    display: grid;
-    grid-template-columns: 75% 25%;
-
-    @media (max-width: 650px) {
-      display: flex;
-      flex-direction: column-reverse;
-    }
-
+    margin: 1rem 0;
     @media (min-width: 960px) {
       .search-container {
         display: none !important;
@@ -365,7 +361,9 @@ const StyledSpace = styled(Space)`
 
 const StyledMenu = styled(Tabs)`
   width: 100%;
+  // TODO: Display none to hide tabs untill add more option tabs
   .ant-tabs-nav {
+    display: none;
     border-bottom-right-radius: 20px;
     border-bottom-left-radius: 20px;
     padding: 1rem 24px;
@@ -914,9 +912,9 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   {listsFriend && listsFriend.length == 0 && (
                     <div className="blank-friend">
                       <img src="/images/friend-blank.svg" alt="" />
-                      <p>Connect with people you know in LixiLotus.</p>
+                      <p>Connect with people you know in Lixi.</p>
                       <Button type="primary" className="outline-btn">
-                        Discover LixiLotus social network
+                        Discover Lixi social network
                       </Button>
                     </div>
                   )}
@@ -961,7 +959,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                 </Timeline>
               </ContentTimeline>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="About" key="about">
+            {/* <Tabs.TabPane tab="About" key="about">
               <LegacyProfile>
                 <AboutBox>
                   <h3>About</h3>
@@ -993,15 +991,10 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                       icon={HomeOutlined}
                       text={pageDetailData?.website}
                     />
-                    {/* {selectedAccountId == pageDetailData?.pageAccountId && (
-                      <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
-                        Edit your profile
-                      </Button>
-                    )} */}
                   </div>
                 </AboutBox>
               </LegacyProfile>
-            </Tabs.TabPane>
+            </Tabs.TabPane> */}
             {/* TODO: implement in the future */}
             {/* <Tabs.TabPane tab="Friend" key="friend"></Tabs.TabPane>
             <Tabs.TabPane tab="Picture" key="picture"></Tabs.TabPane> */}

@@ -1,6 +1,6 @@
 {
-  "short_name": "LixiLotus",
-  "name": "LixiLotus",
+  "short_name": "Lixi",
+  "name": "Lixi",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,8 +8,8 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
-      "type": "image/png",
+      "src": "logo192.svg",
+      "type": "image/svg",
       "sizes": "192x192"
     }
   ],

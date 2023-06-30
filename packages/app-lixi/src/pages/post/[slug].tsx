@@ -25,14 +25,14 @@ const PostDetailPage = props => {
   return (
     <React.Fragment>
       <NextSeo
-        title={`${post.postAccount.name} ${intl.get('post.on')} LixiLotus: "${paragraphText}"`}
+        title={`${post.postAccount.name} ${intl.get('post.on')} Lixi: "${paragraphText}"`}
         description="The lixi program send you a small gift ."
         canonical={canonicalUrl}
         openGraph={{
           url: canonicalUrl,
-          title: 'LixiLotus',
+          title: 'Lixi',
           description: post.content
-            ? `${post.postAccount.name} at LixiLotus: "${stripHtml(post.content).result}"`
+            ? `${post.postAccount.name} at Lixi: "${stripHtml(post.content).result}"`
             : 'Save your attention save the world!',
           images: [
             {

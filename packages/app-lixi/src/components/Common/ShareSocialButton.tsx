@@ -121,9 +121,9 @@ export const ShareSocialButton = (props: ShareSocialProps) => {
   const ShareSocialButton = (
     <RWebShare
       data={{
-        text: content ? `${postAccountName} at LixiLotus: "${stripHtml(content).result.substring(0, 50)}..."` : '',
+        text: content ? `${postAccountName} at Lixi: "${stripHtml(content).result.substring(0, 50)}..."` : '',
         url: shareUrl,
-        title: 'LixiLotus'
+        title: 'Lixi'
       }}
       onClick={() => {}}
     >

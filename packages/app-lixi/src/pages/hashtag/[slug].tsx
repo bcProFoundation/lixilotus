@@ -26,7 +26,7 @@ const HashtagPage = props => {
         canonical={canonicalUrl}
         openGraph={{
           url: canonicalUrl,
-          title: 'LixiLotus',
+          title: 'Lixi',
           images: [
             {
               url: `${process.env.NEXT_PUBLIC_LIXI_URL}images/lixilotus-logo.svg`,
@@ -36,7 +36,7 @@ const HashtagPage = props => {
               type: 'image/jpeg'
             }
           ],
-          site_name: `#${hashtagContent} at LixiLotus`
+          site_name: `#${hashtagContent} at Lixi`
         }}
         twitter={{
           handle: '@lixilotus',

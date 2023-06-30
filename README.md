@@ -1,4 +1,4 @@
-# LixiLotus Monorepo
+# Lixi Monorepo
 
  <p align="center">
   <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/bcProFoundation/lixilotus">
@@ -11,8 +11,8 @@
 
 ## Applications
 
-- [LixiLotus Api](packages/app-lixi-api) - A backend api provide the logic for lixi give away and lixilotus love programs
-- [LixiLotus Web](packages/app-lixi) - A social network software built on blockchain for attention enonomy based on community moderation without inteference of bots and platforms.
+- [Lixi Api](packages/app-lixi-api) - A backend api provide the logic for lixi give away and lixilotus love programs
+- [Lixi Web](packages/app-lixi) - A social network software built on blockchain for attention enonomy based on community moderation without inteference of bots and platforms.
 - [SendLotus](packages/app-sendlotus) - A Lotus wallet
 
 ## Libraries

@@ -88,7 +88,7 @@ export default {
   'general.manageInfo': 'Quản lý thông tin',
   'general.managePage': 'Quản lý trang',
   'general.manageNotifications': 'Quản lý thông báo',
-  'general.feedPage': 'Khám phá và kết nối với các doanh nghiệp trên LixiLotus',
+  'general.feedPage': 'Khám phá và kết nối với các doanh nghiệp trên Lixi',
   'general.subTitleEditPage': 'Thay đổi thông tin trang của bạn',
   'general.subTitleClaimed': 'Chi tiết lì xì đâ nhận',
   'general.notFoundTitle': 'Opp! Không tìm thấy trang',
@@ -405,11 +405,11 @@ export default {
   'onboarding.cancel': 'Hủy',
   'onboarding.importAccount': 'Khôi phục tài khoản',
   'onboarding.import': 'Khôi phục',
-  'onboarding.welcomeToLotus': 'Chào mừng bạn đến với LixiLotus!',
+  'onboarding.welcomeToLotus': 'Chào mừng bạn đến với Lixi!',
   'onboarding.lixiLotusIntroduce1':
-    'LixiLotus là một ví sử dụng tiền mã hóa Lotus hoạt động trên trình duyệt web với mã nguồn mở không bị giám sát. ',
-  'onboarding.lixiLotusIntroduce2': 'LixiLotus cho phép bạn cho đi Lotus một cách dễ dàng.',
-  'onboarding.lixiLotusIntroduce3': 'Để bắt đầu, hãy cài đặt LixiLotus vào thiết bị của bạn theo',
+    'Lixi là một ví sử dụng tiền mã hóa Lotus hoạt động trên trình duyệt web với mã nguồn mở không bị giám sát. ',
+  'onboarding.lixiLotusIntroduce2': 'Lixi cho phép bạn cho đi Lotus một cách dễ dàng.',
+  'onboarding.lixiLotusIntroduce3': 'Để bắt đầu, hãy cài đặt Lixi vào thiết bị của bạn theo',
   'onboarding.lixiLotusIntroduce4': 'hướng dẫn',
 
   /* 08.Envelope */

@@ -89,7 +89,7 @@ export default {
   'general.manageInfo': 'Manage Info',
   'general.managePage': 'Manage Page',
   'general.manageNotifications': 'Manage Notifications',
-  'general.feedPage': 'Discover and connect with businesses on LixiLotus',
+  'general.feedPage': 'Discover and connect with businesses on Lixi',
   'general.subTitleEditPage': 'Change information your page',
   'general.subTitleClaimed': 'Detail of claimed',
   'general.notFoundTitle': 'Opp! Page not found',
@@ -407,10 +407,10 @@ export default {
   'onboarding.newAccount': 'New Account',
   'onboarding.importAccount': 'Import Account',
   'onboarding.import': 'Import',
-  'onboarding.welcomeToLotus': 'Welcome to LixiLotus!',
-  'onboarding.lixiLotusIntroduce1': 'LixiLotus is an open-source, non-custodial web wallet for Lotus.',
-  'onboarding.lixiLotusIntroduce2': 'LixiLotus allow you to giveaway your Lotus effortlessly.',
-  'onboarding.lixiLotusIntroduce3': 'To start, install LixiLotus to your device follow',
+  'onboarding.welcomeToLotus': 'Welcome to Lixi!',
+  'onboarding.lixiLotusIntroduce1': 'Lixi is an open-source, non-custodial web wallet for Lotus.',
+  'onboarding.lixiLotusIntroduce2': 'Lixi allow you to giveaway your Lotus effortlessly.',
+  'onboarding.lixiLotusIntroduce3': 'To start, install Lixi to your device follow',
   'onboarding.lixiLotusIntroduce4': 'the guide',
 
   /* 08.Envelope */

@@ -81,8 +81,8 @@ async function bootstrap() {
 
   // Swagger
   const config = new DocumentBuilder()
-    .setTitle('LixiLotus API')
-    .setDescription('The LixiLotus API description')
+    .setTitle('Lixi API')
+    .setDescription('The Lixi API description')
     .setVersion('0.1')
     .build();
   const document = SwaggerModule.createDocument(app, config);
