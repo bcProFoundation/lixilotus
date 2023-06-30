@@ -7,7 +7,7 @@ export const injectStore = (_locale: string) => {
 };
 
 const axiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_LIXI_API ? process.env.NEXT_PUBLIC_LIXI_API : 'https://api.lixilotus.com',
+  baseURL: '/',
   headers: {
     'Content-Type': 'application/json'
   },

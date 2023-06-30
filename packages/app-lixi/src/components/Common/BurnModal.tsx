@@ -340,9 +340,7 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
       style={{ top: '0 !important' }}
     >
       <Form>
-        <p className="question-txt">
-          {intl.get('text.selectXpi')}
-        </p>
+        <p className="question-txt">{intl.get('text.selectXpi')}</p>
 
         <Controller
           name="burnedValue"
@@ -376,8 +374,8 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
 
       <p className="fee-burn">
         {intl.get('burn.sendDana', {
-            cost: currency.burnFee * selectedAmount + selectedAmount
-          })}
+          cost: currency.burnFee * selectedAmount + selectedAmount
+        })}
       </p>
     </Modal>
   );

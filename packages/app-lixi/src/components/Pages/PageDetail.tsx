@@ -815,8 +815,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
 
             <p>
               {' '}
-              <FireOutlined />{' '}
-              {pageDetailData?.totalBurnForPage + intl.get('general.dana')}
+              <FireOutlined /> {pageDetailData?.totalBurnForPage + intl.get('general.dana')}
             </p>
           </div>
         </ProfileCardHeader>

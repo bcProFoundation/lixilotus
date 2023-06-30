@@ -43,7 +43,8 @@ export const ShortcutItemAccess = ({
         <div>
           {text}
           <span style={{ display: 'block', paddingTop: '4px', fontSize: '12px', color: 'rgba(30, 26, 29, 0.38)' }}>
-            {burnValue}{intl.get('general.dana')}
+            {burnValue}
+            {intl.get('general.dana')}
           </span>
         </div>
         {icoRanking && <img className="ranking-img" src={icoRanking} />}

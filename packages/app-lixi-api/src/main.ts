@@ -26,11 +26,10 @@ const whitelistOrigins = [
 ];
 
 function stripTrailingSlash(str: string) {
-  return str.replace(/\/$/, '')
+  return str.replace(/\/$/, '');
 }
 
 async function bootstrap() {
-
   const fastifyAdapter = new FastifyAdapter({
     trustProxy: true
   });
@@ -59,24 +58,25 @@ async function bootstrap() {
 
   const corsOptions: FastifyCorsOptions = {
     credentials: true,
-    origin: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local' ?
-      ['*'] :
-      function (origin, callback) {
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(stripTrailingSlash(origin)) === -1) {
-          const msg = `The CORS policy for this site does not allow access from the specified Origin. ${origin}`;
-          callback(new Error(msg), true);
-        } else {
-          callback(null, false);
-        }
-
-      },
+    origin:
+      process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local'
+        ? ['*']
+        : function (origin, callback) {
+            console.log('origin:', origin);
+            if (!origin) return callback(null, true);
+            if (allowedOrigins.indexOf(stripTrailingSlash(origin)) === -1) {
+              const msg = `The CORS policy for this site does not allow access from the specified Origin. ${origin}`;
+              callback(new Error(msg), true);
+            } else {
+              callback(null, false);
+            }
+          },
     exposedHeaders: ['Authorization'],
     allowedHeaders: 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe, Origin, Account-Secret',
-    methods: "GET,PUT,POST,DELETE,UPDATE,OPTIONS",
+    methods: 'GET,PUT,POST,DELETE,UPDATE,OPTIONS',
     preflightContinue: true,
     optionsSuccessStatus: 200
-  }
+  };
 
   app.register(fastifyCors, corsOptions);
 

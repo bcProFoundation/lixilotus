@@ -7,7 +7,7 @@ export const injectStore = (_locale: string) => {
 };
 
 const axiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_LIXI_API ? process.env.NEXT_PUBLIC_LIXI_API : 'https://api.lixilotus.com',
+  baseURL: '/',
   headers: {
     'Content-Type': 'application/json'
   },
@@ -17,7 +17,7 @@ const axiosClient = axios.create({
 export const axiosLocalClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_LOTUS_TEMPLE_URL // check if there is app url, replace it if using for another app
     ? process.env.NEXT_PUBLIC_LOTUS_TEMPLE_URL
-    : process.env.NEXT_PUBLIC_LIXI_API,
+    : '/',
   headers: {
     'Content-Type': 'application/json'
   },
