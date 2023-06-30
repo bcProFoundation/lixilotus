@@ -15,7 +15,7 @@ const SplashScreenContainer = styled.div`
 const SplashScreen = () => {
   return (
     <SplashScreenContainer>
-      <img width="200px" src="/images/lixilotus-logo.svg" alt="" />
+      <img width={'60px'} src="/images/lixilotus-logo.svg" alt="" />
     </SplashScreenContainer>
   );
 };
