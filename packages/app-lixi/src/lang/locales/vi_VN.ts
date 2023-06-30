@@ -42,7 +42,7 @@ export default {
   'burn.page': 'trang',
   'burn.account': 'tài khoản',
   'burn.doneBurning': 'Đốt thành công!',
-  'burn.sendDana': 'Bạn sẽ trả {cost} (Đã bao gồm phí) ',
+  'burn.sendDana': 'Bạn sẽ trả {cost} (Chưa tính phí của thợ đào).',
   'burn.owner': ' tới chủ {name} ',
   'burn.feeMiner': 'Chưa tính phí thợ đào',
 

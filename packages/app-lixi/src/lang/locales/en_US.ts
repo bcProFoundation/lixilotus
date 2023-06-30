@@ -43,7 +43,7 @@ export default {
   'burn.page': 'page',
   'burn.account': 'account',
   'burn.doneBurning': 'Burning completed!',
-  'burn.sendDana': 'You will pay {cost} Dana (Including fees) ',
+  'burn.sendDana': 'You will pay {cost} Dana (Excluding miner\'s fees).',
   'burn.owner': ' to {name} owner',
   'burn.feeMiner': "Miners' fees excluded",
 

@@ -61,6 +61,7 @@ const FilterStyle = styled.div`
       border: 0px;
       background: rgba(0, 0, 0, 0);
       padding: 0;
+      text-align: center;
     }
   }
 `;

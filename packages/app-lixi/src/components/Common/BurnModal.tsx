@@ -372,12 +372,10 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
           {errors.burnedValue && errors.burnedValue.message}
         </p>
       </Form>
-      <p className="amount-burn">{intl.get('burn.youOffering') + selectedAmount + intl.get('general.dana')}</p>
+      <p className="amount-burn">{intl.get('burn.youOffering') + selectedAmount + intl.get('general.dana')}.</p>
 
       <p className="fee-burn">
-        {burnForType == BurnForType.Token
-          ? null
-          : intl.get('burn.sendDana', {
+        {intl.get('burn.sendDana', {
             cost: currency.burnFee * selectedAmount + selectedAmount
           })}
       </p>
