@@ -43,7 +43,7 @@ export default {
   'burn.page': 'page',
   'burn.account': 'account',
   'burn.doneBurning': 'Burning completed!',
-  'burn.sendDana': 'You will pay {cost} Dana (Excluding miner\'s fees).',
+  'burn.sendDana': "You will pay {cost} Dana (Excluding miner's fees).",
   'burn.owner': ' to {name} owner',
   'burn.feeMiner': "Miners' fees excluded",
 
@@ -558,6 +558,7 @@ export default {
   'post.on': 'on',
   'post.insufficientFeeCreatePost': 'You need Lotus to perform this action.',
   'post.postTitle': 'Post',
+  'post.postBy': 'Post by',
   'post.showTranslate': 'Show translation',
   'post.hideTranslate': 'Hide translation',
 

@@ -15,6 +15,7 @@ import { BurnModal } from './BurnModal';
 import { ConfigProvider } from 'antd';
 import lightTheme from 'src/styles/themes/lightTheme';
 import { FollowModal } from './FollowModal';
+import { PostDetailModal } from '../Posts/PostDetailModal';
 import { getCurrentThemes } from '@store/settings';
 import darkTheme from 'src/styles/themes/darkTheme';
 
@@ -30,7 +31,8 @@ const modalComponentLookupTable = {
   EditPageModal,
   UploadAvatarCoverModal,
   BurnModal,
-  FollowModal
+  FollowModal,
+  PostDetailModal
 };
 
 const ModalManager = () => {

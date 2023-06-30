@@ -379,6 +379,7 @@ const SpaceShorcutItem = styled(Space)`
         margin: 0;
         text-align: left;
         line-height: 16px;
+        word-break: break-word;
       }
       .page-name {
         font-size: 14px;
