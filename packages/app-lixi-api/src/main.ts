@@ -12,6 +12,7 @@ import 'winston-daily-rotate-file';
 import loggerConfig from './logger.config';
 import { join } from 'path';
 import { contentParser } from 'fastify-multer';
+import { fastifyCors, FastifyCorsOptions } from '@fastify/cors';
 import { FastifyHelmetOptions } from '@fastify/helmet';
 import _ from 'lodash';
 
@@ -54,26 +55,30 @@ async function bootstrap() {
     console.log(err);
   });
 
-  const allowedOrigins = _.compact(whitelistOrigins).map(origin => stripTrailingSlash(origin))
+  const allowedOrigins = _.compact(whitelistOrigins).map(origin => stripTrailingSlash(origin));
 
-  process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local'
-    ? app.enableCors()
-    : app.enableCors({
-      credentials: true,
-      origin: function (origin, callback) {
+  const corsOptions: FastifyCorsOptions = {
+    credentials: true,
+    origin: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local' ?
+      ['*'] :
+      function (origin, callback) {
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(stripTrailingSlash(origin)) === -1) {
           const msg = `The CORS policy for this site does not allow access from the specified Origin. ${origin}`;
-          console.log(msg);
-          return callback(new Error(msg), false);
+          callback(new Error(msg), true);
+        } else {
+          callback(null, false);
         }
-        return callback(null, true);
+
       },
-      allowedHeaders: 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
-      methods: "GET,PUT,POST,DELETE,UPDATE,OPTIONS",
-      preflightContinue: false,
-      optionsSuccessStatus: 200
-    });
+    exposedHeaders: ['Authorization'],
+    allowedHeaders: 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe, Origin, Account-Secret',
+    methods: "GET,PUT,POST,DELETE,UPDATE,OPTIONS",
+    preflightContinue: true,
+    optionsSuccessStatus: 200
+  }
+
+  app.register(fastifyCors, corsOptions);
 
   // Prisma
   const prismaService: PrismaService = app.get(PrismaService);
