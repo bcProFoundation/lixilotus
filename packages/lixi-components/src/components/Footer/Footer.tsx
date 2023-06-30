@@ -10,13 +10,13 @@ import _ from 'lodash';
 const StyledFooter = styled.div`
   border-top: 1px solid ${props => props.theme.wallet.borders.color};
   position: fixed;
+  z-index: 9;
   bottom: 0;
   width: 100%;
   padding: 0;
   background: #fff;
   justify-content: space-around;
   display: none;
-  z-index: 9999;
   max-height: 60px;
   @media (max-width: 968px) {
     display: flex;

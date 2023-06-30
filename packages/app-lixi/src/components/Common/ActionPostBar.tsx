@@ -48,9 +48,10 @@ type ActionPostBarProps = {
   post: PostItem;
   handleBurnForPost?: (isUpVote: boolean, post: any, optionBurn?: string) => Promise<void>;
   onClickIconComment?: (e) => void;
+  isSetBorderBottom?: boolean;
 };
 
-const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment }: ActionPostBarProps) => {
+const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment, isSetBorderBottom }: ActionPostBarProps) => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
@@ -63,7 +64,7 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment }: ActionPo
   const { sendXpi } = useXPI();
 
   useEffect(() => {
-    selectedKey.includes('post') ? setBorderBottom(true) : setBorderBottom(false);
+    selectedKey.includes('post') || isSetBorderBottom ? setBorderBottom(true) : setBorderBottom(false);
   }, [selectedKey]);
 
   const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =

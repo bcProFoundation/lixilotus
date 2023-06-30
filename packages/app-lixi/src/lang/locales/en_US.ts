@@ -558,6 +558,7 @@ export default {
   'post.on': 'on',
   'post.insufficientFeeCreatePost': 'You need Lotus to perform this action.',
   'post.postTitle': 'Post',
+  'post.postBy': 'Post by',
   'post.showTranslate': 'Show translation',
   'post.hideTranslate': 'Hide translation',
 

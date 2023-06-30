@@ -99,6 +99,7 @@ code {
   .ant-modal-body {
     background: #fff;
     padding: 1rem 24px;
+    border-radius: 12px;
     position: relative;
   }
 
@@ -335,6 +336,7 @@ code {
 }
 
 .ant-modal {
+  top: 30px;
   @media (max-width: 768px) {
     top: 1% !important;
     margin-bottom: 7rem;
@@ -373,6 +375,22 @@ code {
         }
       }
     }
+  }
+}
+
+.post-detail-custom-modal {
+  @media (max-width: 968px) {
+    width: 80vw !important;
+    margin-bottom: 0 !important;
+  }
+  @media (max-width: 468px) {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .ant-modal-body {
+    padding: 0;
   }
 }
 
@@ -1138,6 +1156,45 @@ code {
     &:hover {
       color: var(--color-primary) !important;
       background: var(--border-color-dark-base) !important;
+    }
+  }
+
+  // PostDetailModal
+  .post-detail-modal {
+    background: var(--bg-color-dark-item) !important;
+    .ant-layout-header,
+    .action-post-bar,
+    .comment-input-container {
+      background: var(--bg-color-dark-item) !important;
+      border-color: var(--border-color-dark-base) !important;
+    }
+    .anticon {
+      color: #fff;
+    }
+    .ant-image {
+      width: 100%;
+      background: var(--bg-color-dark-item) !important;
+    }
+    .ant-comment {
+      background: var(--bg-color-dark-item) !important;
+      .ant-comment-content-author-name {
+        a {
+          color: var(--text-color-primary-dark) !important;
+        }
+      }
+      .ant-comment-content-author-time {
+        span {
+          color: gray;
+        }
+      }
+      .ant-comment-content-detail {
+        color: var(--text-color-on-dark);
+      }
+    }
+    .images-post {
+      .react-photo-gallery--gallery > div {
+        background: var(--bg-color-dark-item) !important;
+      }
     }
   }
 }

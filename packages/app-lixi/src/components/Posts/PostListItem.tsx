@@ -326,6 +326,10 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
 
   if (!post) return null;
 
+  const openPostDetailModal = (postData: any) => {
+    dispatch(openModal('PostDetailModal', { post: postData }));
+  };
+
   const handlePostClick = e => {
     if (e.target.className === 'hashtag-link') {
       e.stopPropagation();
@@ -360,8 +364,9 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
     if (e.target.className === 'read-more-more-module_btn__33IaH' || e.target.className.includes('post-translation')) {
       e.stopPropagation();
     } else {
-      dispatch(setSelectedPost(post.id));
-      router.push(`/post/${post.id}`);
+      // dispatch(setSelectedPost(post.id));
+      // router.push(`/post/${post.id}`);
+      openPostDetailModal(post);
     }
   };
 

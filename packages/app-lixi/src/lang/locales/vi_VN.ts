@@ -556,6 +556,7 @@ export default {
   'post.on': 'trên',
   'post.insufficientFeeCreatePost': 'Bạn cần Lotus để thực hiện hành động này.',
   'post.postTitle': 'Bài viết',
+  'post.postBy': 'Bài viết bởi ',
   'post.showTranslate': 'Hiện bài dịch',
   'post.hideTranslate': 'Ẩn bài dịch',
 
