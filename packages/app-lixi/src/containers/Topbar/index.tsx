@@ -32,6 +32,7 @@ import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import { fromSmallestDenomination } from 'src/utils/cashMethods';
 import styled from 'styled-components';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 
 export type TopbarProps = {
   className?: string;
@@ -46,6 +47,9 @@ const PathDirection = styled.div`
     .logo-app {
       width: 80%;
     }
+  }
+  .logo-app-desktop {
+    padding: 1rem 0.5rem;
   }
   h3 {
     text-transform: capitalize;
@@ -247,6 +251,13 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   let isTop = useAppSelector(getIsTopPosts);
   const currentTheme = useAppSelector(getCurrentThemes);
+  const [isMobile, setIsMobile] = useState(false);
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    const isMobile = width < 968 ? true : false;
+    setIsMobile(isMobile);
+  }, [width]);
 
   useEffect(() => {
     if (selectedAccount) {
@@ -483,9 +494,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
         {currentPathName == '/' && (
           <picture>
             <img
-              className="logo-app"
+              className={`${isMobile ? '' : 'logo-app-desktop'} "logo-app`}
               height={'64px'}
-              src="/images/lixilotus-logo.svg"
+              src={`${isMobile ? '/images/lixilotus-logo.svg' : '/images/lixilotus-text.svg'}`}
               alt="lixilotus-logo"
               onClick={() => handleLogoClick()}
             />
@@ -493,7 +504,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
         )}
         <div
           onClick={handleMenuClick}
-          style={{ marginLeft: currentPathName == '/' ? '4rem' : '2rem' }}
+          style={{ marginLeft: currentPathName == '/' ? '2rem' : '0.5rem' }}
           className="menu-hamburger"
         >
           <input className="checkbox" type="checkbox" name="" id="" checked={navCollapsed} />
