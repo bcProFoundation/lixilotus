@@ -91,8 +91,13 @@ export class ClaimController {
               id: parentLixi!.uploadDetail.uploadId
             }
           });
-          image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
-          thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+
+          if (upload) {
+            const cfXsmallUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/xsmall`;
+            const cfPublicUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
+            image = cfPublicUrl;
+            thumbnail = cfXsmallUrl;
+          }
         }
       } else {
         if (lixi?.uploadDetail) {
@@ -101,8 +106,12 @@ export class ClaimController {
               id: lixi.uploadDetail.uploadId
             }
           });
-          image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
-          thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+          if (upload) {
+            const cfXsmallUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/xsmall`;
+            const cfPublicUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
+            image = cfPublicUrl;
+            thumbnail = cfXsmallUrl;
+          }
         }
       }
 
@@ -491,8 +500,12 @@ export class ClaimController {
                   id: parentLixi!.uploadDetail.uploadId
                 }
               });
-              image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
-              thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+              if (upload) {
+                const cfXsmallUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/xsmall`;
+                const cfPublicUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
+                image = cfPublicUrl;
+                thumbnail = cfXsmallUrl;
+              }
             }
           } else {
             if (lixi.uploadDetail) {
@@ -501,8 +514,12 @@ export class ClaimController {
                   id: lixi.uploadDetail.uploadId
                 }
               });
-              image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
-              thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+              if (upload) {
+                const cfXsmallUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/xsmall`;
+                const cfPublicUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
+                image = cfPublicUrl;
+                thumbnail = cfXsmallUrl;
+              }
             }
           }
 

@@ -7,6 +7,7 @@ export interface Config {
   graphql: GraphqlConfig;
   security: SecurityConfig;
   prisma: PrismaConfig;
+  cloudflare?: CloudflareConfig;
 }
 
 export interface NestConfig {
@@ -39,3 +40,10 @@ export interface SecurityConfig {
 }
 
 export type PrismaConfig = Prisma.PrismaClientOptions;
+
+export interface CloudflareConfig {
+  cfAccountId: string;
+  cfAccountHash: string;
+  cfImagesToken: string;
+  cfImagesDeliveryUrl: string;
+}

@@ -816,6 +816,8 @@ input UpdatePostInput {
 
 type Upload {
   bucket: String
+  cfImageFilename: String
+  cfImageId: String
   height: String
   id: ID!
   sha: String!

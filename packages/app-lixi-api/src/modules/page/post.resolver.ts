@@ -1182,7 +1182,9 @@ export class PostResolver {
             height: true,
             sha800: true,
             sha320: true,
-            sha40: true
+            sha40: true,
+            cfImageId: true,
+            cfImageFilename: true
           }
         }
       }
