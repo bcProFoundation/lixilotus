@@ -23,6 +23,8 @@ import { stripHtml } from 'string-strip-html';
 import moment from 'moment';
 import { currency } from '@components/Common/Ticker';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
+import { LeftOutlined } from '@ant-design/icons';
+import { setSelectedPost } from '@store/post/actions';
 
 const { Sider } = Layout;
 
@@ -228,6 +230,11 @@ export const ContainerAccess = styled.div`
       }
     }
     .social-digest {
+      .header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
       padding: 0 0.5rem;
       width: 100%;
       text-align: left;
@@ -293,7 +300,11 @@ const ShortcutSideBar = styled(Sider)`
   box-shadow: 0 0 30px rgb(80 181 255 / 5%);
   min-width: 300px !important;
   max-width: 300px !important;
-  scrollbar-width: none;
+  -ms-overflow-style: none; // Internet Explorer 10+
+  scrollbar-width: none; // Firefox
+  ::-webkit-scrollbar {
+    display: none; // Safari and Chrome
+  }
   // &::-webkit-scrollbar {
   //   width: 5px;
   // }
@@ -508,7 +519,7 @@ const SidebarShortcut = () => {
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext } = useInfinitePostsQuery(
     {
-      first: 30,
+      first: 50,
       minBurnFilter: filterValue,
       accountId: selectedAccountId ?? null,
       orderBy: [
@@ -628,7 +639,15 @@ const SidebarShortcut = () => {
             {!navCollapsed && (
               <>
                 <div className="social-digest">
-                  <h3>Digest</h3>
+                  <div className="header-bar">
+                    <h3>Digest</h3>
+                    <Button
+                      type="primary"
+                      className="no-border-btn animate__animated animate__heartBeat"
+                      icon={<LeftOutlined />}
+                      onClick={handleMenuClick}
+                    />
+                  </div>
                   <ItemQuickAccess
                     icon={'/images/ico-newfeeds.svg'}
                     text={'Feeds'}
@@ -637,7 +656,7 @@ const SidebarShortcut = () => {
                     onClickItem={() => handleIconClick('/')}
                   />
                   {filterGroup.map(item => {
-                    return <ShortCutItem item={item} onClickIcon={path => router.push(pathShortcutItem(item, path))} />;
+                    return <ShortCutItem item={item} onClickIcon={() => dispatch(setSelectedPost(item.id))} />;
                   })}
                 </div>
               </>
@@ -645,7 +664,13 @@ const SidebarShortcut = () => {
             {navCollapsed && (
               <>
                 <h3 style={{ marginBottom: '0' }} onClick={handleMenuClick}>
-                  <img width={22} height={22} src="/images/ico-hambuger.svg" alt="" />
+                  <img
+                    className="animate__animated animate__heartBeat"
+                    width={22}
+                    height={22}
+                    src="/images/ico-hambuger.svg"
+                    alt=""
+                  />
                 </h3>
                 <div className="social-feature" style={{ padding: navCollapsed ? '0.5rem' : '1rem' }}>
                   <ItemQuickAccess
@@ -660,7 +685,7 @@ const SidebarShortcut = () => {
                       <ShortCutItem
                         item={item}
                         isCollapse={navCollapsed}
-                        onClickIcon={path => router.push(pathShortcutItem(item, path))}
+                        onClickIcon={() => dispatch(setSelectedPost(item.id))}
                       />
                     );
                   })}

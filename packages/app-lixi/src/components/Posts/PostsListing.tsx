@@ -220,14 +220,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         }
       });
       headerNode ? (headerNode.style.display = 'none') : null;
-      _.delay(() => {
-        refs.current[postIdSelected].firstChild.classList.add('active-post');
-        refs.current[postIdSelected].scrollIntoView({ behaviour: 'smooth' });
-        headerNode ? (headerNode.style.display = 'grid') : null;
-      }, 500);
+      refs.current[postIdSelected].firstChild.classList.add('active-post');
+      refs.current[postIdSelected].scrollIntoView({ behaviour: 'smooth' });
+      headerNode ? (headerNode.style.display = 'grid') : null;
       dispatch(setSelectedPost(''));
     }
-  }, [data]);
+  }, [data, postIdSelected]);
 
   //#region QueryVirtuoso
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
