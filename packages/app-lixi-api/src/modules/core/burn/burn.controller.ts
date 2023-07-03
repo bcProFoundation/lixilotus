@@ -365,7 +365,7 @@ export class BurnController {
             burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
             burnForType: burnForTypeString.toLowerCase(),
             xpiBurn: command.burnValue,
-            xpiFee: calcFee
+            xpiFee: fee
           }
         };
 

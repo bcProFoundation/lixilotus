@@ -18,6 +18,7 @@ const FilterStyle = styled.div`
   align-items: center;
   justify-content: flex-start;
   margin: 5px;
+  margin-top: 10px;
   p {
     margin: 0px;
     font-style: normal;
