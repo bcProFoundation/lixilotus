@@ -46,7 +46,8 @@ const PathDirection = styled.div`
   @media (max-width: 960px) {
     gap: 0;
     .logo-app {
-      width: 75%;
+      width: 60px;
+      height: 60px;
     }
   }
   .logo-app-desktop {
