@@ -6,6 +6,7 @@ export default () => {
   const defaultEnv = {
     cloudflare: {
       cfAccountId: process.env.CF_ACCOUNT_ID,
+      cfAccountHash: process.env.CF_ACCOUNT_HASH,
       cfImagesToken: process.env.CF_IMAGES_TOKEN,
       cfImagesDeliveryUrl: process.env.CF_IMAGES_DELIVERY_URL
     }

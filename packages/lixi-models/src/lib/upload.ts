@@ -39,6 +39,12 @@ export class Upload {
   @Field(() => String, { nullable: true })
   sha40: string;
 
+  @Field(() => String, { nullable: true })
+  cfImageId?: string;
+
+  @Field(() => String, { nullable: true })
+  cfImageFilename: string;
+
   extension: string;
   thumbnailWidth?: number;
   thumbnailHeight?: number;

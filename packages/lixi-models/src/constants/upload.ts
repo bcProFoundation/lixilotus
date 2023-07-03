@@ -14,6 +14,13 @@ export const UPLOAD_BUTTON_TYPE = {
   DASHED: 'dashed'
 };
 
-export const UPLOAD_API = '/api/uploads';
 export const UPLOAD_API_S3 = '/api/uploads/s3';
 export const UPLOAD_API_S3_MULTIPLE = '/api/uploads/s3-multiple';
+
+export const IMAGES_VARIANTS = {
+  XS: 'xsmall',
+  S: 'small',
+  M: 'medium',
+  L: 'large',
+  p: 'public'
+}

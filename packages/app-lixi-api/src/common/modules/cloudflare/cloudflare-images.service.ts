@@ -4,6 +4,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { Operation, Requests, Responses } from 'cloudflare-images';
 import FormData from 'form-data';
 import { createReadStream } from 'fs';
+import { Duplex } from 'stream';
 import _ from 'lodash';
 import { CloudflareConfig } from '../../../config/config.interface';
 import { urlJoin } from '../../../utils/urlJoin';
@@ -41,6 +42,13 @@ export class CloudflareImagesService {
     if (!(this.token && this.accountId && this.deliveryUrl)) {
       throw new Error('Invalid cloudflare account.');
     }
+  }
+
+  private bufferToStream(buffer: Buffer): ReadableStream {
+    let stream = new Duplex();
+    stream.push(buffer);
+    stream.push(null);
+    return stream;
   }
 
   private axiosRequestConfig(otherHeaders: any = {}): AxiosRequestConfig {
@@ -81,14 +89,47 @@ export class CloudflareImagesService {
     }
   }
 
+  public async createImageFromBuffer(request: Requests.CreateImage, buffer: Buffer): Promise<Responses.CreateImage> {
+    try {
+      const url = urlJoin(this.BASE_URL, 'accounts', this.accountId, 'images', 'v1');
+
+      const formData = new FormData();
+      formData.append('id', request.id);
+      formData.append('file', this.bufferToStream(buffer), request.fileName);
+      if (!_.isEmpty(request.metadata)) {
+        formData.append("metadata", JSON.stringify(request.metadata), { contentType: "application/json" })
+      }
+      formData.append("requireSignedURLs", request.requireSignedURLs == true ? "true" : "false");
+      const config = this.axiosRequestConfig({
+        "Content-Type": "multipart/form-data"
+      });
+      const response = await axios.post<Responses.CreateImage>(url, formData, config);
+
+      return response.data;
+    } catch (error) {
+      this.logger.error({
+        error,
+        operation: 'image.create'
+      });
+      throw error;
+    }
+  }
+
   public async createImageFromFile(request: Requests.CreateImage, path: string): Promise<Responses.CreateImage> {
     try {
       const url = urlJoin(this.BASE_URL, 'accounts', this.accountId, 'images', 'v1');
 
       const formData = new FormData();
-      formData.append('file', createReadStream(path));
-      const config = this.axiosRequestConfig({});
-      const response = await axios.post<Responses.CreateImage>(url, request, config);
+      formData.append('id', request.id);
+      formData.append('file', createReadStream(path), request.fileName);
+      if (!_.isEmpty(request.metadata)) {
+        formData.append("metadata", JSON.stringify(request.metadata), { contentType: "application/json" });
+      }
+      formData.append("requireSignedURLs", request.requireSignedURLs == true ? "true" : "false");
+      const config = this.axiosRequestConfig({
+        "Content-Type": "multipart/form-data"
+      });
+      const response = await axios.post<Responses.CreateImage>(url, formData, config);
 
       return response.data;
     } catch (error) {
@@ -104,7 +145,7 @@ export class CloudflareImagesService {
     try {
       const url = urlJoin(this.BASE_URL, 'accounts', this.accountId, 'images', 'v1');
       const config = this.axiosRequestConfig({
-        'content-type': 'multipart/form-data'
+        "Content-Type": "multipart/form-data"
       });
       const { id, fileName, metadata, requireSignedURLs } = {
         ...(DefaultRequests['image.create'] as Requests.CreateImage),
@@ -113,10 +154,11 @@ export class CloudflareImagesService {
 
       const formData = new FormData();
       formData.append('id', id);
-      formData.append('fileName', fileName);
-      formData.append('url', imageUrl);
-      formData.append('metadata', metadata);
-      formData.append('requireSignedURLs', requireSignedURLs);
+      formData.append('url', imageUrl, fileName);
+      if (!_.isEmpty(metadata)) {
+        formData.append("metadata", JSON.stringify(metadata), { contentType: "application/json" });
+      }
+      formData.append("requireSignedURLs", requireSignedURLs == true ? "true" : "false");
       const response = await axios.post<Responses.CreateImage>(url, formData, config);
 
       return response.data;

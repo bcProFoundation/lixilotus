@@ -412,6 +412,8 @@ model Upload {
   sha320           String?
   sha40            String?
   bucket           String?
+  cfImageId        String?       @map("cf_image_id")
+  cfImageFilename  String?       @map("cf_image_filename")
 
   @@map("upload")
 }

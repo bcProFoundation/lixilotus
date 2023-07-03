@@ -43,6 +43,7 @@ export type PrismaConfig = Prisma.PrismaClientOptions;
 
 export interface CloudflareConfig {
   cfAccountId: string;
+  cfAccountHash: string;
   cfImagesToken: string;
   cfImagesDeliveryUrl: string;
 }
