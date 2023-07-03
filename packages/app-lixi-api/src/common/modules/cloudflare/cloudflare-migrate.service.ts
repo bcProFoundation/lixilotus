@@ -3,7 +3,7 @@ import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../../../modules/prisma/prisma.service';
 import { CloudflareImagesService } from './cloudflare-images.service';
 import { Requests } from 'cloudflare-images';
-import { Upload } from '@bcpros/lixi-prisma';
+import { Upload } from '@prisma/client';
 
 @Injectable()
 export class CloudflareMigrateService {
@@ -24,11 +24,13 @@ export class CloudflareMigrateService {
       if (!uploads || uploads.length == 0) {
         this.logger.debug('All images are migrated');
       }
+
+      this.logger.log(`Prepare to migrate ${uploads.length} images`);
       for (const upload of uploads) {
         const url = upload.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload.url;
         const createImageRequest: Requests.CreateImage = {
           id: upload.sha!,
-          fileName: upload.originalFilename,
+          fileName: `${upload.originalFilename}.${upload.extension}`,
           metadata: {
             width: upload.width,
             height: upload.height
