@@ -9,11 +9,7 @@ import { Upload } from '@bcpros/lixi-prisma';
 export class CloudflareMigrateService {
   private readonly logger = new Logger(CloudflareMigrateService.name);
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly cfImagesService: CloudflareImagesService
-  ) {
-  }
+  constructor(private readonly prisma: PrismaService, private readonly cfImagesService: CloudflareImagesService) {}
 
   @Cron('10 * * * * *')
   async handleCron() {
@@ -56,8 +52,7 @@ export class CloudflareMigrateService {
         this.logger.debug(`Upload to cloudflare the image ${response.result.id}`);
       }
     } catch (err) {
-      this.logger.error({ error: err, operation: 'migrate.image'});
+      this.logger.error({ error: err, operation: 'migrate.image' });
     }
-    
   }
 }

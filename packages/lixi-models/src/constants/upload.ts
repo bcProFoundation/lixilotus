@@ -23,4 +23,4 @@ export const IMAGES_VARIANTS = {
   M: 'medium',
   L: 'large',
   p: 'public'
-}
+};

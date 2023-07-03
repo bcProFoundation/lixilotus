@@ -296,7 +296,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
   useEffect(() => {
     const mapImages = item.uploads.map(img => {
       let imgSha = img.upload.sha;
-    
+
       const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${imgSha}`;
       let imgWidth = parseInt(img?.upload?.width) || 4;
       let height = parseInt(img?.upload?.height) || 3;

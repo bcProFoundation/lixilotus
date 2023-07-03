@@ -97,11 +97,11 @@ export class CloudflareImagesService {
       formData.append('id', request.id);
       formData.append('file', this.bufferToStream(buffer), request.fileName);
       if (!_.isEmpty(request.metadata)) {
-        formData.append("metadata", JSON.stringify(request.metadata), { contentType: "application/json" })
+        formData.append('metadata', JSON.stringify(request.metadata), { contentType: 'application/json' });
       }
-      formData.append("requireSignedURLs", request.requireSignedURLs == true ? "true" : "false");
+      formData.append('requireSignedURLs', request.requireSignedURLs == true ? 'true' : 'false');
       const config = this.axiosRequestConfig({
-        "Content-Type": "multipart/form-data"
+        'Content-Type': 'multipart/form-data'
       });
       const response = await axios.post<Responses.CreateImage>(url, formData, config);
 
@@ -123,11 +123,11 @@ export class CloudflareImagesService {
       formData.append('id', request.id);
       formData.append('file', createReadStream(path), request.fileName);
       if (!_.isEmpty(request.metadata)) {
-        formData.append("metadata", JSON.stringify(request.metadata), { contentType: "application/json" });
+        formData.append('metadata', JSON.stringify(request.metadata), { contentType: 'application/json' });
       }
-      formData.append("requireSignedURLs", request.requireSignedURLs == true ? "true" : "false");
+      formData.append('requireSignedURLs', request.requireSignedURLs == true ? 'true' : 'false');
       const config = this.axiosRequestConfig({
-        "Content-Type": "multipart/form-data"
+        'Content-Type': 'multipart/form-data'
       });
       const response = await axios.post<Responses.CreateImage>(url, formData, config);
 
@@ -145,7 +145,7 @@ export class CloudflareImagesService {
     try {
       const url = urlJoin(this.BASE_URL, 'accounts', this.accountId, 'images', 'v1');
       const config = this.axiosRequestConfig({
-        "Content-Type": "multipart/form-data"
+        'Content-Type': 'multipart/form-data'
       });
       const { id, fileName, metadata, requireSignedURLs } = {
         ...(DefaultRequests['image.create'] as Requests.CreateImage),
@@ -156,9 +156,9 @@ export class CloudflareImagesService {
       formData.append('id', id);
       formData.append('url', imageUrl, fileName);
       if (!_.isEmpty(metadata)) {
-        formData.append("metadata", JSON.stringify(metadata), { contentType: "application/json" });
+        formData.append('metadata', JSON.stringify(metadata), { contentType: 'application/json' });
       }
-      formData.append("requireSignedURLs", requireSignedURLs == true ? "true" : "false");
+      formData.append('requireSignedURLs', requireSignedURLs == true ? 'true' : 'false');
       const response = await axios.post<Responses.CreateImage>(url, formData, config);
 
       return response.data;

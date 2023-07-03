@@ -32,7 +32,7 @@ export class UploadFilesController {
     private prisma: PrismaService,
     private uploadService: UploadService,
     private readonly cloudflareService: CloudflareImagesService
-  ) { }
+  ) {}
 
   @Post('/s3')
   @UseGuards(JwtAuthGuard)
@@ -184,5 +184,4 @@ export class UploadFilesController {
       }
     }
   }
-
 }
