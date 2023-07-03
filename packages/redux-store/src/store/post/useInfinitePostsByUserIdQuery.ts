@@ -91,7 +91,7 @@ export function useInfinitePostsByUserIdQuery(
     errorNext: nextResult?.error,
     isErrorNext: nextResult?.isError,
     isFetchingNext: nextResult?.isFetching,
-    hasNext: baseResult.data?.allPostsByUserId?.pageInfo?.endCursor !== undefined,
+    hasNext: baseResult.data?.allPostsByUserId?.pageInfo?.endCursor !== null,
     fetchNext,
     refetch
   };

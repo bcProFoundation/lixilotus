@@ -153,8 +153,12 @@ const StyledContainerPostDetail = styled.div`
   height: fit-content;
   max-height: 92vh;
   overflow: auto;
-  scrollbar-width: none;
   border-radius: 1rem;
+  -ms-overflow-style: none; // Internet Explorer 10+
+  scrollbar-width: none; // Firefox
+  ::-webkit-scrollbar {
+    display: none; // Safari and Chrome
+  }
   // &::-webkit-scrollbar {
   //   width: 5px;
   // }
@@ -166,10 +170,6 @@ const StyledContainerPostDetail = styled.div`
 
   @media (max-width: 968px) {
     max-height: 90vh;
-  }
-
-  @media (max-width: 468px) {
-    max-height: 100vh;
   }
 
   header {

@@ -258,14 +258,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const QueryFooter = () => {
     if (isQueryLoading) return null;
     return (
-      <div
+      <b
         style={{
           padding: '1rem 2rem 2rem 2rem',
           textAlign: 'center'
         }}
       >
         {isFetchingQueryNext ? <Skeleton avatar active /> : "It's so empty here..."}
-      </div>
+      </b>
     );
   };
   //#endregion
@@ -321,14 +321,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   const Footer = () => {
     return (
-      <div
+      <b
         style={{
           padding: '1rem 2rem 2rem 2rem',
           textAlign: 'center'
         }}
       >
         {isFetchingNext ? <Skeleton avatar active /> : "It's so empty here..."}
-      </div>
+      </b>
     );
   };
   //#endregion
