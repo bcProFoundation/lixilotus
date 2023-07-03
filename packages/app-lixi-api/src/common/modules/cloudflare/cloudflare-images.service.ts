@@ -161,7 +161,7 @@ export class CloudflareImagesService {
       formData.append('requireSignedURLs', requireSignedURLs == true ? 'true' : 'false');
 
       this.logger.log(`Upload image with url: ${imageUrl} and id: ${id}`);
-      
+
       const response = await axios.post<Responses.CreateImage>(url, formData, config);
 
       return response.data;

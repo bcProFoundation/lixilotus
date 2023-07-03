@@ -47,6 +47,8 @@ export type PostQuery = {
         sha800?: string | null;
         sha320?: string | null;
         sha40?: string | null;
+        cfImageId?: string | null;
+        cfImageFilename?: string | null;
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -119,6 +121,8 @@ export type PostsQuery = {
             sha800?: string | null;
             sha320?: string | null;
             sha40?: string | null;
+            cfImageId?: string | null;
+            cfImageFilename?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -199,6 +203,8 @@ export type OrphanPostsQuery = {
             sha800?: string | null;
             sha320?: string | null;
             sha40?: string | null;
+            cfImageId?: string | null;
+            cfImageFilename?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -279,6 +285,8 @@ export type PostsByPageIdQuery = {
             sha800?: string | null;
             sha320?: string | null;
             sha40?: string | null;
+            cfImageId?: string | null;
+            cfImageFilename?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -359,6 +367,8 @@ export type PostsByUserIdQuery = {
             sha800?: string | null;
             sha320?: string | null;
             sha40?: string | null;
+            cfImageId?: string | null;
+            cfImageFilename?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -439,6 +449,8 @@ export type PostsByHashtagIdQuery = {
             sha800?: string | null;
             sha320?: string | null;
             sha40?: string | null;
+            cfImageId?: string | null;
+            cfImageFilename?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -519,6 +531,8 @@ export type PostsByTokenIdQuery = {
             sha800?: string | null;
             sha320?: string | null;
             sha40?: string | null;
+            cfImageId?: string | null;
+            cfImageFilename?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -595,6 +609,8 @@ export type PostsBySearchQuery = {
             sha800?: string | null;
             sha320?: string | null;
             sha40?: string | null;
+            cfImageId?: string | null;
+            cfImageFilename?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -612,6 +628,12 @@ export type PostsBySearchQuery = {
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
+        translations?: Array<{
+          __typename?: 'PostTranslation';
+          id: string;
+          translateContent: string;
+          translateLanguage: string;
         }> | null;
       } | null;
     }> | null;
@@ -667,6 +689,8 @@ export type PostsBySearchWithHashtagQuery = {
             sha800?: string | null;
             sha320?: string | null;
             sha40?: string | null;
+            cfImageId?: string | null;
+            cfImageFilename?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -684,6 +708,12 @@ export type PostsBySearchWithHashtagQuery = {
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
+        translations?: Array<{
+          __typename?: 'PostTranslation';
+          id: string;
+          translateContent: string;
+          translateLanguage: string;
         }> | null;
       } | null;
     }> | null;
@@ -740,6 +770,8 @@ export type PostsBySearchWithHashtagAtPageQuery = {
             sha800?: string | null;
             sha320?: string | null;
             sha40?: string | null;
+            cfImageId?: string | null;
+            cfImageFilename?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -757,6 +789,12 @@ export type PostsBySearchWithHashtagAtPageQuery = {
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
+        translations?: Array<{
+          __typename?: 'PostTranslation';
+          id: string;
+          translateContent: string;
+          translateLanguage: string;
         }> | null;
       } | null;
     }> | null;
@@ -813,6 +851,8 @@ export type PostsBySearchWithHashtagAtTokenQuery = {
             sha800?: string | null;
             sha320?: string | null;
             sha40?: string | null;
+            cfImageId?: string | null;
+            cfImageFilename?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -830,6 +870,12 @@ export type PostsBySearchWithHashtagAtTokenQuery = {
           __typename?: 'Repost';
           accountId?: number | null;
           account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        }> | null;
+        translations?: Array<{
+          __typename?: 'PostTranslation';
+          id: string;
+          translateContent: string;
+          translateLanguage: string;
         }> | null;
       } | null;
     }> | null;
@@ -868,6 +914,8 @@ export type PostFieldsFragment = {
       sha800?: string | null;
       sha320?: string | null;
       sha40?: string | null;
+      cfImageId?: string | null;
+      cfImageFilename?: string | null;
     };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -918,6 +966,8 @@ export type PostMeiliFieldsFragment = {
       sha800?: string | null;
       sha320?: string | null;
       sha40?: string | null;
+      cfImageId?: string | null;
+      cfImageFilename?: string | null;
     };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -935,6 +985,12 @@ export type PostMeiliFieldsFragment = {
     __typename?: 'Repost';
     accountId?: number | null;
     account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+  }> | null;
+  translations?: Array<{
+    __typename?: 'PostTranslation';
+    id: string;
+    translateContent: string;
+    translateLanguage: string;
   }> | null;
 };
 
@@ -969,6 +1025,8 @@ export type CreatePostMutation = {
         sha800?: string | null;
         sha320?: string | null;
         sha40?: string | null;
+        cfImageId?: string | null;
+        cfImageFilename?: string | null;
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -1027,6 +1085,8 @@ export type UpdatePostMutation = {
         sha800?: string | null;
         sha320?: string | null;
         sha40?: string | null;
+        cfImageId?: string | null;
+        cfImageFilename?: string | null;
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -1075,6 +1135,8 @@ export const PostFieldsFragmentDoc = `
       sha800
       sha320
       sha40
+      cfImageId
+      cfImageFilename
     }
   }
   postAccount {
@@ -1137,6 +1199,8 @@ export const PostMeiliFieldsFragmentDoc = `
       sha800
       sha320
       sha40
+      cfImageId
+      cfImageFilename
     }
   }
   postAccount {
@@ -1176,6 +1240,11 @@ export const PostMeiliFieldsFragmentDoc = `
   createdAt
   updatedAt
   originalLanguage
+  translations {
+    id
+    translateContent
+    translateLanguage
+  }
 }
     `;
 export const PostDocument = `

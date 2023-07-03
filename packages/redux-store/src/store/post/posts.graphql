@@ -343,6 +343,8 @@ fragment PostFields on Post {
       sha800
       sha320
       sha40
+      cfImageId
+      cfImageFilename
     }
   }
   postAccount {
@@ -404,6 +406,8 @@ fragment PostMeiliFields on Post {
       sha800
       sha320
       sha40
+      cfImageId
+      cfImageFilename
     }
   }
   postAccount {
