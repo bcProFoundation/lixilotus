@@ -42,7 +42,7 @@ export default {
   'burn.page': 'trang',
   'burn.account': 'tài khoản',
   'burn.doneBurning': 'Đốt thành công!',
-  'burn.sendDana': 'Bạn sẽ trả {cost} (Chưa tính phí của thợ đào).',
+  'burn.sendDana': 'Bạn sẽ trả {cost} XPI (Chưa tính phí của thợ đào).',
   'burn.owner': ' tới chủ {name} ',
   'burn.feeMiner': 'Chưa tính phí thợ đào',
 
@@ -112,8 +112,9 @@ export default {
   'general.fee': 'Phí: ',
   'general.createPost': 'Bạn đang nghĩ gì vậy?...',
   'general.suggested': 'Đề xuất: ',
-  'general.postFilter': 'Lọc bài viết: ',
+  'general.postFilter': 'Xem bài viết bạn theo dõi: ',
   'general.dana': ' Dana',
+  'general.support': 'Hỗ trợ',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -511,8 +512,8 @@ export default {
   'country.unablegetStates': 'Không thể tải tỉnh thành',
 
   /* 15.Post */
-  'general.allPost': 'Tất cả',
-  'general.topPost': 'Nổi bật',
+  'general.allPost': 'Bật',
+  'general.topPost': 'Tắt',
   'post.createNewPage': 'tạo bài viết mới',
   'post.createPage': 'tạo bài viết',
   'post.editPost': 'Sửa bài viết chưa đốt',

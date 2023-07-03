@@ -357,7 +357,7 @@ const StyledMenu = styled(Tabs)`
     }
   }
   &.ant-tabs {
-    width: 100vw;
+    width: 100%;
   }
   .ant-tabs-nav {
     &::before {

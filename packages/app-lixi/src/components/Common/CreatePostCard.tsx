@@ -488,11 +488,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
             value={'Link Url'}
             onClickIcon={() => console.log('Null')}
           />
-          <IconWImage
-            imgUrl={'/images/ico-twitter-color.png'}
-            value={'Embed Twitter'}
-            onClickIcon={() => console.log('Null')}
-          />
+          <IconWImage imgUrl={'/images/ico-embed.png'} value={'Embed'} onClickIcon={() => console.log('Null')} />
         </div>
       </DesktopCreatePost>
 

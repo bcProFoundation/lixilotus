@@ -220,14 +220,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         }
       });
       headerNode ? (headerNode.style.display = 'none') : null;
-      _.delay(() => {
-        refs.current[postIdSelected].firstChild.classList.add('active-post');
-        refs.current[postIdSelected].scrollIntoView({ behaviour: 'smooth' });
-        headerNode ? (headerNode.style.display = 'grid') : null;
-      }, 500);
+      refs.current[postIdSelected].firstChild.classList.add('active-post');
+      refs.current[postIdSelected].scrollIntoView({ behaviour: 'smooth' });
+      headerNode ? (headerNode.style.display = 'grid') : null;
       dispatch(setSelectedPost(''));
     }
-  }, [data]);
+  }, [data, postIdSelected]);
 
   //#region QueryVirtuoso
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
@@ -260,14 +258,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const QueryFooter = () => {
     if (isQueryLoading) return null;
     return (
-      <div
+      <b
         style={{
           padding: '1rem 2rem 2rem 2rem',
           textAlign: 'center'
         }}
       >
         {isFetchingQueryNext ? <Skeleton avatar active /> : "It's so empty here..."}
-      </div>
+      </b>
     );
   };
   //#endregion
@@ -323,14 +321,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   const Footer = () => {
     return (
-      <div
+      <b
         style={{
           padding: '1rem 2rem 2rem 2rem',
           textAlign: 'center'
         }}
       >
         {isFetchingNext ? <Skeleton avatar active /> : "It's so empty here..."}
-      </div>
+      </b>
     );
   };
   //#endregion
