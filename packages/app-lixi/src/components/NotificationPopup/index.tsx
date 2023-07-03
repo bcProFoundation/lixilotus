@@ -104,6 +104,12 @@ const StyledComment = styled(Comment)`
     letter-spacing: 0.5px;
     color: #1e1a1d;
   }
+  .readed {
+    background: #fff;
+  }
+  .un-read {
+    background: #eceff5;
+  }
 `;
 
 const StyledTitlePage = styled.h1`
@@ -163,6 +169,10 @@ const StyledHeader = styled.div`
   }
 `;
 
+const BlankNotification = styled.p`
+  padding: 0.5rem;
+`;
+
 const NotificationPopup = (notifications: Notification[], account: Account, isPopover?: boolean) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -193,141 +203,165 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
 
   const menuItems = [{ label: 'All', key: 'all' }];
 
+  const onClickMenu = () => {
+    return dispatch(push('/notifications'));
+  };
+
   return (
     <>
       <StyledTitlePage>{intl.get('general.notifications')}</StyledTitlePage>
-      <StyledHeader>
-        <Menu
-          className="menu-post-listing"
-          style={{
-            border: 'none',
-            position: 'relative',
-            marginBottom: '1rem',
-            background: 'var(--bg-color-light-theme)'
-          }}
-          mode="horizontal"
-          defaultSelectedKeys={['all']}
-          // selectedKeys={['all']}
-          // onClick={onClickMenu}
-          items={menuItems}
-        ></Menu>
-        <Button type="primary" className="no-border-btn" onClick={() => handleReadAll()}>
-          {intl.get('notification.readAll')}
-        </Button>
-      </StyledHeader>
-      {!isPopover &&
-        notifications &&
-        notifications.length > 0 &&
-        _.compact(notifications).map(notification => (
-          <>
-            {isMobile ? (
-              <div onClick={() => handleRead(account, notification)}>
-                <StyledSwipeToDelete
-                  key={notification.id}
-                  onDelete={() => handleDelete(account, notification.id)}
-                  deleteColor="var(--color-primary)"
-                >
+      {notifications?.length === 0 ? (
+        <>
+          <BlankNotification className="blank-notification">No notification</BlankNotification>
+        </>
+      ) : (
+        <>
+          <StyledHeader>
+            {!isPopover ? (
+              <>
+                <Menu
+                  className="menu-post-listing"
+                  style={{
+                    border: 'none',
+                    position: 'relative',
+                    marginBottom: '1rem',
+                    background: 'var(--bg-color-light-theme)'
+                  }}
+                  mode="horizontal"
+                  defaultSelectedKeys={['all']}
+                  selectedKeys={['all']}
+                  // onClick={onClickMenu}
+                  items={menuItems}
+                ></Menu>
+              </>
+            ) : (
+              <>
+                <Button type="primary" className="no-border-btn" onClick={onClickMenu}>
+                  All
+                </Button>
+              </>
+            )}
+            <Button type="primary" className="no-border-btn" onClick={() => handleReadAll()}>
+              {intl.get('notification.readAll')}
+            </Button>
+          </StyledHeader>
+          {!isPopover &&
+            notifications &&
+            notifications.length > 0 &&
+            _.compact(notifications).map(notification => (
+              <>
+                {isMobile ? (
+                  <div onClick={() => handleRead(account, notification)}>
+                    <StyledSwipeToDelete
+                      key={notification.id}
+                      onDelete={() => handleDelete(account, notification.id)}
+                      deleteColor="var(--color-primary)"
+                    >
+                      <StyledComment
+                        key={notification.id}
+                        className={`${notification.readAt !== null ? 'readed' : 'un-read'} className`}
+                        style={{ borderRadius: '0px' }}
+                        author={
+                          <StyledAuthor>
+                            <StyledTextLeft></StyledTextLeft>
+
+                            <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
+                          </StyledAuthor>
+                        }
+                        content={
+                          <div style={{ fontWeight: notification.readAt != null ? 'normal' : 'bold' }}>
+                            {notification.message}
+                          </div>
+                        }
+                      />
+                    </StyledSwipeToDelete>
+                  </div>
+                ) : (
                   <StyledComment
                     key={notification.id}
-                    style={{ backgroundColor: notification.readAt == null ? '#eceff5' : '#fff', borderRadius: '0px' }}
-                    className="card"
+                    className={`${notification.readAt !== null ? 'readed' : 'un-read'}`}
+                    style={{
+                      borderRadius: '10px',
+                      marginBottom: '8px'
+                    }}
                     author={
                       <StyledAuthor>
-                        <StyledTextLeft></StyledTextLeft>
+                        {/* <StyledTextLeft></StyledTextLeft> */}
 
                         <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
                       </StyledAuthor>
                     }
-                    content={
-                      <div style={{ fontWeight: notification.readAt != null ? 'normal' : 'bold' }}>
-                        {notification.message}
+                    avatar={
+                      <div style={{ cursor: 'pointer' }}>
+                        {' '}
+                        {/* onClick={() => router.push(`/profile/${notification.additionalData.senderName}`)} */}
+                        <AvatarUser
+                          name={
+                            !!notification && !!notification.additionalData && notification.additionalData.senderName
+                          }
+                          isMarginRight={false}
+                        />
                       </div>
                     }
+                    content={
+                      <Space>
+                        <div
+                          style={{ fontWeight: notification.readAt != null ? 'normal' : 'bold', cursor: 'pointer' }}
+                          onClick={() => handleRead(account, notification)}
+                        >
+                          {notification.message}
+                        </div>
+                        {/* <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} /> */}
+                      </Space>
+                    }
                   />
-                </StyledSwipeToDelete>
-              </div>
-            ) : (
-              <StyledComment
-                key={notification.id}
-                style={{
-                  borderRadius: '10px',
-                  backgroundColor: notification && notification.readAt == null ? '#eceff5' : '#fff',
-                  marginBottom: '8px'
-                }}
-                author={
-                  <StyledAuthor>
-                    {/* <StyledTextLeft></StyledTextLeft> */}
+                )}
+              </>
+            ))}
+          {isPopover &&
+            notifications &&
+            notifications.length > 0 &&
+            notifications.map((notification, index) => {
+              return (
+                index < 5 && (
+                  <StyledComment
+                    key={notification.id}
+                    className={`${notification.readAt !== null ? 'readed' : 'un-read'}`}
+                    style={{
+                      borderRadius: '10px',
+                      marginBottom: '8px'
+                    }}
+                    author={
+                      <StyledAuthor>
+                        {/* <StyledTextLeft></StyledTextLeft> */}
 
-                    <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
-                  </StyledAuthor>
-                }
-                avatar={
-                  <div style={{ cursor: 'pointer' }}>
-                    {' '}
-                    {/* onClick={() => router.push(`/profile/${notification.additionalData.senderName}`)} */}
-                    <AvatarUser
-                      name={!!notification && !!notification.additionalData && notification.additionalData.senderName}
-                      isMarginRight={false}
-                    />
-                  </div>
-                }
-                content={
-                  <Space>
-                    <div
-                      style={{ fontWeight: notification.readAt != null ? 'normal' : 'bold', cursor: 'pointer' }}
-                      onClick={() => handleRead(account, notification)}
-                    >
-                      {notification.message}
-                    </div>
-                    {/* <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} /> */}
-                  </Space>
-                }
-              />
-            )}
-          </>
-        ))}
-      {isPopover &&
-        notifications &&
-        notifications.length > 0 &&
-        notifications.map((notification, index) => {
-          return (
-            index < 5 && (
-              <StyledComment
-                key={notification.id}
-                style={{
-                  borderRadius: '10px',
-                  backgroundColor: notification && notification.readAt == null ? '#eceff5' : '#fff',
-                  marginBottom: '8px'
-                }}
-                author={
-                  <StyledAuthor>
-                    {/* <StyledTextLeft></StyledTextLeft> */}
-
-                    <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
-                  </StyledAuthor>
-                }
-                avatar={
-                  <div style={{ cursor: 'pointer' }}>
-                    {' '}
-                    {/* onClick={() => router.push(`/profile/${notification.additionalData.senderName}`)} */}
-                    <AvatarUser name={notification.additionalData.senderName} isMarginRight={false} />
-                  </div>
-                }
-                content={
-                  <Space>
-                    <div
-                      style={{ fontWeight: notification.readAt != null ? 'normal' : 'bold', cursor: 'pointer' }}
-                      onClick={() => handleRead(account, notification)}
-                    >
-                      {notification.message}
-                    </div>
-                    {/* <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} /> */}
-                  </Space>
-                }
-              />
-            )
-          );
-        })}
+                        <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
+                      </StyledAuthor>
+                    }
+                    avatar={
+                      <div style={{ cursor: 'pointer' }}>
+                        {' '}
+                        {/* onClick={() => router.push(`/profile/${notification.additionalData.senderName}`)} */}
+                        <AvatarUser name={notification.additionalData.senderName} isMarginRight={false} />
+                      </div>
+                    }
+                    content={
+                      <Space>
+                        <div
+                          style={{ fontWeight: notification.readAt != null ? 'normal' : 'bold', cursor: 'pointer' }}
+                          onClick={() => handleRead(account, notification)}
+                        >
+                          {notification.message}
+                        </div>
+                        {/* <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} /> */}
+                      </Space>
+                    }
+                  />
+                )
+              );
+            })}
+        </>
+      )}
     </>
   );
 };
