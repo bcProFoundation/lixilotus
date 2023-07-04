@@ -72,4 +72,9 @@ export class BurnQueueCommand {
   queryParams?: any;
 
   worshipType?: WORSHIP_TYPES;
+
+  // 2 fields below is for hashtag
+  query?: string;
+
+  hashtags?: string[];
 }

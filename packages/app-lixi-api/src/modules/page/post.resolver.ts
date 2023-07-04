@@ -391,6 +391,8 @@ export class PostResolver {
     minBurnFilter: number,
     @Args()
     args: ConnectionArgs,
+    @Args() { after, before, first, last }: PaginationArgs,
+
     @Args({ name: 'query', type: () => String, nullable: true })
     query: string,
     @Args({ name: 'hashtags', type: () => [String], nullable: true })
@@ -421,27 +423,68 @@ export class PostResolver {
 
       const postsId = _.map(posts, 'id');
 
-      const searchPosts = await this.prisma.post.findMany({
-        include: { translations: true },
-        where: {
-          AND: [
-            {
-              id: { in: postsId }
-            },
-            {
-              lotusBurnScore: {
-                gte: minBurnFilter ?? 0
-              }
-            }
-          ]
-        },
-        orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
-      });
+      //Testing new implement of searching
 
-      return connectionFromArraySlice(searchPosts, args, {
-        arrayLength: count || 0,
-        sliceStart: offset || 0
-      });
+      // const searchPosts = await this.prisma.post.findMany({
+      //   include: { translations: true },
+      //   where: {
+      //     AND: [
+      //       {
+      //         id: { in: postsId }
+      //       },
+      //       {
+      //         lotusBurnScore: {
+      //           gte: minBurnFilter ?? 0
+      //         }
+      //       }
+      //     ]
+      //   },
+      //   orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
+      // });
+
+      const result = await findManyCursorConnection(
+        args =>
+          this.prisma.post.findMany({
+            include: { translations: true },
+            where: {
+              AND: [
+                {
+                  id: { in: postsId }
+                },
+                {
+                  lotusBurnScore: {
+                    gte: minBurnFilter ?? 0
+                  }
+                }
+              ]
+            },
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            ...args
+          }),
+        () =>
+          this.prisma.post.count({
+            where: {
+              AND: [
+                {
+                  id: { in: postsId }
+                },
+                {
+                  lotusBurnScore: {
+                    gte: minBurnFilter ?? 0
+                  }
+                }
+              ]
+            },
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
+          }),
+        { first, last, before, after }
+      );
+      return result;
+
+      // return connectionFromArraySlice(searchPosts, args, {
+      //   arrayLength: count || 0,
+      //   sliceStart: offset || 0
+      // });
     } catch (err) {
       this.logger.error(err);
       if (err instanceof VError) {

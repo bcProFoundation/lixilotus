@@ -30,13 +30,13 @@ export class HashtagResolver {
 
   @Query(() => Hashtag)
   async hashtag(@Args('content', { type: () => String }) content: string) {
-    const hashtag: any = await this.meiliService.searchHashtag(`${process.env.MEILISEARCH_BUCKET}_${HASHTAG}`, content);
-
-    const result = await this.prisma.hashtag.findUnique({
-      where: { id: hashtag[0].id }
+    const hashtag = await this.prisma.hashtag.findUnique({
+      where: {
+        normalizedContent: content.toLowerCase()
+      }
     });
 
-    return result;
+    return hashtag;
   }
 
   @Query(() => HashtagConnection)

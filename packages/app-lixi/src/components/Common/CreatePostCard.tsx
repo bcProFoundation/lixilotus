@@ -241,7 +241,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     hashtagId?: string
   ) => {
     dispatch(
-      postApi.util.updateQueryData('Posts', { ...params, minBurnFilter: filterValue }, draft => {
+      postApi.util.updateQueryData('Posts', { minBurnFilter: filterValue }, draft => {
         draft.allPosts.edges.unshift({
           cursor: result.createPost.id,
           node: {
@@ -252,24 +252,20 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       })
     );
     dispatch(
-      postApi.util.updateQueryData(
-        'PostsByHashtagId',
-        { ...params, minBurnFilter: filterValue, id: hashtagId },
-        draft => {
-          draft.allPostsByHashtagId.edges.unshift({
-            cursor: result.createPost.id,
-            node: {
-              ...result.createPost
-            }
-          });
-          draft.allPostsByHashtagId.totalCount = draft.allPostsByHashtagId.totalCount + 1;
-        }
-      )
+      postApi.util.updateQueryData('PostsByHashtagId', { id: hashtagId }, draft => {
+        draft.allPostsByHashtagId.edges.unshift({
+          cursor: result.createPost.id,
+          node: {
+            ...result.createPost
+          }
+        });
+        draft.allPostsByHashtagId.totalCount = draft.allPostsByHashtagId.totalCount + 1;
+      })
     );
     dispatch(
       postApi.util.updateQueryData(
         'PostsBySearchWithHashtag',
-        { ...params, minBurnFilter: filterValue, query: query, hashtags: hashtags },
+        { hashtags: hashtags, query: query, minBurnFilter: filterValue },
         draft => {
           draft.allPostsBySearchWithHashtag.edges.unshift({
             cursor: result.createPost.id,
@@ -285,7 +281,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         dispatch(
           postApi.util.updateQueryData(
             'PostsBySearchWithHashtagAtPage',
-            { ...params, minBurnFilter: filterValue, query: query, hashtags: hashtags, pageId: pageId },
+            { minBurnFilter: filterValue, pageId: pageId, hashtags: hashtags, query: query },
             draft => {
               draft.allPostsBySearchWithHashtagAtPage.edges.unshift({
                 cursor: result.createPost.id,
@@ -297,25 +293,21 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           )
         );
         return dispatch(
-          postApi.util.updateQueryData(
-            'PostsByPageId',
-            { ...params, id: pageId, minBurnFilter: filterValue },
-            draft => {
-              draft.allPostsByPageId.edges.unshift({
-                cursor: result.createPost.id,
-                node: {
-                  ...result.createPost
-                }
-              });
-              draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount + 1;
-            }
-          )
+          postApi.util.updateQueryData('PostsByPageId', { id: pageId, minBurnFilter: filterValue }, draft => {
+            draft.allPostsByPageId.edges.unshift({
+              cursor: result.createPost.id,
+              node: {
+                ...result.createPost
+              }
+            });
+            draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount + 1;
+          })
         );
       case 'PostsByTokenId':
         dispatch(
           postApi.util.updateQueryData(
             'PostsBySearchWithHashtagAtToken',
-            { ...params, minBurnFilter: filterValue, query: query, hashtags: hashtags, tokenId: tokenPrimaryId },
+            { minBurnFilter: filterValue, tokenId: tokenPrimaryId, hashtags: hashtags, query: query },
             draft => {
               draft.allPostsBySearchWithHashtagAtToken.edges.unshift({
                 cursor: result.createPost.id,
@@ -327,19 +319,15 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           )
         );
         return dispatch(
-          postApi.util.updateQueryData(
-            'PostsByTokenId',
-            { ...params, id: tokenPrimaryId, minBurnFilter: filterValue },
-            draft => {
-              draft.allPostsByTokenId.edges.unshift({
-                cursor: result.createPost.id,
-                node: {
-                  ...result.createPost
-                }
-              });
-              draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount + 1;
-            }
-          )
+          postApi.util.updateQueryData('PostsByTokenId', { id: tokenPrimaryId, minBurnFilter: filterValue }, draft => {
+            draft.allPostsByTokenId.edges.unshift({
+              cursor: result.createPost.id,
+              node: {
+                ...result.createPost
+              }
+            });
+            draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount + 1;
+          })
         );
     }
   };
