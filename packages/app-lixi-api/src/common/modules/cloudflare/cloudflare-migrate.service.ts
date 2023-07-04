@@ -9,7 +9,7 @@ import { Upload } from '@prisma/client';
 export class CloudflareMigrateService {
   private readonly logger = new Logger(CloudflareMigrateService.name);
 
-  constructor(private readonly prisma: PrismaService, private readonly cfImagesService: CloudflareImagesService) {}
+  constructor(private readonly prisma: PrismaService, private readonly cfImagesService: CloudflareImagesService) { }
 
   @Cron('10 * * * * *')
   async handleCron() {
@@ -27,6 +27,7 @@ export class CloudflareMigrateService {
 
       this.logger.log(`Prepare to migrate ${uploads.length} images`);
       for (const upload of uploads) {
+        this.logger.debug(upload);
         const url = upload.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload.url;
         const createImageRequest: Requests.CreateImage = {
           id: upload.sha!,

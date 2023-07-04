@@ -166,6 +166,7 @@ export class CloudflareImagesService {
 
       return response.data;
     } catch (error) {
+      this.logger.error(`Failed to upload the image url: ${imageUrl}`);
       this.logger.error({
         error,
         operation: 'image.create'
