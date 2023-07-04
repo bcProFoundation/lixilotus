@@ -210,7 +210,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
   // The algo will check for PostQueryTag then updateQueryData according to it. It only update normal post not page's post and token's post at homepage.
   // That's why we need to update the all Posts here first then updateQueryData later. Not the best way to handle. Maybe come back later.
   yield put(
-    postApi.util.updateQueryData('Posts', { ...params, minBurnFilter: command.minBurnFilter }, draft => {
+    postApi.util.updateQueryData('Posts', { minBurnFilter: command.minBurnFilter }, draft => {
       const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
       const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
       if (postToUpdateIndex >= 0) {
@@ -234,6 +234,35 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
   );
 
   yield put(
+    postApi.util.updateQueryData(
+      'PostsBySearchWithHashtag',
+      { minBurnFilter: command.minBurnFilter, query: command.query, hashtags: command.hashtags },
+      draft => {
+        const postToUpdateIndex = draft.allPostsBySearchWithHashtag.edges.findIndex(
+          item => item.node.id === command.burnForId
+        );
+        const postToUpdate = draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex];
+        if (postToUpdateIndex >= 0) {
+          let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+          let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+          if (command.burnType == BurnType.Up) {
+            lotusBurnUp = lotusBurnUp + burnValue;
+          } else {
+            lotusBurnDown = lotusBurnDown + burnValue;
+          }
+          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+          draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+          draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+          draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+          if (lotusBurnScore < 0) {
+            draft.allPostsBySearchWithHashtag.edges.splice(postToUpdateIndex, 1);
+          }
+        }
+      }
+    )
+  );
+
+  yield put(
     postApi.util.updateQueryData('Post', { id: command.burnForId }, draft => {
       let lotusBurnUp = draft?.post?.lotusBurnUp ?? 0;
       let lotusBurnDown = draft?.post?.lotusBurnDown ?? 0;
@@ -250,41 +279,70 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
   );
 
   yield put(
-    postApi.util.updateQueryData(
-      'PostsByHashtagId',
-      { ...params, id: command.hashtagId, minBurnFilter: command.minBurnFilter },
-      draft => {
-        const postToUpdateIndex = draft.allPostsByHashtagId.edges.findIndex(item => item.node.id === command.burnForId);
-        const postToUpdate = draft.allPostsByHashtagId.edges[postToUpdateIndex];
-        if (postToUpdateIndex >= 0) {
-          let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-          let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-          if (command.burnType == BurnType.Up) {
-            lotusBurnUp = lotusBurnUp + burnValue;
-          } else {
-            lotusBurnDown = lotusBurnDown + burnValue;
-          }
-          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-          if (lotusBurnScore < 0) {
-            draft.allPostsByHashtagId.edges.splice(postToUpdateIndex, 1);
-            draft.allPostsByHashtagId.totalCount = draft.allPostsByHashtagId.totalCount - 1;
-          }
+    postApi.util.updateQueryData('PostsByHashtagId', { id: command.hashtagId }, draft => {
+      const postToUpdateIndex = draft.allPostsByHashtagId.edges.findIndex(item => item.node.id === command.burnForId);
+      const postToUpdate = draft.allPostsByHashtagId.edges[postToUpdateIndex];
+      if (postToUpdateIndex >= 0) {
+        let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+        let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+        if (command.burnType == BurnType.Up) {
+          lotusBurnUp = lotusBurnUp + burnValue;
+        } else {
+          lotusBurnDown = lotusBurnDown + burnValue;
+        }
+        const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+        draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+        draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+        draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+        if (lotusBurnScore < 0) {
+          draft.allPostsByHashtagId.edges.splice(postToUpdateIndex, 1);
+          draft.allPostsByHashtagId.totalCount = draft.allPostsByHashtagId.totalCount - 1;
         }
       }
-    )
+    })
   );
 
   //TODO: There are no optimistic burn update for query post by hashtag, We need to pass query and hashtags
   // in order to update. Need better way to handle rather than passing arg
   switch (command.postQueryTag) {
     case PostsQueryTag.PostsByPageId:
+      yield put(
+        postApi.util.updateQueryData(
+          'PostsBySearchWithHashtagAtPage',
+          {
+            pageId: command.pageId,
+            minBurnFilter: command.minBurnFilter,
+            query: command.query,
+            hashtags: command.hashtags
+          },
+          draft => {
+            const postToUpdateIndex = draft.allPostsBySearchWithHashtagAtPage.edges.findIndex(
+              item => item.node.id === command.burnForId
+            );
+            const postToUpdate = draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex];
+            if (postToUpdateIndex >= 0) {
+              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+              if (command.burnType == BurnType.Up) {
+                lotusBurnUp = lotusBurnUp + burnValue;
+              } else {
+                lotusBurnDown = lotusBurnDown + burnValue;
+              }
+              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+              draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+              draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+              draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+              if (lotusBurnScore < 0) {
+                draft.allPostsBySearchWithHashtagAtPage.edges.splice(postToUpdateIndex, 1);
+              }
+            }
+          }
+        )
+      );
       return yield put(
         postApi.util.updateQueryData(
           'PostsByPageId',
-          { ...params, id: command.pageId, minBurnFilter: command.minBurnFilter },
+          { id: command.pageId, minBurnFilter: command.minBurnFilter },
           draft => {
             const postToUpdateIndex = draft.allPostsByPageId.edges.findIndex(
               item => item.node.id === command.burnForId
@@ -311,10 +369,43 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
         )
       );
     case PostsQueryTag.PostsByTokenId:
+      yield put(
+        postApi.util.updateQueryData(
+          'PostsBySearchWithHashtagAtToken',
+          {
+            tokenId: command.tokenId,
+            minBurnFilter: command.minBurnFilter,
+            query: command.query,
+            hashtags: command.hashtags
+          },
+          draft => {
+            const postToUpdateIndex = draft.allPostsBySearchWithHashtagAtToken.edges.findIndex(
+              item => item.node.id === command.burnForId
+            );
+            const postToUpdate = draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex];
+            if (postToUpdateIndex >= 0) {
+              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+              if (command.burnType == BurnType.Up) {
+                lotusBurnUp = lotusBurnUp + burnValue;
+              } else {
+                lotusBurnDown = lotusBurnDown + burnValue;
+              }
+              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+              draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+              draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+              draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+              if (lotusBurnScore < 0) {
+                draft.allPostsBySearchWithHashtagAtToken.edges.splice(postToUpdateIndex, 1);
+              }
+            }
+          }
+        )
+      );
       return yield put(
         postApi.util.updateQueryData(
           'PostsByTokenId',
-          { ...params, id: command.tokenId, minBurnFilter: command.minBurnFilter },
+          { id: command.tokenId, minBurnFilter: command.minBurnFilter },
           draft => {
             const postToUpdateIndex = draft.allPostsByTokenId.edges.findIndex(
               item => item.node.id === command.burnForId
@@ -344,7 +435,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
       return yield put(
         postApi.util.updateQueryData(
           'PostsByUserId',
-          { ...params, id: command.userId, minBurnFilter: command.minBurnFilter },
+          { id: command.userId, minBurnFilter: command.minBurnFilter },
           draft => {
             const postToUpdateIndex = draft.allPostsByUserId.edges.findIndex(
               item => item.node.id === command.burnForId
@@ -372,7 +463,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
       );
     default:
       return yield put(
-        postApi.util.updateQueryData('OrphanPosts', params, draft => {
+        postApi.util.updateQueryData('OrphanPosts', { minBurnFilter: command.minBurnFilter }, draft => {
           const postToUpdateIndex = draft.allOrphanPosts.edges.findIndex(item => item.node.id === command.burnForId);
           const postToUpdate = draft.allOrphanPosts.edges[postToUpdateIndex];
           if (postToUpdateIndex >= 0) {

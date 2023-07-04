@@ -1,5 +1,5 @@
 import { EntityState } from '@reduxjs/toolkit';
-import { PageInfo } from '@generated/types.generated';
+import { PageInfo, Post, QueryAllPostsArgs } from '@generated/types.generated';
 
 import { api, PostQuery } from './posts.generated';
 
@@ -15,8 +15,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, minBurnFilter, isTop, ...otherArgs } = queryArgs;
-          return { orderBy, minBurnFilter, isTop };
+          const { minBurnFilter, ...otherArgs } = queryArgs;
+          return { minBurnFilter };
         }
         return { queryArgs };
       },
@@ -30,8 +30,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, minBurnFilter, ...otherArgs } = queryArgs;
-          return { orderBy, minBurnFilter };
+          const { minBurnFilter, ...otherArgs } = queryArgs;
+          return { minBurnFilter };
         }
         return { queryArgs };
       },
@@ -59,8 +59,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { query, minBurnFilter, hashtags, ...otherArgs } = queryArgs;
-          return { query, minBurnFilter, hashtags };
+          const { hashtags, query, minBurnFilter, ...otherArgs } = queryArgs;
+          return { hashtags, query, minBurnFilter };
         }
         return { queryArgs };
       },
@@ -73,8 +73,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { query, minBurnFilter, hashtags, pageId, ...otherArgs } = queryArgs;
-          return { query, minBurnFilter, hashtags, pageId };
+          const { hashtags, query, minBurnFilter, pageId, ...otherArgs } = queryArgs;
+          return { hashtags, query, minBurnFilter, pageId };
         }
         return { queryArgs };
       },
@@ -90,8 +90,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { query, minBurnFilter, hashtags, tokenId, ...otherArgs } = queryArgs;
-          return { query, minBurnFilter, hashtags, tokenId };
+          const { hashtags, query, minBurnFilter, tokenId, ...otherArgs } = queryArgs;
+          return { hashtags, query, minBurnFilter, tokenId };
         }
         return { queryArgs };
       },
@@ -107,8 +107,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, id, minBurnFilter, ...otherArgs } = queryArgs;
-          return { orderBy, id, minBurnFilter };
+          const { id, minBurnFilter, ...otherArgs } = queryArgs;
+          return { id, minBurnFilter };
         }
         return { queryArgs };
       },
@@ -123,8 +123,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, id, minBurnFilter, ...otherArgs } = queryArgs;
-          return { orderBy, id, minBurnFilter };
+          const { id, minBurnFilter, ...otherArgs } = queryArgs;
+          return { id, minBurnFilter };
         }
         return { queryArgs };
       },
@@ -139,8 +139,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, id, minBurnFilter, ...otherArgs } = queryArgs;
-          return { orderBy, id, minBurnFilter };
+          const { id, minBurnFilter, ...otherArgs } = queryArgs;
+          return { id, minBurnFilter };
         }
         return { queryArgs };
       },
@@ -158,8 +158,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, id, minBurnFilter, ...otherArgs } = queryArgs;
-          return { orderBy, id, minBurnFilter };
+          const { id, ...otherArgs } = queryArgs;
+          return { id };
         }
         return { queryArgs };
       },

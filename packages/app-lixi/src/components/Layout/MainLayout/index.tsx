@@ -221,16 +221,6 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
     ref.current = node;
   }, []);
 
-  /*TODO: Dont delete - need for maintain scroll position in the future */
-  // useEffect(() => {
-  //   if (scrollRef.current) {
-  //     console.log(scrollRef.current);
-  //     setTimeout(() => {
-  //       scrollRef.current.scrollTo(0, 500);
-  //     }, 2000);
-  //   }
-  // }, [scrollRef.current]);
-
   useEffect(() => {
     if (graphqlRequestLoading) {
       if (scrollRef.current) {
@@ -288,16 +278,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                   {/* <Topbar ref={ref}/> */}
                   <Topbar ref={setRef} />
                   {/* @ts-ignore */}
-                  <div
-                    className="container-content"
-                    id="scrollableDiv"
-                    ref={scrollRef}
-                    /*TODO: Dont delete - need for maintain scroll position in the future */
-                    // onScroll={() => {
-                    //   const scrollTop = scrollRef.current.scrollTop;
-                    //   console.log(`onScroll, scrollRef.current.scrollTop: ${scrollTop}`);
-                    // }}
-                  >
+                  <div className="container-content" id="scrollableDiv" ref={scrollRef}>
                     {/* <Layout
                             className="main-section-layout"
                             style={{

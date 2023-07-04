@@ -213,18 +213,20 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   let options = ['Withdraw', 'Rename', 'Export'];
 
   useEffect(() => {
-    if (router.query.q) {
-      setQuery(router.query.q);
-    } else {
-      setQuery(null);
-    }
-
     if (router.query.hashtags) {
       setHashtags((router.query.hashtags as string).split(' '));
     } else {
       setHashtags([]);
     }
-  }, [router.query]);
+  }, [router.query.hashtags]);
+
+  useEffect(() => {
+    if (router.query.q) {
+      setQuery(router.query.q as string);
+    } else {
+      setQuery(null);
+    }
+  }, [router.query.q]);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByTokenIdQuery(
     {
@@ -346,7 +348,9 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
         burnValue,
         postQueryTag: PostsQueryTag.PostsByTokenId,
         tokenId: post.token?.id,
-        minBurnFilter: filterValue
+        minBurnFilter: filterValue,
+        query: query,
+        hashtags: hashtags
       };
 
       dispatch(addBurnQueue(burnCommand));

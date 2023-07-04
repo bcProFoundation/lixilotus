@@ -547,23 +547,7 @@ type Query {
     minBurnFilter: Int
     query: String
   ): PostResponse!
-  allPostsBySearchWithHashtag(
-    """Paginate after opaque cursor"""
-    after: String
-
-    """Paginate before opaque cursor"""
-    before: String
-
-    """Paginate first"""
-    first: Int
-    hashtags: [String!]
-
-    """Paginate last"""
-    last: Int
-    minBurnFilter: Int
-    orderBy: PostOrder
-    query: String
-  ): PostResponse!
+  allPostsBySearchWithHashtag(after: String, before: String, first: Int, hashtags: [String!], last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostResponse!
   allPostsBySearchWithHashtagAtPage(
     """Paginate after opaque cursor"""
     after: String
