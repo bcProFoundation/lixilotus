@@ -1,15 +1,17 @@
+import axios, { AxiosRequestConfig } from 'axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../../../modules/prisma/prisma.service';
 import { CloudflareImagesService } from './cloudflare-images.service';
 import { Requests } from 'cloudflare-images';
 import { Upload } from '@prisma/client';
+import sharp from 'sharp';
 
 @Injectable()
 export class CloudflareMigrateService {
   private readonly logger = new Logger(CloudflareMigrateService.name);
 
-  constructor(private readonly prisma: PrismaService, private readonly cfImagesService: CloudflareImagesService) { }
+  constructor(private readonly prisma: PrismaService, private readonly cfImagesService: CloudflareImagesService) {}
 
   @Cron('10 * * * * *')
   async handleCron() {
@@ -38,21 +40,48 @@ export class CloudflareMigrateService {
           },
           requireSignedURLs: false
         };
-        const response = await this.cfImagesService.createImageFromUrl(createImageRequest, url!);
 
-        const uploadToUpdate = {
-          updatedAt: new Date(),
-          cfImageId: response.result.id,
-          cfImageFilename: response.result.filename
-        };
+        let response;
+        try {
+          response = await this.cfImagesService.createImageFromUrl(createImageRequest, url!);
+        } catch (error) {
+          this.logger.debug('Need to resize image before uploading');
+          const imageResponse = await axios.get(url!, { responseType: 'arraybuffer' });
+          let imageBuffer = Buffer.from(imageResponse.data, 'utf-8');
+          const metadata = await sharp(imageBuffer).metadata();
+          if (Number(metadata?.width) >= 12000 || Number(metadata?.height) >= 12000) {
+            const resizedImage = await sharp(imageBuffer)
+              .resize(12000, 12000, {
+                fit: sharp.fit.inside
+              })
+              .png({ quality: 100 });
+            const resizedMetadata = await resizedImage.metadata();
 
-        const resultImage: Upload = await this.prisma.upload.update({
-          where: {
-            id: upload.id
-          },
-          data: uploadToUpdate
-        });
-        this.logger.debug(`Upload to cloudflare the image ${response.result.id}`);
+            const createImageRequest: Requests.CreateImage = {
+              id: upload.sha!,
+              fileName: `${upload.originalFilename}.${upload.extension}`,
+              metadata: resizedMetadata,
+              requireSignedURLs: false
+            };
+            const resizedImageBuffer = await resizedImage.toBuffer();
+            response = await this.cfImagesService.createImageFromBuffer(createImageRequest, resizedImageBuffer);
+          }
+        }
+        if (response && response.result) {
+          const uploadToUpdate = {
+            updatedAt: new Date(),
+            cfImageId: response.result.id,
+            cfImageFilename: response.result.filename
+          };
+
+          const resultImage: Upload = await this.prisma.upload.update({
+            where: {
+              id: upload.id
+            },
+            data: uploadToUpdate
+          });
+          this.logger.debug(`Upload to cloudflare the image ${response.result.id}`);
+        }
       }
     } catch (err) {
       this.logger.error({ error: err, operation: 'migrate.image' });
