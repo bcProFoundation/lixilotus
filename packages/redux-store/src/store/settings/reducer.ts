@@ -25,7 +25,7 @@ const initialState: SettingsState = {
     deviceId: null
   },
   filterPostsHome: 10,
-  filterPostsPage: 10,
+  filterPostsPage: 0,
   filterPostsToken: 1,
   filterPostsProfile: 1,
   isTopPosts: false,
