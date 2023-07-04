@@ -82,13 +82,13 @@ export const FilterBurnt = (props: FilterBurntProps) => {
 
   let valueForType;
   if (filterForType == FilterType.PostsHome) {
-    valueForType = useAppSelector(getFilterPostsHome);
+    valueForType = useAppSelector(getFilterPostsHome) ?? 10;
   } else if (filterForType == FilterType.PostsPage) {
-    valueForType = useAppSelector(getFilterPostsPage);
+    valueForType = useAppSelector(getFilterPostsPage) ?? 0;
   } else if (filterForType == FilterType.PostsToken) {
-    valueForType = useAppSelector(getFilterPostsToken);
+    valueForType = useAppSelector(getFilterPostsToken) ?? 1;
   } else {
-    valueForType = useAppSelector(getFilterPostsProfile);
+    valueForType = useAppSelector(getFilterPostsProfile) ?? 1;
   }
 
   const handleUpDownBtn = (isUp: boolean) => {
