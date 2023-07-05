@@ -228,7 +228,7 @@ declare module 'cloudflare-images' {
          *
          * Max length: `32`
          */
-        id: string;
+        id?: string;
         fileName: string;
         /**
          * User modifiable key-value store.

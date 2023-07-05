@@ -94,8 +94,7 @@ export class CloudflareImagesService {
       const url = urlJoin(this.BASE_URL, 'accounts', this.accountId, 'images', 'v1');
 
       const formData = new FormData();
-      formData.append('id', request.id);
-      formData.append('file', this.bufferToStream(buffer), request.fileName);
+      formData.append('file', buffer, request.fileName);
       if (!_.isEmpty(request.metadata)) {
         formData.append('metadata', JSON.stringify(request.metadata), { contentType: 'application/json' });
       }
@@ -120,7 +119,6 @@ export class CloudflareImagesService {
       const url = urlJoin(this.BASE_URL, 'accounts', this.accountId, 'images', 'v1');
 
       const formData = new FormData();
-      formData.append('id', request.id);
       formData.append('file', createReadStream(path), request.fileName);
       if (!_.isEmpty(request.metadata)) {
         formData.append('metadata', JSON.stringify(request.metadata), { contentType: 'application/json' });

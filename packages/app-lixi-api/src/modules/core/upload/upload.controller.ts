@@ -24,6 +24,7 @@ import { VError } from 'verror';
 import { CloudflareImagesService } from '../../../common/modules/cloudflare/cloudflare-images.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UploadService } from './upload.service';
+import { hexSha256 } from '../../../utils/encryptionMethods';
 
 @SkipThrottle()
 @Controller('uploads')
@@ -53,24 +54,26 @@ export class UploadFilesController {
 
       const bucket = process.env.AWS_PUBLIC_BUCKET_NAME;
       const buffer = file.buffer;
+      const sha = await hexSha256(buffer);
       const originalName = file.originalname.replace(/\.[^/.]+$/, '');
       const fileExtension = extname(file.originalname);
       const metadata = await sharp(file.buffer).metadata();
 
-      const { Key } = await this.uploadService.uploadS3(buffer, fileExtension, bucket);
       const createImageRequest: Requests.CreateImage = {
-        id: Key,
         fileName: file.originalname,
-        metadata: metadata,
+        metadata: {
+          width: metadata.width,
+          height: metadata.height
+        },
         requireSignedURLs: false
       };
       const createImageResponse = await this.cloudflareService.createImageFromBuffer(createImageRequest, buffer);
 
       const uploadToInsert = {
+        sha: sha,
         originalFilename: originalName,
         createdAt: new Date(),
         updatedAt: new Date(),
-        sha: Key,
         extension: fileExtension,
         type: type,
         bucket: bucket,
@@ -126,23 +129,25 @@ export class UploadFilesController {
 
       const promises = files.map(async (file: MulterFile) => {
         const buffer = file.buffer;
+        const sha = await hexSha256(buffer);
         const originalName = file.originalname.replace(/\.[^/.]+$/, '');
         const fileExtension = extname(file.originalname);
         const metadata = await sharp(file.buffer).metadata();
-        const { Key } = await this.uploadService.uploadS3(buffer, fileExtension, bucket);
         const createImageRequest: Requests.CreateImage = {
-          id: Key,
           fileName: file.originalname,
-          metadata: metadata,
+          metadata: {
+            width: metadata.width,
+            height: metadata.height
+          },
           requireSignedURLs: false
         };
         const createImageResponse = await this.cloudflareService.createImageFromBuffer(createImageRequest, buffer);
 
         return {
+          sha: sha,
           originalFilename: originalName,
           createdAt: new Date(),
           updatedAt: new Date(),
-          sha: Key,
           extension: fileExtension,
           type: type,
           bucket: bucket,
