@@ -12,8 +12,8 @@ import intl from 'react-intl-universal';
 import { getAllNotifications } from '@store/notification/selectors';
 import { fetchNotifications } from '@store/notification/actions';
 import _ from 'lodash';
-import { setGraphqlRequestLoading } from '@store/account/actions';
-import { OrderDirection, PostOrderField } from '@generated/types.generated';
+import { addRecentHashtagAtPages, setGraphqlRequestLoading } from '@store/account/actions';
+import { HashtagOrderField, OrderDirection, PostOrderField } from '@generated/types.generated';
 import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
 import { api as postApi } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
@@ -23,10 +23,18 @@ import { stripHtml } from 'string-strip-html';
 import moment from 'moment';
 import { currency } from '@components/Common/Ticker';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
-import { LeftOutlined } from '@ant-design/icons';
+import { DownOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { setSelectedPost } from '@store/post/actions';
+import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
+import { useInfiniteHashtagByPageQuery } from '@store/hashtag/useInfiniteHashtagByPageQuery';
+import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtPage';
 
 const { Sider } = Layout;
+
+export type typeFilterPageQuery = {
+  topic?: string;
+  posts?: Array<any>;
+};
 
 export const ItemAccess = ({
   icon,
@@ -234,6 +242,13 @@ export const ContainerAccess = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: baseline;
+        .button {
+          border-radius: 4px;
+          .anticon {
+            font-size: 18px;
+            margin: 10px;
+          }
+        }
       }
       padding: 0 0.5rem;
       width: 100%;
@@ -334,7 +349,6 @@ const ShortcutSideBar = styled(Sider)`
     }
     h3 {
       text-align: center;
-      margin-top: 1rem;
     }
   }
 `;
@@ -438,6 +452,46 @@ const SpaceShorcutItem = styled(Space)`
       height: 30px;
     }
   }
+  &.card-topic {
+    background: #f6fdeb;
+    border-color: #b7eb8f;
+    .topic-title {
+      text-transform: capitalize;
+      color: #389e0e;
+    }
+    .topic-name {
+      color: #389e0e;
+    }
+  }
+  &.short-cut-back-topic {
+    background: #fef1f6;
+    border-color: #ffadd1;
+    img {
+      height: 30px;
+    }
+    .page-name {
+      color: #c41e7f;
+    }
+  }
+`;
+
+const SpaceShortCutTopicItem = styled(Space)`
+  display: flex;
+  flex-direction: column;
+  gap: 0 !important;
+  border-radius: 6px;
+  & > div {
+    width: 100%;
+  }
+  .post-of-topic {
+    padding: 0 0.5rem;
+    .ant-space {
+      background: #fff;
+    }
+  }
+  .anticon {
+    color: var(--color-primary);
+  }
 `;
 
 const transformCreatedAt = date => {
@@ -499,6 +553,146 @@ export const ShortCutItem = ({
   </SpaceShorcutItem>
 );
 
+export const ShortCutBackTopic = ({
+  topicName,
+  isCollapse,
+  onClickIcon
+}: {
+  topicName?: any;
+  isCollapse?: boolean;
+  onClickIcon?: (e: any) => void;
+}) => (
+  <SpaceShorcutItem
+    className={`${isCollapse ? 'collapse card' : 'card'} short-cut-back-topic`}
+    style={{ width: isCollapse ? 'auto' : '100%' }}
+    onClick={() => onClickIcon(topicName)}
+    size={5}
+  >
+    <div className="avatar-account avartar-topic">
+      <img src="/images/ico-back.png" />
+    </div>
+    {!isCollapse && (
+      <>
+        <div className="content-account">
+          <div className="info-account">
+            <p className="page-name">Back to {topicName ? topicName : 'page'}</p>
+          </div>
+        </div>
+      </>
+    )}
+  </SpaceShorcutItem>
+);
+
+export const ShortCutTopicItem = ({
+  topicName,
+  posts,
+  classStyle,
+  isCollapse,
+  onClickIcon
+}: {
+  topicName?: any;
+  posts?: any;
+  classStyle?: string;
+  isCollapse?: boolean;
+  onClickIcon?: (e: any) => void;
+}) => {
+  const [showMore, setShowMore] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+
+  return posts.length !== 0 ? (
+    <>
+      <SpaceShortCutTopicItem
+        style={{ background: showMore ? '#f9f0fa' : 'transparent', marginBottom: showMore ? '0.5rem' : '0' }}
+        className={showMore ? 'space-shortcut-topic-item' : ''}
+      >
+        {isCollapse && (
+          <SpaceShorcutItem
+            className={`${isCollapse ? 'collapse card' : 'card'} card-topic`}
+            size={5}
+            onClick={() => onClickIcon(topicName)}
+          >
+            <div className="avatar-account avartar-topic">
+              <Avatar>{topicName.slice(0, 2).toUpperCase()}</Avatar>
+            </div>
+          </SpaceShorcutItem>
+        )}
+        {!isCollapse && (
+          <>
+            <SpaceShorcutItem className={`${isCollapse ? 'collapse card' : 'card'} card-topic`} size={5}>
+              <div className="avatar-account avartar-topic">
+                <img src="/images/ico-topic.png" />
+              </div>
+              <div className="content-account">
+                <div className="info-account" onClick={() => onClickIcon(topicName)}>
+                  <p className="page-name topic-title">{`#${topicName}`}</p>
+                  <p className="account-name topic-name">{posts[0]?.postAccount?.name}</p>
+                  <p className="content">{stripHtml(posts[0]?.content).result}</p>
+                </div>
+                <div className="time-score">
+                  <p className="create-date">Total: {posts.length}</p>
+                  <Button
+                    type="text"
+                    icon={!showMore ? <RightOutlined /> : <DownOutlined />}
+                    onClick={() => setShowMore(!showMore)}
+                  />
+                </div>
+              </div>
+            </SpaceShorcutItem>
+            <div hidden={!showMore} className="post-of-topic">
+              {posts.map(post => {
+                return <ShortCutPageItem item={post} onClickIcon={() => dispatch(setSelectedPost(post.id))} />;
+              })}
+            </div>
+          </>
+        )}
+      </SpaceShortCutTopicItem>
+    </>
+  ) : (
+    <></>
+  );
+};
+
+export const ShortCutPageItem = ({
+  item,
+  classStyle,
+  isCollapse,
+  onClickIcon
+}: {
+  item?: any;
+  classStyle?: string;
+  isCollapse?: boolean;
+  onClickIcon?: (e: any) => void;
+}) => (
+  <SpaceShorcutItem
+    className={isCollapse ? 'collapse card' : 'card'}
+    style={{ width: isCollapse ? 'auto' : '100%' }}
+    onClick={() => onClickIcon(item)}
+    size={5}
+  >
+    <div className="avatar-account">
+      <Avatar>{transformShortName(item?.postAccount?.name)}</Avatar>
+    </div>
+    {!isCollapse && (
+      <>
+        <div className="content-account">
+          <div className="info-account">
+            <p className="account-name">{item?.postAccount?.name}</p>
+            <p className="content">
+              {item?.content.includes('twitter') ? 'Via Twitter' : stripHtml(item?.content).result}
+            </p>
+          </div>
+          <div className="time-score">
+            <p className="create-date">{transformCreatedAt(item?.createdAt)}</p>
+            <div className="content-score">
+              <p className="lotus-burn-score">{item?.lotusBurnScore}</p>
+            </div>
+          </div>
+        </div>
+      </>
+    )}
+  </SpaceShorcutItem>
+);
+
 const SidebarShortcut = () => {
   const refSidebarShortcut = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
@@ -513,11 +707,16 @@ const SidebarShortcut = () => {
   const notifications = useAppSelector(getAllNotifications);
   const filterValue = useAppSelector(getFilterPostsHome);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
-  const [filterGroup, setFilterGroup] = useState([]);
+  const [filterPosts, setFilterPosts] = useState([]);
+  const [filterPage, setFilterPage] = useState({});
+  const [filterPageQuery, setFilterPageQuery] = useState<typeFilterPageQuery>({});
+  const [query, setQuery] = useState<any>('');
+  const [hashtags, setHashtags] = useState<any>([]);
+  const pageId = router.pathname.includes('page') && (router.query?.slug as string);
 
   let pastScan;
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext } = useInfinitePostsQuery(
+  let { data: PostsData } = useInfinitePostsQuery(
     {
       first: 50,
       minBurnFilter: filterValue,
@@ -531,6 +730,130 @@ const SidebarShortcut = () => {
     },
     false
   );
+
+  let { data: postsOfPage } = useInfinitePostsByPageIdQuery(
+    {
+      first: 10,
+      minBurnFilter: filterValue ?? 1,
+      accountId: selectedAccountId ?? undefined,
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.LastRepostAt
+        },
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      ],
+      id: pageId
+    },
+    false
+  );
+
+  const { data: hashtagData } = useInfiniteHashtagByPageQuery(
+    {
+      first: 10,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: HashtagOrderField.LotusBurnScore
+      },
+      id: pageId
+    },
+    false
+  );
+
+  const { queryData } = useInfinitePostsBySearchQueryWithHashtagAtPage(
+    {
+      first: 20,
+      minBurnFilter: filterValue ?? 1,
+      query: query,
+      hashtags: hashtags,
+      pageId: pageId,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
+    },
+    false
+  );
+
+  useEffect(() => {
+    if (router.query.q) {
+      setQuery(router.query.q);
+    } else {
+      setQuery(null);
+    }
+
+    if (router.query.hashtags) {
+      setHashtags((router.query.hashtags as string).split(' '));
+    } else {
+      setHashtags([]);
+    }
+  }, [router.query]);
+
+  // Group by topic for page via hashtag
+  useEffect(() => {
+    const postsOfPageClone = _.cloneDeep(postsOfPage);
+    const hashTagsClone = _.cloneDeep(hashtagData);
+    let filterPageTemp = {};
+    if (hashtagData.length > 0) {
+      hashTagsClone.forEach(item => {
+        let topicGroup = [];
+        let generalTopic = [];
+        postsOfPageClone.forEach(post => {
+          if (post.content.toLowerCase().includes(`#${item.normalizedContent}`)) {
+            topicGroup.push(post);
+          }
+          if (!post.content.toLowerCase().includes('#')) {
+            generalTopic.push(post);
+          }
+        });
+        filterPageTemp[item.normalizedContent] = topicGroup;
+        filterPageTemp['general'] = generalTopic;
+      });
+    } else {
+      filterPageTemp['general'] = postsOfPageClone;
+    }
+    setFilterPage({ ...filterPageTemp });
+  }, [postsOfPage]);
+
+  // Group by child of topic
+  useEffect(() => {
+    const postsOfPageQueryClone = _.cloneDeep(queryData);
+    let hashTagMapping = hashtags.map(hashtag => hashtag.replace('#', ''));
+    let arrHashTagString = hashtagData.map(hashTag => {
+      return hashTag.normalizedContent;
+    });
+    let hashtagRemaining = _.difference(arrHashTagString, hashTagMapping);
+    let filterPageQueryTemp = {};
+    if (postsOfPageQueryClone.length !== 0) {
+      if (hashtagRemaining.length !== 0) {
+        hashtagRemaining.forEach(hashTag => {
+          let topicGroup = [];
+          postsOfPageQueryClone.forEach(post => {
+            if (post.content.toLowerCase().includes(`#${hashTag.toLowerCase()}`)) {
+              topicGroup.push(post);
+            }
+          });
+          filterPageQueryTemp[hashTag.toLowerCase()] = topicGroup;
+          filterPageQueryTemp['zparent'] = postsOfPageQueryClone;
+        });
+      } else {
+        filterPageQueryTemp['zparent'] = postsOfPageQueryClone;
+      }
+    } else {
+      filterPageQueryTemp = {};
+    }
+    const sortedQueryPage = Object.keys(filterPageQueryTemp)
+      .sort()
+      .reduce((accumulator, key) => {
+        accumulator[key] = filterPageQueryTemp[key];
+
+        return accumulator;
+      }, {});
+    setFilterPageQuery({ ...sortedQueryPage });
+  }, [queryData]);
 
   const onScan = async (result: string) => {
     if (pastScan !== result) {
@@ -560,11 +883,11 @@ const SidebarShortcut = () => {
   }, []);
 
   useEffect(() => {
-    const newArrFilter = _.uniqBy(data, item => {
+    const newArrFilter = _.uniqBy(PostsData, item => {
       return item?.page?.id || item?.token?.tokenId || item?.postAccount.address;
     });
-    setFilterGroup([...newArrFilter]);
-  }, [data]);
+    setFilterPosts([...newArrFilter]);
+  }, [PostsData]);
 
   const triggerSrollbar = e => {
     const sidebarShortcutNode = refSidebarShortcut.current;
@@ -576,7 +899,7 @@ const SidebarShortcut = () => {
 
   const { refetch } = useInfinitePostsQuery(
     {
-      first: 20,
+      first: 50,
       minBurnFilter: filterValue,
       accountId: selectedAccountId,
       orderBy: [
@@ -613,16 +936,155 @@ const SidebarShortcut = () => {
     return className;
   };
 
-  const pathShortcutItem = (item, path) => {
-    let fullPath = '';
-    if (item?.page) {
-      return (fullPath = `/page/${path}`);
+  const showShortCutForPage = () => {
+    return !query && hashtags.length === 0 ? (
+      Object.entries(filterPage).map(([key, value]) => {
+        return (
+          <ShortCutTopicItem
+            onClickIcon={topicName => onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`)}
+            topicName={key}
+            posts={value}
+          />
+        );
+      })
+    ) : (
+      <>
+        <ShortCutBackTopic
+          topicName={_.nth(hashtags, -2)}
+          onClickIcon={() => handleTagClose(_.nth(hashtags, -1) || hashtags[0])}
+        />
+        {filterPageQuery &&
+          Object.entries(filterPageQuery).map(([topic, posts]) => {
+            return topic !== 'zparent' ? showChildTopic(topic, posts) : showParrentTopic(posts);
+          })}
+      </>
+    );
+  };
+
+  const showShortCutItemForHome = () => {
+    return (
+      <>
+        {filterPosts.map(item => {
+          return <ShortCutItem item={item} onClickIcon={() => dispatch(setSelectedPost(item.id))} />;
+        })}
+      </>
+    );
+  };
+
+  const showShortCutForPageNavCollapse = () => {
+    return !query && hashtags.length === 0 ? (
+      Object.entries(filterPage).map(([key, value]) => {
+        return (
+          <ShortCutTopicItem
+            onClickIcon={topicName => onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`)}
+            topicName={key}
+            posts={value}
+            isCollapse={navCollapsed}
+          />
+        );
+      })
+    ) : (
+      <>
+        <ShortCutBackTopic
+          topicName={_.nth(hashtags, -2)}
+          onClickIcon={() => handleTagClose(_.nth(hashtags, -1) || hashtags[0])}
+          isCollapse={navCollapsed}
+        />
+        {filterPageQuery &&
+          Object.entries(filterPageQuery).map(([topic, posts]) => {
+            return topic !== 'zparent' ? showChildTopic(topic, posts) : showParrentTopic(posts);
+          })}
+      </>
+    );
+  };
+
+  const showShortCutForHomeNavCollapse = () => {
+    return (
+      <div className="social-feature" style={{ padding: navCollapsed ? '0.5rem' : '1rem' }}>
+        {filterPosts.map(item => {
+          return (
+            <ShortCutItem
+              item={item}
+              isCollapse={navCollapsed}
+              onClickIcon={() => dispatch(setSelectedPost(item.id))}
+            />
+          );
+        })}
+      </div>
+    );
+  };
+
+  const showParrentTopic = posts => {
+    let parrentTopic = [];
+    parrentTopic = posts;
+
+    return parrentTopic.map(post => {
+      return (
+        <ShortCutPageItem
+          item={post}
+          onClickIcon={() => dispatch(setSelectedPost(post.id))}
+          isCollapse={navCollapsed}
+        />
+      );
+    });
+  };
+
+  const showChildTopic = (topic, posts) => {
+    return (
+      <ShortCutTopicItem
+        onClickIcon={topicName => onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`)}
+        topicName={topic}
+        posts={posts}
+        isCollapse={navCollapsed}
+      />
+    );
+  };
+
+  const onTopHashtagClick = hashtag => {
+    if (router.query.hashtags) {
+      //Check dup before adding to query
+      const queryHashtags = (router.query.hashtags as string).split(' ');
+      const hashtagExistedIndex = queryHashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+
+      if (hashtagExistedIndex === -1) {
+        router.replace({
+          query: {
+            ...router.query,
+            hashtags: router.query.hashtags + ' ' + hashtag
+          }
+        });
+      }
+    } else {
+      router.replace({
+        query: {
+          ...router.query,
+          q: '',
+          hashtags: hashtag
+        }
+      });
     }
-    if (item?.token) {
-      return (fullPath = `/token/${path}`);
-    }
-    if (item?.postAccount) {
-      return (fullPath = `/profile/${path}`);
+
+    dispatch(addRecentHashtagAtPages({ id: pageId, hashtag: hashtag.substring(1) }));
+  };
+
+  const handleTagClose = removedTag => {
+    const updatedTags = hashtags.filter(tag => tag !== removedTag);
+    setHashtags([...updatedTags]);
+    if (updatedTags.length === 0) {
+      const { pathname, query } = router;
+      delete query.hashtags;
+
+      router.push({
+        pathname,
+        query
+      });
+    } else {
+      router.replace({
+        query: {
+          ...router.query,
+          hashtags: updatedTags.join(' ')
+        }
+      });
     }
   };
 
@@ -655,9 +1117,7 @@ const SidebarShortcut = () => {
                     isCollapse={navCollapsed}
                     onClickItem={() => handleIconClick('/')}
                   />
-                  {filterGroup.map(item => {
-                    return <ShortCutItem item={item} onClickIcon={() => dispatch(setSelectedPost(item.id))} />;
-                  })}
+                  {pageId ? showShortCutForPage() : showShortCutItemForHome()}
                 </div>
               </>
             )}
@@ -666,30 +1126,21 @@ const SidebarShortcut = () => {
                 <h3 style={{ marginBottom: '0' }} onClick={handleMenuClick}>
                   <img
                     className="animate__animated animate__heartBeat"
+                    style={{ margin: '5px', cursor: 'pointer' }}
                     width={22}
                     height={22}
                     src="/images/ico-hambuger.svg"
                     alt=""
                   />
                 </h3>
-                <div className="social-feature" style={{ padding: navCollapsed ? '0.5rem' : '1rem' }}>
-                  <ItemQuickAccess
-                    icon={'/images/ico-newfeeds.svg'}
-                    text={'Feeds'}
-                    direction="horizontal"
-                    isCollapse={navCollapsed}
-                    onClickItem={() => handleIconClick('/')}
-                  />
-                  {filterGroup.map(item => {
-                    return (
-                      <ShortCutItem
-                        item={item}
-                        isCollapse={navCollapsed}
-                        onClickIcon={() => dispatch(setSelectedPost(item.id))}
-                      />
-                    );
-                  })}
-                </div>
+                <ItemQuickAccess
+                  icon={'/images/ico-newfeeds.svg'}
+                  text={'Feeds'}
+                  direction="horizontal"
+                  isCollapse={navCollapsed}
+                  onClickItem={() => handleIconClick('/')}
+                />
+                {pageId ? showShortCutForPageNavCollapse() : showShortCutForHomeNavCollapse()}
               </>
             )}
           </div>

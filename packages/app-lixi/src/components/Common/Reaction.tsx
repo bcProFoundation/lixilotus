@@ -72,7 +72,6 @@ const Hint = styled.span`
 const HintMobile = styled.span`
   display: flex;
   justify-content: center;
-  color: #000;
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.5px;

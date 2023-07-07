@@ -169,6 +169,8 @@ const SearchBox = () => {
 
     if (router.query.hashtags) {
       setTags((router.query.hashtags as string).split(' '));
+    } else {
+      setTags([]);
     }
   }, [router.query]);
 
