@@ -1,4 +1,4 @@
-import { OrderDirection, PostOrderField } from '@generated/types.generated';
+import { HashtagOrderField, OrderDirection, PostOrderField } from '@generated/types.generated';
 import { getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
@@ -9,10 +9,21 @@ import _ from 'lodash';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ItemQuickAccess, ShortCutItem } from './SideBarShortcut';
+import {
+  ItemQuickAccess,
+  ShortCutBackTopic,
+  ShortCutItem,
+  ShortCutPageItem,
+  ShortCutTopicItem,
+  typeFilterPageQuery
+} from './SideBarShortcut';
 import { Button } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import { setSelectedPost } from '@store/post/actions';
+import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
+import { useInfiniteHashtagByPageQuery } from '@store/hashtag/useInfiniteHashtagByPageQuery';
+import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtPage';
+import { addRecentHashtagAtPages } from '@store/account';
 
 type SidebarContentProps = {
   className?: string;
@@ -33,6 +44,13 @@ const ContainerSideBarContent = styled.div`
       display: flex;
       justify-content: space-between;
       align-items: baseline;
+      button {
+        border-radius: 4px;
+        .anticon {
+          font-size: 18px;
+          margin: 10px;
+        }
+      }
     }
     .item-quick-access {
       width: 100%;
@@ -78,9 +96,14 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
   const currentPathName = router.pathname ?? '';
   const filterValue = useAppSelector(getFilterPostsHome);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
-  const [filterGroup, setFilterGroup] = useState([]);
+  const [filterPosts, setFilterPosts] = useState([]);
+  const [filterPage, setFilterPage] = useState({});
+  const [filterPageQuery, setFilterPageQuery] = useState<typeFilterPageQuery>({});
+  const [query, setQuery] = useState<any>('');
+  const [hashtags, setHashtags] = useState<any>([]);
+  const pageId = router.pathname.includes('page') && (router.query?.slug as string);
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext } = useInfinitePostsQuery(
+  let { data: PostsData } = useInfinitePostsQuery(
     {
       first: 50,
       minBurnFilter: filterValue,
@@ -95,37 +118,258 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
     false
   );
 
-  const handleOnClick = () => {
-    dispatch(toggleCollapsedSideNav(!navCollapsed));
-  };
+  let { data: postsOfPage } = useInfinitePostsByPageIdQuery(
+    {
+      first: 10,
+      minBurnFilter: filterValue ?? 1,
+      accountId: selectedAccountId ?? undefined,
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.LastRepostAt
+        },
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      ],
+      id: pageId
+    },
+    false
+  );
+
+  const { data: hashtagData } = useInfiniteHashtagByPageQuery(
+    {
+      first: 10,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: HashtagOrderField.LotusBurnScore
+      },
+      id: pageId
+    },
+    false
+  );
+
+  const { queryData } = useInfinitePostsBySearchQueryWithHashtagAtPage(
+    {
+      first: 20,
+      minBurnFilter: filterValue ?? 1,
+      query: query,
+      hashtags: hashtags,
+      pageId: pageId,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
+    },
+    false
+  );
+
+  useEffect(() => {
+    if (router.query.q) {
+      setQuery(router.query.q);
+    } else {
+      setQuery(null);
+    }
+
+    if (router.query.hashtags) {
+      setHashtags((router.query.hashtags as string).split(' '));
+    } else {
+      setHashtags([]);
+    }
+  }, [router.query]);
+
+  // Group by topic for page via hashtag
+  useEffect(() => {
+    const postsOfPageClone = _.cloneDeep(postsOfPage);
+    const hashTagsClone = _.cloneDeep(hashtagData);
+    let filterPageTemp = {};
+    if (hashtagData.length > 0) {
+      hashTagsClone.forEach(item => {
+        let topicGroup = [];
+        let generalTopic = [];
+        postsOfPageClone.forEach(post => {
+          if (post.content.toLowerCase().includes(`#${item.normalizedContent}`)) {
+            topicGroup.push(post);
+          }
+          if (!post.content.toLowerCase().includes('#')) {
+            generalTopic.push(post);
+          }
+        });
+        filterPageTemp[item.normalizedContent] = topicGroup;
+        filterPageTemp['general'] = generalTopic;
+      });
+    } else {
+      filterPageTemp['general'] = postsOfPageClone;
+    }
+    setFilterPage({ ...filterPageTemp });
+  }, [postsOfPage]);
+
+  // Group by child of topic
+  useEffect(() => {
+    const postsOfPageQueryClone = _.cloneDeep(queryData);
+    let hashTagMapping = hashtags.map(hashtag => hashtag.replace('#', ''));
+    let arrHashTagString = hashtagData.map(hashTag => {
+      return hashTag.normalizedContent;
+    });
+    let hashtagRemaining = _.difference(arrHashTagString, hashTagMapping);
+    let filterPageQueryTemp = {};
+    if (postsOfPageQueryClone.length !== 0) {
+      if (hashtagRemaining.length !== 0) {
+        hashtagRemaining.forEach(hashTag => {
+          let topicGroup = [];
+          postsOfPageQueryClone.forEach(post => {
+            if (post.content.toLowerCase().includes(`#${hashTag.toLowerCase()}`)) {
+              topicGroup.push(post);
+            }
+          });
+          filterPageQueryTemp[hashTag.toLowerCase()] = topicGroup;
+          filterPageQueryTemp['zparent'] = postsOfPageQueryClone;
+        });
+      } else {
+        filterPageQueryTemp['zparent'] = postsOfPageQueryClone;
+      }
+    } else {
+      filterPageQueryTemp = {};
+    }
+    const sortedQueryPage = Object.keys(filterPageQueryTemp)
+      .sort()
+      .reduce((accumulator, key) => {
+        accumulator[key] = filterPageQueryTemp[key];
+
+        return accumulator;
+      }, {});
+    setFilterPageQuery({ ...sortedQueryPage });
+  }, [queryData]);
+
+  useEffect(() => {
+    const newArrFilter = _.uniqBy(PostsData, item => {
+      return item?.page?.id || item?.token?.tokenId || item?.postAccount.address;
+    });
+    setFilterPosts([...newArrFilter]);
+  }, [PostsData]);
+
+  // const handleOnClick = () => {
+  //   dispatch(toggleCollapsedSideNav(!navCollapsed));
+  // };
 
   const handleIconClick = (newPath?: string) => {
     dispatch(push(newPath));
   };
 
-  useEffect(() => {
-    const newArrFilter = _.uniqBy(data, item => {
-      return item?.page?.id || item?.token?.tokenId || item?.postAccount.address;
-    });
-    setFilterGroup([...newArrFilter]);
-  }, [data]);
+  const showParrentTopic = posts => {
+    let parrentTopic = [];
+    parrentTopic = posts;
 
-  const pathShortcutItem = (item, path) => {
-    let fullPath = '';
-    if (item?.page) {
-      return (fullPath = `/page/${path}`);
+    return parrentTopic.map(post => {
+      return (
+        <ShortCutPageItem
+          item={post}
+          onClickIcon={() => dispatch(setSelectedPost(post.id))}
+          isCollapse={navCollapsed}
+        />
+      );
+    });
+  };
+
+  const showChildTopic = (topic, posts) => {
+    return (
+      <ShortCutTopicItem
+        onClickIcon={topicName => onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`)}
+        topicName={topic}
+        posts={posts}
+        isCollapse={navCollapsed}
+      />
+    );
+  };
+
+  const showShortCutForPage = () => {
+    return !query && hashtags.length === 0 ? (
+      Object.entries(filterPage).map(([key, value]) => {
+        return (
+          <ShortCutTopicItem
+            onClickIcon={topicName => onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`)}
+            topicName={key}
+            posts={value}
+          />
+        );
+      })
+    ) : (
+      <>
+        <ShortCutBackTopic
+          topicName={_.nth(hashtags, -2)}
+          onClickIcon={() => handleTagClose(_.nth(hashtags, -1) || hashtags[0])}
+        />
+        {filterPageQuery &&
+          Object.entries(filterPageQuery).map(([topic, posts]) => {
+            return topic !== 'zparent' ? showChildTopic(topic, posts) : showParrentTopic(posts);
+          })}
+      </>
+    );
+  };
+
+  const showShortCutItemForHome = () => {
+    return (
+      <>
+        {filterPosts.map(item => {
+          return <ShortCutItem item={item} onClickIcon={() => dispatch(setSelectedPost(item.id))} />;
+        })}
+      </>
+    );
+  };
+
+  const onTopHashtagClick = hashtag => {
+    console.log('hashtag', hashtag);
+    if (router.query.hashtags) {
+      //Check dup before adding to query
+      const queryHashtags = (router.query.hashtags as string).split(' ');
+      const hashtagExistedIndex = queryHashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+
+      if (hashtagExistedIndex === -1) {
+        router.replace({
+          query: {
+            ...router.query,
+            hashtags: router.query.hashtags + ' ' + hashtag
+          }
+        });
+      }
+    } else {
+      router.replace({
+        query: {
+          ...router.query,
+          q: '',
+          hashtags: hashtag
+        }
+      });
     }
-    if (item?.token) {
-      return (fullPath = `/token/${path}`);
-    }
-    if (item?.postAccount) {
-      return (fullPath = `/profile/${path}`);
+
+    dispatch(addRecentHashtagAtPages({ id: pageId, hashtag: hashtag.substring(1) }));
+  };
+
+  const handleTagClose = removedTag => {
+    const updatedTags = hashtags.filter(tag => tag !== removedTag);
+    setHashtags([...updatedTags]);
+    if (updatedTags.length === 0) {
+      const { pathname, query } = router;
+      delete query.hashtags;
+
+      router.push({
+        pathname,
+        query
+      });
+    } else {
+      router.replace({
+        query: {
+          ...router.query,
+          hashtags: updatedTags.join(' ')
+        }
+      });
     }
   };
 
   return (
     <>
-      <ContainerSideBarContent className="side-bar-content" onClick={handleOnClick}>
+      <ContainerSideBarContent className="side-bar-content">
         <div className="wrapper">
           <div className="social-digest">
             <div className="header-bar">
@@ -143,9 +387,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
               direction="horizontal"
               onClickItem={() => handleIconClick('/')}
             />
-            {filterGroup.map(item => {
-              return <ShortCutItem item={item} onClickIcon={() => dispatch(setSelectedPost(item.id))} />;
-            })}
+            {pageId ? showShortCutForPage() : showShortCutItemForHome()}
           </div>
         </div>
       </ContainerSideBarContent>

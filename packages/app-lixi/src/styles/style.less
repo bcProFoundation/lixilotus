@@ -378,6 +378,10 @@ code {
   }
 }
 
+.infinite-scroll-component {
+  overflow: unset !important ;
+}
+
 .post-detail-custom-modal {
   @media (max-width: 968px) {
     width: 80vw !important;
@@ -391,6 +395,12 @@ code {
   }
   .ant-modal-body {
     padding: 0;
+  }
+  .ant-modal-close-x {
+    .anticon-close {
+      font-size: 20px;
+      margin: 5px;
+    }
   }
 }
 
@@ -1454,6 +1464,9 @@ code {
 
   .ant-space {
     border-color: var(--border-color-dark-base) !important;
+    &.space-shortcut-topic-item {
+      background: #303031 !important;
+    }
   }
 
   .ant-avatar {
@@ -1937,6 +1950,9 @@ code {
         }
         .avatar-account {
           border-color: var(--color-primary) !important;
+        }
+        .avartar-topic {
+          border-color: transparent !important;
         }
         .icon-quick-item {
           img {

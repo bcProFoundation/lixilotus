@@ -297,7 +297,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
     const mapImages = item.uploads.map(img => {
       let imgSha = img.upload.sha;
 
-      const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.upload.cfImageId}/large`;
+      const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.upload.cfImageId}/public`;
       let imgWidth = parseInt(img?.upload?.width) || 4;
       let height = parseInt(img?.upload?.height) || 3;
       let objImg = {
