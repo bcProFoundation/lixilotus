@@ -1,4 +1,3 @@
- 
 /* SendLotus Language Texts
 
 Table of Contents

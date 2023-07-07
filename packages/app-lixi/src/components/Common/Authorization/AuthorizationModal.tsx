@@ -47,18 +47,18 @@ interface AuthorizationModalProps {
   title?: React.ReactNode;
   description?: React.ReactNode;
   icon?:
-  | 'danger'
-  | 'warning'
-  | 'success'
-  | 'comment'
-  | 'upvote'
-  | 'downvote'
-  | 'addTimeline'
-  | 'tip'
-  | 'createTimeline'
-  | 'followTimeline'
-  | 'createPost'
-  | 'people';
+    | 'danger'
+    | 'warning'
+    | 'success'
+    | 'comment'
+    | 'upvote'
+    | 'downvote'
+    | 'addTimeline'
+    | 'tip'
+    | 'createTimeline'
+    | 'followTimeline'
+    | 'createPost'
+    | 'people';
   cancellationText?: React.ReactNode;
   confirmationText?: React.ReactNode;
   hideCancel?: boolean;
@@ -111,7 +111,7 @@ export const AuthorizationModal = ({ classStyle, icon }: AuthorizationModalProps
         dispatch(generateAccount());
         dispatch(closeModal());
       },
-      onCancel() { }
+      onCancel() {}
     });
   }
 

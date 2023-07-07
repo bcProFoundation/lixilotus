@@ -8,7 +8,13 @@ import { PersistGate } from 'redux-persist/integration/react';
 import MainLayout from '@components/Layout/MainLayout';
 
 import SplashScreen from '@components/Common/SplashScreen';
-import { AuthenticationProvider, AuthorizationProvider, ServiceWorkerProvider, WalletProvider, callConfig } from '@context/index';
+import {
+  AuthenticationProvider,
+  AuthorizationProvider,
+  ServiceWorkerProvider,
+  WalletProvider,
+  callConfig
+} from '@context/index';
 import { wrapper } from '@store/store';
 import { ConfigProvider } from 'antd';
 import { ConnectedRouter } from 'connected-next-router';
