@@ -1,6 +1,6 @@
-import { LocalUserAccount, RenameAccountCommand } from '@bcpros/lixi-models';
+import { LocalUserAccount } from '@bcpros/lixi-models';
 import PostsListing from '@components/Posts/PostsListing';
-import { generateAccount, renameAccount, silentLogin } from '@store/account/actions';
+import { generateAccount, silentLogin } from '@store/account/actions';
 import { getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { setLocalUserAccount } from '@store/localAccount';
@@ -37,7 +37,6 @@ const HomePage = ({ isMobile, localUser }: HomePageProps) => {
       // Only check the user if the redux state is already hydrated
       if (!selectedAccount && !localUser) {
         // There's no account, need to create an account for user
-        dispatch(generateAccount());
       } else if (selectedAccount && !localUser) {
         // Local local with nextjs api route
         const localAccount: LocalUserAccount = {

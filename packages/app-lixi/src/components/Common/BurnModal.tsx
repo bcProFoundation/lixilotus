@@ -1,44 +1,36 @@
-import { Button, Form, Modal, notification, Radio } from 'antd';
-import { showToast } from '@store/toast/actions';
-import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
-import { closeModal } from '@store/modal/actions';
-import intl from 'react-intl-universal';
-import useXPI from '@hooks/useXPI';
+import { DislikeOutlined, LikeOutlined } from '@ant-design/icons';
+import DownVoteSvg from '@assets/icons/downVote.svg';
 import UpDownSvg from '@assets/icons/upDownIcon.svg';
 import UpVoteSvg from '@assets/icons/upVote.svg';
-import DownVoteSvg from '@assets/icons/downVote.svg';
-import { WalletContext } from '@context/walletProvider';
-import React, { useState } from 'react';
-import { Burn, Comment, Post, Token } from '@bcpros/lixi-models';
+import { Burn } from '@bcpros/lixi-models';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import styled from 'styled-components';
-import { BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { currency } from '@components/Common/Ticker';
-import {
-  addBurnQueue,
-  addBurnTransaction,
-  burnForUpDownVote,
-  getBurnQueue,
-  getFailQueue,
-  clearFailQueue
-} from '@store/burn';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import _ from 'lodash';
-import { DislikeOutlined, FireTwoTone, LikeOutlined } from '@ant-design/icons';
-import useDidMountEffect from '@hooks/useDidMountEffect ';
-import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
-import BigNumber from 'bignumber.js';
-import { getSelectedAccount } from '@store/account/selectors';
-import { CommentOrderField, OrderDirection } from '@generated/types.generated';
-import { BurnData, PostItem } from '@components/Posts/PostDetail';
 import { CommentItem } from '@components/Posts/CommentListItem';
+import { PostItem } from '@components/Posts/PostDetail';
 import { TokenItem } from '@components/Token/TokensFeed';
-import router from 'next/router';
-import { useTokenQuery } from '@store/token/tokens.generated';
-import { usePostQuery } from '@store/post/posts.generated';
+import { WalletContext } from '@context/walletProvider';
+import { CommentOrderField, OrderDirection } from '@generated/types.generated';
+import useXPI from '@hooks/useXPI';
+import { getSelectedAccount } from '@store/account/selectors';
+import { addBurnQueue, addBurnTransaction, clearFailQueue, getBurnQueue, getFailQueue } from '@store/burn';
 import { useCommentQuery } from '@store/comment/comments.generated';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { closeModal } from '@store/modal/actions';
+import { usePostQuery } from '@store/post/posts.generated';
 import { getFilterPostsHome } from '@store/settings/selectors';
+import { showToast } from '@store/toast/actions';
+import { useTokenQuery } from '@store/token/tokens.generated';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
+import { Button, Form, Modal, Radio } from 'antd';
+import BigNumber from 'bignumber.js';
+import _ from 'lodash';
+import router from 'next/router';
+import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import intl from 'react-intl-universal';
+import styled from 'styled-components';
 
 const UpDownButton = styled(Button)`
   background: rgb(158, 42, 156);

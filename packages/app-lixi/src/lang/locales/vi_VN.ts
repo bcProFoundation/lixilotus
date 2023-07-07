@@ -412,6 +412,9 @@ export default {
   'onboarding.lixiLotusIntroduce2': 'Lixi cho phép bạn cho đi Lotus một cách dễ dàng.',
   'onboarding.lixiLotusIntroduce3': 'Để bắt đầu, hãy cài đặt Lixi vào thiết bị của bạn theo',
   'onboarding.lixiLotusIntroduce4': 'hướng dẫn',
+  'onboarding.maybeLater': 'Để sau',
+  'onboarding.registration': 'Tài khoản',
+  'onboarding.createAccountToJoin': 'Tạo tài khoản để tham gia Lixi!',
 
   /* 08.Envelope */
   'envelope.unableGetEnvelope': 'Không thể tải phong bì từ máy chủ',

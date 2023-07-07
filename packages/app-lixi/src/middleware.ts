@@ -10,8 +10,7 @@ function shouldExclude(request: NextRequest) {
     path.startsWith('/_api') || //  exclude all API routes
     path.startsWith('/static') || // exclude static files
     path.includes('.') || // exclude all files in the public folder
-    path.startsWith('/claimed') ||
-    path.startsWith('/post')
+    path.startsWith('/claimed')
   );
 }
 
@@ -30,12 +29,6 @@ export const middleware = async (req: NextRequest) => {
 
   if (pathname == '/' && session && (localUser == undefined || localUser == null)) {
     return res;
-  }
-
-  if (!localUser) {
-    const url = req.nextUrl.clone();
-    url.pathname = '/';
-    return NextResponse.redirect(url);
   }
 
   return res;
