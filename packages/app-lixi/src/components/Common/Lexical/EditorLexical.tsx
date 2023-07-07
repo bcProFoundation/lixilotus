@@ -112,7 +112,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
   const imagesList = postCoverUploads.map(img => {
-    const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.cfImageId}/large`;
+    const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.cfImageId}/public`;
     let width = img?.width || 4;
     let height = img?.height || 3;
     let objImg = {

@@ -257,7 +257,7 @@ export class PageResolver {
     if (_.isNil(uploadDetail)) return null;
 
     const { upload } = uploadDetail;
-    const cfUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/xsmall`;
+    const cfUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
     const awsUrl = `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}`;
     const url = upload.cfImageId ? cfUrl : upload.sha ? awsUrl : upload.url;
 
@@ -281,7 +281,7 @@ export class PageResolver {
     if (_.isNil(uploadDetail)) return null;
 
     const { upload } = uploadDetail;
-    const cfUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/xsmall`;
+    const cfUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
     const awsUrl = `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}`;
     const url = upload.cfImageId ? cfUrl : upload.sha ? awsUrl : upload.url;
 
