@@ -18,9 +18,9 @@ import {
 import { wrapper } from '@store/store';
 import { ConfigProvider } from 'antd';
 import { ConnectedRouter } from 'connected-next-router';
+import { NextSeo } from 'next-seo';
 import OutsideCallConsumer from 'react-outside-call';
 import lightTheme from 'src/styles/themes/lightTheme';
-import { NextSeo } from 'next-seo';
 import { stripHtml } from 'string-strip-html';
 
 const PersistGateServer = (props: any) => {
@@ -50,15 +50,6 @@ const LixiApp = ({ Component, ...rest }) => {
   const canonicalUrl = postId ? process.env.NEXT_PUBLIC_LIXI_URL + `post/${postId}` : process.env.NEXT_PUBLIC_LIXI_URL;
   const description = postId ? getDescription(postAsString) : 'Save your attention save the world!';
   const sitename = postId ? getSitename(postAsString) : 'lixi.social';
-
-  // const router = useRouter();
-
-  // const isServer = () => typeof window === 'undefined';
-
-  // let PersistGate = PersistGateServer;
-  // if (typeof window === 'undefined') {
-  //   PersistGate = PersistGateClient as any;
-  // }
 
   return (
     <Provider store={store}>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { PostItem } from '@components/Posts/PostDetail';
-import { GroupIconText, IconNoneHover, SpaceIconNoneHover } from '@components/Posts/PostListItem';
 import styled from 'styled-components';
 import Reaction from './Reaction';
 import { formatBalance } from 'src/utils/cashMethods';
@@ -19,6 +18,74 @@ import { RepostInput } from '@generated/types.generated';
 import { useRepostMutation } from '@store/post/posts.api';
 import { showToast } from '@store/toast/actions';
 import { useRouter } from 'next/router';
+import { WithAuthorizeAction } from './Authorization/WithAuthorizeAction';
+import { Counter } from './Counter';
+
+export const GroupIconText = styled.div`
+  align-items: center;
+  display: flex;
+  .ant-space {
+    cursor: pointer;
+    margin-right: 1rem;
+    align-items: end;
+    border-radius: 12px;
+    cursor: pointer;
+    @media (max-width: 960px) {
+      margin-right: 1rem;
+    }
+
+    &.repost {
+      svg {
+        color: var(--color-primary);
+        width: 28px;
+        height: 28px;
+      }
+    }
+  }
+  img {
+    width: 28px;
+    height: 28px;
+  }
+  .count {
+    color: rgba(30, 26, 29, 0.6);
+    font-size: 12px;
+  }
+`;
+
+export const SpaceIconNoneHover = styled(Space)`
+  min-height: 38px;
+  padding: 8px;
+  img {
+    transition: all 0.2s ease-in-out;
+    width: 28px;
+    height: 28px;
+  }
+
+  &:hover {
+    background: #faf1fa;
+  }
+`;
+
+export const IconNoneHover = ({
+  value,
+  imgUrl,
+  classStyle,
+  onClick
+}: {
+  value?: number;
+  imgUrl?: string;
+  classStyle?: string;
+  onClick: (...args: any) => void;
+}) => (
+  <SpaceIconNoneHover onClick={onClick} size={5}>
+    {imgUrl && (
+      <picture>
+        <img className={classStyle} alt="burnIcon" src={imgUrl} />
+      </picture>
+    )}
+    {value && <Counter num={value ?? 0} />}
+  </SpaceIconNoneHover>
+);
 
 const ActionBar = styled.div`
   display: flex;
@@ -50,6 +117,8 @@ type ActionPostBarProps = {
   onClickIconComment?: (e) => void;
   isSetBorderBottom?: boolean;
 };
+
+const AuthorizeIconNoneHover = WithAuthorizeAction(IconNoneHover);
 
 const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment, isSetBorderBottom }: ActionPostBarProps) => {
   const dispatch = useAppDispatch();
@@ -134,12 +203,12 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment, isSetBorde
     <ActionBar className={`action-post-bar ${borderBottom ? 'border-bottom' : ''}`}>
       <GroupIconText>
         <Reaction post={post} handleBurnForPost={handleBurnForPost} />
-        <IconNoneHover
+        <AuthorizeIconNoneHover
           value={formatBalance(post?.totalComments ?? 0)}
           imgUrl="/images/ico-comments.svg"
           key={`list-vertical-comment-o-${post.id}`}
           classStyle="custom-comment"
-          onClickIcon={e => onClickIconComment(e)}
+          onClick={e => onClickIconComment(e)}
         />
 
         {/* Currently only apply repost to posts in the page */}

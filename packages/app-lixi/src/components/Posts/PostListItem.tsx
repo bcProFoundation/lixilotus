@@ -1,27 +1,21 @@
-import ReactDomServer from 'react-dom/server';
+import { PlusCircleOutlined, RetweetOutlined } from '@ant-design/icons';
+import ActionPostBar from '@components/Common/ActionPostBar';
 import CommentComponent, { CommentItem } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
-import { ShareSocialButton } from '@components/Common/ShareSocialButton';
+import useWindowDimensions from '@hooks/useWindowDimensions';
+import { useAppDispatch } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { PostsQuery } from '@store/post/posts.generated';
-import { formatBalance } from '@utils/cashMethods';
-import { List, Button, Space, Image, Carousel } from 'antd';
-import { PlusCircleOutlined, LeftOutlined, RightOutlined, RetweetOutlined } from '@ant-design/icons';
-import _, { truncate } from 'lodash';
+import { formatRelativeTime } from '@utils/formatting';
+import { Button, List } from 'antd';
+import _ from 'lodash';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
-import { useAppDispatch } from '@store/hooks';
+import Gallery from 'react-photo-gallery';
 import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
-import Gallery from 'react-photo-gallery';
-import useWindowDimensions from '@hooks/useWindowDimensions';
-import { formatRelativeTime } from '@utils/formatting';
-import { Counter } from '@components/Common/Counter';
-import Reaction from '@components/Common/Reaction';
 import PostContent from './PostContent';
-import ActionPostBar from '@components/Common/ActionPostBar';
-import { setSelectedPost } from '@store/post/actions';
 import PostTranslate from './PostTranslate';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
@@ -32,20 +26,6 @@ export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
     renderItem={postComment => <CommentComponent data={postComment} />}
   />
 );
-
-export const SpaceIconNoneHover = styled(Space)`
-  min-height: 38px;
-  padding: 8px;
-  img {
-    transition: all 0.2s ease-in-out;
-    width: 28px;
-    height: 28px;
-  }
-
-  &:hover {
-    background: #faf1fa;
-  }
-`;
 
 const CardContainer = styled.div`
   display: flex;
@@ -196,37 +176,6 @@ const ActionBar = styled.div`
   }
 `;
 
-export const GroupIconText = styled.div`
-  align-items: center;
-  display: flex;
-  .ant-space {
-    cursor: pointer;
-    margin-right: 1rem;
-    align-items: end;
-    border-radius: 12px;
-    cursor: pointer;
-    @media (max-width: 960px) {
-      margin-right: 1rem;
-    }
-
-    &.repost {
-      svg {
-        color: var(--color-primary);
-        width: 28px;
-        height: 28px;
-      }
-    }
-  }
-  img {
-    width: 28px;
-    height: 28px;
-  }
-  .count {
-    color: rgba(30, 26, 29, 0.6);
-    font-size: 12px;
-  }
-`;
-
 const StyledTranslate = styled.div`
   cursor: pointer;
   color: var(--color-primary);
@@ -251,27 +200,6 @@ const PostListItemContainer = styled(List.Item)`
   }
   transition: 0.5s;
 `;
-
-export const IconNoneHover = ({
-  value,
-  imgUrl,
-  classStyle,
-  onClickIcon
-}: {
-  value?: number;
-  imgUrl?: string;
-  classStyle?: string;
-  onClickIcon: (e: any) => void;
-}) => (
-  <SpaceIconNoneHover onClick={onClickIcon} size={5}>
-    {imgUrl && (
-      <picture>
-        <img className={classStyle} alt="burnIcon" src={imgUrl} />
-      </picture>
-    )}
-    {value && <Counter num={value ?? 0} />}
-  </SpaceIconNoneHover>
-);
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 

@@ -413,6 +413,9 @@ export default {
   'onboarding.lixiLotusIntroduce2': 'Lixi allow you to giveaway your Lotus effortlessly.',
   'onboarding.lixiLotusIntroduce3': 'To start, install Lixi to your device follow',
   'onboarding.lixiLotusIntroduce4': 'the guide',
+  'onboarding.maybeLater': 'Maybe later',
+  'onboarding.registration': 'Registration',
+  'onboarding.createAccountToJoin': 'Create an account to join Lixi',
 
   /* 08.Envelope */
   'envelope.unableGetEnvelope': 'Unable to get the envelope from server',

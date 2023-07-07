@@ -360,6 +360,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
               </p>
             }
             scrollableTarget="scrollableDiv"
+            scrollThreshold={0.7}
           >
             {data.map((item, index) => {
               return (

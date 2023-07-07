@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Select } from 'antd';
 import styled, { css } from 'styled-components';
 import intl from 'react-intl-universal';
-import AppLocale from '../../lang';
+import AppLocale from '@lang/index';
 import _ from 'lodash';
 
 export const AntdFormCss = css`
