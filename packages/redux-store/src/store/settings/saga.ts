@@ -8,7 +8,7 @@ import { showToast } from '@store/toast/actions';
 import * as _ from 'lodash';
 import moment from 'moment';
 import intl from 'react-intl-universal';
-import AppLocale from 'src/lang';
+import AppLocale from '@lang/index';
 
 import { loadLocale, loadLocaleFailure, loadLocaleSuccess, setInitIntlStatus, updateLocale } from './actions';
 
