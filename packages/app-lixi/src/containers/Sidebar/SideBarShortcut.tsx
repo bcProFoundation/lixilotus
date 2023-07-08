@@ -455,8 +455,6 @@ const SpaceShorcutItem = styled(Space)`
           }
         }
       }
-      .total-child-topic {
-      }
     }
   }
   &.collapse {
@@ -522,16 +520,6 @@ const transformCreatedAt = date => {
     dateFormated = moment(date).format('DD/MM');
   }
   return dateFormated;
-};
-
-const calculateTotalBurnTopic = posts => {
-  let burnScore = 0;
-  if (posts.length > 0) {
-    burnScore = posts.reduce((result, post) => {
-      return (result += post?.lotusBurnScore);
-    }, 0);
-  }
-  return burnScore;
 };
 
 export const ShortCutItem = ({
@@ -625,6 +613,16 @@ export const ShortCutTopicItem = ({
 }) => {
   const [showMore, setShowMore] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+
+  const calculateTotalBurnTopic = posts => {
+    let burnScore = 0;
+    if (posts.length > 0) {
+      burnScore = posts.reduce((result, post) => {
+        return (result += post?.lotusBurnScore);
+      }, 0);
+    }
+    return burnScore;
+  };
 
   return posts.length !== 0 ? (
     <>
@@ -1098,7 +1096,6 @@ const SidebarShortcut = () => {
         dispatch(setSelectedPost(posts[0].id));
       }, 500);
     } else {
-      console.log('POST', posts, cachePostIdGeneral);
       dispatch(setSelectedPost(posts[cachePostIdGeneral].id));
       cachePostIdGeneral < posts.length - 1 ? setCachePostIdGeneral(cachePostIdGeneral + 1) : setCachePostIdGeneral(0);
     }
