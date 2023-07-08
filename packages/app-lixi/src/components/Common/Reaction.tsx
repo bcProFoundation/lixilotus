@@ -3,13 +3,15 @@ import { BurnForType } from '@bcpros/lixi-models/lib/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Space, Popover } from 'antd';
 import { openModal } from '@store/modal/actions';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { OPTION_BURN_TYPE, OPTION_BURN_VALUE } from '@components/Posts/PostsListing';
 import { formatBalance } from 'src/utils/cashMethods';
 import { Counter } from './Counter';
 import { PostItem } from '@components/Posts/PostDetail';
 import { getCurrentThemes } from '@store/settings';
+import useAuthorization from './Authorization/use-authorization.hooks';
+import { AuthorizationContext } from '@context/index';
 
 const SpaceIconBurnHover = styled(Space)`
   min-height: 38px;
@@ -130,6 +132,9 @@ const Reaction = ({ post, handleBurnForPost }: ReactionProps) => {
   const { width } = useWindowDimensions();
   const currentTheme = useAppSelector(getCurrentThemes);
 
+  const authorization = useContext(AuthorizationContext);
+  const askAuthorization = useAuthorization();
+
   useEffect(() => {
     const isMobile = width < 868 ? true : false;
     setIsMobile(isMobile);
@@ -146,7 +151,12 @@ const Reaction = ({ post, handleBurnForPost }: ReactionProps) => {
   const handleBurnOption = (e: React.MouseEvent<HTMLElement>, dataItem: any, optionBurn: string, isUpVote: boolean) => {
     e.preventDefault();
     e.stopPropagation();
-    handleBurnForPost(isUpVote, dataItem, optionBurn);
+    if (authorization.authorized) {
+      handleBurnForPost(isUpVote, dataItem, optionBurn);
+    } else {
+      askAuthorization();
+    }
+
     hideReact();
   };
 
@@ -168,14 +178,19 @@ const Reaction = ({ post, handleBurnForPost }: ReactionProps) => {
   };
 
   const openBurnModal = (e: React.MouseEvent<HTMLElement>, dataItem: any) => {
-    dispatch(
-      openModal('BurnModal', {
-        burnForType: BurnForType.Post,
-        id: dataItem.id,
-        isPage: dataItem.page ? true : false,
-        classStyle: 'ahihi'
-      })
-    );
+    if (authorization.authorized) {
+      dispatch(
+        openModal('BurnModal', {
+          burnForType: BurnForType.Post,
+          id: dataItem.id,
+          isPage: dataItem.page ? true : false,
+          classStyle: 'ahihi'
+        })
+      );
+    } else {
+      askAuthorization();
+    }
+
     hideReact();
   };
 

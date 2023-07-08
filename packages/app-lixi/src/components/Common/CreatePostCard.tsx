@@ -1,37 +1,36 @@
-import useXPI from '@hooks/useXPI';
+import { DollarOutlined, GlobalOutlined, PlusCircleOutlined, ShopOutlined } from '@ant-design/icons';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { PageItem } from '@components/Pages/PageDetail';
+import { AuthorizationContext } from '@context/index';
 import { WalletContext } from '@context/walletProvider';
-import { PlusCircleOutlined, GlobalOutlined, DollarOutlined, ShopOutlined } from '@ant-design/icons';
+import { CreatePostInput, OrderDirection, PostOrderField } from '@generated/types.generated';
+import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
-import { getPostCoverUploads, getSelectedAccount } from '@store/account/selectors';
+import { deleteEditorTextFromCache, removeAllUpload } from '@store/account/actions';
+import { getEditorCache, getPostCoverUploads, getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { api as postApi, useCreatePostMutation } from '@store/post/posts.api';
 import { CreatePostMutation } from '@store/post/posts.generated';
-import { showToast } from '@store/toast/actions';
-import { Button, Input, Modal, Space } from 'antd';
-import _ from 'lodash';
-import React, { useEffect, useState } from 'react';
-import intl from 'react-intl-universal';
-import { CreatePostInput, OrderDirection, PostOrderField } from '@generated/types.generated';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import styled from 'styled-components';
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { Embed, SocialsEnum } from './Embed';
-import EditorLexical from './Lexical/EditorLexical';
-import { removeAllUpload } from '@store/account/actions';
-import { AvatarUser } from './AvatarUser';
-import { getEditorCache } from '@store/account/selectors';
-import { deleteEditorTextFromCache } from '@store/account/actions';
 import {
   getCurrentThemes,
   getFilterPostsHome,
   getFilterPostsPage,
   getFilterPostsToken
 } from '@store/settings/selectors';
-import router from 'next/router';
-import { Page } from '@bcpros/lixi-models';
-import { currency } from './Ticker';
-import { getUtxoWif } from '@utils/cashMethods';
+import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
-import { PageItem } from '@components/Pages/PageDetail';
+import { getUtxoWif } from '@utils/cashMethods';
+import { Button, Input, Modal, Space } from 'antd';
+import _ from 'lodash';
+import router from 'next/router';
+import React, { useContext, useState } from 'react';
+import intl from 'react-intl-universal';
+import styled from 'styled-components';
+import { AvatarUser } from './AvatarUser';
+import { SocialsEnum } from './Embed';
+import EditorLexical from './Lexical/EditorLexical';
+import { currency } from './Ticker';
+import useAuthorization from './Authorization/use-authorization.hooks';
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -225,6 +224,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const currentTheme = useAppSelector(getCurrentThemes);
   const { XPI, chronik } = Wallet;
   const { sendXpi } = useXPI();
+  const authorization = useContext(AuthorizationContext);
+  const askAuthorization = useAuthorization();
 
   const [
     createPostTrigger,
@@ -329,6 +330,14 @@ const CreatePostCard = (props: CreatePostCardProp) => {
             draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount + 1;
           })
         );
+    }
+  };
+
+  const handleNewPostClick = () => {
+    if (authorization.authorized) {
+      setEnableEditor(!enableEditor);
+    } else {
+      askAuthorization();
     }
   };
 
@@ -455,7 +464,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
   return (
     <React.Fragment>
-      <DesktopCreatePost className="create-post-card-container" onClick={() => setEnableEditor(!enableEditor)}>
+      <DesktopCreatePost className="create-post-card-container" onClick={handleNewPostClick}>
         <div className="box-create-post">
           <div className="avatar">
             <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
@@ -480,7 +489,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         </div>
       </DesktopCreatePost>
 
-      <MobileCreatePost className="create-post-card-container" onClick={() => setEnableEditor(!enableEditor)}>
+      <MobileCreatePost className="create-post-card-container" onClick={handleNewPostClick}>
         <div className="fab-btn">
           <img src="/images/ico-create-post.svg" alt="" />
         </div>

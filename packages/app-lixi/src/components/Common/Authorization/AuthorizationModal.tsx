@@ -16,6 +16,7 @@ import { Button, Form, Input, Modal } from 'antd';
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import { AuthorizationOptions } from './Authorization.interface';
 
 const AuthorizationButton = styled(Button)`
   background: rgb(158, 42, 156);
@@ -44,30 +45,11 @@ const AuthorizationButton = styled(Button)`
 `;
 
 interface AuthorizationModalProps {
-  title?: React.ReactNode;
-  description?: React.ReactNode;
-  icon?:
-    | 'danger'
-    | 'warning'
-    | 'success'
-    | 'comment'
-    | 'upvote'
-    | 'downvote'
-    | 'addTimeline'
-    | 'tip'
-    | 'createTimeline'
-    | 'followTimeline'
-    | 'createPost'
-    | 'people';
-  cancellationText?: React.ReactNode;
-  confirmationText?: React.ReactNode;
-  hideCancel?: boolean;
-  onConfirm?: () => Promise<void> | void;
-  onCancel?: () => Promise<void> | void;
+  options?: AuthorizationOptions;
   classStyle?: string;
 }
 
-export const AuthorizationModal = ({ classStyle, icon }: AuthorizationModalProps) => {
+export const AuthorizationModal = ({ classStyle }: AuthorizationModalProps) => {
   const Wallet = React.useContext(WalletContext);
 
   const [formData, setFormData] = useState({

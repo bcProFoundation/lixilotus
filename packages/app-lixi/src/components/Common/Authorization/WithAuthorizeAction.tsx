@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AuthorizationContext } from '@context/authorizationProvider';
 
 type BaseAction = {
-  onClick: (...args: any) => void;
+  onClick?: (...args: any) => void;
   fallback?: () => void;
 };
 
@@ -15,7 +15,7 @@ export function WithAuthorizeAction<T>(WrappedComponent: React.ComponentType<T &
     const authorization = useContext(AuthorizationContext);
 
     const onClick = (event: React.MouseEvent<any>) => {
-      if (authorization.authorized) {
+      if (authorization.authorized && props.onClick) {
         props.onClick(event);
       } else {
         props.fallback && props.fallback();

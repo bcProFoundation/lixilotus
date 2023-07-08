@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PostItem } from '@components/Posts/PostDetail';
 import styled from 'styled-components';
-import Reaction from './Reaction';
+import BaseReaction from './Reaction';
 import { formatBalance } from 'src/utils/cashMethods';
 import { ShareSocialButton } from './ShareSocialButton';
 import { RetweetOutlined } from '@ant-design/icons';
@@ -119,6 +119,7 @@ type ActionPostBarProps = {
 };
 
 const AuthorizeIconNoneHover = WithAuthorizeAction(IconNoneHover);
+const AuthorizeReaction = WithAuthorizeAction(BaseReaction);
 
 const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment, isSetBorderBottom }: ActionPostBarProps) => {
   const dispatch = useAppDispatch();
@@ -202,7 +203,7 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment, isSetBorde
   return (
     <ActionBar className={`action-post-bar ${borderBottom ? 'border-bottom' : ''}`}>
       <GroupIconText>
-        <Reaction post={post} handleBurnForPost={handleBurnForPost} />
+        <AuthorizeReaction post={post} handleBurnForPost={handleBurnForPost} />
         <AuthorizeIconNoneHover
           value={formatBalance(post?.totalComments ?? 0)}
           imgUrl="/images/ico-comments.svg"

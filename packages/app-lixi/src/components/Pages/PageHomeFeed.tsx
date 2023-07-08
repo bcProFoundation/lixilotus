@@ -1,20 +1,22 @@
-import React, { useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
+import { DEFAULT_CATEGORY } from '@bcpros/lixi-models/constants/category';
+import { AuthorizationContext } from '@context/index';
+import { OrderDirection, PageOrderField } from '@generated/types.generated';
+import { getSelectedAccountId } from '@store/account/selectors';
+import { getCategories } from '@store/category/actions';
+import { getAllCategories } from '@store/category/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { openModal } from '@store/modal/actions';
 import { useInfinitePagesByFollowerIdQuery } from '@store/page/useInfinitePagesByFollowerIdQuery';
 import { useInfinitePagesByUserIdQuery } from '@store/page/useInfinitePagesByUserIdQuery';
+import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 import { Button, Skeleton } from 'antd';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getSelectedAccountId } from '@store/account/selectors';
 import { push } from 'connected-next-router';
-import { openModal } from '@store/modal/actions';
-import intl from 'react-intl-universal';
-import { getAllCategories } from '@store/category/selectors';
+import React, { useContext, useEffect, useRef } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { getCategories } from '@store/category/actions';
-import { OrderDirection, PageOrderField } from '@generated/types.generated';
-import { usePagesByUserIdQuery } from '../../../../redux-store/src/store/page/pages.generated';
-import { DEFAULT_CATEGORY } from '@bcpros/lixi-models/constants/category';
+import intl from 'react-intl-universal';
+import styled from 'styled-components';
+import { usePagesByUserIdQuery } from '@store/page/pages.generated';
+import useAuthorization from '../Common/Authorization/use-authorization.hooks';
 
 const StyledPageFeed = styled.div`
   margin: 1rem auto;
@@ -50,24 +52,24 @@ const StyledPageFeed = styled.div`
 `;
 
 const BlankPage = styled.div`
-display: flex;
-background: #FFFFFF;
-border: 1px solid var(--border-item-light);
-border-radius: var(--border-radius-primary);
-padding: 2rem 3rem;
-margin-bottom: 1rem;
+  display: flex;
+  background: #ffffff;
+  border: 1px solid var(--border-item-light);
+  border-radius: var(--border-radius-primary);
+  padding: 2rem 3rem;
+  margin-bottom: 1rem;
 
-div {
+  div {
     justify-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
     .ant-btn {
-        width: 50%;
+      width: 50%;
     }
-}
-}
-@media (max-width: 768px) {
+  }
+
+  @media (max-width: 768px) {
     flex-direction: column;
   }
 `;
@@ -230,6 +232,8 @@ const PageHome = () => {
   const categories = useAppSelector(getAllCategories);
   const refPagesListing = useRef<HTMLDivElement | null>(null);
   const currentUserPages = usePagesByUserIdQuery({ id: selectedAccountId }).currentData;
+  const authorization = useContext(AuthorizationContext);
+  const askAuthorization = useAuthorization();
 
   useEffect(() => {
     dispatch(getCategories());
@@ -333,7 +337,11 @@ const PageHome = () => {
   };
 
   const onCreatePage = () => {
-    dispatch(openModal('CreatePageModal', { account: selectedAccountId }));
+    if (authorization.authorized) {
+      dispatch(openModal('CreatePageModal', { account: selectedAccountId }));
+    } else {
+      askAuthorization();
+    }
   };
 
   return (

@@ -7,21 +7,14 @@ import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
 import { InfoSubCard } from '@components/Lixi';
 import { IconBurn } from '@components/Posts/PostDetail';
-import { WalletContext } from '@context/walletProvider';
+import { AuthorizationContext } from '@context/index';
 import { CreateTokenInput, OrderDirection, TokenEdge, TokenOrderField } from '@generated/types.generated';
-import useXPI from '@hooks/useXPI';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { setTransactionReady } from '@store/account/actions';
-import {
-  addBurnQueue,
-  addBurnTransaction,
-  clearFailQueue,
-  getBurnQueue,
-  getFailQueue,
-  getLatestBurnForToken
-} from '@store/burn';
+import { addBurnQueue, addBurnTransaction, clearFailQueue, getFailQueue } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
+import { getCurrentThemes } from '@store/settings';
 import { showToast } from '@store/toast/actions';
 import { useTokensQuery } from '@store/token/tokens.api';
 import { useCreateTokenMutation } from '@store/token/tokens.generated';
@@ -35,15 +28,14 @@ import { push } from 'connected-next-router';
 import makeBlockie from 'ethereum-blockies-base64';
 import moment from 'moment';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Highlighter from 'react-highlight-words';
 import { Controller, useForm } from 'react-hook-form';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import useAuthorization from '../Common/Authorization/use-authorization.hooks';
 import { TokenItem } from './TokensFeed';
-import { getCurrentThemes } from '@store/settings';
 
 const StyledTokensListing = styled.div`
   .table-tokens {
@@ -123,24 +115,20 @@ const StyledNavBarHeader = styled.div`
 
 const TokensListing = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [valueInput, setValueInput] = useState('');
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-  // const tokenList = useAppSelector(selectTokens);
-  const Wallet = React.useContext(WalletContext);
-  const { XPI, chronik } = Wallet;
-  const { createBurnTransaction } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
-  const latestBurnForToken = useAppSelector(getLatestBurnForToken);
-  const burnQueue = useAppSelector(getBurnQueue);
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
   const currentTheme = useAppSelector(getCurrentThemes);
+
+  const authorization = useContext(AuthorizationContext);
+  const askAuthorization = useAuthorization();
+
   const { currentData: tokens, isLoading } = useTokensQuery({
     orderBy: {
       direction: OrderDirection.Desc,
@@ -401,11 +389,19 @@ const TokensListing = () => {
   };
 
   const burnToken = (id: string, tokenId: string) => {
-    handleBurnForToken(true, id, tokenId);
+    if (authorization.authorized) {
+      handleBurnForToken(true, id, tokenId);
+    } else {
+      askAuthorization();
+    }
   };
 
   const openBurnModal = (token: TokenItem) => {
-    dispatch(openModal('BurnModal', { burnForType: BurnForType.Token, id: token.tokenId }));
+    if (authorization.authorized) {
+      dispatch(openModal('BurnModal', { burnForType: BurnForType.Token, id: token.tokenId }));
+    } else {
+      askAuthorization();
+    }
   };
 
   const addTokenbyId = async data => {

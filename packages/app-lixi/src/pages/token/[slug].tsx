@@ -1,13 +1,11 @@
-import React from 'react';
-import PageDetailLayout from '@components/Layout/PageDetailLayout';
+import MainLayout from '@components/Layout/MainLayout';
 import TokensFeed from '@components/Token/TokensFeed';
-import { NextSeo } from 'next-seo';
 import { SagaStore, wrapper } from '@store/store';
+import { useTokenQuery } from '@store/token/tokens.generated';
+import _ from 'lodash';
+import { NextSeo } from 'next-seo';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import { END } from 'redux-saga';
-import _ from 'lodash';
-import { useTokenQuery } from '@store/token/tokens.generated';
-import MainLayout from '@components/Layout/MainLayout';
 
 const TokenDetailPage = props => {
   const { tokenId, isMobile } = props;

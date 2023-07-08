@@ -29,11 +29,13 @@ import { Header } from 'antd/lib/layout/layout';
 import { push } from 'connected-next-router';
 import * as _ from 'lodash';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import { fromSmallestDenomination } from 'src/utils/cashMethods';
 import styled from 'styled-components';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import { AuthorizationContext } from '@context/index';
+import useAuthorization from '../../components/Common/Authorization/use-authorization.hooks';
 
 export type TopbarProps = {
   className?: string;
@@ -267,6 +269,8 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const currentTheme = useAppSelector(getCurrentThemes);
   const [isMobile, setIsMobile] = useState(false);
   const { width } = useWindowDimensions();
+  const authorization = useContext(AuthorizationContext);
+  const askAuthorization = useAuthorization();
 
   useEffect(() => {
     const isMobile = width < 968 ? true : false;
@@ -509,7 +513,10 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           active={currentPathName === '/wallet'}
           direction="horizontal"
           key="wallet-lotus"
-          onClickItem={() => handleIconClick('/wallet')}
+          onClickItem={() => {
+            if (authorization.authorized) handleIconClick('/wallet');
+            else askAuthorization();
+          }}
         />
         <ItemAccess
           icon={'/images/ico-lixi.svg'}
@@ -517,7 +524,10 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           active={currentPathName.includes('/lixi')}
           direction="horizontal"
           key="lixi"
-          onClickItem={() => handleIconClick('/lixi')}
+          onClickItem={() => {
+            if (authorization.authorized) handleIconClick('/lixi');
+            else askAuthorization();
+          }}
         />
         <ItemAccess
           icon={'/images/ico-setting.svg'}
