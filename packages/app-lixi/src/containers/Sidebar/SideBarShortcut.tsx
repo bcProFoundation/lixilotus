@@ -5,7 +5,7 @@ import { Layout, message, Space, Modal, Popover, Button, Badge, Avatar } from 'a
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import axiosClient from '@utils/axiosClient';
 import intl from 'react-intl-universal';
@@ -440,6 +440,21 @@ const SpaceShorcutItem = styled(Space)`
         background: #bfbfbf;
         border-radius: 12px;
       }
+      button {
+        &.animation-rotage {
+          animation: 0.2s rotageFrames;
+          transform: rotate(90deg);
+        }
+
+        @keyframes rotageFrames {
+          from {
+            transform: rotate(0);
+          }
+          to {
+            transform: rotate(90deg);
+          }
+        }
+      }
     }
   }
   &.collapse {
@@ -599,6 +614,16 @@ export const ShortCutTopicItem = ({
   const [showMore, setShowMore] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
+  const calculateTotalBurnTopic = useMemo(() => {
+    let burnScore = 0;
+    if (posts.length > 0) {
+      burnScore = posts.reduce((result, post) => {
+        return (result += post?.lotusBurnScore);
+      }, 0);
+    }
+    return burnScore;
+  }, [posts]);
+
   return posts.length !== 0 ? (
     <>
       <SpaceShortCutTopicItem
@@ -624,17 +649,18 @@ export const ShortCutTopicItem = ({
               </div>
               <div className="content-account">
                 <div className="info-account" onClick={() => onClickIcon(topicName)}>
-                  <p className="page-name topic-title">{`#${topicName}`}</p>
+                  <p className="page-name topic-title">{`${topicName === 'general' ? 'general' : '#' + topicName}`}</p>
                   <p className="account-name topic-name">{posts[0]?.postAccount?.name}</p>
                   <p className="content">{stripHtml(posts[0]?.content).result}</p>
                 </div>
                 <div className="time-score">
-                  <p className="create-date">Total: {posts.length}</p>
+                  <p className="create-date">Total Dana: {calculateTotalBurnTopic}</p>
                   <Button
+                    className={`${showMore ? 'animation-rotage' : ''}`}
                     type="text"
-                    icon={!showMore ? <RightOutlined /> : <DownOutlined />}
+                    icon={<RightOutlined />}
                     onClick={() => setShowMore(!showMore)}
-                  />
+                  ></Button>
                 </div>
               </div>
             </SpaceShorcutItem>
@@ -713,6 +739,7 @@ const SidebarShortcut = () => {
   const [query, setQuery] = useState<any>('');
   const [hashtags, setHashtags] = useState<any>([]);
   const pageId = router.pathname.includes('page') && (router.query?.slug as string);
+  const [cachePostIdGeneral, setCachePostIdGeneral] = useState(0);
 
   let pastScan;
 
@@ -941,7 +968,7 @@ const SidebarShortcut = () => {
       Object.entries(filterPage).map(([key, value]) => {
         return (
           <ShortCutTopicItem
-            onClickIcon={topicName => onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`)}
+            onClickIcon={topicName => onTopHashtagClick(`#${topicName}`, value)}
             topicName={key}
             posts={value}
           />
@@ -976,7 +1003,7 @@ const SidebarShortcut = () => {
       Object.entries(filterPage).map(([key, value]) => {
         return (
           <ShortCutTopicItem
-            onClickIcon={topicName => onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`)}
+            onClickIcon={topicName => onTopHashtagClick(`#${topicName}`, value)}
             topicName={key}
             posts={value}
             isCollapse={navCollapsed}
@@ -1032,7 +1059,7 @@ const SidebarShortcut = () => {
   const showChildTopic = (topic, posts) => {
     return (
       <ShortCutTopicItem
-        onClickIcon={topicName => onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`)}
+        onClickIcon={topicName => onTopHashtagClick(`#${topicName}`, posts)}
         topicName={topic}
         posts={posts}
         isCollapse={navCollapsed}
@@ -1040,31 +1067,38 @@ const SidebarShortcut = () => {
     );
   };
 
-  const onTopHashtagClick = hashtag => {
-    if (router.query.hashtags) {
-      //Check dup before adding to query
-      const queryHashtags = (router.query.hashtags as string).split(' ');
-      const hashtagExistedIndex = queryHashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+  const onTopHashtagClick = (hashtag, posts?) => {
+    if (hashtag !== '#general') {
+      if (router.query.hashtags) {
+        //Check dup before adding to query
+        const queryHashtags = (router.query.hashtags as string).split(' ');
+        const hashtagExistedIndex = queryHashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
 
-      if (hashtagExistedIndex === -1) {
+        if (hashtagExistedIndex === -1) {
+          router.replace({
+            query: {
+              ...router.query,
+              hashtags: router.query.hashtags + ' ' + hashtag
+            }
+          });
+        }
+      } else {
         router.replace({
           query: {
             ...router.query,
-            hashtags: router.query.hashtags + ' ' + hashtag
+            q: '',
+            hashtags: hashtag
           }
         });
       }
+      dispatch(addRecentHashtagAtPages({ id: pageId, hashtag: hashtag.substring(1) }));
+      setTimeout(() => {
+        dispatch(setSelectedPost(posts[0].id));
+      }, 500);
     } else {
-      router.replace({
-        query: {
-          ...router.query,
-          q: '',
-          hashtags: hashtag
-        }
-      });
+      dispatch(setSelectedPost(posts[cachePostIdGeneral].id));
+      cachePostIdGeneral < posts.length - 1 ? setCachePostIdGeneral(cachePostIdGeneral + 1) : setCachePostIdGeneral(0);
     }
-
-    dispatch(addRecentHashtagAtPages({ id: pageId, hashtag: hashtag.substring(1) }));
   };
 
   const handleTagClose = removedTag => {

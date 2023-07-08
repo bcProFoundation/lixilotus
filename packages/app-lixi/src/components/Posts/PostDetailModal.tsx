@@ -174,6 +174,7 @@ const StyledContainerPostDetail = styled.div`
 
   header {
     position: sticky;
+    height: fit-content;
     top: -1px;
     z-index: 999;
     padding: 0 !important;
@@ -193,9 +194,14 @@ const StyledContainerPostDetail = styled.div`
   .title-post-detail {
     width: 100%;
     text-align: center;
+    padding: 1rem 8px;
+    @media (max-width: 968px) {
+      padding: 8px;
+    }
     h2 {
       margin: 0;
       font-size: 26px;
+      line-height: normal;
     }
   }
   .info-card-user {
