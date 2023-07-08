@@ -5,7 +5,7 @@ import { Layout, message, Space, Modal, Popover, Button, Badge, Avatar } from 'a
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import axiosClient from '@utils/axiosClient';
 import intl from 'react-intl-universal';
@@ -614,7 +614,7 @@ export const ShortCutTopicItem = ({
   const [showMore, setShowMore] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
-  const calculateTotalBurnTopic = posts => {
+  const calculateTotalBurnTopic = useMemo(() => {
     let burnScore = 0;
     if (posts.length > 0) {
       burnScore = posts.reduce((result, post) => {
@@ -622,7 +622,7 @@ export const ShortCutTopicItem = ({
       }, 0);
     }
     return burnScore;
-  };
+  }, [posts]);
 
   return posts.length !== 0 ? (
     <>
@@ -654,7 +654,7 @@ export const ShortCutTopicItem = ({
                   <p className="content">{stripHtml(posts[0]?.content).result}</p>
                 </div>
                 <div className="time-score">
-                  <p className="create-date">Total Dana: {calculateTotalBurnTopic(posts)}</p>
+                  <p className="create-date">Total Dana: {calculateTotalBurnTopic}</p>
                   <Button
                     className={`${showMore ? 'animation-rotage' : ''}`}
                     type="text"
