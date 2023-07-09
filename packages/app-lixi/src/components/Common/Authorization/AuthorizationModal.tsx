@@ -18,6 +18,16 @@ import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { AuthorizationOptions } from './Authorization.interface';
 
+export const MaybeLaterLink = styled.a`
+  width: 100%;
+  margin-bottom: 60px;
+  font-size: 16px;
+  color: ${props => props.theme.wallet.text.secondary};
+  text-decoration: underline;
+  color: ${props => props.theme.primary};
+  text-align: center;
+`;
+
 const AuthorizationButton = styled(Button)`
   background: rgb(158, 42, 156);
   color: white;
@@ -57,7 +67,6 @@ export const AuthorizationModal = ({ classStyle }: AuthorizationModalProps) => {
     mnemonic: ''
   });
   const [seedInput, openSeedInput] = useState(false);
-  const [isOnboarding, setIsOnboarding] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -65,10 +74,6 @@ export const AuthorizationModal = ({ classStyle }: AuthorizationModalProps) => {
 
   const handleOnCancel = () => {
     dispatch(closeModal());
-  };
-
-  const handleOnRegistration = () => {
-    setIsOnboarding(true);
   };
 
   const handleChange = e => {
@@ -122,22 +127,20 @@ export const AuthorizationModal = ({ classStyle }: AuthorizationModalProps) => {
       className={`${classStyle} authorixation-modal`}
       open={true}
       onCancel={handleOnCancel}
-      title={
-        <div className="authorization-header">
-          <h4>{intl.get('onboarding.createAccountToJoin')}</h4>
-        </div>
-      }
+      style={{ textAlign: 'center' }}
       footer={null}
     >
-      {isOnboarding ? (
-        <>
-          <PrimaryButton style={{ marginTop: '100px' }} onClick={() => showBackupConfirmModal()}>
-            <PlusSquareOutlined /> {intl.get('onboarding.newAccount')}
-          </PrimaryButton>
-          <SecondaryButton onClick={() => openSeedInput(!seedInput)}>
-            <ImportOutlined /> {intl.get('onboarding.importAccount')}
-          </SecondaryButton>
-          {seedInput && (
+      <>
+        <h2>{intl.get('onboarding.createAccountToJoin')}</h2>
+        <PrimaryButton style={{ marginTop: '20px' }} onClick={() => showBackupConfirmModal()}>
+          <PlusSquareOutlined /> {intl.get('onboarding.newAccount')}
+        </PrimaryButton>
+        <SecondaryButton onClick={() => openSeedInput(!seedInput)}>
+          <ImportOutlined /> {intl.get('onboarding.importAccount')}
+        </SecondaryButton>
+        {seedInput && (
+          <>
+            <p>{intl.get('settings.backupAccountHint')}</p>
             <AntdFormWrapper>
               <Form style={{ width: 'auto' }}>
                 <Form.Item
@@ -158,22 +161,12 @@ export const AuthorizationModal = ({ classStyle }: AuthorizationModalProps) => {
                 </SmartButton>
               </Form>
             </AntdFormWrapper>
-          )}
-        </>
-      ) : (
-        <>
-          <Button.Group style={{ width: '100%' }}>
-            <AuthorizationButton className="cancel" onClick={() => handleOnCancel()}>
-              <CloseCircleOutlined />
-              &nbsp; {intl.get('onboarding.maybeLater')}
-            </AuthorizationButton>
-            <AuthorizationButton className="registration" onClick={() => handleOnRegistration()}>
-              <LoginOutlined />
-              &nbsp; {intl.get('onboarding.registration')}
-            </AuthorizationButton>
-          </Button.Group>
-        </>
-      )}
+          </>
+        )}
+        <p style={{ textAlign: 'center' }}>
+          <MaybeLaterLink onClick={() => handleOnCancel()}>{intl.get('onboarding.maybeLater')}</MaybeLaterLink>
+        </p>
+      </>
     </Modal>
   );
 };
