@@ -31,6 +31,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import { WithAuthorizeAction } from '../Common/Authorization/WithAuthorizeAction';
+
+const AuthorizedButton = WithAuthorizeAction(Button);
 
 type UserDetailProps = {
   user: any;
@@ -437,14 +440,6 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     );
 
   useEffect(() => {
-    // fetchListFriend();
-  }, []);
-
-  useEffect(() => {
-    // fetchListPicture();
-  }, []);
-
-  useEffect(() => {
     if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
@@ -469,28 +464,12 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
       });
   };
 
-  const fetchListPicture = () => {
-    return axios
-      .get('https://picsum.photos/v2/list?page=2&limit=20', {
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
-      })
-      .then(response => {
-        setListsPicture(response.data);
-      });
-  };
-
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
       fetchNext();
     } else if (hasNext) {
       fetchNext();
     }
-  };
-
-  const navigateEditPage = () => {
-    // router.push('/page/edit');
   };
 
   const handleBurnForPost = async (isUpVote: boolean, post: any) => {
@@ -601,9 +580,9 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
             </div>
             {/* Follow */}
             {userDetailData.id != selectedAccount.id && (
-              <Button id="follow-button" onClick={isFollowed ? () => handleUnfollow() : () => handleFollow()}>
+              <AuthorizedButton id="follow-button" onClick={isFollowed ? () => handleUnfollow() : () => handleFollow()}>
                 {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
-              </Button>
+              </AuthorizedButton>
             )}
 
             {/* TODO: implement in the future */}
@@ -746,7 +725,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                 </div> */}
 
                 <Timeline>
-                  {data.length == 0 && (
+                  {data.length == 0 && !isLoading && (
                     <div className="blank-timeline">
                       <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
                       <p>Sharing your thinking...</p>
