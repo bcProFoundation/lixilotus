@@ -27,7 +27,7 @@ const PostContent = ({ postContent }) => {
     <div className="read-more">
       <ReadMoreMore
         id="readMore"
-        linesToShow={5}
+        linesToShow={6.5}
         parseHtml
         text={ReactDomServer.renderToStaticMarkup(content)}
         checkFor={500}

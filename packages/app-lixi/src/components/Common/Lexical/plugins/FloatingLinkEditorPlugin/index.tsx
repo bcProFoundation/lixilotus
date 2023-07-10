@@ -227,7 +227,6 @@ function FloatingLinkEditor({
       <div className="link-input">
         <input
           ref={inputRef}
-          value={linkUrl}
           onChange={event => {
             setLinkUrl(event.target.value);
           }}

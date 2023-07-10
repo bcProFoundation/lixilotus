@@ -113,6 +113,11 @@ const Content = styled.div`
     p {
       margin: 0;
     }
+    .read-more {
+      & > div > div {
+        max-height: 130px !important;
+      }
+    }
   }
   .description-translate {
     font-weight: 400;
@@ -281,6 +286,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
       return;
     }
     if (e.target.className === 'read-more-more-module_btn__33IaH' || e.target.className.includes('post-translation')) {
+      openPostDetailModal(post);
       e.stopPropagation();
     } else {
       // dispatch(setSelectedPost(post.id));

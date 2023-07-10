@@ -74,7 +74,7 @@ const getDeviceNotificationStyle = () => {
 let socket: Socket;
 const baseUrl = process.env.NEXT_PUBLIC_LIXI_API
   ? process.env.NEXT_PUBLIC_LIXI_API
-  : 'https://lixilotus.com/';
+  : 'https://lixi.social/';
 const socketServerUrl = `${baseUrl}ws/notifications`;
 
 const NOTIFICATION_TYPES = {
@@ -329,8 +329,7 @@ function createSocketChannel(socket: Socket) {
     const handler = (data: Notification) => {
       emit(data);
     };
-    const handlerNewPost = (data: any) => {
-    }
+    const handlerNewPost = (data: any) => {};
     socket.on('notification', handler);
     socket.on('newpost', handlerNewPost);
     return () => {

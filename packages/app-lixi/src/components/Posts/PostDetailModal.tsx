@@ -154,19 +154,16 @@ const StyledContainerPostDetail = styled.div`
   max-height: 92vh;
   overflow: auto;
   border-radius: 1rem;
-  -ms-overflow-style: none; // Internet Explorer 10+
-  scrollbar-width: none; // Firefox
   ::-webkit-scrollbar {
-    display: none; // Safari and Chrome
+    -webkit-appearance: none;
+    width: 7px;
   }
-  // &::-webkit-scrollbar {
-  //   width: 5px;
-  // }
-  // &::-webkit-scrollbar-thumb {
-  //   background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
-  //   box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
-  //   border-radius: 100px;
-  // }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  }
 
   @media (max-width: 968px) {
     max-height: 90vh;

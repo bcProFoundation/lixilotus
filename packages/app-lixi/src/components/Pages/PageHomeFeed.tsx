@@ -103,10 +103,10 @@ const ListCard = styled.div`
     padding-bottom: 2rem;
     .infinite-scroll-component {
       display: grid !important;
-      grid-template-columns: auto auto auto !important;
+      grid-template-columns: 1fr 1fr 1fr !important;
       grid-gap: 10px !important;
       @media (max-width: 768px) {
-        grid-template-columns: auto auto !important;
+        grid-template-columns: 1fr 1fr !important;
       }
     }
   }
@@ -168,6 +168,15 @@ const StyledCardPage = styled.div`
         letter-spacing: 0.15px;
         color: #1e1a1d;
         margin: 0;
+        padding: 0 0.5rem;
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        line-clamp: 1;
+        -webkit-line-clamp: 1;
+        box-orient: vertical;
+        -webkit-box-orient: vertical;
       }
       .page-category {
         font-weight: 500;
@@ -175,6 +184,7 @@ const StyledCardPage = styled.div`
         line-height: 16px;
         letter-spacing: 0.5px;
         color: rgba(30, 26, 29, 0.6);
+        margin-bottom: 0.5rem;
       }
       .sub-text {
         font-size: 12px;
