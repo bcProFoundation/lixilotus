@@ -68,6 +68,9 @@ export class Post {
   @Field(() => Boolean, { nullable: true })
   followPostOwner?: boolean;
 
+  @Field(() => Number, { nullable: true })
+  repostCount?: number;
+
   @Field(() => [Repost], { nullable: true })
   reposts?: [Repost];
 

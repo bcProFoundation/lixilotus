@@ -426,6 +426,7 @@ type Post {
   postAccount: Account!
   postAccountId: Int!
   postHashtags: [PostHashtag!]
+  repostCount: Int
   reposts: [Repost!]
   token: Token
   tokenId: String

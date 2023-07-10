@@ -307,24 +307,13 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
   };
 
   const reposted = () => {
-    if (!_.isNil(post.reposts) && post.reposts.length != 0) {
-      if (post.reposts.length - 1 == 0) {
-        return (
-          <p className="retweet">
-            <RetweetOutlined />{' '}
-            {intl.get('post.singleReposted', { repostName: post.reposts[post.reposts.length - 1].account.name })}
-          </p>
-        );
-      } else {
-        return (
-          <p className="retweet">
-            <RetweetOutlined />{' '}
-            {intl.get('post.multiReposted', {
-              repostName: `${post.reposts[post.reposts.length - 1].account.name} + ${post.reposts.length - 1}`
-            })}
-          </p>
-        );
-      }
+    if (!_.isNil(post.reposts) && post.reposts.length != 0 && post.followPostOwner) {
+      return (
+        <p className="retweet">
+          <RetweetOutlined />{' '}
+          {intl.get('post.singleReposted', { repostName: post.reposts[post.reposts.length - 1].account.name })}
+        </p>
+      );
     }
     return '';
   };

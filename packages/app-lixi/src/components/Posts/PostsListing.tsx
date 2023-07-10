@@ -25,7 +25,6 @@ import { setNewPostAvailable, setSelectedPost } from '@store/post/actions';
 import { getNewPostAvailable, getSelectedPostId } from '@store/post/selectors';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { saveTopPostsFilter } from '@store/settings/actions';
 import { getFilterPostsHome, getIsTopPosts } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
@@ -206,6 +205,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       accountId: selectedAccountId ?? null,
       isTop: String(isTop),
       orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.LastRepostAt
+        },
         {
           direction: OrderDirection.Desc,
           field: PostOrderField.UpdatedAt

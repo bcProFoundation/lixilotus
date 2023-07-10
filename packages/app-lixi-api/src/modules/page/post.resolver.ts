@@ -101,13 +101,16 @@ export class PostResolver {
       });
       const listFollowingsPageIds = followingPagesAccount.map(item => item.pageId);
 
-      const queryPosts = {
+      const queryPosts: any = {
         OR: [
           {
             lotusBurnScore: { gte: minBurnFilter ?? 0 }
           },
           {
             postAccount: { id: account.id }
+          },
+          {
+            page: { id: { in: listFollowingsPageIds } }
           },
           ...(isTop == 'true'
             ? [
@@ -125,20 +128,31 @@ export class PostResolver {
       result = await findManyCursorConnection(
         async args => {
           const posts = await this.prisma.post.findMany({
-            include: { postAccount: true, comments: true, page: true, translations: true },
+            include: {
+              postAccount: true,
+              comments: true,
+              page: true,
+              translations: true,
+              reposts: { select: { account: true, accountId: true } }
+            },
             where: queryPosts,
             orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
             ...args
           });
 
-          const result = posts.map(post => ({
-            ...post,
-            followPostOwner:
-              listFollowingsAccountIds.includes(post.postAccountId) ||
-              (post.page && listFollowingsPageIds.includes(post.page.id))
-                ? true
-                : false
-          }));
+          const result = await Promise.all(
+            posts.map(async post => ({
+              ...post,
+              followPostOwner:
+                listFollowingsAccountIds.includes(post.postAccountId) ||
+                (post.page && listFollowingsPageIds.includes(post.page.id))
+                  ? true
+                  : false,
+              repostCount: await this.prisma.repost.count({
+                where: { postId: post.id }
+              })
+            }))
+          );
 
           return result;
         },

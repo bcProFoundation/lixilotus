@@ -15,8 +15,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { minBurnFilter, ...otherArgs } = queryArgs;
-          return { minBurnFilter };
+          const { minBurnFilter, isTop, ...otherArgs } = queryArgs;
+          return { minBurnFilter, isTop };
         }
         return { queryArgs };
       },

@@ -308,10 +308,15 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       first: 20,
       minBurnFilter: filterValue,
       accountId: selectedAccountId,
+      isTop: String(isTop),
       orderBy: [
         {
           direction: OrderDirection.Desc,
           field: PostOrderField.UpdatedAt
+        },
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.LastRepostAt
         }
       ]
     },

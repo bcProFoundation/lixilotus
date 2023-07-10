@@ -3,7 +3,7 @@ import { getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
-import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
+import { getFilterPostsHome, getIsTopPosts, getNavCollapsed } from '@store/settings/selectors';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
@@ -96,6 +96,8 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
   const currentPathName = router.pathname ?? '';
   const filterValue = useAppSelector(getFilterPostsHome);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
+  const [filterGroup, setFilterGroup] = useState([]);
+  let isTop = useAppSelector(getIsTopPosts);
   const [filterPosts, setFilterPosts] = useState([]);
   const [filterPage, setFilterPage] = useState({});
   const [filterPageQuery, setFilterPageQuery] = useState<typeFilterPageQuery>({});
@@ -108,7 +110,12 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
       first: 50,
       minBurnFilter: filterValue,
       accountId: selectedAccountId ?? null,
+      isTop: String(isTop),
       orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.LastRepostAt
+        },
         {
           direction: OrderDirection.Desc,
           field: PostOrderField.UpdatedAt

@@ -506,6 +506,7 @@ export type Post = {
   postAccount: Account;
   postAccountId: Scalars['Int'];
   postHashtags?: Maybe<Array<PostHashtag>>;
+  repostCount?: Maybe<Scalars['Int']>;
   reposts?: Maybe<Array<Repost>>;
   token?: Maybe<Token>;
   tokenId?: Maybe<Scalars['String']>;
@@ -801,6 +802,7 @@ export type QueryAllPostsBySearchWithHashtagArgs = {
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryAllPostsBySearchWithHashtagAtPageArgs = {

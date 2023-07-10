@@ -14,7 +14,7 @@ import { fetchNotifications } from '@store/notification/actions';
 import _ from 'lodash';
 import { addRecentHashtagAtPages, setGraphqlRequestLoading } from '@store/account/actions';
 import { HashtagOrderField, OrderDirection, PostOrderField } from '@generated/types.generated';
-import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
+import { getFilterPostsHome, getIsTopPosts, getNavCollapsed } from '@store/settings/selectors';
 import { api as postApi } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { push } from 'connected-next-router';
@@ -734,6 +734,7 @@ const SidebarShortcut = () => {
   const filterValue = useAppSelector(getFilterPostsHome);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [filterPosts, setFilterPosts] = useState([]);
+  let isTop = useAppSelector(getIsTopPosts);
   const [filterPage, setFilterPage] = useState({});
   const [filterPageQuery, setFilterPageQuery] = useState<typeFilterPageQuery>({});
   const [query, setQuery] = useState<any>('');
@@ -748,10 +749,15 @@ const SidebarShortcut = () => {
       first: 50,
       minBurnFilter: filterValue,
       accountId: selectedAccountId ?? null,
+      isTop: String(isTop),
       orderBy: [
         {
           direction: OrderDirection.Desc,
           field: PostOrderField.UpdatedAt
+        },
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.LastRepostAt
         }
       ]
     },
@@ -929,7 +935,12 @@ const SidebarShortcut = () => {
       first: 50,
       minBurnFilter: filterValue,
       accountId: selectedAccountId,
+      isTop: String(isTop),
       orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.LastRepostAt
+        },
         {
           direction: OrderDirection.Desc,
           field: PostOrderField.UpdatedAt
