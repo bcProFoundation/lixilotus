@@ -1,3 +1,4 @@
+import { TRANSLATION_REQUIRE_AMOUNT } from '@bcpros/lixi-models';
 import { Burn, BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models';
 import { NotificationLevel, Token } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
@@ -150,9 +151,9 @@ export class BurnController {
             }
           });
 
-          //Translate if lotusBurnScore > 100 and hasnt been translate before
+          //Translate if lotusBurnScore >= TRANSLATION_REQUIRE_AMOUNT and hasnt been translate before
           //For now, the code below only support 2 langs (vi - en), need to rework code if support more than 2 langs
-          if (lotusBurnScore >= 100 && post?.originalLanguage === null) {
+          if (lotusBurnScore >= TRANSLATION_REQUIRE_AMOUNT && post?.originalLanguage === null) {
             await this.translateService.translatePostAndSave(TranslateProvider.AZURE, post?.content, post.id);
           }
 

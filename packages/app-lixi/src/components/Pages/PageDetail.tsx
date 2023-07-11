@@ -6,7 +6,7 @@ import {
   InfoCircleOutlined,
   FireOutlined
 } from '@ant-design/icons';
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { OPTION_BURN_VALUE, PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import CreatePostCard from '@components/Common/CreatePostCard';
@@ -566,9 +566,9 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
 
   useDidMountEffectNotification();
 
-  const handleBurnForPost = async (isUpVote: boolean, post: any) => {
+  const handleBurnForPost = async (isUpVote: boolean, post: any, optionBurn?: string) => {
     try {
-      const burnValue = '1';
+      const burnValue = OPTION_BURN_VALUE[optionBurn];
       if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();

@@ -22,7 +22,7 @@ export function useInfiniteHashtagByPageQuery(
   params: HashtagListParams,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
-  const baseResult = useHashtagsByPageQuery(params, { skip: _.isNil(params.id) });
+  const baseResult = useHashtagsByPageQuery(params, { skip: !params.id });
 
   const [trigger, nextResult] = useLazyHashtagsByPageQuery();
   const [combinedData, setCombinedData] = useState(hashtagAdapter.getInitialState({}));

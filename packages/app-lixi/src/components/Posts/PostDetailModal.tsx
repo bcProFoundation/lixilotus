@@ -1,4 +1,4 @@
-import { DashOutlined } from '@ant-design/icons';
+import { DashOutlined, SendOutlined } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { AvatarUser } from '@components/Common/AvatarUser';
@@ -38,10 +38,11 @@ import { getBurnQueue, getFailQueue } from '@store/burn';
 import { TokenItem } from '@components/Token/TokensFeed';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { getFilterPostsHome } from '@store/settings/selectors';
-import { OPTION_BURN_VALUE } from './PostsListing';
+import { OPTION_BURN_VALUE } from '@bcpros/lixi-models/constants';
 import parse from 'html-react-parser';
 import ReactDomServer from 'react-dom/server';
 import ActionPostBar from '@components/Common/ActionPostBar';
+import PostTranslate from './PostTranslate';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -54,7 +55,7 @@ type PostDetailProps = {
   classStyle?: string;
 };
 
-const { Search } = Input;
+const { Search, TextArea } = Input;
 
 const CommentContainer = styled.div`
   padding: 0 1rem;
@@ -87,7 +88,7 @@ const CommentInputContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  align-items: flex-end;
+  align-items: flex-start;
   margin-top: 1rem;
   gap: 1rem;
   padding: 1rem;
@@ -206,9 +207,34 @@ const StyledContainerPostDetail = styled.div`
   }
 `;
 
+const StyledTranslate = styled.div`
+  cursor: pointer;
+  color: var(--color-primary);
+  text-align: left;
+  margin-bottom: 5px;
+  font-size: 12px;
+`;
+
+const StyledTextArea = styled(TextArea)`
+  border: none;
+`;
+
+const StyledCommentContainer = styled.div`
+  border: 1px solid black;
+  border-radius: var(--border-radius-primary);
+  width: 100%;
+  padding: 0px 0px 10px 0px;
+`;
+
+const StyledIconContainer = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+  margin-right: 5px;
+`;
+
 export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }: PostDetailProps) => {
   const dispatch = useAppDispatch();
-  const { control, getValues, setValue, setFocus } = useForm();
+  const { control, getValues, setValue, setFocus, resetField } = useForm();
   const router = useRouter();
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
@@ -223,6 +249,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
   const walletStatus = useAppSelector(getWalletStatus);
   const [open, setOpen] = useState(false);
   const filterValue = useAppSelector(getFilterPostsHome);
+  const [showTranslation, setShowTranslation] = useState(false);
 
   const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
     useRepostMutation();
@@ -479,9 +506,11 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
         );
       }
 
-      setFocus('comment', { shouldSelect: true });
-      setValue('comment', '');
+      // setFocus('comment', { shouldSelect: true });
+      // setValue('comment', '');
     }
+
+    resetField('comment');
   };
 
   const editPost = () => {
@@ -507,8 +536,6 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
       return intl.get('comment.writeComment');
     }
   };
-
-  useDidMountEffectNotification();
 
   const handleHashtagClick = e => {
     if (e.target.className === 'hashtag-link') {
@@ -571,6 +598,17 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
     dispatch(closeModal());
   };
 
+  const translatePost = () => {
+    setShowTranslation(!showTranslation);
+  };
+
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // Prevent the default behavior of adding a new line
+      await handleCreateNewComment(e.currentTarget.value); // Call your function to post the comment
+    }
+  };
+
   return (
     <>
       <Modal
@@ -603,6 +641,22 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
             <div className="description-post" onClick={e => handleHashtagClick(e)}>
               {ReactHtmlParser(ReactDomServer.renderToStaticMarkup(content))}
             </div>
+            {post.translations &&
+              post.translations.length > 0 &&
+              (showTranslation ? (
+                <StyledTranslate onClick={translatePost} className="post-translation">
+                  {intl.get('post.hideTranslate')}
+                </StyledTranslate>
+              ) : (
+                <StyledTranslate onClick={translatePost} className="post-translation">
+                  {intl.get('post.showTranslate')}
+                </StyledTranslate>
+              ))}
+            {showTranslation && post.translations && post.translations.length > 0 && (
+              <div className="description-translate">
+                <PostTranslate postTranslate={post.translations[0].translateContent} />
+              </div>
+            )}
             {post.uploads.length != 0 && (
               <div className="images-post">
                 <Image.PreviewGroup>
@@ -635,49 +689,55 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
             <div className="ava-ico-cmt" onClick={() => router.push(`/profile/${selectedAccount.address}`)}>
               <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
             </div>
-            <Controller
-              name="comment"
-              key="comment"
-              control={control}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <AutoComplete
-                  onSelect={() => {
-                    setOpen(false);
-                  }}
-                  options={dataSource}
-                  open={open}
-                  onSearch={value => {
-                    //TODO: This is not the best way to implement. Will come back later
-                    if (/\d+$/.test(value) || value === '') {
+            <StyledCommentContainer>
+              <Controller
+                name="comment"
+                key="comment"
+                control={control}
+                render={({ field: { onChange, onBlur, value, ref } }) => (
+                  <AutoComplete
+                    onSelect={() => {
                       setOpen(false);
-                    } else if (value.startsWith('/')) {
-                      setOpen(true);
-                    }
-                  }}
-                  defaultActiveFirstOption
-                  getPopupContainer={trigger => trigger.parentElement}
-                  value={value}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  style={{ width: '-webkit-fill-available', textAlign: 'left' }}
-                >
-                  <Search
-                    style={{ fontSize: '12px' }}
-                    ref={ref}
-                    className="input-comment"
+                    }}
+                    options={dataSource}
+                    open={open}
                     onChange={onChange}
                     onBlur={onBlur}
                     value={value}
-                    placeholder={showTextComment()}
-                    enterButton="Comment"
-                    size="large"
-                    suffix={<DashOutlined />}
-                    onSearch={handleCreateNewComment}
-                    loading={isLoadingCreateComment}
-                  />
-                </AutoComplete>
-              )}
-            />
+                    onSearch={value => {
+                      //TODO: This is not the best way to implement. Will come back later
+                      if (/\d+$/.test(value) || value === '') {
+                        setOpen(false);
+                      } else if (value.startsWith('/')) {
+                        setOpen(true);
+                      }
+                    }}
+                    defaultActiveFirstOption
+                    getPopupContainer={trigger => trigger.parentElement}
+                    disabled={isLoadingCreateComment}
+                    style={{ width: '-webkit-fill-available', textAlign: 'left' }}
+                  >
+                    <StyledTextArea
+                      style={{ fontSize: '12px' }}
+                      ref={ref}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      value={value}
+                      placeholder={showTextComment()}
+                      size="large"
+                      autoSize
+                      onKeyDown={handleKeyDown}
+                    />
+                  </AutoComplete>
+                )}
+              />
+              <StyledIconContainer>
+                <SendOutlined
+                  style={{ fontSize: '20px' }}
+                  onClick={() => handleCreateNewComment(getValues('comment'))}
+                />
+              </StyledIconContainer>
+            </StyledCommentContainer>
           </CommentInputContainer>
         </StyledContainerPostDetail>
       </Modal>

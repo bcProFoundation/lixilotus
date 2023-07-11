@@ -1,0 +1,1 @@
+export const TRANSLATION_REQUIRE_AMOUNT = 10;

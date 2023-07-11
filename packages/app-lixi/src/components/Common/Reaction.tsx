@@ -5,7 +5,7 @@ import { Space, Popover } from 'antd';
 import { openModal } from '@store/modal/actions';
 import React, { useContext, useEffect, useState } from 'react';
 import useWindowDimensions from '@hooks/useWindowDimensions';
-import { OPTION_BURN_TYPE, OPTION_BURN_VALUE } from '@components/Posts/PostsListing';
+import { OPTION_BURN_TYPE, OPTION_BURN_VALUE } from '@bcpros/lixi-models/constants';
 import { formatBalance } from 'src/utils/cashMethods';
 import { Counter } from './Counter';
 import { PostItem } from '@components/Posts/PostDetail';

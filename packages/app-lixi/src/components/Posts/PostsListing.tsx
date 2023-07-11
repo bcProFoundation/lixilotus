@@ -1,4 +1,4 @@
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { OPTION_BURN_VALUE, PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import { currency } from '@components/Common/Ticker';
@@ -40,18 +40,6 @@ import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
 import PostListItem from './PostListItem';
 import { api as postApi } from '@store/post/posts.api';
-
-export const OPTION_BURN_VALUE = {
-  LIKE: '1',
-  DISLIKE: '1',
-  LOVE: '10'
-};
-
-export const OPTION_BURN_TYPE = {
-  LIKE: 'LIKE',
-  DISLIKE: 'DISLIKE',
-  LOVE: 'LOVE'
-};
 
 type PostsListingProps = {
   className?: string;

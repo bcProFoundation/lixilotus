@@ -26,7 +26,7 @@ export function useInfinitePostsByPageIdQuery(
   fetchAll = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const dispatch = useAppDispatch();
-  const baseResult = usePostsByPageIdQuery(params);
+  const baseResult = usePostsByPageIdQuery(params, { skip: !params.id });
 
   const [trigger, nextResult, lastPromiseInfo] = useLazyPostsByPageIdQuery();
   const [combinedData, setCombinedData] = useState(postsAdapter.getInitialState({}));

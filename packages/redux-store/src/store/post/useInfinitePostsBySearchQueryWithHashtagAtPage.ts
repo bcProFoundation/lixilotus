@@ -32,7 +32,7 @@ export function useInfinitePostsBySearchQueryWithHashtagAtPage(
 ) {
   const dispatch = useAppDispatch();
   const baseResult = usePostsBySearchWithHashtagAtPageQuery(params, {
-    skip: params.query === null && params.hashtags.length === 0
+    skip: (params.query === null && params.hashtags.length === 0) || !params.pageId
   });
 
   const [trigger, nextResult, lastPromiseInfo] = useLazyPostsBySearchWithHashtagAtPageQuery();

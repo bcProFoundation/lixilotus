@@ -1,4 +1,4 @@
-import { DashOutlined, LeftOutlined } from '@ant-design/icons';
+import { DashOutlined, LeftOutlined, SendOutlined } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import ActionPostBar from '@components/Common/ActionPostBar';
@@ -42,7 +42,8 @@ import Gallery from 'react-photo-gallery';
 import styled from 'styled-components';
 import CommentListItem, { CommentItem } from './CommentListItem';
 import { EditPostModalProps } from './EditPostModalPopup';
-import { OPTION_BURN_VALUE } from './PostsListing';
+import { OPTION_BURN_VALUE } from '@bcpros/lixi-models/constants';
+import PostTranslate from './PostTranslate';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -50,7 +51,7 @@ export type BurnData = {
   burnForType: BurnForType;
 };
 
-const { Search } = Input;
+const { Search, TextArea } = Input;
 
 const StyledBurnIcon = styled.img`
   transition: all 0.2s ease-in-out;
@@ -224,6 +225,31 @@ const StyledContainerPostDetail = styled.div`
   }
 `;
 
+const StyledTranslate = styled.div`
+  cursor: pointer;
+  color: var(--color-primary);
+  text-align: left;
+  margin-bottom: 5px;
+  font-size: 12px;
+`;
+
+const StyledTextArea = styled(TextArea)`
+  border: none;
+`;
+
+const StyledCommentContainer = styled.div`
+  border: 1px solid black;
+  border-radius: var(--border-radius-primary);
+  width: 100%;
+  padding: 0px 0px 10px 0px;
+`;
+
+const StyledIconContainer = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+  margin-right: 5px;
+`;
+
 export const IconBurn = ({
   icon,
   burnValue,
@@ -267,6 +293,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const walletStatus = useAppSelector(getWalletStatus);
   const [open, setOpen] = useState(false);
   const filterValue = useAppSelector(getFilterPostsHome);
+  const [showTranslation, setShowTranslation] = useState(false);
 
   const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
     useRepostMutation();
@@ -615,6 +642,17 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     }
   };
 
+  const translatePost = () => {
+    setShowTranslation(!showTranslation);
+  };
+
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // Prevent the default behavior of adding a new line
+      await handleCreateNewComment(e.currentTarget.value); // Call your function to post the comment
+    }
+  };
+
   return (
     <>
       <StyledContainerPostDetail className="post-detail">
@@ -639,6 +677,22 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <div className="description-post" onClick={e => handleHashtagClick(e)}>
             {ReactHtmlParser(ReactDomServer.renderToStaticMarkup(content))}
           </div>
+          {post.translations &&
+            post.translations.length > 0 &&
+            (showTranslation ? (
+              <StyledTranslate onClick={translatePost} className="post-translation">
+                {intl.get('post.hideTranslate')}
+              </StyledTranslate>
+            ) : (
+              <StyledTranslate onClick={translatePost} className="post-translation">
+                {intl.get('post.showTranslate')}
+              </StyledTranslate>
+            ))}
+          {showTranslation && post.translations && post.translations.length > 0 && (
+            <div className="description-translate">
+              <PostTranslate postTranslate={post.translations[0].translateContent} />
+            </div>
+          )}
           {post.uploads.length != 0 && (
             <div className="images-post">
               <Image.PreviewGroup>
@@ -670,49 +724,52 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <div className="ava-ico-cmt" onClick={() => router.push(`/profile/${selectedAccount.address}`)}>
             <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
           </div>
-          <Controller
-            name="comment"
-            key="comment"
-            control={control}
-            render={({ field: { onChange, onBlur, value, ref } }) => (
-              <AutoComplete
-                onSelect={() => {
-                  setOpen(false);
-                }}
-                options={dataSource}
-                open={open}
-                onSearch={value => {
-                  //TODO: This is not the best way to implement. Will come back later
-                  if (/\d+$/.test(value) || value === '') {
+          <StyledCommentContainer>
+            <Controller
+              name="comment"
+              key="comment"
+              control={control}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <AutoComplete
+                  onSelect={() => {
                     setOpen(false);
-                  } else if (value.startsWith('/')) {
-                    setOpen(true);
-                  }
-                }}
-                defaultActiveFirstOption
-                getPopupContainer={trigger => trigger.parentElement}
-                value={value}
-                onChange={onChange}
-                onBlur={onBlur}
-                style={{ width: '-webkit-fill-available', textAlign: 'left' }}
-              >
-                <Search
-                  style={{ fontSize: '12px' }}
-                  ref={ref}
-                  className="input-comment"
+                  }}
+                  options={dataSource}
+                  open={open}
                   onChange={onChange}
                   onBlur={onBlur}
                   value={value}
-                  placeholder={showTextComment()}
-                  enterButton="Comment"
-                  size="large"
-                  suffix={<DashOutlined />}
-                  onSearch={handleCreateNewComment}
-                  loading={isLoadingCreateComment}
-                />
-              </AutoComplete>
-            )}
-          />
+                  onSearch={value => {
+                    //TODO: This is not the best way to implement. Will come back later
+                    if (/\d+$/.test(value) || value === '') {
+                      setOpen(false);
+                    } else if (value.startsWith('/')) {
+                      setOpen(true);
+                    }
+                  }}
+                  defaultActiveFirstOption
+                  getPopupContainer={trigger => trigger.parentElement}
+                  disabled={isLoadingCreateComment}
+                  style={{ width: '-webkit-fill-available', textAlign: 'left' }}
+                >
+                  <StyledTextArea
+                    style={{ fontSize: '12px' }}
+                    ref={ref}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                    placeholder={showTextComment()}
+                    size="large"
+                    autoSize
+                    onKeyDown={handleKeyDown}
+                  />
+                </AutoComplete>
+              )}
+            />
+            <StyledIconContainer>
+              <SendOutlined style={{ fontSize: '20px' }} onClick={() => handleCreateNewComment(getValues('comment'))} />
+            </StyledIconContainer>
+          </StyledCommentContainer>
         </CommentInputContainer>
       </StyledContainerPostDetail>
     </>
