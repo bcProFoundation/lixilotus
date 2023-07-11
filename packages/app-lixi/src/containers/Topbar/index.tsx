@@ -1,4 +1,4 @@
-import {
+import Icon, {
   AppstoreOutlined,
   BellOutlined,
   CheckCircleOutlined,
@@ -34,6 +34,7 @@ import intl from 'react-intl-universal';
 import { fromSmallestDenomination } from 'src/utils/cashMethods';
 import styled from 'styled-components';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import FollowSvg from '@assets/icons/follow.svg';
 import { AuthorizationContext } from '@context/index';
 import useAuthorization from '../../components/Common/Authorization/use-authorization.hooks';
 
@@ -233,6 +234,15 @@ const PopoverStyled = styled.div`
   }
 `;
 
+const TitleFilterStyled = styled.span`
+  svg {
+    width: 12px;
+    height: 12px;
+    filter: invert(50%) sepia(12%) saturate(19%) hue-rotate(251deg) brightness(92%) contrast(85%);
+    margin-right: 7px;
+  }
+`;
+
 const BadgeStyled = styled(Badge)`
   .ant-badge-count {
     min-width: 10px !important;
@@ -396,13 +406,16 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     <>
       {router?.pathname == '/' && (
         <PopoverStyled>
-          {intl.get('general.postFilter')}
-          <Switch
-            checkedChildren={intl.get('general.allPost')}
-            unCheckedChildren={intl.get('general.topPost')}
-            defaultChecked={isTop}
-            onChange={HandleMenuPosts}
-          />
+          <TitleFilterStyled>
+            {intl.get('general.postFilter')}
+            <Icon component={() => <FollowSvg />} />
+            <Switch
+              checkedChildren={intl.get('general.on')}
+              unCheckedChildren={intl.get('general.off')}
+              defaultChecked={true}
+              onChange={HandleMenuPosts}
+            />
+          </TitleFilterStyled>
         </PopoverStyled>
       )}
       <PopoverStyled>

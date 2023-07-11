@@ -112,7 +112,7 @@ export default {
   'general.fee': 'Phí: ',
   'general.createPost': 'Bạn đang nghĩ gì vậy?...',
   'general.suggested': 'Đề xuất: ',
-  'general.postFilter': 'Xem bài viết bạn theo dõi: ',
+  'general.postFilter': 'Bài theo dõi ',
   'general.dana': ' Dana',
   'general.support': 'Hỗ trợ',
 
@@ -515,8 +515,8 @@ export default {
   'country.unablegetStates': 'Không thể tải tỉnh thành',
 
   /* 15.Post */
-  'general.allPost': 'Bật',
-  'general.topPost': 'Tắt',
+  'general.on': 'Bật',
+  'general.off': 'Tắt',
   'post.createNewPage': 'tạo bài viết mới',
   'post.createPage': 'tạo bài viết',
   'post.editPost': 'Sửa bài viết chưa đốt',
