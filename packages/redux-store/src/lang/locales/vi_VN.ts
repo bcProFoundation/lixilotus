@@ -462,7 +462,8 @@ export default {
   /* 12.Zero balance header */
   'zeroBalanceHeader.noBalance': 'Hiện tại bạn đang có {ticker} trong tài khoản',
   'zeroBalanceHeader.deposit': 'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch',
-  'send.syntaxError': "Syntax error. XPI to give can't be less than or equal to 0",
+  'send.syntaxError': "Lỗi cú pháp. XPI để tặng không được nhỏ hơn hoặc bằng 0 ",
+  'send.sendXpi': ' Gửi',
 
   /* 13.Page */
   'page.createNewPage': 'Tạo trang mới',

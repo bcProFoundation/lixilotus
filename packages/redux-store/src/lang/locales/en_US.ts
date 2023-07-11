@@ -458,7 +458,8 @@ export default {
   'send.queryString':
     'You are sending a transaction to an address including query parameters "{queryStringText}." Only the "amount" parameter, in units of {currency} satoshis, is currently supported.',
   'send.optionalPrivateMessage': 'Optional Private Message',
-  'send.syntaxError': 'Lỗi cú pháp. XPI để tặng không được nhỏ hơn hoặc bằng 0',
+  'send.syntaxError': "Syntax error. XPI to give can't be less than or equal to 0",
+  'send.sendXpi': ' Send',
 
   /* 12.Zero balance header */
   'zeroBalanceHeader.noBalance': 'You currently have 0 {ticker}',
