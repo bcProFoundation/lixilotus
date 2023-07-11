@@ -44,6 +44,7 @@ export default {
   'burn.sendDana': 'Bạn sẽ trả {cost} XPI (Chưa tính phí của thợ đào).',
   'burn.owner': ' tới chủ {name} ',
   'burn.feeMiner': 'Chưa tính phí thợ đào',
+  'burn.trans': 'Bài viết với {amount} Dana trở lên sẽ được dịch.',
 
   /* 01.General */
   'general.newsfeed': 'Bảng tin',

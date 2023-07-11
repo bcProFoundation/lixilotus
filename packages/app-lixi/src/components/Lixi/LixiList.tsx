@@ -99,20 +99,14 @@ const StyledFilterModal = styled(Modal)`
     align-items: center;
     padding-bottom: 20px;
 
-    .btnReset {
-      border: none;
-      color: #fff;
-      font-size: 17px;
-    }
-
-    .btnApply {
+    .btnApplyReset {
       color: #fff;
       background-color: #9e2a9c;
-      padding: 24px 30px;
       font-size: 17px;
+      padding: 8px 15px;
       display: flex;
       align-items: center;
-      border-radius: var(--border-radius-primary);
+      border-radius: 15px;
     }
   }
 `;
@@ -454,10 +448,10 @@ const LixiList = ({ lixies }: LixiListProps) => {
                     onOk={() => setModalVisible(false)}
                     onCancel={() => setModalVisible(false)}
                     footer={[
-                      <Button key="btnReset" className="btnReset" onClick={() => setModalVisible(false)}>
+                      <Button key="btnReset" className="btnApplyReset" onClick={() => setModalVisible(false)}>
                         Reset
                       </Button>,
-                      <Button key="btnApply" className="btnApply" onClick={handleApplyFilter}>
+                      <Button key="btnApply" className="btnApplyReset" onClick={handleApplyFilter}>
                         Apply
                       </Button>
                     ]}

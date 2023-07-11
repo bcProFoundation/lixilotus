@@ -31,6 +31,7 @@ import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import { TRANSLATION_REQUIRE_AMOUNT } from '@bcpros/lixi-models/constants/translation';
 
 const UpDownButton = styled(Button)`
   background: rgb(158, 42, 156);
@@ -367,6 +368,12 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
       <p className="fee-burn">
         {intl.get('burn.sendDana', {
           cost: currency.burnFee * selectedAmount + selectedAmount
+        })}
+      </p>
+
+      <p className="trans-amount">
+        {intl.get('burn.trans', {
+          amount: TRANSLATION_REQUIRE_AMOUNT
         })}
       </p>
     </Modal>
