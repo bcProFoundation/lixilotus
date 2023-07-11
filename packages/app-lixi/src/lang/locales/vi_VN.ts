@@ -112,7 +112,8 @@ export default {
   'general.fee': 'Phí: ',
   'general.createPost': 'Bạn đang nghĩ gì vậy?...',
   'general.suggested': 'Đề xuất: ',
-  'general.postFilter': 'Bài theo dõi ',
+  'general.open': 'Mở',
+  'general.postFilter': 'Bài theo dõi: ',
   'general.dana': ' Dana',
   'general.support': 'Hỗ trợ',
 

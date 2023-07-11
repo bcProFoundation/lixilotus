@@ -7,9 +7,7 @@ query Token($tokenId: String!) {
   }
 }
 
-query Tokens(
-  $orderBy: TokenOrder
-) {
+query Tokens($orderBy: TokenOrder) {
   allTokens(orderBy: $orderBy) {
     totalCount
     edges {
@@ -39,6 +37,7 @@ fragment TokenFields on Token {
   initialTokenQuantity
   comments
   createdDate
+  isFollowed
 }
 
 mutation createToken($input: CreateTokenInput!) {

@@ -88,7 +88,7 @@ export class FollowCacheService {
 
     const promises = [];
     for (const following of followings) {
-      promises.push(this.redis.zadd(key, following.createdAt.getTime(), following.pageId));
+      promises.push(this.redis.zadd(key, following.createdAt.getTime(), following.pageId!));
     }
 
     return Promise.all(promises);
@@ -103,6 +103,30 @@ export class FollowCacheService {
     return await this.redis.zrevrange(key, 0, -1);
   }
 
+  private async _cacheTokenFollowingOfAccount(key: string, accountId: number) {
+    const followings = await this.prisma.followPage.findMany({
+      where: {
+        accountId: accountId
+      }
+    });
+
+    const promises = [];
+    for (const following of followings) {
+      promises.push(this.redis.zadd(key, following.createdAt.getTime(), following.tokenId!));
+    }
+
+    return Promise.all(promises);
+  }
+
+  async getTokenFollowings(accountId: number) {
+    const key = `user:${accountId}:followingTokens`;
+    const exist = await this.redis.exists([key]);
+    if (!exist) {
+      await this._cacheTokenFollowingOfAccount(key, accountId);
+    }
+    return await this.redis.zrevrange(key, 0, -1);
+  }
+
   async checkIfAccountFollowPage(accountId: number, pageId: string) {
     const key = `user:${accountId}:followingPages`;
     const exist = await this.redis.exists([key]);
@@ -110,6 +134,15 @@ export class FollowCacheService {
       await this._cachePageFollowingOfAccount(key, accountId);
     }
     return !!(await this.redis.zscore(key, pageId));
+  }
+
+  async checkIfAccountFollowToken(accountId: number, tokenId: string) {
+    const key = `user:${accountId}:followingTokens`;
+    const exist = await this.redis.exists([key]);
+    if (!exist) {
+      await this._cacheTokenFollowingOfAccount(key, accountId);
+    }
+    return !!(await this.redis.zscore(key, tokenId));
   }
 
   async checkIfAccountFollowAccount(followerAccountId: number, followingAccountId: number) {
@@ -138,6 +171,13 @@ export class FollowCacheService {
     return Promise.all([this.redis.zrem(keyFollowers, followerAccountId), this.redis.zrem(keyFollowings, pageId)]);
   }
 
+  async removeFollowToken(followerAccountId: number, tokenId: string) {
+    const keyFollowers = `token:${tokenId}:followers`;
+    const keyFollowings = `user:${followerAccountId}:followingTokens`;
+
+    return Promise.all([this.redis.zrem(keyFollowers, followerAccountId), this.redis.zrem(keyFollowings, tokenId)]);
+  }
+
   async createFollowAccount(followerAccountId: number, followingAccountId: number, createdAt: Date) {
     const keyFollowers = `user:${followingAccountId}:followers`;
     const keyFollowings = `user:${followerAccountId}:followings`;
@@ -155,6 +195,16 @@ export class FollowCacheService {
     return Promise.all([
       this.redis.zadd(keyFollowers, createdAt.getTime(), followerAccountId),
       this.redis.zadd(keyFollowings, createdAt.getTime(), pageId)
+    ]);
+  }
+
+  async createFollowToken(followerAccountId: number, tokenId: string, createdAt: Date) {
+    const keyFollowers = `token:${tokenId}:followers`;
+    const keyFollowings = `user:${followerAccountId}:followingTokens`;
+
+    return Promise.all([
+      this.redis.zadd(keyFollowers, createdAt.getTime(), followerAccountId),
+      this.redis.zadd(keyFollowings, createdAt.getTime(), tokenId)
     ]);
   }
 }

@@ -59,4 +59,7 @@ export class Token {
 
   @Field(() => Number, { nullable: true })
   rank?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  isFollowed: boolean;
 }

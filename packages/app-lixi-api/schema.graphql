@@ -145,6 +145,11 @@ input CreateFollowPageInput {
   pageId: String!
 }
 
+input CreateFollowTokenInput {
+  accountId: Int!
+  tokenId: String!
+}
+
 input CreatePageInput {
   categoryId: String
   description: String!
@@ -222,7 +227,15 @@ input DeleteFollowPageInput {
   pageId: String!
 }
 
+input DeleteFollowTokenInput {
+  accountId: Int!
+  tokenId: String!
+}
+
 type FollowAccount {
+  avatar: String!
+  cover: String!
+
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   followerAccount: Account
@@ -251,9 +264,17 @@ type FollowPage {
   isFollowed: Boolean
   page: Page
   pageId: String
+  token: Token
+  tokenId: String
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
+}
+
+type FollowPageConnection {
+  edges: [FollowPageEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
 }
 
 type FollowPageEdge {
@@ -312,6 +333,7 @@ type Mutation {
   createComment(data: CreateCommentInput!): Comment!
   createFollowAccount(data: CreateFollowAccountInput!): FollowAccount!
   createFollowPage(data: CreateFollowPageInput!): FollowPage!
+  createFollowToken(data: CreateFollowTokenInput!): FollowPage!
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
   createTemple(data: CreateTempleInput!): Temple!
@@ -321,6 +343,7 @@ type Mutation {
   createWorshipedPerson(data: CreateWorshipedPersonInput!): WorshipedPerson!
   deleteFollowAccount(data: DeleteFollowAccountInput!): Boolean!
   deleteFollowPage(data: DeleteFollowPageInput!): Boolean!
+  deleteFollowToken(data: DeleteFollowTokenInput!): Boolean!
   importAccount(data: ImportAccountInput!): Account!
   repost(data: RepostInput!): Boolean!
   updatePage(data: UpdatePageInput!): Page!
@@ -528,7 +551,7 @@ type Query {
   allHashtagByToken(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: HashtagOrder, skip: Int): HashtagConnection!
   allOrphanPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: [PageOrder!], query: String, skip: Int): PageConnection!
-  allPagesByFollower(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
+  allPagesByFollower(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, pagesOnly: Boolean, skip: Int): FollowPageConnection!
   allPagesByUserId(after: String, before: String, first: Int, id: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
   allPosts(accountId: Int, after: String, before: String, first: Int, isTop: String, last: Int, minBurnFilter: Int, orderBy: [PostOrder!], skip: Int): PostConnection!
   allPostsByHashtagId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
@@ -624,7 +647,8 @@ type Query {
   allWorshipedPersonByUserId(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   allWorshipedPersonSpecialDate(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   checkIfFollowAccount(followingAccountId: Int!): Boolean!
-  checkIfFollowPage(pageId: String!): Boolean!
+  checkIfFollowPage(pageId: String): Boolean!
+  checkIfFollowToken(tokenId: String): Boolean!
   comment(id: String!): Comment!
   getAccountByAddress(address: String!): Account!
   hashtag(content: String!): Hashtag!
@@ -735,6 +759,7 @@ type Token {
   decimals: Int!
   id: ID!
   initialTokenQuantity: String
+  isFollowed: Boolean
   lotusBurnDown: Float!
   lotusBurnScore: Float!
   lotusBurnUp: Float!

@@ -1,4 +1,4 @@
-import { CreateTokenInput, Token, TokenConnection, TokenOrder } from '@bcpros/lixi-models';
+import { Account, CreateTokenInput, Token, TokenConnection, TokenOrder } from '@bcpros/lixi-models';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { HttpException, HttpStatus, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
@@ -15,6 +15,8 @@ import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import { GqlJwtAuthGuard } from 'src/modules/auth/guards/gql-jwtauth.guard';
 import VError from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
+import { AccountEntity } from 'src/decorators';
+import { FollowCacheService } from '../account/follow-cache.service';
 
 const pubSub = new PubSub();
 
@@ -26,6 +28,7 @@ export class TokenResolver {
 
   constructor(
     private readonly prisma: PrismaService,
+    private readonly followCacheService: FollowCacheService,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private readonly i18n: I18nService,
     @InjectChronikClient('xec') private chronik: ChronikClient
@@ -37,18 +40,23 @@ export class TokenResolver {
   }
 
   @Query(() => Token)
-  async token(@Args('tokenId', { type: () => String }) tokenId: string) {
+  @UseGuards(GqlJwtAuthGuard)
+  async token(@AccountEntity() account: Account, @Args('tokenId', { type: () => String }) tokenId: string) {
     const tokenInfo = await this.prisma.token.findUnique({
       where: {
         tokenId: tokenId
       }
     });
 
-    return tokenInfo;
+    const isFollowed = await this.followCacheService.checkIfAccountFollowToken(account.id, tokenId);
+
+    return { ...tokenInfo, isFollowed: isFollowed };
   }
 
   @Query(() => TokenConnection)
+  @UseGuards(GqlJwtAuthGuard)
   async allTokens(
+    @AccountEntity() account: Account,
     @Args({
       name: 'orderBy',
       type: () => TokenOrder,
@@ -67,12 +75,22 @@ export class TokenResolver {
       const tokens = await this.prisma.token.findMany({
         orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
       });
+
       const scores = tokens.map(token => token.lotusBurnScore);
       await tokenRepository.setItems(tokens, scores);
       await this.redis.expire(keyPrefix, 3600);
     }
 
-    const result = await tokenRepository.getAll();
+    const checkFollowTokens: any[] = await tokenRepository.getAll();
+    const result: any[] = [];
+    for (const token of checkFollowTokens) {
+      const isFollowed = await this.followCacheService.checkIfAccountFollowToken(account.id, token.tokenId);
+
+      result.push({
+        ...token,
+        isFollowed: isFollowed
+      });
+    }
 
     return connectionFromArraySlice(
       result,

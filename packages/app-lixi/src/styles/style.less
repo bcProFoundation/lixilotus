@@ -17,7 +17,13 @@ body {
   -ms-overflow-style: none;
   /* IE and Edge */
   scrollbar-width: none;
+
   /* Firefox */
+  @media (max-width: 968px) {
+    padding-bottom: 60px;
+    background: var(--bg-color-dark-theme);
+  }
+
   background: var(--bg-color-dark-theme);
 }
 
@@ -330,13 +336,15 @@ code {
   --text-color-on-dark: #e1e1e1;
   --border-color-dark-base: #70818a61;
 
-  --filter-color-primary: invert(27%) sepia(69%) saturate(2185%) hue-rotate(279deg) brightness(50%) contrast(96%);
+  --filter-svg-gray-color: invert(73%) sepia(12%) saturate(19%) hue-rotate(251deg) brightness(92%) contrast(85%);
+  --filter-color-primary: invert(28%) sepia(34%) saturate(3619%) hue-rotate(276deg) brightness(83%) contrast(99%);
   --border-radius-primary: 5px;
   --border-radius-item: 18px;
 }
 
 .ant-modal {
   top: 30px;
+
   @media (max-width: 768px) {
     top: 1% !important;
     margin-bottom: 7rem;
@@ -379,7 +387,7 @@ code {
 }
 
 .infinite-scroll-component {
-  overflow: unset !important ;
+  overflow: unset !important;
 }
 
 .post-detail-custom-modal {
@@ -387,15 +395,18 @@ code {
     width: 80vw !important;
     margin-bottom: 0 !important;
   }
+
   @media (max-width: 468px) {
     width: 100vw !important;
     max-width: 100vw !important;
     top: 0 !important;
     margin-bottom: 0 !important;
   }
+
   .ant-modal-body {
     padding: 0;
   }
+
   .ant-modal-close-x {
     .anticon-close {
       font-size: 20px;
@@ -580,6 +591,7 @@ code {
 
   .ant-form-item-control {
     .ant-form-item-control-input-content {
+
       input,
       textarea {
         padding: 9px 1rem;
@@ -844,6 +856,7 @@ code {
   box-shadow: 1rem 1rem 2.5rem 0 rgb(0 0 0 / 5%);
   margin-bottom: 1rem;
   border: 0;
+
   .title-card {
     font-size: 18px;
     color: #3f414d;
@@ -872,7 +885,7 @@ code {
     }
   }
 
-  .ant-popover-arrow > .ant-popover-arrow-content::before {
+  .ant-popover-arrow>.ant-popover-arrow-content::before {
     background: var(--color-primary);
   }
 
@@ -966,9 +979,11 @@ code {
 
 .popover-recent-search {
   min-width: 350px;
+
   @media (max-width: 968px) {
     width: 95%;
   }
+
   .ant-popover-inner {
     padding: 0;
   }
@@ -977,19 +992,23 @@ code {
 .slick-active {
   z-index: 1;
 }
+
 @keyframes activePostAnimation {
   0% {
     border-width: 3px;
     border-color: #ffd7f6;
   }
+
   40% {
     border-width: 3px;
     border-color: #ffd7f6;
   }
+
   70% {
     border-width: 3px;
     border-color: transparent;
   }
+
   100% {
     border-width: 3px;
     border-color: transparent;
@@ -999,29 +1018,35 @@ code {
 .slick-active {
   z-index: 1;
 }
+
 @keyframes activePostAnimation {
   0% {
     border-width: 3px;
     border-color: #ffd7f6;
   }
+
   40% {
     border-width: 3px;
     border-color: #ffd7f6;
   }
+
   70% {
     border-width: 3px;
     border-color: transparent;
   }
+
   100% {
     border-width: 3px;
     border-color: transparent;
   }
 }
+
 .active-post {
   animation: activePostAnimation 5s;
 }
 
 .ant-modal-dark {
+
   h1,
   h2,
   h3,
@@ -1045,6 +1070,7 @@ code {
     background: #303031 !important;
     border-color: var(--border-color-dark-base) !important;
     color: var(--text-color-on-dark) !important;
+
     &::placeholder {
       color: gray !important;
     }
@@ -1052,19 +1078,24 @@ code {
 
   .ant-modal-content {
     background: var(--bg-color-dark-item) !important;
+
     .ant-modal-close {
       color: #fff !important;
     }
+
     .ant-modal-header {
       background: var(--bg-color-dark-item);
       color: var(--text-color-primary-dark);
+
       .ant-modal-title {
         color: var(--text-color-primary-dark);
       }
     }
+
     .ant-modal-body {
       background: var(--bg-color-dark-item);
     }
+
     .ant-modal-footer {
       background: var(--bg-color-dark-item);
     }
@@ -1075,22 +1106,28 @@ code {
     .title-user {
       color: var(--text-color-primary-dark);
     }
+
     .ant-upload {
       img {
         filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
       }
     }
+
     .ant-btn {
       border-color: transparent !important;
+
       svg {
         fill: var(--text-color-on-dark);
       }
     }
+
     .EditorLexical_container {
       background: var(--bg-color-dark-item);
     }
+
     .user-info .btn-select {
       background: #303031 !important;
+
       span {
         color: var(--text-color-on-dark) !important;
       }
@@ -1104,6 +1141,7 @@ code {
         background: #303031;
         border-color: var(--border-color-dark-base) !important;
         color: var(--text-color-on-dark);
+
         &.ant-radio-button-wrapper-checked {
           color: #1e1a1d !important;
           background: #ffd7f6;
@@ -1173,37 +1211,45 @@ code {
   // PostDetailModal
   .post-detail-modal {
     background: var(--bg-color-dark-item) !important;
+
     .ant-layout-header,
     .action-post-bar,
     .comment-input-container {
       background: var(--bg-color-dark-item) !important;
       border-color: var(--border-color-dark-base) !important;
     }
+
     .anticon {
       color: #fff;
     }
+
     .ant-image {
       width: 100%;
       background: var(--bg-color-dark-item) !important;
     }
+
     .ant-comment {
       background: var(--bg-color-dark-item) !important;
+
       .ant-comment-content-author-name {
         a {
           color: var(--text-color-primary-dark) !important;
         }
       }
+
       .ant-comment-content-author-time {
         span {
           color: gray;
         }
       }
+
       .ant-comment-content-detail {
         color: var(--text-color-on-dark);
       }
     }
+
     .images-post {
-      .react-photo-gallery--gallery > div {
+      .react-photo-gallery--gallery>div {
         background: var(--bg-color-dark-item) !important;
       }
     }
@@ -1216,12 +1262,14 @@ code {
 }
 
 .popover-dark {
+
   h1,
   h2,
   h3,
   p {
     color: var(--text-color-primary-dark) !important;
   }
+
   .ant-btn-primary {
     &:disabled {
       background-color: rgba(30, 26, 29, 0.12);
@@ -1266,28 +1314,34 @@ code {
       }
     }
   }
+
   .ant-popover-inner {
     background: #303031 !important;
+
     .ant-popover-inner-content {
       background: #303031 !important;
       color: var(--text-color-on-dark) !important;
     }
   }
+
   .active-item-access {
     background: transparent !important;
     padding: 0 !important;
     font-weight: 700;
   }
+
   .icon-item {
     img {
       filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
     }
   }
+
   .content-recent {
     &:hover {
       background: var(--border-color-dark-base) !important;
     }
   }
+
   .ant-input-group {
     .down-value {
       &:disabled {
@@ -1295,27 +1349,35 @@ code {
         color: gray;
       }
     }
+
     .ant-input {
       color: var(--text-color-on-dark) !important;
     }
   }
+
   .ant-menu-title-content {
     color: var(--text-color-primary-dark) !important;
   }
+
   .ant-comment {
     background: var(--border-color-dark-base) !important;
+
     .ant-comment-content-detail {
       color: var(--text-color-on-dark) !important;
     }
+
     &:hover {
       background: #303031 !important;
+
       .ant-comment-content-detail {
         color: var(--text-color-primary-dark) !important;
       }
     }
+
     &.un-read {
       background: var(--border-color-dark-base) !important;
     }
+
     &.readed {
       background: var(--bg-color-dark-item) !important;
     }
@@ -1324,9 +1386,11 @@ code {
 
 .dark {
   background-color: var(--bg-color-dark-theme) !important;
+
   .ant-layout {
     background: var(--bg-color-dark-theme);
   }
+
   h1,
   h2,
   h3,
@@ -1337,6 +1401,7 @@ code {
 
   input {
     color: var(--text-color-on-dark) !important;
+
     &::placeholder {
       color: gray;
     }
@@ -1347,15 +1412,14 @@ code {
   }
 
   .ant-skeleton.ant-skeleton-active {
+
     .ant-skeleton-avatar,
     .ant-skeleton-title,
     li {
-      background: linear-gradient(
-        90deg,
-        rgba(48, 48, 49, 0.7819721638655462) 25%,
-        rgba(48, 48, 49, 0.8239889705882353) 46%,
-        rgba(48, 48, 49, 1) 68%
-      );
+      background: linear-gradient(90deg,
+          rgba(48, 48, 49, 0.7819721638655462) 25%,
+          rgba(48, 48, 49, 0.8239889705882353) 46%,
+          rgba(48, 48, 49, 1) 68%);
       background-size: 400% 100% !important;
     }
   }
@@ -1363,6 +1427,7 @@ code {
   .ant-drawer {
     .ant-drawer-content {
       background: var(--bg-color-dark-item);
+
       .ant-drawer-body {
         background: var(--bg-color-dark-item);
       }
@@ -1371,18 +1436,23 @@ code {
 
   .ant-comment {
     background: var(--border-color-dark-base) !important;
+
     .ant-comment-content-detail {
       color: var(--text-color-on-dark) !important;
     }
+
     &:hover {
       background: #303031 !important;
+
       .ant-comment-content-detail {
         color: var(--text-color-primary-dark) !important;
       }
     }
+
     &.un-read {
       background: var(--border-color-dark-base) !important;
     }
+
     &.readed {
       background: var(--bg-color-dark-item) !important;
     }
@@ -1399,35 +1469,44 @@ code {
   .ant-table {
     background: var(--bg-color-dark-item);
     color: var(--text-color-on-dark);
+
     .ant-table-thead {
+
       th,
       td {
         background: #1e1e1e;
         color: var(--text-color-primary-dark);
         border-color: var(--border-color-dark-base) !important;
+
         &::before {
           background: var(--border-color-dark-base) !important;
         }
       }
     }
+
     td {
       border-color: var(--border-color-dark-base) !important;
       background: var(--bg-color-dark-item);
+
       button {
         background: #303031;
       }
     }
+
     tr.ant-table-row:hover {
-      > td {
+      >td {
         background: #303031;
       }
     }
+
     .ant-table-column-sorters::after {
       background: var(--bg-color-dark-item);
     }
-    .ant-table-tbody > tr.ant-table-placeholder:hover > td {
+
+    .ant-table-tbody>tr.ant-table-placeholder:hover>td {
       background: var(--bg-color-dark-item) !important;
     }
+
     .ant-empty-description {
       color: var(--text-color-on-dark);
     }
@@ -1446,6 +1525,7 @@ code {
     .ant-input-affix-wrapper {
       background: #303031;
       border-color: var(--border-color-dark-base);
+
       input {
         background: #303031 !important;
       }
@@ -1454,6 +1534,7 @@ code {
 
   .ant-input-group-addon {
     border-color: #3d4347 !important;
+
     button {
       border-color: #3d4347 !important;
     }
@@ -1465,6 +1546,7 @@ code {
 
   .ant-space {
     border-color: var(--border-color-dark-base) !important;
+
     &.space-shortcut-topic-item {
       background: #303031 !important;
     }
@@ -1486,8 +1568,10 @@ code {
       background: #303031;
       border-color: var(--border-color-dark-base) !important;
     }
+
     .ant-select-dropdown {
       background: #303031;
+
       div {
         background: #303031;
         color: var(--text-color-on-dark) !important;
@@ -1498,21 +1582,26 @@ code {
   .ant-collapse {
     background: #303031 !important;
     border-color: var(--border-color-dark-base) !important;
+
     .ant-collapse-expand-icon {
       svg {
         fill: #fff;
       }
     }
+
     .ant-collapse-header-text {
       color: var(--text-color-primary-dark) !important;
     }
+
     .ant-collapse-content {
       background: #303031 !important;
     }
+
     .ant-collapse-content-box {
       h3 {
         color: var(--text-color-primary-dark) !important;
       }
+
       span {
         svg {
           stroke: var(--color-primary);
@@ -1525,6 +1614,7 @@ code {
   .ant-btn {
     background: #303031;
     color: var(--color-primary);
+
     &:hover {
       background: var(--bg-color-dark-item) !important;
     }
@@ -1582,6 +1672,7 @@ code {
 
   .card {
     background: var(--bg-color-dark-item) !important;
+
     .title-card {
       color: var(--text-color-primary-dark);
       border-color: var(--border-color-dark-base);
@@ -1597,6 +1688,7 @@ code {
   .search-lixi {
     background: #303031;
     border-color: var(--border-color-dark-base);
+
     input {
       background: #303031 !important;
     }
@@ -1605,6 +1697,7 @@ code {
   //PostListItem
   .post-list-item {
     background: var(--bg-color-dark-item) !important;
+
     .ant-btn {
       background: transparent;
     }
@@ -1616,12 +1709,14 @@ code {
       .ant-input-affix-wrapper {
         background: #303031 !important;
         border-color: var(--border-color-dark-base) !important;
+
         input {
           background: #303031 !important;
           border-color: var(--border-color-dark-base) !important;
         }
       }
     }
+
     .ant-input-group-addon {
       background: #303031 !important;
       border-color: var(--border-color-dark-base) !important;
@@ -1632,9 +1727,11 @@ code {
   .footer-component {
     background: var(--bg-color-dark-item) !important;
     border-color: var(--border-color-dark-base) !important;
+
     button {
       background: var(--bg-color-dark-item) !important;
       color: #fff;
+
       .ico-img {
         filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
       }
@@ -1646,13 +1743,16 @@ code {
     .detail-lixi-single {
       background: var(--bg-color-dark-theme) !important;
     }
+
     .info-detail-lixi {
       background: var(--bg-color-dark-item) !important;
       border-color: var(--border-color-dark-base) !important;
+
       .type-name {
         color: var(--text-color-primary-dark);
       }
     }
+
     .ant-space-item {
       p {
         &.content {
@@ -1660,40 +1760,51 @@ code {
         }
       }
     }
+
     .overview-one-time {
       background: var(--bg-color-dark-item) !important;
       border-color: var(--border-color-dark-base) !important;
+
       .type-claim {
         color: gray !important;
       }
+
       .claim-amount {
         color: var(--text-color-primary-dark) !important;
       }
     }
+
     .blank-claim {
       background: var(--bg-color-dark-item) !important;
       border-color: var(--border-color-dark-base) !important;
+
       b {
         color: var(--text-color-primary-dark) !important;
       }
     }
+
     .content-box-qrCode {
       background: var(--bg-color-dark-item) !important;
       border-color: var(--border-color-dark-base) !important;
+
       span {
         color: var(--text-color-on-dark) !important;
       }
+
       .type-name {
         color: var(--text-color-primary-dark) !important;
       }
     }
+
     .lixi-claimed-list {
       border-color: var(--border-color-dark-base) !important;
+
       table {
         th {
           background: var(--bg-color-dark-item) !important;
           color: var(--text-color-primary-dark);
         }
+
         td {
           background: #303031;
           color: var(--text-color-on-dark);
@@ -1707,10 +1818,12 @@ code {
     p {
       color: var(--text-color-on-dark);
     }
+
     .ant-input-affix-wrapper {
       background: #303031;
       border-color: var(--border-color-dark-base) !important;
     }
+
     .ant-alert {
       .anticon {
         color: #faad14 !important;
@@ -1721,46 +1834,59 @@ code {
   //FullWallet
   .full-wallet {
     background: var(--bg-color-dark-theme) !important;
+
     .redeem-box {
       background: var(--bg-color-dark-item);
     }
+
     .ant-input-affix-wrapper {
       background: var(--bg-color-dark-item) !important;
       border-color: var(--border-color-dark-base) !important;
+
       input {
         background: var(--bg-color-dark-item) !important;
       }
     }
+
     .ant-input-group-addon {
       border-color: #3d4347 !important;
+
       span {
         background: var(--bg-color-dark-item);
+
         &:last-child {
           border-top-right-radius: 8px;
           border-bottom-right-radius: 8px;
         }
       }
     }
+
     .transaction-history {
       background: var(--bg-color-dark-item) !important;
+
       .header-transaction {
         color: var(--text-color-primary-dark);
       }
+
       .tx-action {
         p {
           color: var(--text-color-primary-dark);
         }
       }
+
       .tx-date {
         color: gray !important;
       }
+
       button {
         color: var(--text-color-primary-dark);
+
         svg {
           stroke: #fff;
         }
       }
     }
+
     .ant-list-item {
       background: #303031 !important;
     }
@@ -1778,25 +1904,31 @@ code {
   //PostDetail
   .post-detail {
     background: var(--bg-color-dark-item) !important;
+
     .anticon {
       color: #fff;
     }
+
     .ant-image {
       width: 100%;
       background: var(--bg-color-dark-item) !important;
     }
+
     .ant-comment {
       background: var(--bg-color-dark-item) !important;
+
       .ant-comment-content-author-name {
         a {
           color: var(--text-color-primary-dark) !important;
         }
       }
+
       .ant-comment-content-author-time {
         span {
           color: gray;
         }
       }
+
       .ant-comment-content-detail {
         color: var(--text-color-on-dark);
       }
@@ -1807,25 +1939,32 @@ code {
   .page-detail,
   .profile-detail {
     background: var(--bg-color-dark-theme) !important;
+
     .description-profile {
       background: var(--bg-color-dark-item) !important;
+
       p {
         color: var(--text-color-primary-dark);
       }
     }
+
     .ant-tabs-nav {
       background: var(--bg-color-dark-item) !important;
+
       .ant-tabs-tab-btn {
         color: var(--text-color-on-dark);
       }
+
       .ant-tabs-tab-active {
         .ant-tabs-tab-btn {
           color: var(--color-primary);
         }
       }
     }
+
     .blank-timeline {
       background: var(--bg-color-dark-item) !important;
+
       p {
         color: var(--text-color-on-dark);
       }
@@ -1839,14 +1978,17 @@ code {
 
   .info-profile {
     background: var(--bg-color-dark-item) !important;
+
     .title-profile {
       .page-name {
         color: var(--text-color-primary-dark) !important;
       }
+
       p {
         color: gray !important;
       }
     }
+
     .btn-upload-avatar {
       background: #303031 !important;
     }
@@ -1856,22 +1998,26 @@ code {
   .sidebar-ranking {
     .container-right-bar {
       background: var(--bg-color-dark-item) !important;
+
       .distance {
         .ant-space-item {
-          > div {
+          >div {
             color: var(--text-color-primary-dark) !important;
           }
+
           span {
             color: gray !important;
           }
         }
       }
     }
+
     .sub-account {
       .sub-account-info {
         .name {
           color: var(--text-color-primary-dark) !important;
         }
+
         .address {
           color: gray;
         }
@@ -1886,12 +2032,14 @@ code {
         color: var(--text-color-primary-dark) !important;
       }
     }
+
     &:hover {
       .account-balance {
         color: #fff;
       }
     }
   }
+
   .ant-space-item .ant-badge sup {
     background: #303031 !important;
     z-index: 999;
@@ -1907,6 +2055,7 @@ code {
   .action-post-bar {
     background: var(--bg-color-dark-item) !important;
     border-color: var(--border-color-dark-base) !important;
+
     .ant-space,
     .share-social-btn {
       &:hover {
@@ -1919,10 +2068,13 @@ code {
   .create-post-card-container {
     background: var(--bg-color-dark-item) !important;
   }
+
   .functional-images-bar {
     border-color: var(--border-color-dark-base) !important;
+
     .ant-space {
       background: #303031 !important;
+
       span {
         color: var(--text-color-primary-dark) !important;
       }
@@ -1933,37 +2085,47 @@ code {
   .container-access,
   .side-bar-content {
     background: var(--bg-color-dark-item) !important;
+
     .wrapper {
       background: var(--bg-color-dark-item) !important;
+
       .social-digest,
       .social-feature {
         h3 {
           color: var(--text-color-primary-dark) !important;
         }
+
         .page-name {
           color: var(--text-color-primary-dark) !important;
         }
+
         .account-name {
           color: var(--text-color-on-dark);
         }
+
         .content-score {
           background: var(--border-color-dark-base) !important;
         }
+
         .avatar-account {
           border-color: var(--color-primary) !important;
         }
+
         .avartar-topic {
           border-color: transparent !important;
         }
+
         .title-item {
           color: var(--text-color-primary-dark);
         }
       }
+
       .icon-quick-item {
         img {
           filter: invert(100%) sepia(1%) saturate(7498%) hue-rotate(258deg) brightness(100%) contrast(101%) !important;
         }
       }
+
       h3 {
         img {
           filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
@@ -1971,6 +2133,7 @@ code {
       }
     }
   }
+
   //InfoCardUser
   .info-card-user {
     .card-container {
@@ -1978,14 +2141,17 @@ code {
         .name {
           color: var(--text-color-primary-dark) !important;
         }
+
         .account-name {
           color: var(--text-color-primary-dark) !important;
         }
+
         .title {
           color: gray !important;
         }
       }
     }
+
     .action-post {
       filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
     }
@@ -2003,7 +2169,7 @@ code {
   }
 
   .images-post {
-    .react-photo-gallery--gallery > div {
+    .react-photo-gallery--gallery>div {
       background: var(--bg-color-dark-item) !important;
     }
   }
@@ -2016,9 +2182,11 @@ code {
   .container-token-listing {
     .card-item-token {
       background: var(--bg-color-dark-item) !important;
+
       .type-name {
         color: var(--text-color-primary-dark);
       }
+
       .content {
         color: var(--text-color-on-dark);
       }

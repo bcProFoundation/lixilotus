@@ -97,9 +97,9 @@ export class PostResolver {
 
       const followingPagesAccount = await this.prisma.followPage.findMany({
         where: { accountId: account.id },
-        select: { pageId: true }
+        select: { pageId: true, tokenId: true }
       });
-      const listFollowingsPageIds = followingPagesAccount.map(item => item.pageId);
+      const listFollowingsPageIds = followingPagesAccount.map(item => item.pageId || item.tokenId);
 
       const queryPosts: any = {
         OR: [
@@ -288,8 +288,8 @@ export class PostResolver {
 
     if (account.id === page?.pageAccountId) {
       result = await findManyCursorConnection(
-        args =>
-          this.prisma.post.findMany({
+        async args => {
+          const posts = await this.prisma.post.findMany({
             include: {
               postAccount: true,
               comments: true,
@@ -308,7 +308,19 @@ export class PostResolver {
             },
             orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
             ...args
-          }),
+          });
+
+          const result = await Promise.all(
+            posts.map(async post => ({
+              ...post,
+              repostCount: await this.prisma.repost.count({
+                where: { postId: post.id }
+              })
+            }))
+          );
+
+          return result;
+        },
         () =>
           this.prisma.post.count({
             where: {

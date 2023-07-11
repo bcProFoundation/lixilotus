@@ -39,6 +39,7 @@ export type TokenQuery = {
     initialTokenQuantity?: string | null;
     comments?: any | null;
     createdDate: any;
+    isFollowed?: boolean | null;
   };
 };
 
@@ -70,6 +71,7 @@ export type TokensQuery = {
         initialTokenQuantity?: string | null;
         comments?: any | null;
         createdDate: any;
+        isFollowed?: boolean | null;
       };
     }> | null;
     pageInfo: {
@@ -99,6 +101,7 @@ export type TokenFieldsFragment = {
   initialTokenQuantity?: string | null;
   comments?: any | null;
   createdDate: any;
+  isFollowed?: boolean | null;
 };
 
 export type CreateTokenMutationVariables = Types.Exact<{
@@ -124,6 +127,7 @@ export type CreateTokenMutation = {
     initialTokenQuantity?: string | null;
     comments?: any | null;
     createdDate: any;
+    isFollowed?: boolean | null;
   };
 };
 
@@ -144,6 +148,7 @@ export const TokenFieldsFragmentDoc = `
   initialTokenQuantity
   comments
   createdDate
+  isFollowed
 }
     `;
 export const TokenDocument = `

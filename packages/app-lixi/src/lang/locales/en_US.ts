@@ -113,7 +113,8 @@ export default {
   'general.fee': 'Fee: ',
   'general.createPost': 'What do you think?...',
   'general.suggested': 'Suggested: ',
-  'general.postFilter': 'Followed Posts ',
+  'general.open': 'Open',
+  'general.postFilter': 'Followed Posts: ',
   'general.dana': ' Dana',
   'general.support': 'Support',
 

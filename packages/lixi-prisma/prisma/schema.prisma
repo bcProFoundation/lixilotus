@@ -73,23 +73,24 @@ model Handle {
 // }
 
 model Token {
-  id                   String    @id @default(cuid())
-  tokenId              String    @unique @map("token_id")
-  tokenType            String    @default("") @map("token_type") @db.VarChar(255)
-  name                 String    @default("") @map("name") @db.VarChar(255)
-  ticker               String    @default("") @map("ticker") @db.VarChar(255)
-  decimals             Int       @map("decimals")
-  tokenDocumentUrl     String    @default("") @map("token_document_url") @db.VarChar(1000)
-  totalBurned          String    @default("") @map("total_burned")
-  totalMinted          String    @default("") @map("total_minted")
-  lotusBurnUp          Float     @default(0.0) @map("lotus_burn_up")
-  lotusBurnDown        Float     @default(0.0) @map("lotus_burn_down")
-  lotusBurnScore       Float     @default(0.0) @map("lotus_burn_score")
-  initialTokenQuantity String    @default("") @map("initial_token_quantity")
-  comments             DateTime? @default(now()) @map("comments") @db.Timestamptz
-  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  createdDate          DateTime  @default(now()) @map("created_date") @db.Timestamptz
+  id                   String       @id @default(cuid())
+  tokenId              String       @unique @map("token_id")
+  tokenType            String       @default("") @map("token_type") @db.VarChar(255)
+  name                 String       @default("") @map("name") @db.VarChar(255)
+  ticker               String       @default("") @map("ticker") @db.VarChar(255)
+  decimals             Int          @map("decimals")
+  tokenDocumentUrl     String       @default("") @map("token_document_url") @db.VarChar(1000)
+  totalBurned          String       @default("") @map("total_burned")
+  totalMinted          String       @default("") @map("total_minted")
+  lotusBurnUp          Float        @default(0.0) @map("lotus_burn_up")
+  lotusBurnDown        Float        @default(0.0) @map("lotus_burn_down")
+  lotusBurnScore       Float        @default(0.0) @map("lotus_burn_score")
+  initialTokenQuantity String       @default("") @map("initial_token_quantity")
+  comments             DateTime?    @default(now()) @map("comments") @db.Timestamptz
+  createdAt            DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  createdDate          DateTime     @default(now()) @map("created_date") @db.Timestamptz
   posts                Post[]
+  followers            FollowPage[]
 
   @@map("token")
 }
@@ -706,13 +707,16 @@ model FollowPage {
   id        String   @id @default(cuid())
   account   Account  @relation(fields: [accountId], references: [id])
   accountId Int      @map("account_id")
-  page      Page     @relation(fields: [pageId], references: [id])
-  pageId    String   @map("page_id")
+  page      Page?    @relation(fields: [pageId], references: [id])
+  pageId    String?  @map("page_id")
+  token     Token?   @relation(fields: [tokenId], references: [tokenId])
+  tokenId   String?  @map("token_id")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
   @@index(accountId)
   @@index(pageId)
+  @@index(tokenId)
   @@map("follow_page")
 }
 

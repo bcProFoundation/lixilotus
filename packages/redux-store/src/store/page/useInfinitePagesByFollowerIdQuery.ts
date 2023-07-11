@@ -6,17 +6,36 @@ import { useAllPagesByFollowerQuery, useLazyAllPagesByFollowerQuery } from '@sto
 import _ from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PageOrder } from '@generated/types.generated';
+import { TokenQuery } from '@store/token/tokens.generated';
 
-const pagesAdapter = createEntityAdapter<PageQuery['page']>({
-  selectId: post => post.id,
-  sortComparer: (a, b) => b.createdAt - a.createdAt
+type PageOrToken = { id: string | number; page?: PageQuery['page']; token?: TokenQuery['token'] };
+const followPagesAdapter = createEntityAdapter<PageOrToken>({
+  selectId: entity => entity.id,
+  sortComparer: (a, b) => {
+    if (isPageEntity(a) && isPageEntity(b)) {
+      return b.createdAt.localeCompare(a.createdAt);
+    }
+    if (isTokenEntity(a) && isTokenEntity(b)) {
+      return b.createdDate.localeCompare(a.createdDate);
+    }
+    return 0;
+  }
 });
 
-const { selectAll, selectEntities, selectIds, selectTotal } = pagesAdapter.getSelectors();
+function isPageEntity(entity: PageOrToken): entity is PageQuery['page'] {
+  return !!entity.page && entity.page.__typename === 'Page';
+}
+
+function isTokenEntity(entity: PageOrToken): entity is TokenQuery['token'] {
+  return !!entity.token && entity.token.__typename === 'Token';
+}
+
+const { selectAll, selectEntities, selectIds, selectTotal } = followPagesAdapter.getSelectors();
 
 interface PageListByIdParams extends PaginationArgs {
   orderBy?: PageOrder;
   id?: number;
+  pagesOnly?: boolean;
 }
 
 export function useInfinitePagesByFollowerIdQuery(
@@ -26,7 +45,7 @@ export function useInfinitePagesByFollowerIdQuery(
   const baseResult = useAllPagesByFollowerQuery(params);
 
   const [trigger, nextResult] = useLazyAllPagesByFollowerQuery();
-  const [combinedData, setCombinedData] = useState(pagesAdapter.getInitialState({}));
+  const [combinedData, setCombinedData] = useState(followPagesAdapter.getInitialState({}));
 
   const isBaseReady = useRef(false);
   const isNextDone = useRef(true);
@@ -45,11 +64,14 @@ export function useInfinitePagesByFollowerIdQuery(
     if (baseResult?.data?.allPagesByFollower) {
       isBaseReady.current = true;
 
-      const baseResultParse = baseResult.data.allPagesByFollower.edges.map(item => item.node);
-      const adapterSetAll = pagesAdapter.setAll(
-        combinedData,
-        baseResult.data.allPagesByFollower.edges.map(item => item.node)
-      );
+      const baseResultParse = baseResult.data.allPagesByFollower.edges.reduce((entities, edge) => {
+        const entity = edge.node;
+        if (entity) {
+          return { ...entities, [entity.id]: entity };
+        }
+        return entities;
+      }, {});
+      const adapterSetAll = followPagesAdapter.setAll(combinedData, baseResultParse);
 
       setCombinedData(adapterSetAll);
       fetchAll && fetchNext();

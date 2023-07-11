@@ -57,12 +57,15 @@ const CardUser = styled.div`
           cursor: pointer;
           color: var(--text-color-on-background);
         }
-        svg {
-          width: 12px;
-          height: 12px;
-          letter-spacing: 0.25px;
-          margin: 0;
-          filter: invert(73%) sepia(12%) saturate(19%) hue-rotate(251deg) brightness(92%) contrast(85%);
+
+        .follow-icon {
+          svg {
+            width: 12px;
+            height: 12px;
+            letter-spacing: 0.25px;
+            margin: 0;
+            filter: invert(73%) sepia(12%) saturate(19%) hue-rotate(251deg) brightness(92%) contrast(85%);
+          }
         }
       }
     }
@@ -202,7 +205,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                   · {title} ·
                   <span style={{ marginLeft: '4px', fontSize: '10px' }}>
                     {activatePostLocation && postLocation()}{' '}
-                    {followPostOwner && <Icon component={() => <FollowSvg />} />}
+                    {followPostOwner && <Icon className="follow-icon" component={() => <FollowSvg />} />}
                   </span>
                   <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
                     {postEdited && intl.get('post.edited')}

@@ -10,7 +10,14 @@ query allFollowersByFollowing(
   $orderBy: AccountOrder
   $skip: Int
 ) {
-  allFollowersByFollowing(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+  allFollowersByFollowing(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    skip: $skip
+  ) {
     totalCount
     edges {
       cursor
@@ -32,7 +39,14 @@ query allFollowingsByFollower(
   $orderBy: AccountOrder
   $skip: Int
 ) {
-  allFollowingsByFollower(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+  allFollowingsByFollower(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    skip: $skip
+  ) {
     totalCount
     edges {
       cursor
@@ -75,10 +89,12 @@ mutation deleteFollowAccount($input: DeleteFollowAccountInput!) {
   deleteFollowAccount(data: $input)
 }
 
-
-
-query checkIfFollowPage($pageId: String!) {
+query checkIfFollowPage($pageId: String) {
   checkIfFollowPage(pageId: $pageId)
+}
+
+query checkIfFollowToken($tokenId: String) {
+  checkIfFollowToken(tokenId: $tokenId)
 }
 
 query allPagesByFollower(
@@ -86,15 +102,22 @@ query allPagesByFollower(
   $before: String
   $first: Int = 20
   $last: Int
-  $orderBy: PageOrder
   $skip: Int
+  $pagesOnly: Boolean
 ) {
-  allPagesByFollower(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+  allPagesByFollower(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    skip: $skip
+    pagesOnly: $pagesOnly
+  ) {
     totalCount
     edges {
       cursor
       node {
-        ...PageFields
+        ...FollowPageFields
       }
     }
     pageInfo {
@@ -115,6 +138,17 @@ fragment FollowPageFields on FollowPage {
   page {
     id
     name
+    avatar
+    category {
+      id
+      name
+    }
+  }
+  tokenId
+  token {
+    id
+    tokenId
+    name
   }
   isFollowed
   createdAt
@@ -129,4 +163,14 @@ mutation createFollowPage($input: CreateFollowPageInput!) {
 
 mutation deleteFollowPage($input: DeleteFollowPageInput!) {
   deleteFollowPage(data: $input)
+}
+
+mutation createFollowToken($input: CreateFollowTokenInput!) {
+  createFollowToken(data: $input) {
+    ...FollowPageFields
+  }
+}
+
+mutation deleteFollowToken($input: DeleteFollowTokenInput!) {
+  deleteFollowToken(data: $input)
 }

@@ -58,7 +58,7 @@ export class BurnController {
 
         // Compare parse result with the command
         if (
-          command.burnForId !== tokenCheck?.id ||
+          command.burnForId !== tokenCheck?.tokenId ||
           command.burnForType !== parseResult.burnForType ||
           command.burnType !== parseResult.burnType ||
           command.burnedBy !== parseResult.burnedBy ||
@@ -211,7 +211,7 @@ export class BurnController {
         } else if (command.burnForType === BurnForType.Token) {
           const token = await this.prisma.token.findFirst({
             where: {
-              id: command.burnForId
+              tokenId: command.burnForId
             }
           });
 
@@ -228,7 +228,7 @@ export class BurnController {
 
           const updatedToken = await this.prisma.token.update({
             where: {
-              id: command.burnForId
+              tokenId: command.burnForId
             },
             data: {
               lotusBurnDown,

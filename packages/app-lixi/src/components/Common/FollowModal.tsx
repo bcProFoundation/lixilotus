@@ -14,6 +14,7 @@ import { useInfiniteFollowersByFollowingQuery } from '@store/account/useInfinite
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Link from 'next/link';
 import { AvatarUser } from './AvatarUser';
+import { currency } from './Ticker';
 
 const { TabPane } = Tabs;
 
@@ -32,7 +33,7 @@ const ShortcutItemAccess = ({
   <Link href={href}>
     <a onClick={onClickItem}>
       <Space className={'item-access'}>
-        <AvatarUser name={name} isMarginRight={false} />
+        <AvatarUser icon={icon} name={name} isMarginRight={false} />
         <div> {name} </div>
       </Space>
     </a>
@@ -60,8 +61,21 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
       border-right: none;
     }
   `;
-  const StyledButton = styled(Button)`
-    min-width: 90px;
+
+  const StyledInfiniteScroll = styled(InfiniteScroll)`
+    display: grid;
+
+    a {
+      &:hover {
+        border-radius: 5px;
+        background: rgba(0, 0, 0, 0.25);
+      }
+
+      .item-access {
+        display: flex;
+        padding: 10px;
+      }
+    }
   `;
 
   // Followers
@@ -139,7 +153,7 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
             {/* Followers s*/}
             <Tabs.TabPane tab={intl.get('general.followers')} key="followers">
               <React.Fragment>
-                <InfiniteScroll
+                <StyledInfiniteScroll
                   dataLength={followers.length}
                   next={loadMoreFollowers}
                   hasMore={followersHasNext}
@@ -162,14 +176,14 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
                       );
                     })
                   )}
-                </InfiniteScroll>
+                </StyledInfiniteScroll>
               </React.Fragment>
             </Tabs.TabPane>
 
             {/* Following accounts */}
             <Tabs.TabPane tab={intl.get('general.youFollow')} key="youFollow">
               <React.Fragment>
-                <InfiniteScroll
+                <StyledInfiniteScroll
                   dataLength={followings.length}
                   next={loadMoreFollowings}
                   hasMore={followingsHasNext}
@@ -192,14 +206,14 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
                       );
                     })
                   )}
-                </InfiniteScroll>
+                </StyledInfiniteScroll>
               </React.Fragment>
             </Tabs.TabPane>
 
             {/* Following page */}
             <Tabs.TabPane tab={intl.get('general.followingPages')} key="followingPages">
               <React.Fragment>
-                <InfiniteScroll
+                <StyledInfiniteScroll
                   dataLength={followingPages.length}
                   next={loadMoreFollowingPages}
                   hasMore={followingPagesHasNext}
@@ -213,16 +227,22 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
                       return (
                         <React.Fragment key={index}>
                           <ShortcutItemAccess
-                            icon={item.avatar ? item.avatar : item.name}
-                            name={item.name}
-                            href={`/page/${item.id}`}
+                            icon={
+                              item.token
+                                ? `${currency.tokenIconsUrl}/32/${item.token.tokenId}.png`
+                                : item.page
+                                ? item.page.avatar
+                                : '/images/default-avatar.jpg'
+                            }
+                            name={item.page ? item.page.name : item.token.name}
+                            href={item.page ? `/page/${item.page.id}` : `/token/${item.token.tokenId}`}
                             onClickItem={handleCloseModal}
                           />
                         </React.Fragment>
                       );
                     })
                   )}
-                </InfiniteScroll>
+                </StyledInfiniteScroll>
               </React.Fragment>
             </Tabs.TabPane>
           </Tabs>

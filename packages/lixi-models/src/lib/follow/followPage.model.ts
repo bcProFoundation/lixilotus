@@ -4,6 +4,7 @@ import { GraphQLDateTime } from 'graphql-scalars';
 
 import { Account } from '../account';
 import { Page } from '../page';
+import { Token } from '../token';
 
 @ObjectType()
 export class FollowPage {
@@ -25,6 +26,14 @@ export class FollowPage {
   @Field(() => Page, { nullable: true })
   @IsOptional()
   page: Page;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  tokenId: string;
+
+  @Field(() => Token, { nullable: true })
+  @IsOptional()
+  token: Token;
 
   @Field(() => Boolean, { nullable: true })
   isFollowed: boolean;

@@ -7,8 +7,10 @@ const enhancedApi = api.enhanceEndpoints({
     checkIfFollowPage: {},
     createFollowAccount: {},
     createFollowPage: {},
+    createFollowToken: {},
     deleteFollowAccount: {},
-    deleteFollowPage: {}
+    deleteFollowPage: {},
+    deleteFollowToken: {}
   }
 });
 
@@ -22,5 +24,7 @@ export const {
   useCreateFollowAccountMutation,
   useCreateFollowPageMutation,
   useDeleteFollowAccountMutation,
-  useDeleteFollowPageMutation
+  useDeleteFollowPageMutation,
+  useCreateFollowTokenMutation,
+  useDeleteFollowTokenMutation
 } = enhancedApi;
