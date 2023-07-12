@@ -34,7 +34,6 @@ export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProp
         color: ${props.theme.primary};
         border-top: 3px solid ${props.theme.primary};
         .ico-img {
-          filter: var(--filter-color-primary) !important;
           &:path {
             color: ${props.theme.primary};
           }

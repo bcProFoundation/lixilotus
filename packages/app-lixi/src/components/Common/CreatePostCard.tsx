@@ -48,11 +48,12 @@ const MobileCreatePost = styled.div`
     display: block;
     position: fixed;
     right: 15px;
-    bottom: 90px;
+    bottom: 70px;
+    background: transparent !important;
     .fab-btn {
       padding: 16px;
       background: #ffdbd1;
-      border-radius: var(--border-radius-primary);
+      border-radius: 50%;
     }
   }
 `;

@@ -147,8 +147,8 @@ const Content = styled.div`
     transition: 0.5s ease;
     img {
       max-width: 100%;
-      max-height: 45vh;
-      object-fit: cover;
+      max-height: 50vh;
+      object-fit: contain;
       border-radius: var(--border-radius-primary);
     }
     &:hover {

@@ -282,6 +282,16 @@ const BadgeStyled = styled(Badge)`
   }
 `;
 
+const StyledHeader = styled(Header)`
+  @media (max-width: 960px) {
+    position: fixed;
+    top: 0;
+    z-index: 9;
+    width: 100%;
+    height: 64px;
+  }
+`;
+
 // eslint-disable-next-line react/display-name
 const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallback<HTMLElement>) => {
   const dispatch = useAppDispatch();
@@ -605,7 +615,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   //   >
 
   return (
-    <Header style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={className}>
+    <StyledHeader style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={className}>
       <PathDirection>
         <img className="menu-mobile" src="/images/ico-menu.svg" alt="" onClick={handleMenuClick} />
         {currentPathName == '/' && (
@@ -695,7 +705,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           </Popover>
         </div>
       </SpaceStyled>
-    </Header>
+    </StyledHeader>
   );
 });
 

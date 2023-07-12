@@ -139,9 +139,6 @@ const PostContentDetail = styled.div`
       max-width: 100%;
       max-height: 100vh;
       object-fit: cover;
-      @media (min-height: 920px) {
-        max-height: 45vh;
-      }
     }
   }
 `;
@@ -220,7 +217,7 @@ const StyledTextArea = styled(TextArea)`
 `;
 
 const StyledCommentContainer = styled.div`
-  border: 1px solid black;
+  border: 1px solid var(--border-color);
   border-radius: var(--border-radius-primary);
   width: 100%;
   padding: 0px 0px 10px 0px;
@@ -689,7 +686,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
             <div className="ava-ico-cmt" onClick={() => router.push(`/profile/${selectedAccount.address}`)}>
               <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
             </div>
-            <StyledCommentContainer>
+            <StyledCommentContainer className="comment-container">
               <Controller
                 name="comment"
                 key="comment"

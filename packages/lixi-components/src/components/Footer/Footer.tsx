@@ -24,13 +24,13 @@ const StyledFooter = styled.div`
   }
 `;
 
-const Footer = ({ notifications }: { notifications?: any }) => {
+const Footer = ({ notifications, classList }: { notifications?: any; classList?: any }) => {
   const router = useRouter();
   const currentPathName = router.pathname ?? '';
 
   return (
     <>
-      <StyledFooter className="footer-component">
+      <StyledFooter className={`footer-component ${classList}`}>
         <Link href="/" passHref>
           <NavButton active={currentPathName == '/'}>
             <img

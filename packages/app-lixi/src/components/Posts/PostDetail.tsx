@@ -192,9 +192,6 @@ const PostContentDetail = styled.div`
       max-width: 100%;
       max-height: 100vh;
       object-fit: cover;
-      @media (min-height: 920px) {
-        max-height: 45vh;
-      }
     }
   }
 `;
