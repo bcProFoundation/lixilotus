@@ -102,11 +102,13 @@ const StyledFilterModal = styled(Modal)`
     .btnApplyReset {
       color: #fff;
       background-color: #9e2a9c;
-      font-size: 17px;
-      padding: 8px 15px;
+      font-size: 20px;
+      padding: 8.5px 17px;
       display: flex;
+      width: 50%;
+      justify-content: center;
       align-items: center;
-      border-radius: 15px;
+      border-radius: 10px;
     }
   }
 `;

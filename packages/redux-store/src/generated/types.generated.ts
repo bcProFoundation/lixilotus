@@ -834,6 +834,7 @@ export type QueryAllPostsBySearchWithHashtagArgs = {
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryAllPostsBySearchWithHashtagAtPageArgs = {
