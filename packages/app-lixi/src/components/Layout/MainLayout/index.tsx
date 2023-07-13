@@ -91,11 +91,6 @@ export const AppContainer = styled.div`
   height: 100vh;
   overflow: hidden;
   background: ${props => props.theme.wallet.background};
-  @media (max-width: 960px) {
-    width: 100%;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-  }
   .ant-layout.ant-layout-has-sider {
     display: flex;
     justify-content: space-between;
@@ -112,6 +107,11 @@ export const AppContainer = styled.div`
     @media (max-width: 960px) {
       margin-left: 0 !important;
       padding: 0 8px;
+      -ms-overflow-style: none; // Internet Explorer 10+
+      scrollbar-width: none; // Firefox
+      ::-webkit-scrollbar {
+        display: none; // Safari and Chrome
+      }
     }
 
     @media (min-width: 960px) {
@@ -213,12 +213,13 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const { width } = useWindowDimensions();
   const currentDeviceTheme = useThemeDetector();
 
-  useEffect(() => {
-    dispatch(setDarkTheme(currentDeviceTheme));
-  }, [currentDeviceTheme]);
+  // TODO: feature auto change theme
+  // useEffect(() => {
+  //   dispatch(setDarkTheme(currentDeviceTheme));
+  // }, [currentDeviceTheme]);
 
   useEffect(() => {
-    const isMobile = width < 968 ? true : false;
+    const isMobile = width < 960 ? true : false;
     setIsMobile(isMobile);
   }, [width]);
 

@@ -191,7 +191,7 @@ const PostContentDetail = styled.div`
     img {
       max-width: 100%;
       max-height: 100vh;
-      object-fit: cover;
+      object-fit: contain;
     }
   }
 `;

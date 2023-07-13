@@ -138,7 +138,7 @@ const PostContentDetail = styled.div`
     img {
       max-width: 100%;
       max-height: 100vh;
-      object-fit: cover;
+      object-fit: contain;
     }
   }
 `;
@@ -190,9 +190,6 @@ const StyledContainerPostDetail = styled.div`
     width: 100%;
     text-align: center;
     padding: 1rem 8px;
-    @media (max-width: 968px) {
-      padding: 8px;
-    }
     h2 {
       margin: 0;
       font-size: 26px;
@@ -555,7 +552,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
             rel="noopener noreferrer"
             className="hashtag-link"
             id={`${hashtag}`}
-            style={{ color: 'var(--color-primary)', cursor: 'pointer' }}
+            style={{ color: 'var(--color-primary) !important', cursor: 'pointer' }}
           >
             {domNode.children.map(child => child.data)}
           </span>
@@ -618,7 +615,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
         // style={{ top: '0 !important' }}
       >
         <StyledContainerPostDetail className="post-detail-modal">
-          <NavBarHeader onClick={() => router.back()}>
+          <NavBarHeader>
             <div className="title-post-detail">
               <h2>{`${intl.get('post.postBy')} ${post?.page?.name || post?.postAccount?.name}`}</h2>
             </div>

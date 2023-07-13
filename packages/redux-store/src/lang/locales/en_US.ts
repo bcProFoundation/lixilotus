@@ -517,8 +517,8 @@ export default {
   'country.unablegetStates': 'Unable to get states',
 
   /* 15.Post */
-  'general.allPost': 'On',
-  'general.topPost': 'Off',
+  'general.on': 'On',
+  'general.off': 'Off',
   'post.createNewPage': 'Create new post',
   'post.createPost': 'Create post',
   'post.editPost': 'Edit unburnt post',

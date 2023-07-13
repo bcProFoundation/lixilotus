@@ -39,7 +39,8 @@ export default class MyDocument extends Document {
           <meta name="description" content="Give out lotus to others" />
           <meta name="format-detection" content="telephone=no" />
           <meta name="mobile-web-app-capable" content="yes" />
-          <meta name="theme-color" content="#fff" />
+          <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
+          <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e1e" />
           <meta name="msapplication-navbutton-color" content="#fff" />
           <meta name="apple-mobile-web-app-status-bar-style" content="#fff" />
 

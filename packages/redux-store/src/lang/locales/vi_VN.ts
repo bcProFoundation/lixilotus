@@ -462,7 +462,7 @@ export default {
   /* 12.Zero balance header */
   'zeroBalanceHeader.noBalance': 'Hiện tại bạn đang có {ticker} trong tài khoản',
   'zeroBalanceHeader.deposit': 'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch',
-  'send.syntaxError': "Lỗi cú pháp. XPI để tặng không được nhỏ hơn hoặc bằng 0 ",
+  'send.syntaxError': 'Lỗi cú pháp. XPI để tặng không được nhỏ hơn hoặc bằng 0 ',
   'send.sendXpi': ' Gửi',
 
   /* 13.Page */
@@ -517,8 +517,8 @@ export default {
   'country.unablegetStates': 'Không thể tải tỉnh thành',
 
   /* 15.Post */
-  'general.allPost': 'Bật',
-  'general.topPost': 'Tắt',
+  'general.on': 'Bật',
+  'general.off': 'Tắt',
   'post.createNewPage': 'tạo bài viết mới',
   'post.createPage': 'tạo bài viết',
   'post.editPost': 'Sửa bài viết chưa đốt',
