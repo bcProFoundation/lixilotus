@@ -688,20 +688,22 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             <Button className="animate__animated animate__heartBeat" type="text" icon={<AppstoreOutlined />} />
           </Popover>
         </div>
-        <div className="account-bar" onClick={() => router.push(`/profile/${selectedAccount.address}`)}>
+        <div className="account-bar">
           <Popover
             overlayClassName={`${currentTheme ? 'popover-dark' : ''}`}
             arrow={false}
             content={contentSelectAccount}
             placement="bottom"
           >
-            <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
-            <p className="account-info">
-              <span className="account-name">{selectedAccount?.name}</span>
-              <span className="account-balance">
-                {balanceAccount(selectedAccount)} <span className="unit">XPI</span>
-              </span>
-            </p>
+            <div onClick={() => router.push(`/profile/${selectedAccount.address}`)}>
+              <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
+              <p className="account-info">
+                <span className="account-name">{selectedAccount?.name}</span>
+                <span className="account-balance">
+                  {balanceAccount(selectedAccount)} <span className="unit">XPI</span>
+                </span>
+              </p>
+            </div>
           </Popover>
         </div>
       </SpaceStyled>

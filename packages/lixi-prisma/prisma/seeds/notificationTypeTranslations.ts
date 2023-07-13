@@ -106,14 +106,14 @@ export const notificationTypeTranslations = [
     notificationTypeId: 8,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI for comment on your post. You received {{xpiFee}} XPI fee.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} Dana for comment on your post. You received {{xpiFee}} XPI fee.'
   },
   {
     id: 16,
     notificationTypeId: 8,
     language: 'vi',
     isDefault: false,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI cho bình luận trong bài viết của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} Dana cho bình luận trong bài viết của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
   },
   // burn-account-fee
   {
@@ -121,14 +121,14 @@ export const notificationTypeTranslations = [
     notificationTypeId: 9,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI on your post.  You received {{xpiFee}} XPI fee.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} Dana on your post. You received {{xpiFee}} XPI fee.'
   },
   {
     id: 18,
     notificationTypeId: 9,
     language: 'vi',
     isDefault: false,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI cho bài viết của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} Dana cho bài viết của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
   },
   // burn-page-fee
   {
@@ -136,14 +136,14 @@ export const notificationTypeTranslations = [
     notificationTypeId: 10,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI for {{burnForType}} on your {{pageName}} page. You received {{xpiFee}} XPI fee.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} Dana for {{burnForType}} on your {{pageName}} page. You received {{xpiFee}} XPI fee.'
   },
   {
     id: 20,
     notificationTypeId: 10,
     language: 'vi',
     isDefault: false,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI cho {{burnForType}} trong trang {{pageName}} của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} Dana cho {{burnForType}} trong trang {{pageName}} của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
   },
   // follow-account
   {
