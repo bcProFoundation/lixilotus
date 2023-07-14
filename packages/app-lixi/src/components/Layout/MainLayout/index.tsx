@@ -106,6 +106,7 @@ export const AppContainer = styled.div`
     gap: 1rem;
     justify-content: flex-start;
     @media (max-width: 960px) {
+      height: auto;
       margin-left: 0 !important;
       padding: 0 8px;
       -ms-overflow-style: none; // Internet Explorer 10+
@@ -135,6 +136,7 @@ export const AppContainer = styled.div`
       margin-bottom: 4rem;
       @media (max-width: 968px) {
         margin-bottom: 0;
+        height: 100vh;
       }
     }
   }
@@ -142,7 +144,8 @@ export const AppContainer = styled.div`
     position: inherit;
   }
   @media (max-width: 960px) {
-    position: absolute;
+    height: auto;
+    min-height: auto;
   }
 `;
 

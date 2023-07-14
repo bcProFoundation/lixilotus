@@ -162,8 +162,9 @@ const PostContentDetail = styled.div`
         object-fit: cover !important;
         border-radius: var(--border-radius-primary);
         border: 1px solid var(--lt-color-gray-100);
-        @media (min-width: 960px) {
-          max-width: 40vw;
+        @media (max-width: 468px) {
+          max-width: 75vw;
+          max-height: 50vh;
         }
       }
       &.only-one-image {

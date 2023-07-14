@@ -407,7 +407,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
           )}
           {item.uploads.length != 0 && !showMoreImage && (
             <div className="images-post">
-              <Gallery photos={imagesList.length > 3 ? imagesList.slice(0, 3) : imagesList} />
+              <Gallery photos={imagesList.length > 3 ? imagesList.slice(0, 4) : imagesList} />
               {item.uploads.length > 3 && (
                 <Button type="link" className="show-more-desktop show-more-image no-border-btn">
                   {'+ ' + (item.uploads.length - 1)}
