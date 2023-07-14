@@ -476,9 +476,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
         <h3>Current Account</h3>
         <div>
           <h3 className="current-name">{selectedAccount?.name}</h3>
-          <CopyToClipboard text={selectedAccount.address} onCopy={handleOnCopy}>
+          <CopyToClipboard text={selectedAccount?.address} onCopy={handleOnCopy}>
             <div className="profile-feature">
-              <span>{selectedAccount.address.slice(-8) + ' '}</span>
+              <span>{selectedAccount?.address.slice(-8) + ' '}</span>
               <span>
                 <CopyOutlined />
               </span>
