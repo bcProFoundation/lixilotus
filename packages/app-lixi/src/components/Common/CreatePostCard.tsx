@@ -31,6 +31,7 @@ import { SocialsEnum } from './Embed';
 import EditorLexical from './Lexical/EditorLexical';
 import { currency } from './Ticker';
 import useAuthorization from './Authorization/use-authorization.hooks';
+import { getShowCreatePost } from '@store/post/selectors';
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -227,6 +228,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const { sendXpi } = useXPI();
   const authorization = useContext(AuthorizationContext);
   const askAuthorization = useAuthorization();
+  const showCreatePostMobile = useAppSelector(getShowCreatePost);
 
   const [
     createPostTrigger,
@@ -498,7 +500,12 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         </div>
       </DesktopCreatePost>
 
-      <MobileCreatePost className="create-post-card-container" onClick={handleNewPostClick}>
+      <MobileCreatePost
+        className={`animate__animated ${
+          showCreatePostMobile ? 'animate__fadeIn' : 'animate__fadeOut'
+        } create-post-card-container`}
+        onClick={handleNewPostClick}
+      >
         <div className="fab-btn">
           <img src="/images/ico-create-post.svg" alt="" />
         </div>

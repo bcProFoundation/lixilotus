@@ -33,6 +33,7 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           <meta charSet="utf-8" />
+          <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
           <meta name="application-name" content="Lixi" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-title" content="Lixi" />

@@ -9,7 +9,8 @@ import {
   setNewPostAvailable,
   setPost,
   setPostsByAccountId,
-  setSelectedPost
+  setSelectedPost,
+  setShowCreatePost
 } from './actions';
 import { PostQuery } from './posts.generated';
 import { PostState } from './state';
@@ -22,7 +23,8 @@ export const postAdapter = createEntityAdapter<PostQuery['post']>({
 const initialState: PostState = postAdapter.getInitialState({
   isNewPost: false,
   selectedId: '',
-  postsByAccountId: []
+  postsByAccountId: [],
+  showCreatePost: true
 });
 
 export const postReducer = createReducer(initialState, builder => {
@@ -67,5 +69,8 @@ export const postReducer = createReducer(initialState, builder => {
     })
     .addCase(setNewPostAvailable, (state, action) => {
       state.isNewPost = action.payload;
+    })
+    .addCase(setShowCreatePost, (state, action) => {
+      state.showCreatePost = action.payload;
     });
 });

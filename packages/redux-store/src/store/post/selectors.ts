@@ -30,3 +30,8 @@ export const postsByAccountId = createSelector(
 );
 
 export const getPostById = (id: string) => createSelector(getAllPostsEntities, posts => posts?.[id]);
+
+export const getShowCreatePost = createSelector(
+  (state: RootState) => state.posts,
+  (state: PostState) => state.showCreatePost
+);

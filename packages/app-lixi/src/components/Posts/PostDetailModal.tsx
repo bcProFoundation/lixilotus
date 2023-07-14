@@ -1,4 +1,4 @@
-import { DashOutlined, SendOutlined } from '@ant-design/icons';
+import { DashOutlined, SendOutlined, DownloadOutlined } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { AvatarUser } from '@components/Common/AvatarUser';
@@ -17,7 +17,7 @@ import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { fromSmallestDenomination, fromXpiToSatoshis, getUtxoWif } from '@utils/cashMethods';
-import { Image, Input, Skeleton, AutoComplete, Modal } from 'antd';
+import { Image, Input, Skeleton, AutoComplete, Modal, Space } from 'antd';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
@@ -43,6 +43,7 @@ import parse from 'html-react-parser';
 import ReactDomServer from 'react-dom/server';
 import ActionPostBar from '@components/Common/ActionPostBar';
 import PostTranslate from './PostTranslate';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -140,6 +141,38 @@ const PostContentDetail = styled.div`
       max-height: 100vh;
       object-fit: contain;
     }
+    &.images-post-mobile {
+      display: flex;
+      overflow-x: auto;
+      gap: 5px;
+      -ms-overflow-style: none; // Internet Explorer 10+
+      scrollbar-width: none; // Firefox
+      ::-webkit-scrollbar {
+        display: none; // Safari and Chrome
+      }
+      .ant-image {
+        width: auto !important;
+        height: auto !important;
+      }
+      img {
+        width: auto;
+        height: 100% !important;
+        max-width: 50vw;
+        max-height: 60vh;
+        object-fit: cover !important;
+        border-radius: var(--border-radius-primary);
+        border: 1px solid var(--lt-color-gray-100);
+        @media (min-width: 960px) {
+          max-width: 40vw;
+        }
+      }
+      &.only-one-image {
+        justify-content: center;
+        img {
+          max-width: 100%;
+        }
+      }
+    }
   }
 `;
 
@@ -151,7 +184,6 @@ const StyledContainerPostDetail = styled.div`
   height: fit-content;
   max-height: 92vh;
   overflow: auto;
-  border-radius: 1rem;
   ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 7px;
@@ -165,6 +197,16 @@ const StyledContainerPostDetail = styled.div`
 
   @media (max-width: 968px) {
     max-height: 90vh;
+  }
+
+  @media (max-width: 520px) {
+    border-radius: 0;
+    max-height: 100vh;
+    -ms-overflow-style: none; // Internet Explorer 10+
+    scrollbar-width: none; // Firefox
+    ::-webkit-scrollbar {
+      display: none; // Safari and Chrome
+    }
   }
 
   header {
@@ -244,6 +286,14 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
   const [open, setOpen] = useState(false);
   const filterValue = useAppSelector(getFilterPostsHome);
   const [showTranslation, setShowTranslation] = useState(false);
+  const [openPost, setOpenPost] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    const isMobileDetail = width < 960 ? true : false;
+    setIsMobile(isMobileDetail);
+  }, [width]);
 
   const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
     useRepostMutation();
@@ -589,7 +639,13 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
   };
 
   const handleOnCancel = () => {
-    dispatch(closeModal());
+    setOpenPost(false);
+    setTimeout(
+      () => {
+        dispatch(closeModal());
+      },
+      isMobile ? 500 : 200
+    );
   };
 
   const translatePost = () => {
@@ -607,7 +663,16 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
     <>
       <Modal
         width={'50vw'}
-        className={`${classStyle} post-detail-custom-modal`}
+        className={`${classStyle} post-detail-custom-modal ${
+          isMobile
+            ? openPost
+              ? 'animate__animated animate__faster animate__slideInLeft'
+              : 'animate__animated animate__faster animate__slideOutRight'
+            : openPost
+            ? 'animate__animated animate__faster animate__zoomIn'
+            : 'animate__animated animate__faster animate__zoomOut'
+        }`}
+        transitionName=""
         style={{ top: 30 }}
         open={true}
         onCancel={handleOnCancel}
@@ -651,7 +716,31 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
                 <PostTranslate postTranslate={post.translations[0].translateContent} />
               </div>
             )}
-            {post.uploads.length != 0 && (
+            {post.uploads.length != 0 && isMobile && (
+              <>
+                {post.uploads.length > 1 && (
+                  <div className="images-post images-post-mobile">
+                    <Image.PreviewGroup>
+                      {imagesList.map((img, index) => {
+                        return <Image key={index} src={img.src} />;
+                      })}
+                    </Image.PreviewGroup>
+                  </div>
+                )}
+                {post.uploads.length === 1 && (
+                  <>
+                    <div className="images-post images-post-mobile only-one-image">
+                      <Image.PreviewGroup>
+                        {imagesList.map((img, index) => {
+                          return <Image key={index} src={img.src} />;
+                        })}
+                      </Image.PreviewGroup>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+            {post.uploads.length != 0 && !isMobile && (
               <div className="images-post">
                 <Image.PreviewGroup>
                   <Gallery photos={imagesList} renderImage={imageRenderer} />

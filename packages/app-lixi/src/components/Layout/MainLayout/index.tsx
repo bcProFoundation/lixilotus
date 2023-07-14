@@ -29,6 +29,7 @@ import { theme } from './theme';
 import 'animate.css';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import useThemeDetector from '@local-hooks/useThemeDetector';
+import { setShowCreatePost } from '@store/post/actions';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
@@ -284,6 +285,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
     if (isMobile) {
       const currentScrollPos = e.currentTarget.scrollTop;
       setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 20);
+      dispatch(setShowCreatePost(visible));
       setPrevScrollPos(currentScrollPos);
     }
   };

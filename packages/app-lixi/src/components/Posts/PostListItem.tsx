@@ -38,6 +38,10 @@ const CardContainer = styled.div`
     margin: 0px 0px 5px 5px;
     color: gray;
   }
+
+  @media (max-width: 520px) {
+    padding: 12px 12px 0 12px;
+  }
 `;
 
 const CardHeader = styled.div`
@@ -233,6 +237,9 @@ const PostListItemContainer = styled(List.Item)`
     background: rgb(252, 252, 252);
   }
   transition: 0.5s;
+  @media (max-width: 520px) {
+    margin-bottom: 8px;
+  }
 `;
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
