@@ -31,11 +31,12 @@ export class TranslateService {
           },
           params: {
             'api-version': '3.0',
-            to: ['en', 'vi']
+            to: ['en', 'vi'],
+            textType: 'html'
           },
           data: [
             {
-              text: stripHtml(content).result
+              text: content
             }
           ],
           responseType: 'json'
