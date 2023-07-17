@@ -500,7 +500,6 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
         </>
       )}
 
-
       {otherAccounts.length > 0 && (
         <>
           <h3 style={{ marginTop: '1rem' }}>Switch Accounts</h3>
@@ -700,9 +699,12 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             content={contentSelectAccount}
             placement="bottom"
           >
-            <div onClick={() => {
-              if (authorization.authorized) router.push(`/profile/${selectedAccount.address}`); else askAuthorization();
-            }}>
+            <div
+              onClick={() => {
+                if (authorization.authorized) router.push(`/profile/${selectedAccount.address}`);
+                else askAuthorization();
+              }}
+            >
               <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
               <p className="account-info">
                 <span className="account-name">{selectedAccount?.name}</span>

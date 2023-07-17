@@ -141,7 +141,16 @@ export const AppContainer = styled.div`
     }
   }
   .ant-drawer {
-    position: inherit;
+    .ant-drawer-body {
+      -ms-overflow-style: none; // Internet Explorer 10+
+      scrollbar-width: none; // Firefox
+      ::-webkit-scrollbar {
+        display: none; // Safari and Chrome
+      }
+    }
+    @media (min-width: 960px) {
+      position: inherit;
+    }
   }
   @media (max-width: 960px) {
     height: auto;
@@ -286,7 +295,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
 
   const handleScroll = e => {
     if (isMobile) {
-      const currentScrollPos = e.currentTarget.scrollTop;
+      const currentScrollPos = e?.currentTarget?.scrollTop;
       setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 20);
       dispatch(setShowCreatePost(visible));
       setPrevScrollPos(currentScrollPos);

@@ -501,6 +501,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       </DesktopCreatePost>
 
       <MobileCreatePost
+        hidden={!showCreatePostMobile}
         className={`animate__animated ${
           showCreatePostMobile ? 'animate__fadeIn' : 'animate__fadeOut'
         } create-post-card-container`}

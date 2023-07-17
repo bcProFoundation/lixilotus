@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
@@ -19,17 +19,19 @@ import TwitterPlugin from './plugins/TwitterPlugin';
 import AutoLinkPlugin from './plugins/AutoLinkPlugin';
 import AutoEmbedPlugin from './plugins/AutoEmbedPlugin';
 import { MultiUploader } from '../Uploader/MultiUploader';
-import { PictureOutlined } from '@ant-design/icons';
+import { PictureOutlined, CloseOutlined } from '@ant-design/icons';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import styled from 'styled-components';
 import LinkPlugin from './plugins/LinkPlugin';
 import ButtonLinkPlugin from './plugins/ButtonLinkPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin';
-import { Image } from 'antd';
-import { useAppSelector } from '@store/hooks';
+import { Image, Button } from 'antd';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getPostCoverUploads } from '@store/account/selectors';
 import Gallery from 'react-photo-gallery';
 import intl from 'react-intl-universal';
+import { removeUpload } from '@store/account';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 
 export type EditorLexicalProps = {
   initialContent?: string;
@@ -104,24 +106,71 @@ const StyledEditorLexical = styled.div`
   .EditorLexical_pictures {
     max-width: 100%;
     margin-bottom: 2rem;
+    .images-post-mobile {
+      display: flex;
+      overflow-x: auto;
+      gap: 5px;
+      -ms-overflow-style: none; // Internet Explorer 10+
+      scrollbar-width: none; // Firefox
+      ::-webkit-scrollbar {
+        display: none; // Safari and Chrome
+      }
+      img {
+        width: auto;
+        max-width: 75vw !important;
+        height: 40vh;
+        object-fit: cover;
+        border-radius: var(--border-radius-primary);
+        border: 1px solid var(--lt-color-gray-100);
+      }
+      &.only-one-image {
+        justify-content: center;
+        img {
+          max-width: 100%;
+        }
+      }
+    }
+    .item-image-upload {
+      position: relative;
+      button {
+        position: absolute;
+        z-index: 9;
+        right: 0;
+        background: #303031;
+        margin: 4px;
+      }
+    }
+    .react-photo-gallery--gallery > div {
+      gap: 5px;
+    }
   }
 `;
 
 const EditorLexical = (props: EditorLexicalProps) => {
   const { initialContent, onSubmit, isEditMode, loading, hashtags } = props;
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
+  const dispatch = useAppDispatch();
+  const { width } = useWindowDimensions();
+  const [isMobile, setIsMobile] = useState(false);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
   const imagesList = postCoverUploads.map(img => {
     const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.cfImageId}/public`;
     let width = img?.width || 4;
     let height = img?.height || 3;
+    let id = img?.id || null;
     let objImg = {
       src: imgUrl,
       width: width,
-      height: height
+      height: height,
+      id: id
     };
     return objImg;
   });
+
+  useEffect(() => {
+    const isMobile = width < 960 ? true : false;
+    setIsMobile(isMobile);
+  }, [width]);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
@@ -144,6 +193,29 @@ const EditorLexical = (props: EditorLexicalProps) => {
 
     return '';
   };
+
+  const handleRemove = imgId => {
+    if (imgId) {
+      dispatch(removeUpload({ type: 'post', id: imgId }));
+    }
+  };
+
+  const imageRenderer = useCallback(({ photo }) => {
+    return (
+      <>
+        <div className="item-image-upload">
+          <Button
+            type="text"
+            className="no-border-btn"
+            icon={<CloseOutlined />}
+            onClick={() => handleRemove(photo?.id)}
+          />
+          <Image src={photo?.src} width={photo?.width} height={photo?.height} />
+        </div>
+      </>
+    );
+  }, []);
+
   return (
     <React.Fragment>
       <StyledEditorLexical>
@@ -184,7 +256,52 @@ const EditorLexical = (props: EditorLexicalProps) => {
               </>
             )}
             <div className="EditorLexical_pictures">
-              <Gallery photos={imagesList} />
+              {isMobile ? (
+                <>
+                  {imagesList.length > 1 && (
+                    <div className="images-post images-post-mobile">
+                      {imagesList.map((img, index) => {
+                        return (
+                          <div className="item-image-upload">
+                            <Image key={index} src={img.src || 'error'} fallback="/images/default-image-fallback.png" />
+                            <Button
+                              type="text"
+                              className="no-border-btn"
+                              icon={<CloseOutlined />}
+                              onClick={() => handleRemove(img?.id)}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {imagesList.length === 1 && (
+                    <>
+                      <div className="images-post images-post-mobile only-one-image">
+                        {imagesList.map((img, index) => {
+                          return (
+                            <div className="item-image-upload">
+                              <Image
+                                key={index}
+                                src={img.src || 'error'}
+                                fallback="/images/default-image-fallback.png"
+                              />
+                              <Button
+                                type="text"
+                                className="no-border-btn"
+                                icon={<CloseOutlined />}
+                                onClick={() => handleRemove(img?.id)}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <Gallery renderImage={imageRenderer} photos={imagesList} />
+              )}
             </div>
             <div className="EditorLexical_action">
               <EmojiPickerPlugin />

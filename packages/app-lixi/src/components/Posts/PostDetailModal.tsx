@@ -1,4 +1,4 @@
-import { DashOutlined, SendOutlined, DownloadOutlined } from '@ant-design/icons';
+import { DashOutlined, SendOutlined, DownloadOutlined, LeftOutlined } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { AvatarUser } from '@components/Common/AvatarUser';
@@ -202,7 +202,7 @@ const StyledContainerPostDetail = styled.div`
 
   @media (max-width: 520px) {
     border-radius: 0;
-    max-height: 100vh;
+    height: 100vh;
     -ms-overflow-style: none; // Internet Explorer 10+
     scrollbar-width: none; // Firefox
     ::-webkit-scrollbar {
@@ -241,6 +241,11 @@ const StyledContainerPostDetail = styled.div`
   }
   .info-card-user {
     padding: 0 1rem !important;
+    height: 72px;
+    margin-left: 2rem;
+    .anticon {
+      font-size: 10px;
+    }
   }
 `;
 
@@ -289,6 +294,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
   const [showTranslation, setShowTranslation] = useState(false);
   const [openPost, setOpenPost] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [borderColorHeader, setBorderColorHeader] = useState(false);
   const { width } = useWindowDimensions();
 
   useEffect(() => {
@@ -660,6 +666,15 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
     }
   };
 
+  const handleSrcolling = e => {
+    const currentScrollPos = e?.currentTarget?.scrollTop;
+    if (currentScrollPos > 5) {
+      setBorderColorHeader(true);
+    } else {
+      setBorderColorHeader(false);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -667,7 +682,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
         className={`${classStyle} post-detail-custom-modal ${
           isMobile
             ? openPost
-              ? 'animate__animated animate__faster animate__slideInLeft'
+              ? 'animate__animated animate__faster animate__slideInRight'
               : 'animate__animated animate__faster animate__slideOutRight'
             : openPost
             ? 'animate__animated animate__faster animate__zoomIn'
@@ -677,26 +692,26 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
         style={{ top: 30 }}
         open={true}
         onCancel={handleOnCancel}
+        closeIcon={<LeftOutlined />}
         footer={null}
-        // style={{ top: '0 !important' }}
       >
-        <StyledContainerPostDetail className="post-detail-modal">
+        <StyledContainerPostDetail
+          className={`${!borderColorHeader ? 'no-border-color' : ''} post-detail-modal`}
+          onScroll={e => handleSrcolling(e)}
+        >
           <NavBarHeader>
-            <div className="title-post-detail">
-              <h2>{`${intl.get('post.postBy')} ${post?.page?.name || post?.postAccount?.name}`}</h2>
-            </div>
+            <InfoCardUser
+              imgUrl={post.page ? post.page.avatar : ''}
+              name={post.postAccount.name}
+              title={moment(post.createdAt).fromNow().toString()}
+              postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
+              page={post.page ? post.page : undefined}
+              token={post.token ? post.token : undefined}
+              activatePostLocation={true}
+              onEditPostClick={editPost}
+              postEdited={post.createdAt !== post.updatedAt}
+            ></InfoCardUser>
           </NavBarHeader>
-          <InfoCardUser
-            imgUrl={post.page ? post.page.avatar : ''}
-            name={post.postAccount.name}
-            title={moment(post.createdAt).fromNow().toString()}
-            postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
-            page={post.page ? post.page : undefined}
-            token={post.token ? post.token : undefined}
-            activatePostLocation={true}
-            onEditPostClick={editPost}
-            postEdited={post.createdAt !== post.updatedAt}
-          ></InfoCardUser>
           <PostContentDetail>
             <div className="description-post" onClick={e => handleHashtagClick(e)}>
               {ReactHtmlParser(ReactDomServer.renderToStaticMarkup(content))}

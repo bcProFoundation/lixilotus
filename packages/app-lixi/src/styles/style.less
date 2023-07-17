@@ -404,6 +404,21 @@ code {
 }
 
 .post-detail-custom-modal {
+  .ant-modal-close {
+    left: 0;
+    padding: 5px;
+    margin-left: 0.5rem;
+    .ant-modal-close-x {
+      font-size: 22px;
+    }
+  }
+
+  .no-border-color {
+    header {
+      border-color: transparent !important;
+    }
+  }
+
   @media (max-width: 968px) {
     width: 80vw !important;
     margin-bottom: 0 !important;
@@ -1301,6 +1316,20 @@ code {
   // editor
   .EditorLexical_hashtag {
     background-color: var(--color-primary) !important;
+  }
+
+  &.post-detail-custom-modal {
+    .no-border-color {
+      header {
+        border-color: transparent !important;
+      }
+    }
+    a {
+      color: var(--color-primary) !important;
+      span {
+        color: var(--color-primary) !important;
+      }
+    }
   }
 }
 
