@@ -109,6 +109,9 @@ const ActionBar = styled.div`
       margin-right: 4px;
     }
   }
+  @media (max-width: 520px) {
+    padding: 4px;
+  }
 `;
 
 type ActionPostBarProps = {

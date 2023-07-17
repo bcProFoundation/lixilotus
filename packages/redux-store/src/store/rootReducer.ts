@@ -24,6 +24,7 @@ import { loadingReducer } from './loading/reducer';
 import { localAccountsAdapter, localUserAccountReducer } from './localAccount/reducer';
 import { LocalUserAccountsState } from './localAccount/state';
 import { modalReducer } from './modal/reducer';
+import { actionSheetReducer } from './action-sheet/reducer';
 import { notificationReducer } from './notification/reducer';
 import { api as pagesApi } from './page/pages.api';
 import { pageReducer } from './page/reducer';
@@ -60,6 +61,7 @@ const persistConfig = {
     'accounts',
     'router',
     'modal',
+    'action-sheet',
     'wallet',
     'api',
     'root',
@@ -148,6 +150,7 @@ export const serverReducer = combineReducers({
   envelopes: envelopeReducer,
   loading: loadingReducer,
   modal: modalReducer,
+  actionSheet: actionSheetReducer,
   toast: toastReducer,
   error: errorReducer,
   settings: settingsReducer,
@@ -178,6 +181,7 @@ export const appReducer = combineReducers({
   envelopes: envelopeReducer,
   loading: loadingReducer,
   modal: modalReducer,
+  actionSheet: actionSheetReducer,
   toast: toastReducer,
   error: errorReducer,
   countries: persistReducer(countryPersistConfig, countryReducer),

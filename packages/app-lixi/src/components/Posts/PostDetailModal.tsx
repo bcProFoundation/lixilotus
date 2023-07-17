@@ -203,6 +203,7 @@ const StyledContainerPostDetail = styled.div`
   @media (max-width: 520px) {
     border-radius: 0;
     height: 100vh;
+    max-height: 100vh;
     -ms-overflow-style: none; // Internet Explorer 10+
     scrollbar-width: none; // Firefox
     ::-webkit-scrollbar {

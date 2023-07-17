@@ -405,11 +405,14 @@ code {
 
 .post-detail-custom-modal {
   .ant-modal-close {
+    width: fit-content;
+    height: auto;
     left: 0;
     padding: 5px;
     margin-left: 0.5rem;
     .ant-modal-close-x {
       font-size: 22px;
+      display: initial;
     }
   }
 
@@ -537,6 +540,38 @@ code {
 .ant-drawer-body {
   background: #fffbff;
   padding: 8px !important;
+}
+
+.action-sheet-bottom {
+  width: 100vw !important;
+  border-top-right-radius: var(--border-radius-item);
+  border-top-left-radius: var(--border-radius-item);
+  .ant-drawer-body {
+    padding: 0 !important;
+  }
+  .bar-close {
+    background: gray;
+  }
+  .ant-drawer-body {
+    background: #fff;
+    .text-action-sheet {
+      color: var(--color-primary);
+    }
+  }
+  &.action-sheet-dark {
+    .bar-close {
+      background: var(--border-color);
+    }
+    .ant-drawer-body {
+      background: var(--bg-color-dark-item);
+      .text-action-sheet {
+        color: var(--text-color-on-dark);
+      }
+    }
+    .item-action-sheet {
+      background: #303031;
+    }
+  }
 }
 
 .ant-table {

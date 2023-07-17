@@ -5,12 +5,13 @@ import Icon, { GlobalOutlined, DollarOutlined, ShopOutlined } from '@ant-design/
 import { Avatar, Dropdown, Menu } from 'antd';
 import { AvatarUser } from './AvatarUser';
 import intl from 'react-intl-universal';
-import { useAppSelector } from '@store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
 import type { MenuProps } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import FollowSvg from '@assets/icons/follow.svg';
 import { currency } from '@components/Common/Ticker';
+import { openActionSheet } from '@store/action-sheet/actions';
 
 type InfoCardProps = {
   imgUrl: any;
@@ -26,6 +27,7 @@ type InfoCardProps = {
   isDropdown?: boolean;
   lotusBurnScore?: number;
   followPostOwner?: boolean;
+  post?: any;
 };
 
 const CardUser = styled.div`
@@ -139,10 +141,12 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     postEdited,
     isDropdown,
     lotusBurnScore,
-    followPostOwner
+    followPostOwner,
+    post
   } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const history = useRouter();
+  const dispatch = useAppDispatch();
 
   const items: MenuProps['items'] = [
     {
@@ -159,6 +163,19 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
       return <DollarOutlined />;
     } else {
       return <ShopOutlined />;
+    }
+  };
+
+  const postActionSheet = (postContent, page?) => {
+    let isEditPost = selectedAccount && selectedAccount.address === postAccountAddress;
+    if (isEditPost) {
+      dispatch(
+        openActionSheet('PostActionSheet', {
+          isEditPost: isEditPost,
+          post: postContent,
+          page: page
+        })
+      );
     }
   };
 
@@ -240,16 +257,14 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
         </CardUser>
         {isDropdown && (
           <>
-            <Dropdown
-              menu={{ items }}
-              trigger={[selectedAccount && selectedAccount.address === postAccountAddress ? 'click' : 'contextMenu']}
-              arrow={{ pointAtCenter: true }}
-              placement="bottomRight"
-            >
-              <Action>
-                <img className="action-post" src="/images/ico-more-vertical.svg" alt="" />
-              </Action>
-            </Dropdown>
+            <Action>
+              <img
+                onClick={() => postActionSheet(post, page)}
+                className="action-post"
+                src="/images/ico-more-vertical.svg"
+                alt=""
+              />
+            </Action>
           </>
         )}
       </InfoCardUserContainer>

@@ -104,6 +104,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
   const [query, setQuery] = useState<any>('');
   const [hashtags, setHashtags] = useState<any>([]);
   const pageId = router.pathname.includes('page') && (router.query?.slug as string);
+  const [cachePostIdGeneral, setCachePostIdGeneral] = useState(0);
 
   let { data: PostsData } = useInfinitePostsQuery(
     {
@@ -282,7 +283,9 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
   const showChildTopic = (topic, posts) => {
     return (
       <ShortCutTopicItem
-        onClickIcon={topicName => onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`)}
+        onClickIcon={(topicName, isFilter) =>
+          onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`, posts, isFilter)
+        }
         topicName={topic}
         posts={posts}
         isCollapse={navCollapsed}
@@ -295,7 +298,9 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
       Object.entries(filterPage).map(([key, value]) => {
         return (
           <ShortCutTopicItem
-            onClickIcon={topicName => onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`)}
+            onClickIcon={(topicName, isFilter) =>
+              onTopHashtagClick(`${topicName !== 'general' ? `#${topicName}` : ''}`, value, isFilter)
+            }
             topicName={key}
             posts={value}
           />
@@ -325,32 +330,44 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
     );
   };
 
-  const onTopHashtagClick = hashtag => {
-    console.log('hashtag', hashtag);
-    if (router.query.hashtags) {
-      //Check dup before adding to query
-      const queryHashtags = (router.query.hashtags as string).split(' ');
-      const hashtagExistedIndex = queryHashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+  const onTopHashtagClick = (hashtag, posts?, isFilter?) => {
+    if (hashtag !== '#general' && isFilter) {
+      if (router.query.hashtags) {
+        //Check dup before adding to query
+        const queryHashtags = (router.query.hashtags as string).split(' ');
+        const hashtagExistedIndex = queryHashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
 
-      if (hashtagExistedIndex === -1) {
+        if (hashtagExistedIndex === -1) {
+          router.replace({
+            query: {
+              ...router.query,
+              hashtags: router.query.hashtags + ' ' + hashtag
+            }
+          });
+        }
+      } else {
         router.replace({
           query: {
             ...router.query,
-            hashtags: router.query.hashtags + ' ' + hashtag
+            q: '',
+            hashtags: hashtag
           }
         });
       }
+      dispatch(addRecentHashtagAtPages({ id: pageId, hashtag: hashtag.substring(1) }));
+      setTimeout(() => {
+        dispatch(setSelectedPost(posts[0].id));
+      }, 500);
     } else {
-      router.replace({
-        query: {
-          ...router.query,
-          q: '',
-          hashtags: hashtag
-        }
-      });
+      if (hashtag === '#general') {
+        dispatch(setSelectedPost(posts[cachePostIdGeneral].id));
+        cachePostIdGeneral < posts.length - 1
+          ? setCachePostIdGeneral(cachePostIdGeneral + 1)
+          : setCachePostIdGeneral(0);
+      } else {
+        dispatch(setSelectedPost(posts[0].id));
+      }
     }
-
-    dispatch(addRecentHashtagAtPages({ id: pageId, hashtag: hashtag.substring(1) }));
   };
 
   const handleTagClose = removedTag => {

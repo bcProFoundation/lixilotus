@@ -382,6 +382,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
             isDropdown={true}
             lotusBurnScore={post.lotusBurnScore}
             followPostOwner={post.followPostOwner}
+            post={post}
           />
         </CardHeader>
         <Content onClick={e => handlePostClick(e)}>

@@ -24,6 +24,7 @@ import { getSlpBalancesAndUtxos } from '@store/wallet';
 import { Header } from 'antd/lib/layout/layout';
 import { injectStore } from 'src/utils/axiosClient';
 import ModalManager from '../../Common/ModalManager';
+import ActionSheet from '../../Common/ActionSheet';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
 import 'animate.css';
@@ -340,6 +341,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                     />
                   </div>
                 </AppContainer>
+                <ActionSheet />
               </AppBody>
             </Layout>
           </LixiApp>

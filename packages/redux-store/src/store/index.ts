@@ -11,6 +11,7 @@ export * from './lixi';
 export * from './loading';
 export * from './localAccount';
 export * from './modal';
+export * from './action-sheet';
 export * from './notification';
 export * from './page';
 export * from './persistor';
