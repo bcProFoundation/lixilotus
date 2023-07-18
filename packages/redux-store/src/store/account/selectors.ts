@@ -28,6 +28,16 @@ export const getEnvelopeUpload = createSelector(
   (accounts: AccountsState) => accounts.envelopeUpload
 );
 
+export const getAccountCoverUpload = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.accountCoverUpload
+);
+
+export const getAccountAvatarUpload = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.accountAvatarUpload
+);
+
 export const getPageCoverUpload = createSelector(
   (state: RootState) => state.accounts,
   (accounts: AccountsState) => accounts.pageCoverUpload

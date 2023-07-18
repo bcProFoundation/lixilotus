@@ -8,6 +8,9 @@ const enhancedApi = api.enhanceEndpoints({
     },
     createAccount: {
       invalidatesTags: ['Account']
+    },
+    updateAccount: {
+      invalidatesTags: ['Account']
     }
   }
 });
@@ -18,5 +21,6 @@ export const {
   useGetAccountByAddressQuery,
   useLazyGetAccountByAddressQuery,
   useCreateAccountMutation,
-  useImportAccountMutation
+  useImportAccountMutation,
+  useUpdateAccountMutation
 } = enhancedApi;

@@ -19,7 +19,9 @@ export type Scalars = {
 export type Account = {
   __typename?: 'Account';
   address: Scalars['String'];
+  avatar?: Maybe<Scalars['String']>;
   balance: Scalars['Int'];
+  cover?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   encryptedMnemonic?: Maybe<Scalars['String']>;
@@ -359,6 +361,7 @@ export type Mutation = {
   deleteFollowToken: Scalars['Boolean'];
   importAccount: Account;
   repost: Scalars['Boolean'];
+  updateAccount: Account;
   updatePage: Page;
   updatePost: Post;
 };
@@ -429,6 +432,10 @@ export type MutationImportAccountArgs = {
 
 export type MutationRepostArgs = {
   data: RepostInput;
+};
+
+export type MutationUpdateAccountArgs = {
+  data: UpdateAccountInput;
 };
 
 export type MutationUpdatePageArgs = {
@@ -1167,6 +1174,14 @@ export enum TokenOrderField {
   Ticker = 'ticker',
   TokenId = 'tokenId'
 }
+
+export type UpdateAccountInput = {
+  avatar?: InputMaybe<Scalars['String']>;
+  cover?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  language?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+};
 
 export type UpdatePageInput = {
   address?: InputMaybe<Scalars['String']>;

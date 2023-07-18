@@ -12,7 +12,7 @@ import {
 } from '@generated/types.generated';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { setTransactionReady } from '@store/account/actions';
-import { getSelectedAccount } from '@store/account/selectors';
+import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { addBurnQueue, addBurnTransaction, clearFailQueue, getFailQueue } from '@store/burn';
 import { useCreateFollowAccountMutation, useDeleteFollowAccountMutation } from '@store/follow/follows.api';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -32,6 +32,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { WithAuthorizeAction } from '../Common/Authorization/WithAuthorizeAction';
+import { CameraOutlined, EditOutlined } from '@ant-design/icons';
 
 const AuthorizedButton = WithAuthorizeAction(Button);
 
@@ -404,6 +405,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   const [isFollowed, setIsFollowed] = useState<boolean>(checkIsFollowed);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
+  const selectedAccountId = useAppSelector(getSelectedAccountId);
 
   const [
     createFollowAccountTrigger,
@@ -551,6 +553,10 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     dispatch(openModal('FollowModal', { accountId: selectedAccount.id, type: type }));
   };
 
+  const uploadModal = (isAvatar: boolean) => {
+    dispatch(openModal('UploadAvatarCoverModal', { profile: userDetailData, isAvatar: isAvatar }));
+  };
+
   return (
     <>
       <StyledContainerProfileDetail className="profile-detail">
@@ -563,12 +569,11 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
               <picture>
                 <img className="avatar-img" src={userDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
               </picture>
-              {/* TODO: implement in the future */}
-              {/* {selectedAccountId == userDetailData.id && (
-                <div className="btn-upload-avatar" onClick={navigateEditPage}>
+              {selectedAccountId == userDetailData.id && (
+                <div className="btn-upload-avatar" onClick={() => uploadModal(true)}>
                   <CameraOutlined />
                 </div>
-              )} */}
+              )}
             </div>
             <div className="title-profile">
               <div>
@@ -586,9 +591,9 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
             )}
 
             {/* TODO: implement in the future */}
-            {/* {selectedAccountId == userDetailData.id && (
+            {selectedAccountId == userDetailData.id && (
               <div className="action-profile">
-                <Button
+                {/* <Button
                   style={{ marginRight: '1rem' }}
                   type="primary"
                   className="outline-btn"
@@ -596,13 +601,13 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                 >
                   <EditOutlined />
                   Edit profile
-                </Button>
-                <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
+                </Button> */}
+                <Button type="primary" className="outline-btn" onClick={() => uploadModal(false)}>
                   <CameraOutlined />
                   Edit cover photo
                 </Button>
               </div>
-            )} */}
+            )}
           </div>
           {selectedAccount.id == userDetailData.id && (
             <div className="description-profile">

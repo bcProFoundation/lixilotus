@@ -1,4 +1,4 @@
-import { Account } from '@bcpros/lixi-models';
+import { Account, UPLOAD_TYPES } from '@bcpros/lixi-models';
 import {
   Body,
   Controller,
@@ -91,6 +91,8 @@ export class UploadFilesController {
         data: {
           account: { connect: { id: account.id } },
           upload: { connect: { id: resultImage.id } }
+          // avatarAccount: {connect: type == UPLOAD_TYPES.ACCOUNT_AVATAR ? {id: account.id} : undefined },
+          // coverAccount: {connect: type == UPLOAD_TYPES.ACCOUNT_COVER ? {id: account.id} : undefined },
         }
       });
 

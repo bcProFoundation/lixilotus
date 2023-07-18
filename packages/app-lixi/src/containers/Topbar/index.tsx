@@ -705,7 +705,11 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
                 else askAuthorization();
               }}
             >
-              <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
+              <AvatarUser
+                name={selectedAccount?.name}
+                icon={selectedAccount.avatar ? selectedAccount.avatar : selectedAccount.name}
+                isMarginRight={false}
+              />
               <p className="account-info">
                 <span className="account-name">{selectedAccount?.name}</span>
                 <span className="account-balance">

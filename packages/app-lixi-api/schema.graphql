@@ -4,7 +4,9 @@
 
 type Account {
   address: String!
+  avatar: String
   balance: Int!
+  cover: String
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -346,6 +348,7 @@ type Mutation {
   deleteFollowToken(data: DeleteFollowTokenInput!): Boolean!
   importAccount(data: ImportAccountInput!): Account!
   repost(data: RepostInput!): Boolean!
+  updateAccount(data: UpdateAccountInput!): Account!
   updatePage(data: UpdatePageInput!): Page!
   updatePost(data: UpdatePostInput!): Post!
 }
@@ -799,6 +802,14 @@ enum TokenOrderField {
   name
   ticker
   tokenId
+}
+
+input UpdateAccountInput {
+  avatar: String
+  cover: String
+  id: ID!
+  language: String
+  name: String
 }
 
 input UpdatePageInput {

@@ -2,7 +2,9 @@ export const UPLOAD_TYPES = {
   ENVELOPE: 'envelope',
   PAGE_COVER: 'page_cover',
   PAGE_AVATAR: 'page_avatar',
-  POST: 'post'
+  POST: 'post',
+  ACCOUNT_COVER: 'account_cover',
+  ACCOUNT_AVATAR: 'account_avatar'
 };
 
 export const UPLOAD_BUTTON_TYPE = {

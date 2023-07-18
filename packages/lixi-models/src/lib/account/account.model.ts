@@ -59,4 +59,10 @@ export class Account {
 
   @Field(() => Number, { nullable: true })
   followingPagesCount?: number;
+
+  @Field(() => String, { nullable: true })
+  avatar: string;
+
+  @Field(() => String, { nullable: true })
+  cover: string;
 }

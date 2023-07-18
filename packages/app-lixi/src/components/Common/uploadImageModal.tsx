@@ -1,6 +1,11 @@
-import { getPageAvatarUpload, getPageCoverUpload } from '@store/account/selectors';
+import {
+  getAccountAvatarUpload,
+  getAccountCoverUpload,
+  getPageAvatarUpload,
+  getPageCoverUpload
+} from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { UpdatePageInput, Page } from '@generated/types.generated';
+import { UpdatePageInput, Page, Account, UpdateAccountInput } from '@generated/types.generated';
 import Image from 'next/image';
 import { StyledUploader } from './Uploader/Uploader';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
@@ -11,23 +16,37 @@ import { showToast } from '@store/toast/actions';
 import intl from 'react-intl-universal';
 import { closeModal } from '@store/modal/actions';
 import { useEffect } from 'react';
+import { setAccount } from '@store/account';
+import { useUpdateAccountMutation } from '@store/account/accounts.generated';
 
 export interface UploadAvatarCoverProps {
-  page: Page;
+  profile?: Account;
+  page?: Page;
   isAvatar: boolean;
   classStyle?: string;
 }
 
 export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: UploadAvatarCoverProps) => {
-  const { page, isAvatar, classStyle } = props;
+  const { profile, page, isAvatar, classStyle } = props;
 
   const [
     updatePageTrigger,
     { isLoading: isLoadingUpdatePage, isSuccess: isSuccessUpdatePage, isError: isErrorUpdatePage, error: errorOnUpdate }
   ] = useUpdatePageMutation();
+
+  const [
+    updateAccountTrigger,
+    {
+      isLoading: isLoadingUpdateAccount,
+      isSuccess: isSuccessUpdateAccount,
+      isError: isErrorUpdateAccount,
+      error: errorOnUpdateAccount
+    }
+  ] = useUpdateAccountMutation();
+
   const dispatch = useAppDispatch();
-  const avatar = useAppSelector(getPageAvatarUpload);
-  const cover = useAppSelector(getPageCoverUpload);
+  const avatar = profile ? useAppSelector(getAccountAvatarUpload) : useAppSelector(getPageAvatarUpload);
+  const cover = profile ? useAppSelector(getAccountCoverUpload) : useAppSelector(getPageCoverUpload);
 
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
@@ -76,6 +95,48 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
     }
   };
 
+  const handleOnEditProfile = async () => {
+    let updateAccountAvatar: UpdateAccountInput;
+    let updateAccountCover: UpdateAccountInput;
+
+    if (isAvatar) {
+      updateAccountAvatar = {
+        id: profile.id,
+        avatar: avatar?.id
+      };
+    } else {
+      updateAccountCover = {
+        id: profile.id,
+        cover: cover?.id
+      };
+    }
+
+    try {
+      const accountUpdated = await updateAccountTrigger({
+        input: isAvatar ? updateAccountAvatar : updateAccountCover
+      }).unwrap();
+      dispatch(
+        showToast('success', {
+          message: 'Success',
+          description: intl.get('page.updateAccountSuccessful'),
+          duration: 5
+        })
+      );
+      dispatch(setAccount({ ...accountUpdated.updateAccount }));
+      dispatch(closeModal());
+    } catch (error) {
+      const message = errorOnUpdateAccount?.message ?? intl.get('page.unableUpdateAccount');
+
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: message,
+          duration: 5
+        })
+      );
+    }
+  };
+
   const handleOnCancel = () => {
     dispatch(closeModal());
   };
@@ -88,7 +149,7 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
       open={true}
       onCancel={handleOnCancel}
       footer={
-        <Button type="primary" htmlType="submit" onClick={handleOnEditPage}>
+        <Button type="primary" htmlType="submit" onClick={profile ? handleOnEditProfile : handleOnEditPage}>
           {intl.get('post.upload')}
         </Button>
       }
@@ -98,11 +159,11 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
       <Form>
         {isAvatar ? (
           <Form.Item name="avatar" valuePropName="fileList" getValueFromEvent={normFile}>
-            <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
+            <StyledUploader type={profile ? UPLOAD_TYPES.ACCOUNT_AVATAR : UPLOAD_TYPES.PAGE_AVATAR} />
           </Form.Item>
         ) : (
           <Form.Item name="cover" valuePropName="fileList" getValueFromEvent={normFile}>
-            <StyledUploader type={UPLOAD_TYPES.PAGE_COVER} />
+            <StyledUploader type={profile ? UPLOAD_TYPES.ACCOUNT_COVER : UPLOAD_TYPES.PAGE_COVER} />
           </Form.Item>
         )}
       </Form>

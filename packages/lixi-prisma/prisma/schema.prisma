@@ -221,6 +221,10 @@ model Account {
   webpushSubscribers WebpushSubscriber[]
   reposts            Repost[]
 
+  //profile 
+  avatar UploadDetail? @relation("avatar")
+  cover  UploadDetail? @relation("cover")
+
   @@index([mnemonicHash], type: Hash)
   @@map("account")
 }
@@ -564,6 +568,10 @@ model UploadDetail {
   templeAvatarId          String?          @unique @map("temple_avatar_id")
   templeCover             Temple?          @relation("temple_cover", fields: [templeCoverId], references: [id])
   templeCoverId           String?          @unique @map("temple_cover_id")
+  avatarAccount           Account?         @relation("avatar", fields: [avatarAccountId], references: [id])
+  avatarAccountId         Int?             @unique
+  coverAccount            Account?         @relation("cover", fields: [coverAccountId], references: [id])
+  coverAccountId          Int?             @unique
 
   @@map("upload_detail")
 }

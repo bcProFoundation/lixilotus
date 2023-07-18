@@ -3,14 +3,17 @@ import { Field, ID, InputType } from '@nestjs/graphql';
 @InputType()
 export class UpdateAccountInput {
   @Field(() => ID)
-  id: string;
+  id: number;
 
   @Field(() => String, { nullable: true })
   name: string;
 
   @Field(() => String, { nullable: true })
-  language: string;
+  language?: string;
 
   @Field(() => String, { nullable: true })
-  mnemonic: string;
+  avatar?: string;
+
+  @Field(() => String, { nullable: true })
+  cover?: string;
 }

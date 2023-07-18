@@ -1,7 +1,7 @@
-import { Account, AccountDto, CreateAccountInput, ImportAccountInput } from '@bcpros/lixi-models';
+import { Account, AccountDto, CreateAccountInput, ImportAccountInput, UpdateAccountInput } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { HttpException, HttpStatus, Inject, Logger, UseFilters, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { SkipThrottle } from '@nestjs/throttler';
 import { PubSub } from 'graphql-subscriptions';
 import _ from 'lodash';
@@ -13,6 +13,7 @@ import VError from 'verror';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet/wallet.service';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 
 const pubSub = new PubSub();
 
@@ -240,5 +241,100 @@ export class AccountResolver {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+  }
+
+  @UseGuards(GqlJwtAuthGuard)
+  @Mutation(() => Account)
+  async updateAccount(@PageAccountEntity() account: Account, @Args('data') data: UpdateAccountInput) {
+    if (!account) {
+      const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
+      throw new VError.WError(couldNotFindAccount);
+    }
+
+    const uploadAvatarDetail = data.avatar
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: data.avatar
+          }
+        })
+      : undefined;
+
+    const uploadCoverDetail = data.cover
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: data.cover
+          }
+        })
+      : undefined;
+
+    const updatedAccount = await this.prisma.account.update({
+      where: {
+        id: _.toSafeInteger(account.id)
+      },
+      data: {
+        ..._.omit(data, ['id', 'avatar', 'cover']),
+        updatedAt: new Date(),
+        avatar: { connect: uploadAvatarDetail ? { id: uploadAvatarDetail.id } : undefined },
+        cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
+      }
+    });
+
+    const result = _.omit(
+      {
+        ...updatedAccount
+      },
+      'encryptedMnemonic',
+      'encryptedSecret',
+      'mnemonicHash',
+      'notifications'
+    );
+    pubSub.publish('pageUpdated', { accountUpdated: result });
+    return result;
+  }
+
+  @ResolveField('avatar', () => String)
+  async avatar(@Parent() account: Account) {
+    const uploadDetail = await this.prisma.account
+      .findUnique({
+        where: {
+          id: account.id
+        }
+      })
+      .avatar({
+        include: {
+          upload: true
+        }
+      });
+
+    if (_.isNil(uploadDetail)) return null;
+
+    const { upload } = uploadDetail;
+    const cfUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
+    const url = upload.cfImageId ? cfUrl : upload.url;
+
+    return url;
+  }
+
+  @ResolveField('cover', () => String)
+  async cover(@Parent() account: Account) {
+    const uploadDetail = await this.prisma.account
+      .findUnique({
+        where: {
+          id: account.id
+        }
+      })
+      .cover({
+        include: {
+          upload: true
+        }
+      });
+
+    if (_.isNil(uploadDetail)) return null;
+
+    const { upload } = uploadDetail;
+    const cfUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
+    const url = upload.cfImageId ? cfUrl : upload.url;
+
+    return url;
   }
 }

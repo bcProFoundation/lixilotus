@@ -55,6 +55,8 @@ export type AllFollowersByFollowingQuery = {
         followingPagesCount?: number | null;
         createdAt: any;
         updatedAt: any;
+        avatar?: string | null;
+        cover?: string | null;
         pages?: Array<{ __typename?: 'Page'; id: string; name: string }> | null;
       };
     }> | null;
@@ -100,6 +102,8 @@ export type AllFollowingsByFollowerQuery = {
         followingPagesCount?: number | null;
         createdAt: any;
         updatedAt: any;
+        avatar?: string | null;
+        cover?: string | null;
         pages?: Array<{ __typename?: 'Page'; id: string; name: string }> | null;
       };
     }> | null;

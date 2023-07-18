@@ -33,6 +33,8 @@ export type GetAccountByAddressQuery = {
     followingPagesCount?: number | null;
     createdAt: any;
     updatedAt: any;
+    avatar?: string | null;
+    cover?: string | null;
     pages?: Array<{ __typename?: 'Page'; id: string; name: string }> | null;
   };
 };
@@ -52,6 +54,8 @@ export type AccountFieldsFragment = {
   followingPagesCount?: number | null;
   createdAt: any;
   updatedAt: any;
+  avatar?: string | null;
+  cover?: string | null;
   pages?: Array<{ __typename?: 'Page'; id: string; name: string }> | null;
 };
 
@@ -76,6 +80,8 @@ export type CreateAccountMutation = {
     followingPagesCount?: number | null;
     createdAt: any;
     updatedAt: any;
+    avatar?: string | null;
+    cover?: string | null;
     pages?: Array<{ __typename?: 'Page'; id: string; name: string }> | null;
   };
 };
@@ -101,6 +107,35 @@ export type ImportAccountMutation = {
     followingPagesCount?: number | null;
     createdAt: any;
     updatedAt: any;
+    avatar?: string | null;
+    cover?: string | null;
+    pages?: Array<{ __typename?: 'Page'; id: string; name: string }> | null;
+  };
+};
+
+export type UpdateAccountMutationVariables = Types.Exact<{
+  input: Types.UpdateAccountInput;
+}>;
+
+export type UpdateAccountMutation = {
+  __typename?: 'Mutation';
+  updateAccount: {
+    __typename?: 'Account';
+    id: string;
+    name: string;
+    address: string;
+    mnemonicHash?: string | null;
+    encryptedMnemonic?: string | null;
+    encryptedSecret?: string | null;
+    publicKey?: string | null;
+    language: string;
+    followersCount?: number | null;
+    followingsCount?: number | null;
+    followingPagesCount?: number | null;
+    createdAt: any;
+    updatedAt: any;
+    avatar?: string | null;
+    cover?: string | null;
     pages?: Array<{ __typename?: 'Page'; id: string; name: string }> | null;
   };
 };
@@ -124,6 +159,8 @@ export const AccountFieldsFragmentDoc = `
   followingPagesCount
   createdAt
   updatedAt
+  avatar
+  cover
 }
     `;
 export const GetAccountByAddressDocument = `
@@ -147,6 +184,13 @@ export const ImportAccountDocument = `
   }
 }
     ${AccountFieldsFragmentDoc}`;
+export const UpdateAccountDocument = `
+    mutation updateAccount($input: UpdateAccountInput!) {
+  updateAccount(data: $input) {
+    ...AccountFields
+  }
+}
+    ${AccountFieldsFragmentDoc}`;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: build => ({
@@ -158,6 +202,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     importAccount: build.mutation<ImportAccountMutation, ImportAccountMutationVariables>({
       query: variables => ({ document: ImportAccountDocument, variables })
+    }),
+    updateAccount: build.mutation<UpdateAccountMutation, UpdateAccountMutationVariables>({
+      query: variables => ({ document: UpdateAccountDocument, variables })
     })
   })
 });
@@ -167,5 +214,6 @@ export const {
   useGetAccountByAddressQuery,
   useLazyGetAccountByAddressQuery,
   useCreateAccountMutation,
-  useImportAccountMutation
+  useImportAccountMutation,
+  useUpdateAccountMutation
 } = injectedRtkApi;
