@@ -63,11 +63,11 @@ export const accountReducer = createReducer(initialState, builder => {
     .addCase(setAccount, (state, action) => {
       const account = action.payload;
       accountsAdapter.upsertOne(state, account);
-      state.selectedId = account.id ?? null;
+      state.selectedId = _.toSafeInteger(account.id) ?? null;
     })
     .addCase(selectAccountSuccess, (state, action) => {
       const { account, lixies } = action.payload;
-      const id = account.id;
+      const id = _.toSafeInteger(account.id);
       state.selectedId = id;
       const lixiIds = lixies.map(lixi => lixi.id);
       state.lixiIdsById[id] = lixiIds;
@@ -75,7 +75,7 @@ export const accountReducer = createReducer(initialState, builder => {
     })
     .addCase(importAccountSuccess, (state, action) => {
       const { account, lixies } = action.payload;
-      const id = account.id;
+      const id = _.toSafeInteger(account.id);
       state.selectedId = id;
       const lixiIds = lixies.map(lixi => lixi.id);
       state.lixiIdsById[id] = lixiIds;
