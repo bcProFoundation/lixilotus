@@ -470,7 +470,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       <DesktopCreatePost className="create-post-card-container" onClick={handleNewPostClick}>
         <div className="box-create-post">
           <div className="avatar">
-            <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
+            <AvatarUser icon={selectedAccount.avatar} name={selectedAccount?.name} isMarginRight={false} />
             <Input
               bordered={false}
               placeholder={
@@ -522,7 +522,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         >
           <UserCreate>
             <div className="user-create-post">
-              <img src="/images/xpi.svg" alt="" />
+              <AvatarUser icon={selectedAccount.avatar} name={selectedAccount?.name} isMarginRight={false} />
               <div className="user-info">
                 <p className="title-user">{selectedAccount?.name}</p>
                 <div className="location-fee">

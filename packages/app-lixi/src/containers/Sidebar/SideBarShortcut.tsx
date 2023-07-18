@@ -541,7 +541,11 @@ export const ShortCutItem = ({
     <div className="avatar-account">
       {item?.page && <img src={item?.page?.avatar || '/images/default-avatar.jpg'} />}
       {item?.token && <img src={`${currency.tokenIconsUrl}/64/${item?.token?.tokenId}.png`} />}
-      {!item?.page && !item?.token && <Avatar>{transformShortName(item?.postAccount?.name)}</Avatar>}
+      {!item?.page && !item?.token && (
+        <Avatar src={item?.postAccount?.avatar ? item?.postAccount?.avatar : ''}>
+          {transformShortName(item?.postAccount?.name)}
+        </Avatar>
+      )}{' '}
     </div>
     {!isCollapse && (
       <>

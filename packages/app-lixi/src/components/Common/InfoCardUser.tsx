@@ -209,7 +209,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
             <div className="card-container">
               <div className="page-bar" onClick={() => history.push(`/page/${page.id}}`)}>
                 <img className="image-page" src={page?.avatar ? page?.avatar : '/images/default-avatar.jpg'} />
-                <AvatarUser name={name} isMarginRight={true} />
+                <AvatarUser icon={imgUrl} name={name} isMarginRight={true} />
               </div>
               <div className="card-info">
                 <span className="name" onClick={() => history.push(`/page/${page.id}`)}>
