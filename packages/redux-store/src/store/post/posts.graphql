@@ -358,6 +358,7 @@ fragment PostFields on Post {
     address
     id
     name
+    avatar
   }
   page {
     avatar
@@ -422,6 +423,7 @@ fragment PostMeiliFields on Post {
     address
     id
     name
+    avatar
   }
   page {
     avatar

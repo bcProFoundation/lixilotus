@@ -660,7 +660,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           </PathDirection>
         </NavBarHeader>
         <InfoCardUser
-          imgUrl={post.page ? post.page.avatar : ''}
+          imgUrl={post.postAccount.avatar ? post.postAccount.avatar : ''}
           name={post.postAccount.name}
           title={moment(post.createdAt).fromNow().toString()}
           postAccountAddress={post.postAccount ? post.postAccount.address : undefined}

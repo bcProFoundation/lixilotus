@@ -370,7 +370,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
         {reposted()}
         <CardHeader>
           <InfoCardUser
-            imgUrl={post.page ? post.page.avatar : ''}
+            imgUrl={post.postAccount.avatar ? post.postAccount.avatar : ''}
             name={showUsername()}
             title={formatRelativeTime(post.createdAt)}
             postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
