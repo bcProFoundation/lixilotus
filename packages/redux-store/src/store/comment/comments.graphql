@@ -45,6 +45,7 @@ fragment CommentFields on Comment {
     address
     id
     name
+    avatar
   }
   commentByPublicKey
   commentToId

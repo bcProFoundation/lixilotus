@@ -89,7 +89,7 @@ const CommentListItem = ({ index, item, post, handleBurn }: CommentListItemProps
       author={<a href={`/profile/${item.commentAccount.address}`}>{showUsername()}</a>}
       avatar={
         <div onClick={() => history.push(`/profile/${item.commentAccount.address}`)}>
-          <AvatarUser name={item?.commentAccount?.name} isMarginRight={false} />
+          <AvatarUser icon={item.commentAccount.avatar} name={item?.commentAccount?.name} isMarginRight={false} />
         </div>
       }
       content={item.commentText}

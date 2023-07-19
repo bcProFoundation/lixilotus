@@ -719,7 +719,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         </CommentContainer>
         <CommentInputContainer>
           <div className="ava-ico-cmt" onClick={() => router.push(`/profile/${selectedAccount.address}`)}>
-            <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
+            <AvatarUser icon={selectedAccount.avatar} name={selectedAccount?.name} isMarginRight={false} />
           </div>
           <StyledCommentContainer>
             <Controller

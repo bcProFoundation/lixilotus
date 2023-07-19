@@ -33,7 +33,7 @@ export type CommentQuery = {
     lotusBurnScore: number;
     createdAt: any;
     updatedAt: any;
-    commentAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    commentAccount: { __typename?: 'Account'; address: string; id: string; name: string; avatar?: string | null };
     commentTo: {
       __typename?: 'Post';
       id: string;
@@ -78,7 +78,7 @@ export type CommentsToPostIdQuery = {
         lotusBurnScore: number;
         createdAt: any;
         updatedAt: any;
-        commentAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        commentAccount: { __typename?: 'Account'; address: string; id: string; name: string; avatar?: string | null };
         commentTo: {
           __typename?: 'Post';
           id: string;
@@ -114,7 +114,7 @@ export type CommentFieldsFragment = {
   lotusBurnScore: number;
   createdAt: any;
   updatedAt: any;
-  commentAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+  commentAccount: { __typename?: 'Account'; address: string; id: string; name: string; avatar?: string | null };
   commentTo: {
     __typename?: 'Post';
     id: string;
@@ -146,7 +146,7 @@ export type CreateCommentMutation = {
     lotusBurnScore: number;
     createdAt: any;
     updatedAt: any;
-    commentAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    commentAccount: { __typename?: 'Account'; address: string; id: string; name: string; avatar?: string | null };
     commentTo: {
       __typename?: 'Post';
       id: string;
@@ -170,6 +170,7 @@ export const CommentFieldsFragmentDoc = `
     address
     id
     name
+    avatar
   }
   commentByPublicKey
   commentToId
