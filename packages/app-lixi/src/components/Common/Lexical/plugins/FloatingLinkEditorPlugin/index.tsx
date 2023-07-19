@@ -32,6 +32,11 @@ import styled from 'styled-components';
 import { Button } from 'antd';
 import { CheckOutlined, EditOutlined } from '@ant-design/icons';
 
+import { useAppSelector } from '@store/hooks';
+import { getCurrentThemes } from '@store/settings/selectors';
+import { get } from 'lodash';
+import { current } from '@reduxjs/toolkit';
+
 const StyledFloating = styled.div`
   position: absolute;
   top: 0;
@@ -132,7 +137,11 @@ function FloatingLinkEditor({
 
       setFloatingElemPosition(rect, editorElem, anchorElem);
       setLastSelection(selection);
-    } else if (!activeElement || activeElement.className !== 'link-input') {
+    } else if (
+      !activeElement ||
+      (activeElement.className !== 'link-input' &&
+      activeElement.className !== 'link-input-dark')
+    ) {
       if (rootElement !== null) {
         setFloatingElemPosition(null, editorElem, anchorElem);
       }
@@ -222,9 +231,13 @@ function FloatingLinkEditor({
     editorRef.current.style.display = 'none';
   };
 
+  const currentTheme = useAppSelector(getCurrentThemes);
+  const linkInputClassName = currentTheme ? 'link-input-dark' : 'link-input';
+  const styledFloatingClassName = currentTheme ? 'StyledFloatingDark' : 'StyledFloating';
+
   return (
-    <StyledFloating ref={editorRef}>
-      <div className="link-input">
+    <StyledFloating className={styledFloatingClassName} ref={editorRef}>
+      <div className={linkInputClassName}>
         <input
           ref={inputRef}
           onChange={event => {

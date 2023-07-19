@@ -1490,8 +1490,70 @@ code {
   }
 }
 
+.link-input-dark {
+  display: flex;
+  justify-content: space-between;
+  background: var(--bg-color-dark-theme)!important;
+  align-items: center;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 15px;
+  button {
+    span {
+      font-size: 22px;
+    }
+    &:hover {
+      span {
+        color: var(--color-primary);
+      }
+    }
+  }
+  input {
+    flex-grow: 1;
+  }
+}
+.StyledFloatingDark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  max-width: 400px;
+  width: 100%;
+  opacity: 0;
+  background-color: #303031 !important;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  transition: opacity 0.5s;
+  will-change: transform;
+  padding: 8px;
+}
+
+
 .dark {
-  background-color: var(--bg-color-dark-theme) !important;
+  background-color: var(--bg-color-dark-theme) !important; 
+  
+  #dark {
+    display: flex;
+    justify-content: space-between;
+    background: var(--bg-color-light-theme);
+    align-items: center;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 15px;
+    button {
+      span {
+        font-size: 22px;
+      }
+      &:hover {
+        span {
+          color: var(--color-primary);
+        }
+      }
+    }
+    input {
+      flex-grow: 1;
+    }
+  }
 
   .ant-layout {
     background: var(--bg-color-dark-theme);
