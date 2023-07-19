@@ -212,28 +212,28 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
           <div className="bar-close" onClick={onClose}></div>
           {isEditPost && <ItemActionSheetBottom text="Edit post" icon="/images/ico-edit.svg" onClickItem={editPost} />}
           {/* <ItemActionSheetBottom type="danger" text="Remove" /> */}
-          {post.page && followedPage && (
+          {post.page && !followedPage && (
             <ItemActionSheetBottom
               text={`${intl.get('general.follow')} ${page?.name}`}
               icon="/images/follow.svg"
               onClickItem={handleFollowPage}
             />
           )}
-          {post.page && !followedPage && (
+          {post.page && followedPage && (
             <ItemActionSheetBottom
               text={`${intl.get('general.unfollow')} ${page?.name}`}
               icon="/images/follow.svg"
               onClickItem={handleUnfollowPage}
             />
           )}
-          {post.postAccount.id != selectedAccountId && followPostOwner && (
+          {post.postAccount.id != selectedAccountId && !followPostOwner && (
             <ItemActionSheetBottom
               text={`${intl.get('general.follow')} ${post.postAccount?.name}`}
               icon="/images/follow.svg"
               onClickItem={handleFollowAccount}
             />
           )}
-          {post.postAccount.id != selectedAccountId && !followPostOwner && (
+          {post.postAccount.id != selectedAccountId && followPostOwner && (
             <ItemActionSheetBottom
               text={`${intl.get('general.unfollow')} ${post.postAccount?.name}`}
               icon="/images/follow.svg"
