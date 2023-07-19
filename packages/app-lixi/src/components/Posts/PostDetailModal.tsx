@@ -8,7 +8,7 @@ import { NavBarHeader } from '@components/Layout/MainLayout';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
-import { getSelectedAccount } from '@store/account/selectors';
+import { getAccountInfoTemp, getSelectedAccount } from '@store/account/selectors';
 import { addBurnQueue, addBurnTransaction, clearFailQueue } from '@store/burn/actions';
 import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
@@ -300,6 +300,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
   const [isMobile, setIsMobile] = useState(false);
   const [borderColorHeader, setBorderColorHeader] = useState(false);
   const { width } = useWindowDimensions();
+  const accountInfoTemp = useAppSelector(getAccountInfoTemp);
 
   useEffect(() => {
     const isMobileDetail = width < 960 ? true : false;
@@ -788,8 +789,8 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
             </InfiniteScroll>
           </CommentContainer>
           <CommentInputContainer className="comment-input-container">
-            <div className="ava-ico-cmt" onClick={() => router.push(`/profile/${selectedAccount.address}`)}>
-              <AvatarUser icon={selectedAccount?.avatar} name={selectedAccount?.name} isMarginRight={false} />
+            <div className="ava-ico-cmt" onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
+              <AvatarUser icon={accountInfoTemp?.avatar} name={selectedAccount?.name} isMarginRight={false} />
             </div>
             <StyledCommentContainer className="comment-container">
               <Controller

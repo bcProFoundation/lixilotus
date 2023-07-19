@@ -36,4 +36,5 @@ export interface AccountsState extends EntityState<Account> {
         }
       ]
     | [];
+  accountInfoTemp: Account;
 }

@@ -12,7 +12,7 @@ import {
 } from '@generated/types.generated';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { setTransactionReady } from '@store/account/actions';
-import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
+import { getAccountInfoTemp, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { addBurnQueue, addBurnTransaction, clearFailQueue, getFailQueue } from '@store/burn';
 import { useCreateFollowAccountMutation, useDeleteFollowAccountMutation } from '@store/follow/follows.api';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -408,6 +408,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
+  const accountInfoTemp = useAppSelector(getAccountInfoTemp);
 
   const [
     createFollowAccountTrigger,
@@ -566,7 +567,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
           <div className="container-img">
             <img
               className="cover-img"
-              src={selectedAccount.cover || userDetailData.cover || '/images/default-cover.jpg'}
+              src={accountInfoTemp?.cover || userDetailData.cover || '/images/default-cover.jpg'}
               alt=""
             />
           </div>
@@ -575,7 +576,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
               <picture>
                 <img
                   className="avatar-img"
-                  src={selectedAccount.avatar || userDetailData.avatar || '/images/default-avatar.jpg'}
+                  src={accountInfoTemp?.avatar || userDetailData.avatar || '/images/default-avatar.jpg'}
                   alt=""
                 />
               </picture>

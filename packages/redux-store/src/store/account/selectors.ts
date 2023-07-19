@@ -21,6 +21,11 @@ export const getSelectedAccount = createSelector(
   (accounts: AccountsState) => (accounts.selectedId ? accounts.entities[accounts.selectedId] : undefined)
 );
 
+export const getAccountInfoTemp = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.accountInfoTemp
+);
+
 export const getAccountById = (id: number) => createSelector(getAllAccountsEntities, accounts => accounts?.[id]);
 
 export const getEnvelopeUpload = createSelector(

@@ -13,6 +13,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { WorshipedPersonFieldsFragment as WorshipedPerson } from '@store/worship/worshipedPerson.generated';
 
 export const generateAccount = createAction('account/generateAccount');
+export const setAccountInfoTemp = createAction<any>('account/setAccountInfoTemp');
 export const getAccount = createAction<number>('account/getAccount');
 export const getAccountSuccess = createAction<Account>('account/getAccountSuccess');
 export const getAccountFailure = createAction<string>('account/getAccountFailure');
@@ -22,10 +23,16 @@ export const postAccountFailure = createAction<string>('account/postAccountFailu
 export const setAccount = createAction<any>('account/setAccount');
 export const setAccountSuccess = createAction<Account>('account/setAccountSuccess');
 export const selectAccount = createAction<number>('account/selectAccount');
-export const selectAccountSuccess = createAction<{ account: Account; lixies: Lixi[] }>('account/selectAccountSuccess');
+export const selectAccountSuccess = createAction<{
+  account: Account;
+  lixies: Lixi[];
+}>('account/selectAccountSuccess');
 export const selectAccountFailure = createAction<string>('account/selectAccountFailure');
 export const importAccount = createAction<string>('account/importAccount');
-export const importAccountSuccess = createAction<{ account: Account; lixies: Lixi[] }>('account/importAccountSuccess');
+export const importAccountSuccess = createAction<{
+  account: Account;
+  lixies: Lixi[];
+}>('account/importAccountSuccess');
 export const importAccountFailure = createAction<string>('account/importAccountFailure');
 export const renameAccount = createAction<RenameAccountCommand>('account/renameAccount');
 export const renameAccountSuccess = createAction<Account>('account/renameAccountSuccess');
@@ -37,12 +44,16 @@ export const deleteAccount = createAction<DeleteAccountCommand>('account/deleteA
 export const deleteAccountSuccess = createAction<number>('account/deleteAccountSuccess');
 export const deleteAccountFailure = createAction<string>('account/deleteAccountFailure');
 export const refreshLixiList = createAction<any>('lixi/refreshLixiList');
-export const refreshLixiListSuccess = createAction<{ account: Account; lixies: Lixi[] }>('lixi/refreshLixiListSuccess');
+export const refreshLixiListSuccess = createAction<{
+  account: Account;
+  lixies: Lixi[];
+}>('lixi/refreshLixiListSuccess');
 export const refreshLixiListFailure = createAction<string>('lixi/refreshLixiListFailure');
 export const refreshLixiListSilent = createAction<any>('lixi/refreshLixiListSilent');
-export const refreshLixiListSilentSuccess = createAction<{ account: Account; lixies: Lixi[] }>(
-  'lixi/refreshLixiListSilentSuccess'
-);
+export const refreshLixiListSilentSuccess = createAction<{
+  account: Account;
+  lixies: Lixi[];
+}>('lixi/refreshLixiListSilentSuccess');
 export const refreshLixiListSilentFailure = createAction<string>('lixi/refreshLixiListSilentFailure');
 export const silentLogin = createAction<string>('account/silentLogin');
 export const silentLoginSuccess = createAction('account/silentLoginSuccess');
@@ -78,13 +89,21 @@ export const clearRecentVisitedPeople = createAction('account/clearRecentVisited
 export const addRecentHashtagAtHome = createAction<string>('account/addRecentHashtagAtHome');
 export const removeRecentHashtagAtHome = createAction<string>('account/removeRecentHashtagAtHome');
 export const clearRecentHashtagAtHome = createAction('account/clearRecentHashtagAtHome');
-export const addRecentHashtagAtPages = createAction<{ id: string; hashtag: string }>('account/addRecentHashtagAtPages');
-export const removeRecentHashtagAtPages = createAction<{ id: string; hashtag: string }>(
-  'account/removeRecentHashtagAtPages'
-);
+export const addRecentHashtagAtPages = createAction<{
+  id: string;
+  hashtag: string;
+}>('account/addRecentHashtagAtPages');
+export const removeRecentHashtagAtPages = createAction<{
+  id: string;
+  hashtag: string;
+}>('account/removeRecentHashtagAtPages');
 export const clearRecentHashtagAtPages = createAction<{ id: string }>('account/clearRecentHashtagAtPages');
-export const addRecentHashtagAtToken = createAction<{ id: string; hashtag: string }>('account/addRecentHashtagAtToken');
-export const removeRecentHashtagAtToken = createAction<{ id: string; hashtag: string }>(
-  'account/removeRecentHashtagAtToken'
-);
+export const addRecentHashtagAtToken = createAction<{
+  id: string;
+  hashtag: string;
+}>('account/addRecentHashtagAtToken');
+export const removeRecentHashtagAtToken = createAction<{
+  id: string;
+  hashtag: string;
+}>('account/removeRecentHashtagAtToken');
 export const clearRecentHashtagAtToken = createAction<{ id: string }>('account/clearRecentHashtagAtToken');

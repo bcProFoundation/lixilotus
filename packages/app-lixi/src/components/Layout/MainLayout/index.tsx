@@ -1,10 +1,10 @@
-import { getGraphqlRequestStatus, getSelectedAccount } from '@store/account/selectors';
+import { getGraphqlRequestStatus, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Button, Layout, Spin } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
-
+import { useGetAccountByAddressQuery } from '@store/account/accounts.api';
 import { LoadingOutlined } from '@ant-design/icons';
 
 import { Footer } from '@bcpros/lixi-components/components';
@@ -14,7 +14,7 @@ import DummySidebar from '@containers/Sidebar/DummySidebar';
 import SidebarRanking from '@containers/Sidebar/SideBarRanking';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import Topbar from '@containers/Topbar';
-import { setTransactionReady } from '@store/account/actions';
+import { setAccountInfoTemp, setTransactionReady } from '@store/account/actions';
 import { getIsGlobalLoading } from '@store/loading/selectors';
 import { fetchNotifications } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
@@ -226,6 +226,14 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const [visible, setVisible] = useState(true);
   const { width } = useWindowDimensions();
   const currentDeviceTheme = useThemeDetector();
+
+  let userInfo;
+  const { currentData: currentDataGetAccount, isSuccess: isSuccessGetAccount } = useGetAccountByAddressQuery({
+    address: selectedAccount?.address
+  });
+
+  if (isSuccessGetAccount) userInfo = currentDataGetAccount?.getAccountByAddress;
+  dispatch(setAccountInfoTemp(userInfo));
 
   // TODO: feature auto change theme
   // useEffect(() => {

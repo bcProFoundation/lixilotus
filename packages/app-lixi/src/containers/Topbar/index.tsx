@@ -18,7 +18,7 @@ import NotificationPopup from '@components/NotificationPopup';
 import { ItemAccess } from '@containers/Sidebar/SideBarShortcut';
 import { OrderDirection, PostOrderField } from '@generated/types.generated';
 import { selectAccount, setGraphqlRequestLoading } from '@store/account/actions';
-import { getAllAccounts, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
+import { getAccountInfoTemp, getAllAccounts, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { fetchNotifications, startChannel, stopChannel } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
@@ -297,6 +297,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const dispatch = useAppDispatch();
   const navCollapsed = useAppSelector(getNavCollapsed);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const accountInfoTemp = useAppSelector(getAccountInfoTemp);
   const router = useRouter();
   const currentPathName = router.pathname ?? '';
   const currentAbsolutePathName = router.asPath ?? '';
@@ -705,11 +706,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
                 else askAuthorization();
               }}
             >
-              <AvatarUser
-                name={selectedAccount?.name}
-                icon={selectedAccount.avatar ? selectedAccount.avatar : selectedAccount.name}
-                isMarginRight={false}
-              />
+              <AvatarUser name={selectedAccount?.name || null} icon={accountInfoTemp?.avatar} isMarginRight={false} />
               <p className="account-info">
                 <span className="account-name">{selectedAccount?.name}</span>
                 <span className="account-balance">

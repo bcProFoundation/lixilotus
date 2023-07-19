@@ -7,7 +7,7 @@ import { CreatePostInput, OrderDirection, PostOrderField } from '@generated/type
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { deleteEditorTextFromCache, removeAllUpload } from '@store/account/actions';
-import { getEditorCache, getPostCoverUploads, getSelectedAccount } from '@store/account/selectors';
+import { getAccountInfoTemp, getEditorCache, getPostCoverUploads, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { api as postApi, useCreatePostMutation } from '@store/post/posts.api';
 import { CreatePostMutation } from '@store/post/posts.generated';
@@ -229,6 +229,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const authorization = useContext(AuthorizationContext);
   const askAuthorization = useAuthorization();
   const showCreatePostMobile = useAppSelector(getShowCreatePost);
+  const accountInfoTemp = useAppSelector(getAccountInfoTemp);
 
   const [
     createPostTrigger,
@@ -470,7 +471,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       <DesktopCreatePost className="create-post-card-container" onClick={handleNewPostClick}>
         <div className="box-create-post">
           <div className="avatar">
-            <AvatarUser icon={selectedAccount.avatar} name={selectedAccount?.name} isMarginRight={false} />
+            <AvatarUser icon={accountInfoTemp?.avatar} name={selectedAccount?.name} isMarginRight={false} />
             <Input
               bordered={false}
               placeholder={
@@ -522,7 +523,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         >
           <UserCreate>
             <div className="user-create-post">
-              <AvatarUser icon={selectedAccount.avatar} name={selectedAccount?.name} isMarginRight={false} />
+              <AvatarUser icon={accountInfoTemp?.avatar} name={selectedAccount?.name} isMarginRight={false} />
               <div className="user-info">
                 <p className="title-user">{selectedAccount?.name}</p>
                 <div className="location-fee">
