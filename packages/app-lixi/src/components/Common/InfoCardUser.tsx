@@ -91,6 +91,12 @@ const CardUser = styled.div`
         background: #bfbfbf;
         font-size: 12px;
       }
+      .ant-avatar {
+        img {
+          border: 1px solid var(--border-color-dark-base);
+          border-radius: 50%;
+        }
+      }
     }
     .image-page {
       object-fit: cover;

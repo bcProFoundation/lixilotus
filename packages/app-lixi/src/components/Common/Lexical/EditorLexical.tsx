@@ -138,6 +138,9 @@ const StyledEditorLexical = styled.div`
         right: 0;
         background: #303031;
         margin: 4px;
+        .anticon {
+          color: #fff;
+        }
       }
     }
     .react-photo-gallery--gallery > div {

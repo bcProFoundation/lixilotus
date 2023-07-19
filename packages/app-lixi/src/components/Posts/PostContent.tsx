@@ -4,7 +4,20 @@ import ReactDomServer from 'react-dom/server';
 import intl from 'react-intl-universal';
 import { ReadMoreMore } from 'read-more-more';
 
-const PostContent = ({ postContent }) => {
+const PostContent = ({ post }) => {
+  const postContent = post?.content;
+
+  const calculateLineShow = () => {
+    let lineNum = 6.5;
+    const postScore = post?.lotusBurnScore;
+    if (postScore >= 50) {
+      lineNum = 11;
+    } else if (postScore >= 200) {
+      lineNum = 17.5;
+    }
+    return lineNum;
+  };
+
   const content: any = parse(postContent, {
     replace: (domNode: any) => {
       if (domNode.attribs && domNode.attribs.class === 'EditorLexical_hashtag') {
@@ -27,14 +40,14 @@ const PostContent = ({ postContent }) => {
     <div className="read-more">
       <ReadMoreMore
         id="readMore"
-        linesToShow={6.5}
+        linesToShow={calculateLineShow()}
         parseHtml
         text={ReactDomServer.renderToStaticMarkup(content)}
-        checkFor={500}
+        checkFor={1000}
         transDuration={0}
         readMoreText={intl.get('general.showMore')}
         readLessText={' '}
-        btnStyles={{ color: 'var(--color-primary)' }}
+        btnStyles={{ color: 'var(--color-primary)', pointerEvents: 'none' }}
       />
     </div>
   );

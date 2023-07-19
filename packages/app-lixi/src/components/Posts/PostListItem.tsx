@@ -119,7 +119,7 @@ const Content = styled.div`
     }
     .read-more {
       & > div > div {
-        max-height: 130px !important;
+        // max-height: 130px !important;
       }
     }
   }
@@ -161,10 +161,14 @@ const Content = styled.div`
     .show-more-image {
     }
     .show-more-desktop {
+      display: flex;
+      align-items: center;
       color: #fff;
       position: absolute;
       top: 50%;
-      right: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
       font-size: 26px;
       font-weight: 500;
     }
@@ -195,6 +199,11 @@ const Content = styled.div`
         img {
           max-width: 100%;
         }
+      }
+    }
+    &.images-post-desktop {
+      img {
+        object-fit: cover;
       }
     }
   }
@@ -388,7 +397,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
         </CardHeader>
         <Content onClick={e => handlePostClick(e)}>
           <div className="description-post">
-            <PostContent postContent={post.content} />
+            <PostContent post={post} />
           </div>
 
           {post.translations &&
@@ -408,11 +417,11 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addToRecent
             </div>
           )}
           {item.uploads.length != 0 && !showMoreImage && (
-            <div className="images-post">
+            <div className={`images-post ${imagesList.length > 1 ? 'images-post-desktop' : ''}`}>
               <Gallery photos={imagesList.length > 3 ? imagesList.slice(0, 4) : imagesList} />
               {item.uploads.length > 3 && (
                 <Button type="link" className="show-more-desktop show-more-image no-border-btn">
-                  {'+ ' + (item.uploads.length - 1)}
+                  {item.uploads.length - 1 + ' +'}
                 </Button>
               )}
             </div>

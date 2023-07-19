@@ -206,7 +206,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
         closable={false}
         onClose={onClose}
         open={open}
-        height={'fit-content'}
+        height={'auto'}
       >
         <ContainerActionSheet>
           <div className="bar-close" onClick={onClose}></div>

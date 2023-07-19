@@ -75,6 +75,7 @@ const StyledContainerProfileDetail = styled.div`
 
 const ProfileCardHeader = styled.div`
   .cover-img {
+    object-fit: cover;
     width: 100%;
     height: 200px;
     border-top-right-radius: var(--border-radius-item);
@@ -101,6 +102,7 @@ const ProfileCardHeader = styled.div`
       .avatar-img {
         width: 150px;
         height: 150px;
+        object-fit: cover;
         border-radius: 50%;
       }
       @media (max-width: 768px) {
@@ -562,12 +564,20 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
       <StyledContainerProfileDetail className="profile-detail">
         <ProfileCardHeader>
           <div className="container-img">
-            <img className="cover-img" src={userDetailData.cover || '/images/default-cover.jpg'} alt="" />
+            <img
+              className="cover-img"
+              src={selectedAccount.cover || userDetailData.cover || '/images/default-cover.jpg'}
+              alt=""
+            />
           </div>
           <div className="info-profile">
             <div className="wrapper-avatar">
               <picture>
-                <img className="avatar-img" src={userDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
+                <img
+                  className="avatar-img"
+                  src={selectedAccount.avatar || userDetailData.avatar || '/images/default-avatar.jpg'}
+                  alt=""
+                />
               </picture>
               {selectedAccountId == userDetailData.id && (
                 <div className="btn-upload-avatar" onClick={() => uploadModal(true)}>
