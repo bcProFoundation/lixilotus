@@ -15,6 +15,8 @@ import {
 } from '@store/follow/follows.generated';
 import { getSelectedAccountId } from '@store/account';
 import { usePageQuery } from '@store/page/pages.generated';
+import { useCreateFollowAccountMutation, useDeleteFollowAccountMutation } from '@store/follow/follows.api';
+import { CreateFollowAccountInput, DeleteFollowAccountInput } from '@generated/types.generated';
 
 interface PostActionSheetProps {
   id?: string;
@@ -22,6 +24,8 @@ interface PostActionSheetProps {
   isEditPost?: boolean;
   post?: any;
   page?: any;
+  followPostOwner?: boolean;
+  followedPage?: boolean;
 }
 
 export const ItemActionSheetBottom = ({
@@ -84,7 +88,9 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
   classStyle,
   isEditPost,
   post,
-  page
+  page,
+  followPostOwner,
+  followedPage
 }: PostActionSheetProps) => {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(true);
@@ -97,7 +103,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
       isLoading: isLoadingCreateFollowPage,
       isSuccess: isSuccessCreateFollowPage,
       isError: isErrorCreateFollowPage,
-      error: errorOnCreate
+      error: errorOnCreatePage
     }
   ] = useCreateFollowPageMutation();
 
@@ -107,9 +113,29 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
       isLoading: isLoadingDeleteFollowPage,
       isSuccess: isSuccessDeleteFollowPage,
       isError: isErrorDeleteFollowPage,
-      error: errorOnDelete
+      error: errorOnDeletePage
     }
   ] = useDeleteFollowPageMutation();
+
+  const [
+    createFollowAccountTrigger,
+    {
+      isLoading: isLoadingCreateFollowAccount,
+      isSuccess: isSuccessCreateFollowAccount,
+      isError: isErrorCreateFollowAccount,
+      error: errorOnCreateAccount
+    }
+  ] = useCreateFollowAccountMutation();
+
+  const [
+    deleteFollowAccountTrigger,
+    {
+      isLoading: isLoadingDeleteFollowAccount,
+      isSuccess: isSuccessDeleteFollowAccount,
+      isError: isErrorDeleteFollowAccount,
+      error: errorOnDeleteAccount
+    }
+  ] = useDeleteFollowAccountMutation();
 
   useEffect(() => {
     if (isSuccessCreateFollowPage) setIsFollowed(true);
@@ -154,6 +180,24 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     await deleteFollowPageTrigger({ input: deleteFollowPageInput });
   };
 
+  const handleFollowAccount = async () => {
+    const createFollowAccountInput: CreateFollowAccountInput = {
+      followingAccountId: parseInt(post.postAccount.id),
+      followerAccountId: selectedAccountId
+    };
+
+    await createFollowAccountTrigger({ input: createFollowAccountInput });
+  };
+
+  const handleUnfollowAccount = async () => {
+    const deleteFollowAccountInput: DeleteFollowAccountInput = {
+      followingAccountId: parseInt(post.postAccount.id),
+      followerAccountId: selectedAccountId
+    };
+
+    await deleteFollowAccountTrigger({ input: deleteFollowAccountInput });
+  };
+
   return (
     <>
       <Drawer
@@ -168,20 +212,34 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
           <div className="bar-close" onClick={onClose}></div>
           {isEditPost && <ItemActionSheetBottom text="Edit post" icon="/images/ico-edit.svg" onClickItem={editPost} />}
           {/* <ItemActionSheetBottom type="danger" text="Remove" /> */}
-          {/* {page && !isFollowed && (
+          {post.page && followedPage && (
             <ItemActionSheetBottom
-              text={`Follow ${page?.name}`}
-              icon="/images/ico-edit.svg"
+              text={`${intl.get('general.follow')} ${page?.name}`}
+              icon="/images/follow.svg"
               onClickItem={handleFollowPage}
             />
           )}
-          {page && isFollowed && (
+          {post.page && !followedPage && (
             <ItemActionSheetBottom
-              text={`Unfollow ${page?.name}`}
-              icon="/images/ico-edit.svg"
+              text={`${intl.get('general.unfollow')} ${page?.name}`}
+              icon="/images/follow.svg"
               onClickItem={handleUnfollowPage}
             />
-          )} */}
+          )}
+          {post.postAccount.id != selectedAccountId && followPostOwner && (
+            <ItemActionSheetBottom
+              text={`${intl.get('general.follow')} ${post.postAccount?.name}`}
+              icon="/images/follow.svg"
+              onClickItem={handleFollowAccount}
+            />
+          )}
+          {post.postAccount.id != selectedAccountId && !followPostOwner && (
+            <ItemActionSheetBottom
+              text={`${intl.get('general.unfollow')} ${post.postAccount?.name}`}
+              icon="/images/follow.svg"
+              onClickItem={handleUnfollowAccount}
+            />
+          )}
         </ContainerActionSheet>
       </Drawer>
     </>

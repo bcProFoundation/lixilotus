@@ -34,6 +34,7 @@ export type PostQuery = {
     createdAt: any;
     updatedAt: any;
     followPostOwner?: boolean | null;
+    followedPage?: boolean | null;
     originalLanguage?: string | null;
     uploads?: Array<{
       __typename?: 'UploadDetail';
@@ -109,6 +110,7 @@ export type PostsQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        followedPage?: boolean | null;
         originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
@@ -192,6 +194,7 @@ export type OrphanPostsQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        followedPage?: boolean | null;
         originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
@@ -275,6 +278,7 @@ export type PostsByPageIdQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        followedPage?: boolean | null;
         originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
@@ -358,6 +362,7 @@ export type PostsByUserIdQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        followedPage?: boolean | null;
         originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
@@ -441,6 +446,7 @@ export type PostsByHashtagIdQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        followedPage?: boolean | null;
         originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
@@ -524,6 +530,7 @@ export type PostsByTokenIdQuery = {
         createdAt: any;
         updatedAt: any;
         followPostOwner?: boolean | null;
+        followedPage?: boolean | null;
         originalLanguage?: string | null;
         uploads?: Array<{
           __typename?: 'UploadDetail';
@@ -908,6 +915,7 @@ export type PostFieldsFragment = {
   createdAt: any;
   updatedAt: any;
   followPostOwner?: boolean | null;
+  followedPage?: boolean | null;
   originalLanguage?: string | null;
   uploads?: Array<{
     __typename?: 'UploadDetail';
@@ -1020,6 +1028,7 @@ export type CreatePostMutation = {
     createdAt: any;
     updatedAt: any;
     followPostOwner?: boolean | null;
+    followedPage?: boolean | null;
     originalLanguage?: string | null;
     uploads?: Array<{
       __typename?: 'UploadDetail';
@@ -1081,6 +1090,7 @@ export type UpdatePostMutation = {
     createdAt: any;
     updatedAt: any;
     followPostOwner?: boolean | null;
+    followedPage?: boolean | null;
     originalLanguage?: string | null;
     uploads?: Array<{
       __typename?: 'UploadDetail';
@@ -1188,6 +1198,7 @@ export const PostFieldsFragmentDoc = `
   createdAt
   updatedAt
   followPostOwner
+  followedPage
   originalLanguage
   translations {
     id

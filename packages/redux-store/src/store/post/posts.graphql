@@ -393,6 +393,7 @@ fragment PostFields on Post {
   createdAt
   updatedAt
   followPostOwner
+  followedPage
   originalLanguage
   translations {
     id

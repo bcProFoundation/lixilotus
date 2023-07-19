@@ -143,11 +143,8 @@ export class PostResolver {
           const result = await Promise.all(
             posts.map(async post => ({
               ...post,
-              followPostOwner:
-                listFollowingsAccountIds.includes(post.postAccountId) ||
-                (post.page && listFollowingsPageIds.includes(post.page.id))
-                  ? true
-                  : false,
+              followPostOwner: listFollowingsAccountIds.includes(post.postAccountId) ? true : false,
+              followedPage: post.page && listFollowingsPageIds.includes(post.page.id) ? true : false,
               repostCount: await this.prisma.repost.count({
                 where: { postId: post.id }
               })

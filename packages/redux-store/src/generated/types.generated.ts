@@ -534,6 +534,7 @@ export type Post = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   followPostOwner?: Maybe<Scalars['Boolean']>;
+  followedPage?: Maybe<Scalars['Boolean']>;
   id: Scalars['ID'];
   lotusBurnDown: Scalars['Float'];
   lotusBurnScore: Scalars['Float'];
