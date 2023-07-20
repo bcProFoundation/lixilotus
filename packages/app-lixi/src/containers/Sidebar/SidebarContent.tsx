@@ -34,16 +34,21 @@ type SidebarContentProps = {
 const ContainerSideBarContent = styled.div`
   height: 100%;
   text-align: left;
-  margin: 1rem 0;
   .wrapper {
     padding-bottom: 5rem;
     h3 {
       margin-bottom: 1rem !important;
     }
     .header-bar {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      width: 100%;
+      background: #fff;
       display: flex;
       justify-content: space-between;
       align-items: baseline;
+      padding-left: 0.5rem;
       button {
         border-radius: 4px;
         .anticon {
@@ -324,10 +329,15 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
     return (
       <>
         {filterPosts.map(item => {
-          return <ShortCutItem item={item} onClickIcon={() => dispatch(setSelectedPost(item.id))} />;
+          return <ShortCutItem item={item} onClickIcon={() => handleClickShortCutItemForHome(item?.id)} />;
         })}
       </>
     );
+  };
+
+  const handleClickShortCutItemForHome = id => {
+    dispatch(setSelectedPost(id));
+    dispatch(toggleCollapsedSideNav(!navCollapsed));
   };
 
   const onTopHashtagClick = (hashtag, posts?, isFilter?) => {
@@ -395,16 +405,16 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
     <>
       <ContainerSideBarContent className="side-bar-content">
         <div className="wrapper">
+          <div className="header-bar">
+            <h3>Digest</h3>
+            <Button
+              type="primary"
+              className="no-border-btn animate__animated animate__heartBeat"
+              icon={<LeftOutlined />}
+              onClick={() => dispatch(toggleCollapsedSideNav(!navCollapsed))}
+            />
+          </div>
           <div className="social-digest">
-            <div className="header-bar">
-              <h3>Digest</h3>
-              <Button
-                type="primary"
-                className="no-border-btn animate__animated animate__heartBeat"
-                icon={<LeftOutlined />}
-                onClick={() => dispatch(toggleCollapsedSideNav(!navCollapsed))}
-              />
-            </div>
             <ItemQuickAccess
               icon={'/images/ico-newfeeds.svg'}
               text={'Feeds'}

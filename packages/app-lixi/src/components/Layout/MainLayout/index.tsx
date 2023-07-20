@@ -153,6 +153,14 @@ export const AppContainer = styled.div`
       position: inherit;
     }
   }
+  .sidebar-mobile {
+    .ant-drawer-body {
+      padding: 0 !important;
+      .wrapper {
+        padding: 0.5rem;
+      }
+    }
+  }
   @media (max-width: 960px) {
     height: auto;
     min-height: auto;
@@ -330,15 +338,14 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                     }`}
                   />
                   {/* @ts-ignore */}
-                  <div
-                    className="container-content"
-                    style={{ paddingTop: isMobile ? 64 : 0 }}
-                    id="scrollableDiv"
-                    ref={scrollRef}
-                    onScroll={e => handleScroll(e)}
-                  >
+                  <div className="container-content" id="scrollableDiv" ref={scrollRef} onScroll={e => handleScroll(e)}>
                     <SidebarShortcut />
-                    <div className="content-child animate__animated animate__fadeIn">{children}</div>
+                    <div
+                      className="content-child animate__animated animate__fadeIn"
+                      style={{ paddingTop: isMobile ? 64 : 0 }}
+                    >
+                      {children}
+                    </div>
                     {/* This below is just a dummy sidebar */}
                     {/* TODO: Implement SidebarRanking in future */}
                     {(selectedKey === '/wallet' || selectedKey === '/') && <SidebarRanking></SidebarRanking>}

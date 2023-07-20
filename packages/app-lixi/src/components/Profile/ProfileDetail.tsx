@@ -34,6 +34,9 @@ import styled from 'styled-components';
 import { WithAuthorizeAction } from '../Common/Authorization/WithAuthorizeAction';
 import { CameraOutlined, EditOutlined } from '@ant-design/icons';
 
+const URL_AVATAR_DEFAULT = '/images/default-avatar.jpg';
+const URL_COVER_DEFAULT = '/images/default-avatar.jpg';
+
 const AuthorizedButton = WithAuthorizeAction(Button);
 
 type UserDetailProps = {
@@ -560,25 +563,37 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     dispatch(openModal('UploadAvatarCoverModal', { profile: userDetailData, isAvatar: isAvatar }));
   };
 
+  const getAvatarAccount = () => {
+    let urlAvatarAccount = '';
+    if (selectedAccountId == userDetailData?.id) {
+      urlAvatarAccount = accountInfoTemp?.avatar || URL_AVATAR_DEFAULT;
+    } else {
+      urlAvatarAccount = userDetailData?.avatar || URL_AVATAR_DEFAULT;
+    }
+    return urlAvatarAccount;
+  };
+
+  const getCoverAccount = () => {
+    let urlCoverAccount = '';
+    if (selectedAccountId == userDetailData?.id) {
+      urlCoverAccount = accountInfoTemp?.cover || URL_COVER_DEFAULT;
+    } else {
+      urlCoverAccount = userDetailData?.cover || URL_COVER_DEFAULT;
+    }
+    return urlCoverAccount;
+  };
+
   return (
     <>
       <StyledContainerProfileDetail className="profile-detail">
         <ProfileCardHeader>
           <div className="container-img">
-            <img
-              className="cover-img"
-              src={accountInfoTemp?.cover || userDetailData.cover || '/images/default-cover.jpg'}
-              alt=""
-            />
+            <img className="cover-img" src={getCoverAccount()} alt="" />
           </div>
           <div className="info-profile">
             <div className="wrapper-avatar">
               <picture>
-                <img
-                  className="avatar-img"
-                  src={accountInfoTemp?.avatar || userDetailData.avatar || '/images/default-avatar.jpg'}
-                  alt=""
-                />
+                <img className="avatar-img" src={getAvatarAccount()} alt="" />
               </picture>
               {selectedAccountId == userDetailData.id && (
                 <div className="btn-upload-avatar" onClick={() => uploadModal(true)}>

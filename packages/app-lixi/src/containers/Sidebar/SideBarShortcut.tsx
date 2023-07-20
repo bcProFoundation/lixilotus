@@ -237,19 +237,25 @@ export const ContainerAccess = styled.div`
         }
       }
     }
-    .social-digest {
-      .header-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        .button {
-          border-radius: 4px;
-          .anticon {
-            font-size: 18px;
-            margin: 10px;
-          }
+    .header-bar {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-left: 0.5rem;
+      .button {
+        border-radius: 4px;
+        .anticon {
+          font-size: 18px;
+          margin: 10px;
         }
       }
+    }
+    .social-digest {
       padding: 0 0.5rem;
       width: 100%;
       text-align: left;
@@ -1163,16 +1169,16 @@ const SidebarShortcut = () => {
           <div className="wrapper">
             {!navCollapsed && (
               <>
+                <div className="header-bar">
+                  <h3>Digest</h3>
+                  <Button
+                    type="primary"
+                    className="no-border-btn animate__animated animate__heartBeat"
+                    icon={<LeftOutlined />}
+                    onClick={handleMenuClick}
+                  />
+                </div>
                 <div className="social-digest">
-                  <div className="header-bar">
-                    <h3>Digest</h3>
-                    <Button
-                      type="primary"
-                      className="no-border-btn animate__animated animate__heartBeat"
-                      icon={<LeftOutlined />}
-                      onClick={handleMenuClick}
-                    />
-                  </div>
                   <ItemQuickAccess
                     icon={'/images/ico-newfeeds.svg'}
                     text={'Feeds'}
