@@ -207,7 +207,7 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({
             </Form.Item>
 
             <Form.Item label={intl.get('page.description')}>
-              <TextArea onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
+              <TextArea maxLength={160} onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
               <TextCustom>{intl.get('text.createPageDescription')}</TextCustom>
             </Form.Item>
           </Form>

@@ -20,6 +20,25 @@ async function main() {
   for (const sql of sqls) {
     await prisma.$executeRawUnsafe(sql);
   }
+
+  const countryUS = await prisma.country.updateMany({
+    where: {
+      name : "United state"
+    },
+    data: {
+      name : "United State"
+    }
+  })
+  
+  const countryUSIsland = await prisma.country.updateMany({
+    where: {
+      name : "United state Minor Outlying Islands"
+    }, 
+    data: {
+      name : "United State Minor Outlying Islands"
+    }
+  })
+    
 }
 
 main()

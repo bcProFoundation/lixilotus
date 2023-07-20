@@ -255,7 +255,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled, cl
                         placeholder={intl.get('page.country')}
                         optionFilterProp="children"
                         filterOption={(input, option) =>
-                          (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+                          (option!.children as unknown as string).toLocaleLowerCase().includes(input.toLowerCase())
                         }
                         filterSort={(optionA, optionB) =>
                           (optionA!.children as unknown as string)

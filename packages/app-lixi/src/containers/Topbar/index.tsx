@@ -41,6 +41,7 @@ import { AuthorizationContext } from '@context/index';
 import useAuthorization from '../../components/Common/Authorization/use-authorization.hooks';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Link from 'next/link';
+import { getModals } from '@store/modal/selectors';
 
 export type TopbarProps = {
   className?: string;
@@ -316,6 +317,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const { width } = useWindowDimensions();
   const authorization = useContext(AuthorizationContext);
   const askAuthorization = useAuthorization();
+  const currentModal = useAppSelector(getModals);
 
   useEffect(() => {
     const isMobile = width < 968 ? true : false;
@@ -478,7 +480,12 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           <div>
             <h3>Current Account</h3>
             <div>
-              <h3 className="current-name">{selectedAccount?.name}</h3>
+              <h3
+                className="current-name"
+                onClick={() => isMobile && router.push(`/profile/${selectedAccount.address}`)}
+              >
+                {selectedAccount?.name}
+              </h3>
               <CopyToClipboard text={selectedAccount?.address} onCopy={handleOnCopy}>
                 <div className="profile-feature">
                   <span>{selectedAccount?.address.slice(-8) + ' '}</span>
@@ -588,7 +595,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           key="wallet-lotus"
           onClickItem={() => {
             if (authorization.authorized) handleIconClick('/wallet');
-            else askAuthorization();
+            else {
+              currentModal.length === 0 && askAuthorization();
+            }
           }}
         />
         <ItemAccess
@@ -599,7 +608,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           key="lixi"
           onClickItem={() => {
             if (authorization.authorized) handleIconClick('/lixi');
-            else askAuthorization();
+            else {
+              currentModal.length === 0 && askAuthorization();
+            }
           }}
         />
         <ItemAccess
@@ -702,7 +713,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           >
             <div
               onClick={() => {
-                if (authorization.authorized) router.push(`/profile/${selectedAccount.address}`);
+                if (authorization.authorized) !isMobile && router.push(`/profile/${selectedAccount.address}`);
                 else askAuthorization();
               }}
             >
