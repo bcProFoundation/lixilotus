@@ -7,12 +7,14 @@ import { getToastNotification } from '@store/toast/selectors';
 import { ReactSVG } from 'react-svg';
 import { ToastType } from '@store/toast/state';
 import intl from 'react-intl-universal';
+import { closeToast } from '@store/toast/actions';
 
 const DURATION_DEFAULT = 1.5;
 
 const ToastNotificationManage = () => {
   const currentToast = useAppSelector(getToastNotification);
   const currentTheme = useAppSelector(getCurrentThemes);
+  const dispatch = useAppDispatch();
 
   const getIconToast = (typeToast: ToastType) => {
     switch (typeToast) {
@@ -64,6 +66,7 @@ const ToastNotificationManage = () => {
         newConfig.message = newConfig?.message || intl.get(`toast.${type}`);
         newConfig.duration = newConfig?.duration || DURATION_DEFAULT;
 
+        dispatch(closeToast());
         switch (type) {
           case 'success':
             return notification.success(newConfig);

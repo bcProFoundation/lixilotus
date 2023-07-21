@@ -14,3 +14,5 @@ export const showToast = createAction(
     };
   }
 );
+
+export const closeToast = createAction('toast/closeToast');
