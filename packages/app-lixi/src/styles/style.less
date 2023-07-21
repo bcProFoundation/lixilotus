@@ -332,6 +332,19 @@ code {
   --border-item-light: none;
   --border-item-primary: rgba(128, 116, 124, 0.12);
 
+  //Toast notfication
+  --light-toast-title: #27303a;
+  --light-toast-message: #2f3f53;
+  --light-error-background: #fff5f3;
+  --light-error-border: #f4b0a1;
+  --light-sucess-border: #48c1b5;
+  --light-sucess-background: #f6fff9;
+  --light-informative-border: #9dc0ee;
+  --light-informative-background: #f5f9ff;
+  --light-warning-border: #f7d9a4;
+  --light-warning-background: #fff8ec;
+  --box-shadow-toast-light: 0px 4px 16px 0px rgba(16, 11, 39, 0.08);
+
   /** Dark theme **/
   --color-primary-dark: #9e2a9c;
   --color-secondary-dark: #74546f;
@@ -349,6 +362,104 @@ code {
   --filter-color-primary: invert(28%) sepia(34%) saturate(3619%) hue-rotate(276deg) brightness(83%) contrast(99%);
   --border-radius-primary: 5px;
   --border-radius-item: 18px;
+
+  //Toast notfication
+  --dark-toast-title: #fff;
+  --dark-toast-message: #fff;
+  --dark-error-background: linear-gradient(149deg, #f6743e 0%, #d42525 100%);
+  --dark-error-border: #f0863a;
+  --dark-sucess-background: linear-gradient(145deg, #32bb71 18.3%, #2a9d8f 100%);
+  --dark-sucess-border: #43d590;
+  --dark-informative-background: linear-gradient(140deg, #2d82b2 0%, #329abb 100%);
+  --dark-informative-border: #7bcfed;
+  --dark-warning-background: linear-gradient(131deg, #f8b806 0%, #ff8c04 100%);
+  --dark-warning-border: #ffdf8d;
+}
+
+.custom-toast-notification {
+  padding: 1rem !important;
+  width: fit-content;
+  margin: 0 auto !important;
+  margin-bottom: 1rem !important;
+  .ant-notification-notice-message {
+    font-size: 14px !important;
+  }
+  .ant-notification-notice-description {
+    font-size: 12px !important;
+  }
+  &.custom-toast-notification-light {
+    &.ant-notification-notice-success {
+      background: var(--light-sucess-background);
+      border: 1px solid var(--light-sucess-border);
+    }
+    &.ant-notification-notice-info {
+      background: var(--light-informative-background);
+      border: 1px solid var(--light-informative-border);
+    }
+    &.ant-notification-notice-warning {
+      background: var(--light-warning-background);
+      border: 1px solid var(--light-warning-border);
+    }
+    &.ant-notification-notice-error {
+      background: var(--light-error-background);
+      border: 1px solid var(--light-error-border);
+    }
+    &.burn-toast-notification {
+      background: var(--color-danger);
+      border-color: red;
+      .ant-notification-notice-icon {
+        svg {
+          width: 24px;
+          height: 24px;
+          fill: #fff;
+        }
+      }
+    }
+    .ant-notification-notice-message {
+      color: var(--light-toast-title);
+    }
+    .ant-notification-notice-description {
+      color: var(--light-toast-message);
+    }
+  }
+  &.custom-toast-notification-dark {
+    &.ant-notification-notice-success {
+      background: var(--dark-sucess-background);
+      border: 1px solid var(--dark-sucess-border);
+    }
+    &.ant-notification-notice-info {
+      background: var(--dark-informative-background);
+      border: 1px solid var(--dark-informative-border);
+    }
+    &.ant-notification-notice-warning {
+      background: var(--dark-warning-background);
+      border: 1px solid var(--dark-warning-border);
+    }
+    &.ant-notification-notice-error {
+      background: var(--dark-error-background);
+      border: 1px solid var(--dark-error-border);
+    }
+    &.burn-toast-notification {
+      background: var(--color-danger);
+      border-color: red;
+      .ant-notification-notice-icon {
+        svg {
+          width: 24px;
+          height: 24px;
+          fill: #fff;
+        }
+      }
+    }
+    .ant-notification-notice-message {
+      color: var(--dark-toast-title) !important;
+    }
+    .ant-notification-notice-description {
+      color: var(--dark-toast-message) !important;
+    }
+    .ant-notification-notice-close {
+      color: #fff !important;
+    }
+  }
 }
 
 .ant-modal {
@@ -413,6 +524,17 @@ code {
     .ant-modal-close-x {
       font-size: 22px;
       display: initial;
+    }
+    @media (min-width: 968px) {
+      top: 0.5rem;
+      right: 1rem !important;
+      left: unset !important;
+    }
+  }
+
+  @media (min-width: 968px) {
+    .info-card-user {
+      margin-left: 0 !important;
     }
   }
 
@@ -2340,6 +2462,13 @@ code {
 
   .description-post {
     p {
+      color: var(--text-color-on-dark) !important;
+    }
+  }
+
+  .description-translate {
+    p,
+    span {
       color: var(--text-color-on-dark) !important;
     }
   }

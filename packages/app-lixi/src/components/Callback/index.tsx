@@ -14,7 +14,8 @@ const CallbackComponent = props => {
     if (statusCode && statusCode == 200) {
       dispatch(
         showToast('success', {
-          message: intl.get('account.loginSuccess'),
+          message: intl.get('toast.success'),
+          description: intl.get('account.loginSuccess'),
           duration: 5
         })
       );

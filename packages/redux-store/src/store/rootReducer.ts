@@ -62,6 +62,7 @@ const persistConfig = {
     'router',
     'modal',
     'action-sheet',
+    'toast',
     'wallet',
     'api',
     'root',

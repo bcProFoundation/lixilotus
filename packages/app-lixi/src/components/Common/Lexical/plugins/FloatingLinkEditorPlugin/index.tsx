@@ -139,8 +139,7 @@ function FloatingLinkEditor({
       setLastSelection(selection);
     } else if (
       !activeElement ||
-      (activeElement.className !== 'link-input' &&
-      activeElement.className !== 'link-input-dark')
+      (activeElement.className !== 'link-input' && activeElement.className !== 'link-input-dark')
     ) {
       if (rootElement !== null) {
         setFloatingElemPosition(null, editorElem, anchorElem);

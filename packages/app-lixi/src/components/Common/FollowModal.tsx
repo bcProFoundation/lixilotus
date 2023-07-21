@@ -43,6 +43,7 @@ const ShortcutItemAccess = ({
 export type FollowModalProps = {
   accountId: number;
   type: string;
+  classStyle?: string;
 };
 
 export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps) => {
@@ -144,110 +145,117 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
   const handleCloseModal = () => {
     dispatch(closeModal());
   };
+  console.log('ahihi', props.classStyle);
 
   return (
     <>
-      <Modal open={true} footer={null} width={400}>
-        <StyledModel width={490} open={true} onOk={null} onCancel={handleCloseModal} closable={false} footer={null}>
-          <Tabs type="card" defaultActiveKey={props.type}>
-            {/* Followers s*/}
-            <Tabs.TabPane tab={intl.get('general.followers')} key="followers">
-              <React.Fragment>
-                <StyledInfiniteScroll
-                  dataLength={followers.length}
-                  next={loadMoreFollowers}
-                  hasMore={followersHasNext}
-                  loader={<Skeleton avatar active />}
-                  scrollableTarget="scrollableDiv"
-                >
-                  {followers.length == 0 ? (
-                    <p>{intl.get('follow.noFollowers')}</p>
-                  ) : (
-                    followers.map((item, index) => {
-                      return (
-                        <React.Fragment key={index}>
-                          <ShortcutItemAccess
-                            icon={''}
-                            name={item.name}
-                            href={`/profile/${item.id}`}
-                            onClickItem={handleCloseModal}
-                          />
-                        </React.Fragment>
-                      );
-                    })
-                  )}
-                </StyledInfiniteScroll>
-              </React.Fragment>
-            </Tabs.TabPane>
+      <StyledModel
+        className={`${props.classStyle}`}
+        width={490}
+        open={true}
+        onOk={null}
+        onCancel={handleCloseModal}
+        closable={false}
+        footer={null}
+      >
+        <Tabs type="card" defaultActiveKey={props.type}>
+          {/* Followers s*/}
+          <Tabs.TabPane tab={intl.get('general.followers')} key="followers">
+            <React.Fragment>
+              <StyledInfiniteScroll
+                dataLength={followers.length}
+                next={loadMoreFollowers}
+                hasMore={followersHasNext}
+                loader={<Skeleton avatar active />}
+                scrollableTarget="scrollableDiv"
+              >
+                {followers.length == 0 ? (
+                  <p>{intl.get('follow.noFollowers')}</p>
+                ) : (
+                  followers.map((item, index) => {
+                    return (
+                      <React.Fragment key={index}>
+                        <ShortcutItemAccess
+                          icon={''}
+                          name={item.name}
+                          href={`/profile/${item.id}`}
+                          onClickItem={handleCloseModal}
+                        />
+                      </React.Fragment>
+                    );
+                  })
+                )}
+              </StyledInfiniteScroll>
+            </React.Fragment>
+          </Tabs.TabPane>
 
-            {/* Following accounts */}
-            <Tabs.TabPane tab={intl.get('general.youFollow')} key="youFollow">
-              <React.Fragment>
-                <StyledInfiniteScroll
-                  dataLength={followings.length}
-                  next={loadMoreFollowings}
-                  hasMore={followingsHasNext}
-                  loader={<Skeleton avatar active />}
-                  scrollableTarget="scrollableDiv"
-                >
-                  {followings.length == 0 ? (
-                    <p>{intl.get('follow.noFollowings')}</p>
-                  ) : (
-                    followings.map((item, index) => {
-                      return (
-                        <React.Fragment key={index}>
-                          <ShortcutItemAccess
-                            icon={''}
-                            name={item.name}
-                            href={`/profile/${item.id}`}
-                            onClickItem={handleCloseModal}
-                          />
-                        </React.Fragment>
-                      );
-                    })
-                  )}
-                </StyledInfiniteScroll>
-              </React.Fragment>
-            </Tabs.TabPane>
+          {/* Following accounts */}
+          <Tabs.TabPane tab={intl.get('general.youFollow')} key="youFollow">
+            <React.Fragment>
+              <StyledInfiniteScroll
+                dataLength={followings.length}
+                next={loadMoreFollowings}
+                hasMore={followingsHasNext}
+                loader={<Skeleton avatar active />}
+                scrollableTarget="scrollableDiv"
+              >
+                {followings.length == 0 ? (
+                  <p>{intl.get('follow.noFollowings')}</p>
+                ) : (
+                  followings.map((item, index) => {
+                    return (
+                      <React.Fragment key={index}>
+                        <ShortcutItemAccess
+                          icon={''}
+                          name={item.name}
+                          href={`/profile/${item.id}`}
+                          onClickItem={handleCloseModal}
+                        />
+                      </React.Fragment>
+                    );
+                  })
+                )}
+              </StyledInfiniteScroll>
+            </React.Fragment>
+          </Tabs.TabPane>
 
-            {/* Following page */}
-            <Tabs.TabPane tab={intl.get('general.followingPages')} key="followingPages">
-              <React.Fragment>
-                <StyledInfiniteScroll
-                  dataLength={followingPages.length}
-                  next={loadMoreFollowingPages}
-                  hasMore={followingPagesHasNext}
-                  loader={<Skeleton avatar active />}
-                  scrollableTarget="scrollableDiv"
-                >
-                  {followingPages.length == 0 ? (
-                    <p>{intl.get('follow.noFollowingPages')}</p>
-                  ) : (
-                    followingPages.map((item, index) => {
-                      return (
-                        <React.Fragment key={index}>
-                          <ShortcutItemAccess
-                            icon={
-                              item.token
-                                ? `${currency.tokenIconsUrl}/32/${item.token.tokenId}.png`
-                                : item.page
-                                ? item.page.avatar
-                                : '/images/default-avatar.jpg'
-                            }
-                            name={item.page ? item.page.name : item.token.name}
-                            href={item.page ? `/page/${item.page.id}` : `/token/${item.token.tokenId}`}
-                            onClickItem={handleCloseModal}
-                          />
-                        </React.Fragment>
-                      );
-                    })
-                  )}
-                </StyledInfiniteScroll>
-              </React.Fragment>
-            </Tabs.TabPane>
-          </Tabs>
-        </StyledModel>
-      </Modal>
+          {/* Following page */}
+          <Tabs.TabPane tab={intl.get('general.followingPages')} key="followingPages">
+            <React.Fragment>
+              <StyledInfiniteScroll
+                dataLength={followingPages.length}
+                next={loadMoreFollowingPages}
+                hasMore={followingPagesHasNext}
+                loader={<Skeleton avatar active />}
+                scrollableTarget="scrollableDiv"
+              >
+                {followingPages.length == 0 ? (
+                  <p>{intl.get('follow.noFollowingPages')}</p>
+                ) : (
+                  followingPages.map((item, index) => {
+                    return (
+                      <React.Fragment key={index}>
+                        <ShortcutItemAccess
+                          icon={
+                            item.token
+                              ? `${currency.tokenIconsUrl}/32/${item.token.tokenId}.png`
+                              : item.page
+                              ? item.page.avatar
+                              : '/images/default-avatar.jpg'
+                          }
+                          name={item.page ? item.page.name : item.token.name}
+                          href={item.page ? `/page/${item.page.id}` : `/token/${item.token.tokenId}`}
+                          onClickItem={handleCloseModal}
+                        />
+                      </React.Fragment>
+                    );
+                  })
+                )}
+              </StyledInfiniteScroll>
+            </React.Fragment>
+          </Tabs.TabPane>
+        </Tabs>
+      </StyledModel>
     </>
   );
 };

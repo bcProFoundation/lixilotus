@@ -331,11 +331,12 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
   };
 
   const handleOnCopy = (id: string) => {
-    notification.info({
-      message: intl.get('token.copyId'),
-      description: id,
-      placement: 'top'
-    });
+    dispatch(
+      showToast('info', {
+        message: intl.get('token.copyId'),
+        description: id
+      })
+    );
   };
 
   const menus = options.map(option => <Menu.Item key={option}>{option}</Menu.Item>);

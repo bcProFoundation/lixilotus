@@ -1,13 +1,13 @@
 export default {
   token: {
-    colorPrimary: 'var(--color-primary)',
+    colorPrimary: '#9e2a9c',
     colorText: '#fff',
-    colorBgElevated: 'var(--bg-color-dark-item)',
+    colorBgElevated: '#1e1e1e',
     colorTextDisabled: 'gray',
     colorBgContainerDisabled: '#303031',
-    colorTextHeading: '#fff',
+    colorTextHeading: '#9e2a9c',
     colorIcon: '#fff',
-    colorIconHover: 'var(--color-primary)',
-    controlItemBgHover: 'var(--border-color-dark-base)'
+    colorIconHover: '#9e2a9c',
+    controlItemBgHover: '#70818a61'
   }
 };

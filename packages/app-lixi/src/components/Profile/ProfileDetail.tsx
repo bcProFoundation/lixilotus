@@ -172,17 +172,26 @@ const ProfileCardHeader = styled.div`
     padding-bottom: 15px;
     text-align: left;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
+    button {
+      height: fit-content;
+      @media (min-width: 768px) {
+        display: inline-flex;
+        gap: 4px;
+      }
+    }
     @media (max-width: 768px) {
       margin-left: 0;
       text-align: center;
+      padding-left: 0;
+      justify-content: center;
     }
     h2 {
       font-weight: 600;
       margin-bottom: 0;
       text-transform: capitalize;
-    }
-    Button {
-      margin: 0px 5px;
     }
   }
 `;
@@ -528,7 +537,8 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
       const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
-          message: errorMessage,
+          message: intl.get('toast.error'),
+          description: errorMessage,
           duration: 3
         })
       );
@@ -637,15 +647,17 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
           </div>
           {selectedAccount.id == userDetailData.id && (
             <div className="description-profile">
-              <Button onClick={() => openFollowModal(Follow.Followers)}>{`${userDetailData.followersCount} ${intl.get(
-                'general.followers'
-              )}`}</Button>
-              <Button onClick={() => openFollowModal(Follow.Followees)}>{`${userDetailData.followingsCount} ${intl.get(
-                'general.youFollow'
-              )}`}</Button>
-              <Button onClick={() => openFollowModal(Follow.FollowingPages)}>{`${
-                userDetailData.followingPagesCount
-              } ${intl.get('general.followingPages')}`}</Button>
+              <Button onClick={() => openFollowModal(Follow.Followers)}>
+                {userDetailData.followersCount}
+                <br />
+                {intl.get('general.followers')}
+              </Button>
+              <Button onClick={() => openFollowModal(Follow.Followees)}>
+                {userDetailData.followingsCount} <br /> {intl.get('general.followings')}
+              </Button>
+              <Button onClick={() => openFollowModal(Follow.FollowingPages)}>
+                {userDetailData.followingPagesCount} <br /> {intl.get('general.followingPages')}
+              </Button>
             </div>
           )}
         </ProfileCardHeader>

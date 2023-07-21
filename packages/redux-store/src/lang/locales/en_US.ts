@@ -113,6 +113,7 @@ export default {
   'general.fee': 'Fee: ',
   'general.createPost': 'What do you think?...',
   'general.suggested': 'Suggested: ',
+  'general.open': 'Open',
   'general.postFilter': 'Followed Posts: ',
   'general.dana': ' Dana',
   'general.support': 'Support',
@@ -655,5 +656,13 @@ export default {
   'follow.followFailure': 'Follow failure',
   'follow.noFollowers': 'No one is following you yet!',
   'follow.noFollowings': "You haven't followed anyone yet!",
-  'follow.noFollowingPages': "You haven't followed any pages yet!"
+  'follow.noFollowingPages': "You haven't followed any pages yet!",
+
+  /* 21. Toast */
+  'toast.success': 'Success',
+  'toast.warning': 'Warning',
+  'toast.error': 'Error',
+  'toast.info': 'Info',
+  'toast.open': 'Open',
+  'toast.burn': 'Burning...'
 };

@@ -140,7 +140,8 @@ const Hashtag = ({ hashtag, isMobile }: HashtagProps) => {
       const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
-          message: errorMessage,
+          message: intl.get('toast.error'),
+          description: errorMessage,
           duration: 3
         })
       );

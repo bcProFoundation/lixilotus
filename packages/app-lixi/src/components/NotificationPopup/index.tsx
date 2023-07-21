@@ -104,10 +104,10 @@ const StyledComment = styled(Comment)`
     letter-spacing: 0.5px;
     color: #1e1a1d;
   }
-  .readed {
+  &.readed {
     background: #fff;
   }
-  .un-read {
+  &.un-read {
     background: #eceff5;
   }
 `;

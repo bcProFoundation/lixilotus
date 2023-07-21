@@ -112,6 +112,7 @@ export default {
   'general.fee': 'Phí: ',
   'general.createPost': 'Bạn đang nghĩ gì vậy?...',
   'general.suggested': 'Đề xuất: ',
+  'general.open': 'Mở',
   'general.postFilter': 'Bài Theo Dõi: ',
   'general.dana': ' Dana',
   'general.support': 'Hỗ trợ',
@@ -654,5 +655,13 @@ export default {
   'follow.followFailure': 'Theo dõi không thành công',
   'follow.noFollowers': 'Chưa có ai theo dõi bạn!',
   'follow.noFollowings': 'Bạn chưa ai theo dõi!',
-  'follow.noFollowingPages': 'Bạn chưa theo dõi trang nào!'
+  'follow.noFollowingPages': 'Bạn chưa theo dõi trang nào!',
+
+  /* 21. Toast */
+  'toast.success': 'Thành Công',
+  'toast.warning': 'Cảnh Báo',
+  'toast.error': 'Lỗi',
+  'toast.info': 'Thông tin',
+  'toast.open': 'Mở',
+  'toast.burning': 'Đang đốt...'
 };

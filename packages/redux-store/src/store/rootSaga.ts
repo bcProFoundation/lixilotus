@@ -13,7 +13,6 @@ import pageSaga from './page/saga';
 import postSaga from './post/saga';
 import sendSaga from './send/saga';
 import settingsSaga from './settings/saga';
-import toastSaga from './toast/saga';
 import tokenSaga from './token/saga';
 import walletSaga from './wallet/saga';
 import worshipSaga from './worship/saga';
@@ -28,7 +27,6 @@ export default function* rootSaga() {
     sendSaga(),
     claimSaga(),
     envelopeSaga(),
-    toastSaga(),
     settingsSaga(),
     notificationSaga(),
     webpushSaga(),

@@ -32,6 +32,7 @@ import useWindowDimensions from '@hooks/useWindowDimensions';
 import useThemeDetector from '@local-hooks/useThemeDetector';
 import { setShowCreatePost } from '@store/post/actions';
 const { Content } = Layout;
+import ToastNotificationManage from '@components/Common/ToastNotificationManage';
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -357,6 +358,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                   </div>
                 </AppContainer>
                 <ActionSheet />
+                <ToastNotificationManage />
               </AppBody>
             </Layout>
           </LixiApp>

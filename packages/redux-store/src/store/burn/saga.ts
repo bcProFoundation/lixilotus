@@ -113,7 +113,11 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
               worshipedPersonId: command.burnForId,
               worshipedAmount: burnValue
             };
-            promise = yield put(worshipApi.endpoints.createWorship.initiate({ input: createWorshipInput }));
+            promise = yield put(
+              worshipApi.endpoints.createWorship.initiate({
+                input: createWorshipInput
+              })
+            );
             yield promise;
             data = yield promise.unwrap();
             patches = yield updateWorshipBurnValue(data.createWorship);
@@ -123,7 +127,11 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
               templeId: command.burnForId,
               worshipedAmount: burnValue
             };
-            promise = yield put(worshipApi.endpoints.CreateWorshipTemple.initiate({ input: createWorshipInput }));
+            promise = yield put(
+              worshipApi.endpoints.CreateWorshipTemple.initiate({
+                input: createWorshipInput
+              })
+            );
             yield promise;
             data = yield promise.unwrap();
             patches = yield updateWorshipBurnValue(data.createWorshipTemple);
@@ -148,7 +156,13 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
     yield put(setTransactionReady());
     if (command.burnForType === BurnForType.Token) {
       message = (err as Error)?.message ?? intl.get('token.unableToBurn');
-      yield put(burnForTokenFailure({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }));
+      yield put(
+        burnForTokenFailure({
+          id: command.burnForId,
+          burnType: command.burnType,
+          burnValue: burnValue
+        })
+      );
     } else if (command.burnForType === BurnForType.Post) {
       message = (err as Error)?.message ?? intl.get('post.unableToBurn');
       const params = {
@@ -187,7 +201,8 @@ function* burnForUpDownVoteSuccessSaga(action: PayloadAction<Burn>) {
 function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
   yield put(
     showToast('error', {
-      message: action.payload,
+      message: intl.get('toast.error'),
+      description: action.payload,
       duration: 3
     })
   );
@@ -236,7 +251,11 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
   yield put(
     postApi.util.updateQueryData(
       'PostsBySearchWithHashtag',
-      { minBurnFilter: command.minBurnFilter, query: command.query, hashtags: command.hashtags },
+      {
+        minBurnFilter: command.minBurnFilter,
+        query: command.query,
+        hashtags: command.hashtags
+      },
       draft => {
         const postToUpdateIndex = draft.allPostsBySearchWithHashtag.edges.findIndex(
           item => item.node.id === command.burnForId

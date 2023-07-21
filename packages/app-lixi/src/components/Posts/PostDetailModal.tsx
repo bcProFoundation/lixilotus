@@ -1,4 +1,4 @@
-import { DashOutlined, SendOutlined, DownloadOutlined, LeftOutlined } from '@ant-design/icons';
+import { DashOutlined, SendOutlined, DownloadOutlined, LeftOutlined, CloseOutlined } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { AvatarUser } from '@components/Common/AvatarUser';
@@ -427,7 +427,8 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
       const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
-          message: errorMessage,
+          message: intl.get('toast.error'),
+          description: errorMessage,
           duration: 3
         })
       );
@@ -656,7 +657,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
       () => {
         dispatch(closeModal());
       },
-      isMobile ? 500 : 200
+      isMobile ? 400 : 200
     );
   };
 
@@ -684,19 +685,20 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
     <>
       <Modal
         width={'50vw'}
-        className={`${classStyle} post-detail-custom-modal ${isMobile
-          ? openPost
-            ? 'animate__animated animate__faster animate__slideInRight'
-            : 'animate__animated animate__faster animate__slideOutRight'
-          : openPost
+        className={`${classStyle} post-detail-custom-modal ${
+          isMobile
+            ? openPost
+              ? 'animate__animated animate__faster animate__slideInRight'
+              : 'animate__animated animate__faster animate__slideOutRight'
+            : openPost
             ? 'animate__animated animate__faster animate__zoomIn'
             : 'animate__animated animate__faster animate__zoomOut'
-          }`}
+        }`}
         transitionName=""
         style={{ top: 30 }}
         open={true}
         onCancel={handleOnCancel}
-        closeIcon={<LeftOutlined />}
+        closeIcon={isMobile ? <LeftOutlined /> : <CloseOutlined />}
         footer={null}
       >
         <StyledContainerPostDetail
