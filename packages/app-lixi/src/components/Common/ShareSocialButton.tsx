@@ -16,6 +16,8 @@ import { Button, message, Popover } from 'antd';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { stripHtml } from 'string-strip-html';
+import { useAppDispatch } from '@store/hooks';
+import { showToast } from '@store/toast/actions';
 
 type SocialSharePanelProps = {
   className?: string;
@@ -30,6 +32,7 @@ type ShareSocialProps = {
 };
 
 const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.Element => {
+  const dispatch = useAppDispatch();
   const title = intl.get('post.titleShared');
   return (
     <div className={className}>
@@ -70,7 +73,12 @@ const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.E
           icon={<LinkOutlined style={{ color: 'white', fontSize: '20px' }} />}
           onClick={() => {
             navigator.clipboard.writeText(window.location.href);
-            message.success(intl.get('post.copyToClipboard'));
+            dispatch(
+              showToast('success', {
+                message: intl.get('toast.success'),
+                description: intl.get('lixi.fileUploadError')
+              })
+            );
           }}
         />
       </div>

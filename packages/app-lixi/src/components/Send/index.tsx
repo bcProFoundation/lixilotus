@@ -25,6 +25,7 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import { showToast } from '@store/toast/actions';
 
 const StyledCheckbox = styled(Checkbox)`
   .ant-checkbox-inner {
@@ -277,7 +278,12 @@ const SendComponent: React.FC = () => {
         value
       });
     } catch (err) {
-      message.error('send.calcMaxError');
+      dispatch(
+        showToast('error', {
+          message: intl.get('toast.error'),
+          description: intl.get('send.calcMaxError')
+        })
+      );
     }
   };
 

@@ -23,6 +23,8 @@ import {
 import { RWebShare } from 'react-web-share';
 import styled from 'styled-components';
 import moment from 'moment';
+import { useAppDispatch } from '@store/hooks';
+import { showToast } from '@store/toast/actions';
 
 const imageBrowserDownload = imageUri => {
   const filename = 'claim' + Date.now() + '.png';
@@ -43,6 +45,7 @@ type SocialSharePanelProps = {
 };
 
 const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.Element => {
+  const dispatch = useAppDispatch();
   const title = intl.get('claim.titleShared');
   return (
     <div className={className}>
@@ -83,7 +86,12 @@ const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.E
           icon={<LinkOutlined style={{ color: 'white', fontSize: '20px' }} />}
           onClick={() => {
             navigator.clipboard.writeText(window.location.href);
-            message.success(intl.get('claim.copyToClipboard'));
+            dispatch(
+              showToast('success', {
+                message: intl.get('toast.success'),
+                description: intl.get('claim.copyToClipboard')
+              })
+            );
           }}
         />
       </div>

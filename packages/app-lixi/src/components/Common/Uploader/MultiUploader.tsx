@@ -13,6 +13,7 @@ import axiosClient from '@utils/axiosClient';
 import { UPLOAD_API_S3_MULTIPLE } from '@bcpros/lixi-models/constants';
 import _ from 'lodash';
 import { ButtonType } from 'antd/lib/button';
+import { showToast } from '@store/toast/actions';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -106,11 +107,11 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
     const isLt10M = file.size / 1024 / 1024 < 10;
 
     if (!isJPG && !isPNG && !isGIF) {
-      message.error(intl.get('lixi.fileTypeError'));
+      dispatch(showToast('error', { message: intl.get('toast.error'), description: intl.get('lixi.fileTypeError') }));
     }
 
     if (!isLt10M) {
-      message.error(intl.get('lixi.fileSizeError'));
+      dispatch(showToast('error', { message: intl.get('toast.error'), description: intl.get('lixi.fileSizeError') }));
     }
 
     return (isJPG || isPNG || isGIF) && isLt10M;
@@ -120,7 +121,12 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
 
   const handlePreview = async (file: UploadFile) => {
     if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
-      return message.error(intl.get('lixi.previewFileFailed'));
+      return dispatch(
+        showToast('error', {
+          message: intl.get('toast.error'),
+          description: intl.get('lixi.previewFileFailed')
+        })
+      );
     }
 
     if (!file.url && !file.preview) {
@@ -140,11 +146,21 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
         break;
       case 'done':
         setLoading(false);
-        message.success(intl.get('lixi.fileUploadSuccess'));
+        dispatch(
+          showToast('success', {
+            message: intl.get('toast.success'),
+            description: intl.get('lixi.fileUploadSuccess')
+          })
+        );
         break;
       case 'error':
         setLoading(false);
-        message.error(intl.get('lixi.fileUploadError'));
+        dispatch(
+          showToast('error', {
+            message: intl.get('toast.error'),
+            description: intl.get('lixi.fileUploadError')
+          })
+        );
         break;
     }
   };

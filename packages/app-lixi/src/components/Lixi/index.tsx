@@ -342,11 +342,21 @@ const Lixi = props => {
 
   const handleOnCopyClaimCode = () => {
     setClaimCodeVisible(true);
-    message.info(intl.get('claim.claimCodeCopied'));
+    dispatch(
+      showToast('info', {
+        message: intl.get('toast.erroinfo'),
+        description: intl.get('claim.claimCodeCopied')
+      })
+    );
   };
 
   const handleOnCopyDistributionAddress = () => {
-    message.info(intl.get('lixi.addressCopied'));
+    dispatch(
+      showToast('info', {
+        message: intl.get('toast.info'),
+        description: intl.get('lixi.addressCopied')
+      })
+    );
   };
 
   const handleDownloadQRClaimCode = () => {

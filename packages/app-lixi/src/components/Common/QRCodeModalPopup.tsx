@@ -8,6 +8,7 @@ import { QRCode } from './QRCodeModal';
 import { AntdFormWrapper } from './EnhancedInputs';
 import { closeModal } from '@store/modal/actions';
 import { useAppDispatch } from '@store/hooks';
+import { showToast } from '@store/toast/actions';
 
 export type QRCodeModalProps = {
   address: string;
@@ -43,7 +44,12 @@ export const QRCodeModalPopup: React.FC<QRCodeModalProps> = (props: QRCodeModalP
   };
 
   const handleOnCopy = () => {
-    message.info(props.type == 'address' ? intl.get('lixi.addressCopied') : intl.get('claim.claimCodeCopied'));
+    dispatch(
+      showToast('info', {
+        message: intl.get('toast.info'),
+        description: props.type == 'address' ? intl.get('lixi.addressCopied') : intl.get('claim.claimCodeCopied')
+      })
+    );
   };
 
   return (

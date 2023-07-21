@@ -23,6 +23,7 @@ import { useRouter } from 'next/router';
 import { getSelectedWalletPath, getWalletStatus } from '@store/wallet';
 import { QRCodeModal } from '@components/Common/QRCodeModal';
 import { QRCodeModalType } from '@bcpros/lixi-models/constants';
+import { showToast } from '@store/toast/actions';
 
 const CardContainer = styled.div`
   position: relative;
@@ -179,7 +180,12 @@ const WalletInfoComponent: React.FC = () => {
   }
 
   const handleOnCopy = () => {
-    message.info(intl.get('lixi.addressCopied'));
+    dispatch(
+      showToast('info', {
+        message: intl.get('toast.info'),
+        description: intl.get('lixi.addressCopied')
+      })
+    );
   };
 
   return (

@@ -42,6 +42,7 @@ import useAuthorization from '../../components/Common/Authorization/use-authoriz
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Link from 'next/link';
 import { getModals } from '@store/modal/selectors';
+import { showToast } from '@store/toast/actions';
 
 export type TopbarProps = {
   className?: string;
@@ -470,7 +471,12 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   };
 
   const handleOnCopy = () => {
-    message.info(intl.get('lixi.addressCopied'));
+    dispatch(
+      showToast('info', {
+        message: intl.get('toast.info'),
+        description: intl.get('lixi.addressCopied')
+      })
+    );
   };
 
   const contentSelectAccount = (
