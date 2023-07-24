@@ -178,7 +178,7 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
                         <ShortcutItemAccess
                           icon={''}
                           name={item.name}
-                          href={`/profile/${item.id}`}
+                          href={`/profile/${item.address}`}
                           onClickItem={handleCloseModal}
                         />
                       </React.Fragment>
@@ -208,7 +208,7 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
                         <ShortcutItemAccess
                           icon={''}
                           name={item.name}
-                          href={`/profile/${item.id}`}
+                          href={`/profile/${item.address}`}
                           onClickItem={handleCloseModal}
                         />
                       </React.Fragment>
@@ -240,8 +240,8 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
                             item.token
                               ? `${currency.tokenIconsUrl}/32/${item.token.tokenId}.png`
                               : item.page
-                              ? item.page.avatar
-                              : '/images/default-avatar.jpg'
+                                ? item.page.avatar
+                                : '/images/default-avatar.jpg'
                           }
                           name={item.page ? item.page.name : item.token.name}
                           href={item.page ? `/page/${item.page.id}` : `/token/${item.token.tokenId}`}
