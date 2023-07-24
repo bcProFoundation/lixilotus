@@ -62,8 +62,11 @@ export const NavBarHeader = styled(Header)`
   border-bottom: 0.5px solid gray;
   margin-bottom: 10px;
   .anticon {
-    font-size: 18px;
+    font-size: 10px;
     color: rgba(30, 26, 29, 0.6);
+  }
+  .anticon-left {
+    font-size: 18px;
   }
   @media (max-width: 960px) {
     width: 100%;

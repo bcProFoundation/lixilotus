@@ -18,6 +18,8 @@ const StyledFooter = styled.div`
   display: none;
   max-height: 60px;
   @media (max-width: 968px) {
+    padding-bottom: min(1rem, env(safe-area-inset-bottom));
+    max-height: fit-content;
     display: flex;
     left: 0;
   }

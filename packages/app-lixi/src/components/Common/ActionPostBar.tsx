@@ -31,7 +31,7 @@ export const GroupIconText = styled.div`
     border-radius: 12px;
     cursor: pointer;
     @media (max-width: 960px) {
-      margin-right: 1rem;
+      margin-right: 0;
     }
 
     &.repost {

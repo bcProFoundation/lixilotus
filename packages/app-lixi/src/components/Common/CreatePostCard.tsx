@@ -50,7 +50,7 @@ const MobileCreatePost = styled.div`
     display: block;
     position: fixed;
     right: 15px;
-    bottom: 70px;
+    bottom: 5rem;
     background: transparent !important;
     .fab-btn {
       padding: 16px;

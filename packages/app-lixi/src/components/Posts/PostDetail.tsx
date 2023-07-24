@@ -205,7 +205,7 @@ const StyledContainerPostDetail = styled.div`
   padding: 0rem 1rem 1rem 1rem;
   margin-top: 1rem;
   height: max-content;
-  border-radius: 1rem;
+  border-radius: var(--border-radius-primary);
   header {
     padding: 0 !important;
     margin-bottom: 1rem;
@@ -219,6 +219,10 @@ const StyledContainerPostDetail = styled.div`
     .ant-list-item-meta-title {
       margin-bottom: 0.5rem;
     }
+  }
+  @media (max-width: 520px) {
+    margin: 8px 0;
+    border-radius: 0;
   }
 `;
 
@@ -656,22 +660,19 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     <>
       <StyledContainerPostDetail className="post-detail">
         <NavBarHeader onClick={() => router.back()}>
-          <LeftOutlined />
-          <PathDirection>
-            <h2>{intl.get('post.postTitle')}</h2>
-          </PathDirection>
+          <LeftOutlined style={{ marginRight: '0.5rem' }} />
+          <InfoCardUser
+            imgUrl={post.postAccount.avatar ? post.postAccount.avatar : ''}
+            name={post.postAccount.name}
+            title={moment(post.createdAt).fromNow().toString()}
+            postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
+            page={post.page ? post.page : undefined}
+            token={post.token ? post.token : undefined}
+            activatePostLocation={true}
+            onEditPostClick={editPost}
+            postEdited={post.createdAt !== post.updatedAt}
+          ></InfoCardUser>
         </NavBarHeader>
-        <InfoCardUser
-          imgUrl={post.postAccount.avatar ? post.postAccount.avatar : ''}
-          name={post.postAccount.name}
-          title={moment(post.createdAt).fromNow().toString()}
-          postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
-          page={post.page ? post.page : undefined}
-          token={post.token ? post.token : undefined}
-          activatePostLocation={true}
-          onEditPostClick={editPost}
-          postEdited={post.createdAt !== post.updatedAt}
-        ></InfoCardUser>
         <PostContentDetail>
           <div className="description-post" onClick={e => handleHashtagClick(e)}>
             {ReactHtmlParser(ReactDomServer.renderToStaticMarkup(content))}

@@ -74,6 +74,10 @@ code {
   display: none;
 }
 
+.ant-modal-wrap {
+  overflow-x: unset;
+}
+
 .listing {
   -ms-overflow-style: none;
   /* IE and Edge */
@@ -405,13 +409,13 @@ code {
       border: 1px solid var(--light-error-border);
     }
     &.burn-toast-notification {
-      background: var(--color-danger);
-      border-color: red;
+      background: var(--light-warning-background);
+      border: 1px solid var(--light-warning-border);
       .ant-notification-notice-icon {
         svg {
           width: 24px;
           height: 24px;
-          fill: #fff;
+          fill: coral;
         }
       }
     }
@@ -440,8 +444,8 @@ code {
       border: 1px solid var(--dark-error-border);
     }
     &.burn-toast-notification {
-      background: var(--color-danger);
-      border-color: red;
+      background: var(--dark-warning-background);
+      border: 1px solid var(--dark-warning-border);
       .ant-notification-notice-icon {
         svg {
           width: 24px;
@@ -1653,29 +1657,6 @@ code {
 .dark {
   background-color: var(--bg-color-dark-theme) !important;
 
-  #dark {
-    display: flex;
-    justify-content: space-between;
-    background: var(--bg-color-light-theme);
-    align-items: center;
-    border-radius: 8px;
-    padding: 4px 8px;
-    font-size: 15px;
-    button {
-      span {
-        font-size: 22px;
-      }
-      &:hover {
-        span {
-          color: var(--color-primary);
-        }
-      }
-    }
-    input {
-      flex-grow: 1;
-    }
-  }
-
   .ant-layout {
     background: var(--bg-color-dark-theme);
   }
@@ -2225,6 +2206,14 @@ code {
       }
 
       .ant-comment-content-detail {
+        color: var(--text-color-on-dark);
+      }
+    }
+
+    textarea {
+      background: var(--bg-color-dark-item);
+      color: #fff;
+      &::placeholder {
         color: var(--text-color-on-dark);
       }
     }
