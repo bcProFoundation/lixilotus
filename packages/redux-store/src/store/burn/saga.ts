@@ -225,7 +225,8 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
   // The algo will check for PostQueryTag then updateQueryData according to it. It only update normal post not page's post and token's post at homepage.
   // That's why we need to update the all Posts here first then updateQueryData later. Not the best way to handle. Maybe come back later.
   yield put(
-    postApi.util.updateQueryData('Posts', { minBurnFilter: command.minBurnFilter }, draft => {
+    //THis is hardcoded, it wont work if isTop other than false, need to find better way to handle this
+    postApi.util.updateQueryData('Posts', { minBurnFilter: command.minBurnFilter, isTop: 'false' }, draft => {
       const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
       const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
       if (postToUpdateIndex >= 0) {

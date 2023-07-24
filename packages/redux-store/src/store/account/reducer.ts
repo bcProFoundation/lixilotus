@@ -130,9 +130,6 @@ export const accountReducer = createReducer(initialState, builder => {
         case UPLOAD_TYPES.ACCOUNT_AVATAR:
           state.accountAvatarUpload = null;
           break;
-        case UPLOAD_TYPES.ACCOUNT_AVATAR:
-          state.accountCoverUpload = null;
-          break;
         case UPLOAD_TYPES.PAGE_AVATAR:
           state.pageAvatarUpload = null;
           break;
