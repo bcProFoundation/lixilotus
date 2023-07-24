@@ -144,7 +144,7 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList,
       case 'done':
         setLoading(false);
         dispatch(
-          showToast('error', { message: intl.get('toast.error'), description: intl.get('lixi.fileUploadSuccess') })
+          showToast('success', { message: intl.get('toast.success'), description: intl.get('lixi.fileUploadSuccess') })
         );
         break;
       case 'error':

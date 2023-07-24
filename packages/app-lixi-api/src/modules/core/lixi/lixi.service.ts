@@ -330,7 +330,7 @@ export class LixiService {
     }
 
     const flowProducer = new FlowProducer({
-      prefix: 'lixilotus:',
+      prefix: 'lixilotus:lixi',
       connection: new IORedis({
         maxRetriesPerRequest: null,
         enableReadyCheck: false,
@@ -339,6 +339,7 @@ export class LixiService {
       })
     });
     const flow = await flowProducer.add({
+      prefix: 'lixilotus:lixi',
       name: LIXI_JOB_NAMES.CREATE_ALL_SUB_LIXIES,
       queueName: CREATE_SUB_LIXIES_QUEUE,
       children: childrenJobs,
