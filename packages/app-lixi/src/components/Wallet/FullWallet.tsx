@@ -141,7 +141,12 @@ const FullWalletWrapper = styled.div`
     border: none;
   }
 `;
-const FullWalletComponent: React.FC = () => {
+
+type WalletProps = {
+  claimCode?: string;
+};
+
+const FullWalletComponent = ({ claimCode }: WalletProps) => {
   const trimLength = 8;
   const dispatch = useAppDispatch();
 
@@ -210,7 +215,7 @@ const FullWalletComponent: React.FC = () => {
     <>
       <FullWalletWrapper className="full-wallet">
         <WalletInfoComponent />
-        <ClaimComponent isClaimFromAccount={true}></ClaimComponent>
+        <ClaimComponent isClaimFromAccount={true} claimCodeFromURL={claimCode}></ClaimComponent>
         <TransactionHistory className="transaction-history">
           <div className="header-transaction">
             {intl.get('account.transactionHistory')}

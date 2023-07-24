@@ -2,7 +2,6 @@ import _ from 'lodash';
 import intl from 'react-intl-universal';
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
-import { isMobile, isIOS, isSafari } from 'react-device-detect';
 import PrimaryButton from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import { CashLoadingIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import {
@@ -66,8 +65,12 @@ const RedeemCodeBox = styled.div`
     margin-bottom: 0;
   }
 `;
+type ClaimProps = {
+  isClaimFromAccount?: boolean;
+  claimCodeFromURL?: string;
+};
 
-const ClaimComponent = ({ isClaimFromAccount }) => {
+const ClaimComponent = ({ isClaimFromAccount, claimCodeFromURL }: ClaimProps) => {
   const isLoading = useAppSelector(getIsGlobalLoading);
 
   const Wallet = React.useContext(WalletContext);
@@ -80,7 +83,7 @@ const ClaimComponent = ({ isClaimFromAccount }) => {
   const scannerSupported = false; // width < 769 && isMobile && !(isIOS && !isSafari);
 
   const currentAddress = useAppSelector(getCurrentAddress);
-  const currentClaimCode = useSelector(getCurrentClaimCode);
+  const currentClaimCode = claimCodeFromURL ?? useSelector(getCurrentClaimCode);
   const selectedAccount = useAppSelector(getSelectedAccount);
 
   const [claimXpiAddressError, setClaimXpiAddressError] = useState<string | boolean>(false);
@@ -113,6 +116,12 @@ const ClaimComponent = ({ isClaimFromAccount }) => {
       dispatch(saveClaimAddress(selectedAccount.address));
     }
   }, []);
+
+  useEffect(() => {
+    if (claimCodeFromURL) {
+      dispatch(saveClaimCode(claimCodeFromURL));
+    }
+  }, [claimCodeFromURL]);
 
   const handleOnClick = e => {
     e.preventDefault();

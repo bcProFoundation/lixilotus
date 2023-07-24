@@ -6,10 +6,10 @@ import { ToastState } from './state';
 
 const initialState: ToastState = {
   type: 'success',
-  config: null,
+  config: null
 };
 
-export const toastReducer = createReducer(initialState, (builder) => {
+export const toastReducer = createReducer(initialState, builder => {
   builder.addCase(showToast, (state, action) => {
     const { type, config } = action.payload;
     state.type = type;
