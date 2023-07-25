@@ -405,8 +405,6 @@ const SubAbout = ({
 );
 
 const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => {
-  const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const walletPaths = useAppSelector(getAllWalletPaths);
   const walletStatus = useAppSelector(getWalletStatus);
@@ -415,9 +413,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsProfile);
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const [userDetailData, setUserDetailData] = useState<any>(user);
   const [isFollowed, setIsFollowed] = useState<boolean>(checkIsFollowed);
-  const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const accountInfoTemp = useAppSelector(getAccountInfoTemp);
@@ -469,18 +465,6 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     if (isSuccessDeleteFollowAccount) setIsFollowed(false);
   }, [isSuccessDeleteFollowAccount]);
 
-  const fetchListFriend = () => {
-    return axios
-      .get('https://picsum.photos/v2/list?page=1&limit=10', {
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
-      })
-      .then(response => {
-        setListsFriend(response.data);
-      });
-  };
-
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
       fetchNext();
@@ -501,12 +485,12 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
       const burnForId = post.id;
       let tipToAddresses: { address: string; amount: string }[] = [
         {
-          address: userDetailData.address,
+          address: user.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
         }
       ];
 
-      tipToAddresses = tipToAddresses.filter(item => item.address != userDetailData.address);
+      tipToAddresses = tipToAddresses.filter(item => item.address != user.address);
       const totalTip = fromSmallestDenomination(
         tipToAddresses.reduce((total, item) => total + parseFloat(item.amount), 0)
       );
@@ -549,7 +533,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
 
   const handleFollow = async () => {
     const createFollowAccountInput: CreateFollowAccountInput = {
-      followingAccountId: parseInt(userDetailData.id),
+      followingAccountId: parseInt(user.id),
       followerAccountId: selectedAccount.id
     };
 
@@ -558,7 +542,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
 
   const handleUnfollow = async () => {
     const deleteFollowAccountInput: DeleteFollowAccountInput = {
-      followingAccountId: parseInt(userDetailData.id),
+      followingAccountId: parseInt(user.id),
       followerAccountId: selectedAccount.id
     };
 
@@ -570,25 +554,27 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   };
 
   const uploadModal = (isAvatar: boolean) => {
-    dispatch(openModal('UploadAvatarCoverModal', { profile: userDetailData, isAvatar: isAvatar }));
+    dispatch(openModal('UploadAvatarCoverModal', { profile: user, isAvatar: isAvatar }));
   };
 
   const getAvatarAccount = () => {
     let urlAvatarAccount = '';
-    if (selectedAccountId == userDetailData?.id) {
+    if (selectedAccountId == user.id) {
       urlAvatarAccount = accountInfoTemp?.avatar || URL_AVATAR_DEFAULT;
     } else {
-      urlAvatarAccount = userDetailData?.avatar || URL_AVATAR_DEFAULT;
+      const cfUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${user?.avatar.upload.cfImageId}/public`;
+      urlAvatarAccount = cfUrl || URL_AVATAR_DEFAULT;
     }
     return urlAvatarAccount;
   };
 
   const getCoverAccount = () => {
     let urlCoverAccount = '';
-    if (selectedAccountId == userDetailData?.id) {
+    if (selectedAccountId == user?.id) {
       urlCoverAccount = accountInfoTemp?.cover || URL_COVER_DEFAULT;
     } else {
-      urlCoverAccount = userDetailData?.cover || URL_COVER_DEFAULT;
+      const cfUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${user?.avatar.upload.cfImageId}/public`;
+      urlCoverAccount = cfUrl || URL_COVER_DEFAULT;
     }
     return urlCoverAccount;
   };
@@ -605,7 +591,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
               <picture>
                 <img className="avatar-img" src={getAvatarAccount()} alt="" />
               </picture>
-              {selectedAccountId == userDetailData.id && (
+              {selectedAccountId == user.id && (
                 <div className="btn-upload-avatar" onClick={() => uploadModal(true)}>
                   <CameraOutlined />
                 </div>
@@ -613,21 +599,19 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
             </div>
             <div className="title-profile">
               <div>
-                <h2>{userDetailData.name}</h2>
-                <p className="add">
-                  {userDetailData?.address.slice(6, 11) + '...' + userDetailData?.address.slice(-5)}
-                </p>
+                <h2>{user.name}</h2>
+                <p className="add">{user?.address.slice(6, 11) + '...' + user?.address.slice(-5)}</p>
               </div>
             </div>
             {/* Follow */}
-            {userDetailData.id != selectedAccount.id && (
+            {user.id != selectedAccount.id && (
               <AuthorizedButton id="follow-button" onClick={isFollowed ? () => handleUnfollow() : () => handleFollow()}>
                 {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
               </AuthorizedButton>
             )}
 
             {/* TODO: implement in the future */}
-            {selectedAccountId == userDetailData.id && (
+            {selectedAccountId == user.id && (
               <div className="action-profile">
                 {/* <Button
                   style={{ marginRight: '1rem' }}
@@ -640,27 +624,28 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                 </Button> */}
                 <Button type="primary" className="outline-btn" onClick={() => uploadModal(false)}>
                   <CameraOutlined />
-                  Edit cover photo
+                  {intl.get('page.editCoverPhoto')}
                 </Button>
               </div>
             )}
           </div>
-          {selectedAccount.id == userDetailData.id && (
+          {selectedAccount.id == user.id && (
             <div className="description-profile">
               <Button onClick={() => openFollowModal(Follow.Followers)}>
-                {userDetailData.followersCount}
+                {user.followersCount}
                 <br />
                 {intl.get('general.followers')}
               </Button>
               <Button onClick={() => openFollowModal(Follow.Followees)}>
-                {userDetailData.followingsCount} <br /> {intl.get('general.followings')}
+                {user.followingsCount} <br /> {intl.get('general.followings')}
               </Button>
               <Button onClick={() => openFollowModal(Follow.FollowingPages)}>
-                {userDetailData.followingPagesCount} <br /> {intl.get('general.followingPages')}
+                {user.followingPagesCount} <br /> {intl.get('general.followingPages')}
               </Button>
             </div>
           )}
         </ProfileCardHeader>
+
         <ProfileContentContainer>
           <StyledMenu defaultActiveKey="post">
             <Tabs.TabPane tab="Post" key="post">

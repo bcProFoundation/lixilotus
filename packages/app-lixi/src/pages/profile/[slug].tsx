@@ -1,8 +1,6 @@
 import { PrismaClient } from '@bcpros/lixi-prisma';
 import MainLayout from '@components/Layout/MainLayout';
-import PageDetailLayout from '@components/Layout/PageDetailLayout';
 import ProfileDetail from '@components/Profile/ProfileDetail';
-import { useGetAccountByAddressQuery } from '@store/account/accounts.api';
 import { useCheckIfFollowAccountQuery } from '@store/follow/follows.api';
 import { SagaStore, wrapper } from '@store/store';
 import _ from 'lodash';
@@ -13,27 +11,22 @@ import { END } from 'redux-saga';
 const ProfileDetailPage = props => {
   const { userAddress, isMobile, accountAsString } = props;
   const account = JSON.parse(accountAsString);
-  const { currentData: currentDataGetAccount, isSuccess: isSuccessGetAccount } = useGetAccountByAddressQuery({
-    address: userAddress
-  });
   const { currentData: currentIsFollowedData, isSuccess: isSuccessCheckFollowed } = useCheckIfFollowAccountQuery({
     followingAccountId: account.id
   });
 
-  let user;
   let isFollowed;
-  if (isSuccessGetAccount && isSuccessCheckFollowed) {
-    user = currentDataGetAccount.getAccountByAddress;
+  if (isSuccessCheckFollowed && currentIsFollowedData) {
     isFollowed = currentIsFollowedData.checkIfFollowAccount;
   }
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `profile/${userAddress}`;
 
   return (
     <>
-      {isSuccessGetAccount && isSuccessCheckFollowed && (
+      {isSuccessCheckFollowed && (
         <>
           <NextSeo
-            title={user.name}
+            title={account.name}
             description="The lixi program send you a small gift ."
             canonical={canonicalUrl}
             openGraph={{
@@ -48,7 +41,7 @@ const ProfileDetailPage = props => {
               cardType: 'summary_large_image'
             }}
           />
-          <ProfileDetail user={user} isMobile={isMobile} checkIsFollowed={isFollowed} />
+          <ProfileDetail user={account} isMobile={isMobile} checkIsFollowed={isFollowed} />
         </>
       )}
     </>
@@ -70,6 +63,14 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   const result = await prisma.account.findFirst({
     where: {
       address: userAddress
+    },
+    include: {
+      avatar: {
+        include: { upload: true }
+      },
+      cover: {
+        include: { upload: true }
+      }
     }
   });
 

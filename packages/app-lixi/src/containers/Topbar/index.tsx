@@ -33,7 +33,7 @@ import * as _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
-import { fromSmallestDenomination } from 'src/utils/cashMethods';
+import { fromSmallestDenomination } from '@utils/cashMethods';
 import styled from 'styled-components';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import FollowSvg from '@assets/icons/follow.svg';
@@ -43,6 +43,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Link from 'next/link';
 import { getModals } from '@store/modal/selectors';
 import { showToast } from '@store/toast/actions';
+import { getSelectedWalletPath, getWalletStatus } from '@store/wallet';
 
 export type TopbarProps = {
   className?: string;
@@ -319,6 +320,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const authorization = useContext(AuthorizationContext);
   const askAuthorization = useAuthorization();
   const currentModal = useAppSelector(getModals);
+  const walletStatus = useAppSelector(getWalletStatus);
 
   useEffect(() => {
     const isMobile = width < 968 ? true : false;
@@ -464,9 +466,8 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
 
   const balanceAccount = (acc?: any) => {
     let balanceString;
-    let amount;
-    acc?.balance && acc?.balance > 0 ? (amount = acc?.balance) : (amount = 0);
-    balanceString = amount > 0 ? `~ ${fromSmallestDenomination(amount).toFixed(2)}` : `0`;
+    balanceString = fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0).toFixed(2)
+
     return balanceString;
   };
 
