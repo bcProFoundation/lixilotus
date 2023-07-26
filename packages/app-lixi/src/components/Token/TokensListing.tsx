@@ -638,7 +638,7 @@ const TokensListing = () => {
       </div>
 
       <Modal
-        className={`${currentTheme ? 'ant-modal-dark' : ''} modal-import-token`}
+        className={`${currentTheme === 'dark' ? 'ant-modal-dark' : ''} modal-import-token`}
         title={intl.get('token.importToken')}
         open={isModalVisible}
         onOk={handleSubmit(addTokenbyId)}

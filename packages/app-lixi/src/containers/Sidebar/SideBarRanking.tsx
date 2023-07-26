@@ -406,7 +406,7 @@ const SidebarRanking = () => {
             </div>
             <img
               className="animation-top-ranking"
-              src={`${currentTheme ? '/images/ico-fire-static.png' : '/images/ico-fire-animation.gif'}`}
+              src={`${currentTheme === 'dark' ? '/images/ico-fire-static.png' : '/images/ico-fire-animation.gif'}`}
               alt=""
             />
           </div>
@@ -474,7 +474,9 @@ const SidebarRanking = () => {
             </div>
             <img
               className="animation-top-ranking"
-              src={`${currentTheme ? '/images/ico-fire-heart-static.png' : '/images/ico-fire-heart-animation.gif'}`}
+              src={`${
+                currentTheme === 'dark' ? '/images/ico-fire-heart-static.png' : '/images/ico-fire-heart-animation.gif'
+              }`}
               alt=""
             />
           </div>
@@ -566,7 +568,7 @@ const SidebarRanking = () => {
       )}
 
       <StyledModal
-        className={`${currentTheme ? 'ant-modal-dark' : ''}`}
+        className={`${currentTheme === 'dark' ? 'ant-modal-dark' : ''}`}
         title="Import account"
         open={open}
         footer={null}

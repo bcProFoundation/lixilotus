@@ -355,6 +355,7 @@ export default {
   'settings.settings': 'Cài đặt',
 
   /* 05.Settings */
+  'settings.themes': 'Chủ đề',
   'settings.languages': 'Ngôn ngữ',
   'settings.general': 'Thiết lập chung',
   'settings.lockApp': 'Khóa ứng dụng',

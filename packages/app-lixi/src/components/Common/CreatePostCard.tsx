@@ -521,7 +521,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
       <WrapEditor>
         <Modal
-          className={`${currentTheme ? 'ant-modal-dark' : ''} custom-modal-editor`}
+          className={`${currentTheme === 'dark' ? 'ant-modal-dark' : ''} custom-modal-editor`}
           title="Create Post"
           open={enableEditor}
           footer={null}

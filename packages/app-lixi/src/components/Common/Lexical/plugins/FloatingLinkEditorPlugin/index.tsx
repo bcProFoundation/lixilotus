@@ -231,8 +231,8 @@ function FloatingLinkEditor({
   };
 
   const currentTheme = useAppSelector(getCurrentThemes);
-  const linkInputClassName = currentTheme ? 'link-input-dark' : 'link-input';
-  const styledFloatingClassName = currentTheme ? 'StyledFloatingDark' : 'StyledFloating';
+  const linkInputClassName = currentTheme === 'dark' ? 'link-input-dark' : 'link-input';
+  const styledFloatingClassName = currentTheme === 'dark' ? 'StyledFloatingDark' : 'StyledFloating';
 
   return (
     <StyledFloating className={styledFloatingClassName} ref={editorRef}>

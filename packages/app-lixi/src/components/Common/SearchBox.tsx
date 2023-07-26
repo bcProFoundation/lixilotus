@@ -413,7 +413,7 @@ const SearchBox = () => {
   return (
     <Container className="search-container">
       <Popover
-        overlayClassName={`${currentTheme ? 'popover-dark' : ''} popover-recent-search`}
+        overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} popover-recent-search`}
         trigger="click"
         arrow={false}
         content={recentContent}

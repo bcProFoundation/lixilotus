@@ -20,7 +20,7 @@ const ActionSheet = () => {
   const renderedActionSheet = currentActionSheet.map((actionSheetDescription, index) => {
     const { actionSheetType, actionSheetProps = {} } = actionSheetDescription;
     const actionSheetPropsClone = _.cloneDeep(actionSheetProps);
-    actionSheetPropsClone['classStyle'] = currentTheme ? 'action-sheet-dark' : '';
+    actionSheetPropsClone['classStyle'] = currentTheme === 'dark' ? 'action-sheet-dark' : '';
     let newActionSheetProps = { ...actionSheetPropsClone };
     const DrawerComponent = actionSheetComponentLookupTable[actionSheetType];
 

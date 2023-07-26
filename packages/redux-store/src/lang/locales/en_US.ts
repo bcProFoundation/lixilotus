@@ -355,6 +355,7 @@ export default {
   'claim.refreshSuccess': 'Refresh successfully',
 
   /* 05.Settings */
+  'settings.themes': 'Themes',
   'settings.languages': 'Languages',
   'settings.general': 'General Settings',
   'settings.lockApp': 'Lock App',

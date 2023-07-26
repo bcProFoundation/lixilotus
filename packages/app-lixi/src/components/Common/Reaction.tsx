@@ -331,7 +331,7 @@ const Reaction = ({ post, handleBurnForPost }: ReactionProps) => {
   const IconBurnHover = ({ burnValue, classStyle }: { burnValue?: number; classStyle?: string }) => (
     <SpaceIconBurnHover wrap size={5}>
       <Popover
-        overlayClassName={`${currentTheme ? 'popover-dark' : ''}`}
+        overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''}`}
         arrow={false}
         overlayInnerStyle={{
           display: 'flex',

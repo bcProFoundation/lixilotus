@@ -12,7 +12,7 @@ export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProp
     outline: none;
   }
   cursor: pointer;
-  padding: 12px 1rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,8 +25,8 @@ export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProp
   line-height: 16px;
   letter-spacing: 0.4px;
   .ico-img {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
   ${({ active, ...props }) =>
     active &&

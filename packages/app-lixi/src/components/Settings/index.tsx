@@ -16,9 +16,9 @@ import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getIsGlobalLoading } from '@store/loading/selectors';
 import { openModal } from '@store/modal/actions';
-import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
-import { getCurrentLocale } from '@store/settings/selectors';
-import { Alert, Collapse, Form, Input, Modal, Spin } from 'antd';
+import { setCurrentThemes, setInitIntlStatus, setIsSystemThemes, updateLocale } from '@store/settings/actions';
+import { getCurrentLocale, getCurrentThemes, getIsSystemThemes } from '@store/settings/selectors';
+import { Alert, Collapse, Form, Input, Modal, Select, Spin } from 'antd';
 import axios from 'axios';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -28,6 +28,7 @@ import { DeleteAccountModalProps } from './DeleteAccountModal';
 import LockAppSetting from './LockAppSetting';
 import PushNotificationSetting from './PushNotificationSetting';
 import { RenameAccountModalProps } from './RenameAccountModal';
+import useThemeDetector from '@local-hooks/useThemeDetector';
 
 const { Panel } = Collapse;
 
@@ -176,6 +177,9 @@ const SettingBar = styled.div`
   border: 1px solid rgba(128, 116, 124, 0.12);
   border-radius: var(--border-radius-primary);
   margin-bottom: 2rem;
+  h2 {
+    text-align: left;
+  }
   &.language-bar {
     margin-top: 2rem;
   }
@@ -248,6 +252,15 @@ const Settings: React.FC = () => {
   const dispatch = useAppDispatch();
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   const selectedAccount: Account | undefined = useAppSelector(getSelectedAccount);
+  const currentThemes = useAppSelector(getCurrentThemes);
+  const currentDeviceTheme = useThemeDetector();
+  const isSystemThemes = useAppSelector(getIsSystemThemes);
+
+  useEffect(() => {
+    if (isSystemThemes) {
+      dispatch(setCurrentThemes(currentDeviceTheme ? 'dark' : 'light'));
+    }
+  }, [currentDeviceTheme, currentThemes]);
 
   useEffect(() => {
     setOtherAccounts(_.filter(savedAccounts, acc => acc.id !== selectedAccount?.id));
@@ -302,6 +315,12 @@ const Settings: React.FC = () => {
     setFormData(p => ({ ...p, [name]: value }));
   };
 
+  const handleChangeThemes = selectTheme => {
+    const currentThemesSelect = selectTheme;
+    dispatch(setCurrentThemes(currentThemesSelect));
+    selectTheme === 'system' ? dispatch(setIsSystemThemes(true)) : dispatch(setIsSystemThemes(false));
+  };
+
   function setLocale(locales: any) {
     dispatch(setInitIntlStatus(false));
     dispatch(updateLocale(locales));
@@ -335,9 +354,7 @@ const Settings: React.FC = () => {
       <WrapperPage className="card setting-page">
         <Spin spinning={isLoading} indicator={CashLoadingIcon}>
           <SettingBar>
-            <h2 style={{ color: 'var(--color-primary)' }}>
-              <ThemedCopyOutlined /> {intl.get('settings.backupAccount')}
-            </h2>
+            <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.backupAccount')}</h2>
             <Alert
               style={{ marginBottom: '12px' }}
               description={intl.get('settings.backupAccountWarning')}
@@ -354,9 +371,7 @@ const Settings: React.FC = () => {
             </StyledCollapse>
           </SettingBar>
           <SettingBar>
-            <h2 style={{ color: 'var(--color-primary)' }}>
-              <ThemedWalletOutlined /> {intl.get('settings.manageAccounts')}
-            </h2>
+            <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.manageAccounts')}</h2>
             <PrimaryButton onClick={() => dispatch(generateAccount())}>
               <PlusSquareOutlined /> {intl.get('settings.newAccount')}
             </PrimaryButton>
@@ -431,30 +446,50 @@ const Settings: React.FC = () => {
                     </div>
                   </Panel>
                 </StyledCollapse>
-                <SettingBar className="language-bar">
-                  <h2 style={{ color: 'var(--color-primary)' }}>
-                    <ThemedSettingOutlined /> {intl.get('settings.languages')}
-                  </h2>
-                  <AntdFormWrapper>
-                    <LanguageSelectDropdown
-                      defaultValue={currentLocale}
-                      onChange={(locale: any) => {
-                        setLocale(locale);
-                      }}
-                    />
-                  </AntdFormWrapper>
-                </SettingBar>
-                <SettingBar>
-                  <h2 style={{ color: 'var(--color-primary)' }}>
-                    <ThemedSettingOutlined /> {intl.get('settings.general')}
-                  </h2>
-                  <LockAppSetting />
-                  <PushNotificationSetting />
-                </SettingBar>
                 {/* TODO: Implement in the future */}
                 {/* <Button href={getOauth2URL()}>Login</Button> */}
               </>
             )}
+          </SettingBar>
+          <SettingBar className="language-bar">
+            <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.languages')}</h2>
+            <AntdFormWrapper>
+              <LanguageSelectDropdown
+                defaultValue={currentLocale}
+                onChange={(locale: any) => {
+                  setLocale(locale);
+                }}
+              />
+            </AntdFormWrapper>
+          </SettingBar>
+          <SettingBar className="themes-bar">
+            <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.themes')}</h2>
+            <AntdFormWrapper>
+              <Select
+                defaultValue={isSystemThemes ? 'system' : currentThemes}
+                style={{ width: '100%' }}
+                onChange={handleChangeThemes}
+                options={[
+                  {
+                    value: 'light',
+                    label: 'Light'
+                  },
+                  {
+                    value: 'dark',
+                    label: 'Dark'
+                  },
+                  {
+                    value: 'system',
+                    label: 'System Default'
+                  }
+                ]}
+              />
+            </AntdFormWrapper>
+          </SettingBar>
+          <SettingBar>
+            <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.general')}</h2>
+            <LockAppSetting />
+            <PushNotificationSetting />
           </SettingBar>
         </Spin>
       </WrapperPage>
