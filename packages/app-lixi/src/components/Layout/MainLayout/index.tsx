@@ -18,7 +18,7 @@ import { setAccountInfoTemp, setTransactionReady } from '@store/account/actions'
 import { getIsGlobalLoading } from '@store/loading/selectors';
 import { fetchNotifications } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
-import { loadLocale, setDarkTheme } from '@store/settings/actions';
+import { loadLocale } from '@store/settings/actions';
 import { getCurrentLocale, getCurrentThemes, getIntlInitStatus } from '@store/settings/selectors';
 import { getSlpBalancesAndUtxos } from '@store/wallet';
 import { Header } from 'antd/lib/layout/layout';
@@ -328,7 +328,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
       <GlobalStyle />
       {intlInitDone && (
         <Spin spinning={loading} indicator={LoadingIcon}>
-          <LixiApp className={currentTheme ? 'dark' : ''}>
+          <LixiApp className={currentTheme === 'dark' ? 'dark' : ''}>
             <Layout>
               <AppBody>
                 <ModalManager />
