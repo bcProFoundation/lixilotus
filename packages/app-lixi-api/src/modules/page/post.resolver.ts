@@ -1014,6 +1014,7 @@ export class PostResolver {
         additionalData: {
           senderName: account.name,
           senderAddress: account.address,
+          senderAvatar: account.avatar,
           pageName: savedPost?.page?.name
         }
       };

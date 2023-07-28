@@ -209,7 +209,9 @@ export class FollowResolver {
         level: NotificationLevel.INFO,
         url: '/profile/' + account.address,
         additionalData: {
-          senderName: account.name
+          senderName: account.name,
+          senderAddress: account.address,
+          senderAvatar: account.avatar
         }
       };
 
@@ -394,6 +396,8 @@ export class FollowResolver {
           url: '/profile/' + account.address,
           additionalData: {
             senderName: account.name,
+            senderAddress: account.address,
+            senderAvatar: account.avatar,
             pageName: recipient.pages.find(page => page.id == pageId)?.name ?? undefined
           }
         };
@@ -523,11 +527,11 @@ export class FollowResolver {
   }
 
   @ResolveField('avatar', () => String)
-  async avatar(@Parent() page: Page) {
-    const uploadDetail = await this.prisma.page
+  async avatar(@Parent() account: Account) {
+    const uploadDetail = await this.prisma.account
       .findUnique({
         where: {
-          id: page.id
+          id: account.id
         }
       })
       .avatar({
@@ -539,33 +543,8 @@ export class FollowResolver {
     if (_.isNil(uploadDetail)) return null;
 
     const { upload } = uploadDetail;
-    const url = upload.bucket
-      ? `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/xsmall`
-      : upload.url;
-
-    return url;
-  }
-
-  @ResolveField('cover', () => String)
-  async cover(@Parent() page: Page) {
-    const uploadDetail = await this.prisma.page
-      .findUnique({
-        where: {
-          id: page.id
-        }
-      })
-      .cover({
-        include: {
-          upload: true
-        }
-      });
-
-    if (_.isNil(uploadDetail)) return null;
-
-    const { upload } = uploadDetail;
-    const url = upload.bucket
-      ? `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/xsmall`
-      : upload.url;
+    const cfUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
+    const url = upload.cfImageId ? cfUrl : upload.url;
 
     return url;
   }

@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Account } from '@prisma/client';
 import { TokenSigner, TokenVerifier, decodeToken } from 'jsontokens';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
@@ -7,6 +6,7 @@ import { VError } from 'verror';
 // import * as wif from 'wif';
 import { hashMnemonic } from '../../utils/encryptionMethods';
 import { WalletService } from '../wallet/wallet.service';
+import { Account } from '@bcpros/lixi-models';
 const wif = require('wif');
 
 @Injectable()
@@ -71,12 +71,31 @@ export class AuthService {
         }
       });
 
+      const avatar = await this.prisma.account
+        .findUnique({
+          where: {
+            id: id
+          }
+        })
+        .avatar({
+          include: {
+            upload: true
+          }
+        });
+
+      let url;
+      if (avatar) {
+        const { upload } = avatar;
+        const cfUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
+        url = upload.cfImageId ? cfUrl : upload.url;
+      }
+
       if (!account) throw new Error('Invalid account');
 
       const verified = await new TokenVerifier('ES256K', account.publicKey).verifyAsync(token);
 
       if (verified) {
-        return account;
+        return { ...account, avatar: url ?? undefined };
       }
     } catch (err) {
       throw new Error('Invalid account');

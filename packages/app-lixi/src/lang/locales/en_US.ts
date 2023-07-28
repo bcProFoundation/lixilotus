@@ -117,6 +117,7 @@ export default {
   'general.postFilter': 'Followed Posts: ',
   'general.dana': ' Dana',
   'general.support': 'Support',
+  'general.all': 'All',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',

@@ -237,7 +237,7 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
             ) : (
               <>
                 <Button type="primary" className="no-border-btn" onClick={onClickMenu}>
-                  All
+                  {intl.get('general.all')}
                 </Button>
               </>
             )}
@@ -261,10 +261,25 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
                         key={notification.id}
                         className={`${notification.readAt !== null ? 'readed' : 'un-read'} className`}
                         style={{ borderRadius: '0px' }}
+                        avatar={
+                          <div
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => router.push(`/profile/${notification.additionalData.senderAddress}`)}
+                          >
+                            <AvatarUser
+                              icon={notification.additionalData.senderAvatar}
+                              name={
+                                !!notification &&
+                                !!notification.additionalData &&
+                                notification.additionalData.senderName
+                              }
+                              isMarginRight={false}
+                            />
+                          </div>
+                        }
                         author={
                           <StyledAuthor>
                             <StyledTextLeft></StyledTextLeft>
-
                             <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
                           </StyledAuthor>
                         }
@@ -292,10 +307,12 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
                       </StyledAuthor>
                     }
                     avatar={
-                      <div style={{ cursor: 'pointer' }}>
-                        {' '}
-                        {/* onClick={() => router.push(`/profile/${notification.additionalData.senderName}`)} */}
+                      <div
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => router.push(`/profile/${notification.additionalData.senderAddress}`)}
+                      >
                         <AvatarUser
+                          icon={notification.additionalData.senderAvatar}
                           name={
                             !!notification && !!notification.additionalData && notification.additionalData.senderName
                           }
@@ -339,10 +356,15 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
                       </StyledAuthor>
                     }
                     avatar={
-                      <div style={{ cursor: 'pointer' }}>
-                        {' '}
-                        {/* onClick={() => router.push(`/profile/${notification.additionalData.senderName}`)} */}
-                        <AvatarUser name={notification.additionalData.senderName} isMarginRight={false} />
+                      <div
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => router.push(`/profile/${notification.additionalData.senderAddress}`)}
+                      >
+                        <AvatarUser
+                          icon={notification.additionalData.senderAvatar}
+                          name={notification.additionalData.senderName}
+                          isMarginRight={false}
+                        />
                       </div>
                     }
                     content={

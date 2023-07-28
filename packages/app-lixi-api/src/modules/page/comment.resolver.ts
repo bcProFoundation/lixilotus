@@ -238,13 +238,15 @@ export class CommentResolver {
         let commentToGiveData;
         const commentToPostData = {
           senderName: account.name,
-          senderAddress: account.address
+          senderAddress: account.address,
+          senderAvatar: account.avatar
         };
 
         if (tipHex) {
           commentToGiveData = {
             senderName: account.name,
             senderAddress: account.address,
+            senderAvatar: account.avatar,
             xpiGive: tipValue
           };
         }
@@ -256,6 +258,7 @@ export class CommentResolver {
           commentToGiveData = {
             senderName: account.name,
             senderAddress: account.address,
+            senderAvatar: account.avatar,
             xpiGive: value
           };
         }

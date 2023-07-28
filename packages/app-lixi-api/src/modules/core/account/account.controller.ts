@@ -160,6 +160,9 @@ export class AccountController {
           address: {
             in: accountAddresses
           }
+        },
+        include: {
+          avatar: { include: { upload: true } }
         }
       });
 

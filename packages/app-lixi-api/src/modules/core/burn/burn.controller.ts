@@ -279,6 +279,13 @@ export class BurnController {
       const sender = await this.prisma.account.findFirst({
         where: {
           address: accountAddress
+        },
+        include: {
+          avatar: {
+            include: {
+              upload: true
+            }
+          }
         }
       });
       if (!sender) {
@@ -345,7 +352,13 @@ export class BurnController {
         let fee = Number(command.burnValue) * 0.04;
 
         // create Notifications Burn
-        const calcFee = await this.notificationService.calcFee(post, command);
+        let url;
+        if (sender.avatar) {
+          const { upload } = sender.avatar;
+          const cfUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
+          url = upload.cfImageId ? cfUrl : upload.url;
+        }
+
         const createNotifBurnAndTip = {
           senderId: sender.id,
           recipientId: post.page ? post.page.pageAccountId : (post?.postAccountId as number),
@@ -362,6 +375,7 @@ export class BurnController {
           additionalData: {
             senderName: sender.name,
             senderAddress: sender.address,
+            senderAvatar: url,
             pageName: post.page && post.page.name,
             burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
             burnForType: burnForTypeString.toLowerCase(),

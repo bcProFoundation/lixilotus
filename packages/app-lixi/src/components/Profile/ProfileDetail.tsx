@@ -412,7 +412,6 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsProfile);
-  const selectedAccount = useAppSelector(getSelectedAccount);
   const [isFollowed, setIsFollowed] = useState<boolean>(checkIsFollowed);
   const [listsPicture, setListsPicture] = useState<any>([]);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
@@ -534,7 +533,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   const handleFollow = async () => {
     const createFollowAccountInput: CreateFollowAccountInput = {
       followingAccountId: parseInt(user.id),
-      followerAccountId: selectedAccount.id
+      followerAccountId: selectedAccountId
     };
 
     await createFollowAccountTrigger({ input: createFollowAccountInput });
@@ -543,14 +542,14 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   const handleUnfollow = async () => {
     const deleteFollowAccountInput: DeleteFollowAccountInput = {
       followingAccountId: parseInt(user.id),
-      followerAccountId: selectedAccount.id
+      followerAccountId: selectedAccountId
     };
 
     await deleteFollowAccountTrigger({ input: deleteFollowAccountInput });
   };
 
   const openFollowModal = (type: Follow) => {
-    dispatch(openModal('FollowModal', { accountId: selectedAccount.id, type: type }));
+    dispatch(openModal('FollowModal', { accountId: selectedAccountId, type: type }));
   };
 
   const uploadModal = (isAvatar: boolean) => {
@@ -604,7 +603,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
               </div>
             </div>
             {/* Follow */}
-            {user.id != selectedAccount.id && (
+            {user.id != selectedAccountId && (
               <AuthorizedButton id="follow-button" onClick={isFollowed ? () => handleUnfollow() : () => handleFollow()}>
                 {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
               </AuthorizedButton>
@@ -629,7 +628,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
               </div>
             )}
           </div>
-          {selectedAccount.id == user.id && (
+          {selectedAccountId == user.id && (
             <div className="description-profile">
               <Button onClick={() => openFollowModal(Follow.Followers)}>
                 {user.followersCount}
