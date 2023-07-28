@@ -25,7 +25,7 @@ const ActionSheet = () => {
     const DrawerComponent = actionSheetComponentLookupTable[actionSheetType];
 
     return (
-      <ConfigProvider theme={currentTheme ? darkTheme : lightTheme}>
+      <ConfigProvider theme={currentTheme === 'dark' ? darkTheme : lightTheme}>
         <DrawerComponent {...newActionSheetProps} key={actionSheetType + index} />
       </ConfigProvider>
     );

@@ -72,7 +72,7 @@ const ToastNotificationManage = () => {
         const newConfig = _.cloneDeep(config);
         newConfig.placement = 'top';
         newConfig.className = `custom-toast-notification ${
-          currentTheme ? 'custom-toast-notification-dark' : 'custom-toast-notification-light'
+          currentTheme === 'dark' ? 'custom-toast-notification-dark' : 'custom-toast-notification-light'
         }`;
         newConfig.icon = getIconToast(type);
         newConfig.message = newConfig?.message || intl.get(`toast.${type}`);

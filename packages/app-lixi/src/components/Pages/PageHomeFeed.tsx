@@ -26,6 +26,9 @@ const StyledPageFeed = styled.div`
     font-size: 20px;
     margin-bottom: 1rem;
     text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .ant-btn {
     display: flex;
@@ -99,7 +102,6 @@ const YourPageContainer = styled.div`
   h2 {
     button {
       padding: 0.5rem 1rem !important;
-      font-size: 14pt !important;
     }
   }
 `;

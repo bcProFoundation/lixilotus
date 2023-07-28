@@ -18,8 +18,8 @@ import { setAccountInfoTemp, setTransactionReady } from '@store/account/actions'
 import { getIsGlobalLoading } from '@store/loading/selectors';
 import { fetchNotifications } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
-import { loadLocale } from '@store/settings/actions';
-import { getCurrentLocale, getCurrentThemes, getIntlInitStatus } from '@store/settings/selectors';
+import { loadLocale, setCurrentThemes } from '@store/settings/actions';
+import { getCurrentLocale, getCurrentThemes, getIntlInitStatus, getIsSystemThemes } from '@store/settings/selectors';
 import { getSlpBalancesAndUtxos } from '@store/wallet';
 import { Header } from 'antd/lib/layout/layout';
 import { injectStore } from 'src/utils/axiosClient';
@@ -238,6 +238,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const [visible, setVisible] = useState(true);
   const { width } = useWindowDimensions();
   const currentDeviceTheme = useThemeDetector();
+  const isSystemThemes = useAppSelector(getIsSystemThemes);
 
   let userInfo;
   const { currentData: currentDataGetAccount, isSuccess: isSuccessGetAccount } = useGetAccountByAddressQuery({
@@ -247,10 +248,11 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   if (isSuccessGetAccount) userInfo = currentDataGetAccount?.getAccountByAddress;
   dispatch(setAccountInfoTemp(userInfo));
 
-  // TODO: feature auto change theme
-  // useEffect(() => {
-  //   dispatch(setDarkTheme(currentDeviceTheme));
-  // }, [currentDeviceTheme]);
+  useEffect(() => {
+    if (isSystemThemes) {
+      dispatch(setCurrentThemes(currentDeviceTheme ? 'dark' : 'light'));
+    }
+  }, [currentDeviceTheme, currentTheme]);
 
   useEffect(() => {
     const isMobile = width < 960 ? true : false;
