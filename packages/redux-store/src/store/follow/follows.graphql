@@ -139,6 +139,7 @@ fragment FollowPageFields on FollowPage {
     id
     name
     avatar
+    cover
     category {
       id
       name

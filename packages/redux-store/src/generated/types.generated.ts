@@ -247,7 +247,6 @@ export type DeleteFollowTokenInput = {
 export type FollowAccount = {
   __typename?: 'FollowAccount';
   avatar: Scalars['String'];
-  cover: Scalars['String'];
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   followerAccount?: Maybe<Account>;
