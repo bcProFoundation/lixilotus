@@ -1198,7 +1198,7 @@ const SidebarShortcut = () => {
                     style={{ margin: '5px', cursor: 'pointer' }}
                     width={22}
                     height={22}
-                    src="/images/ico-hambuger.svg"
+                    src="/images/ico-list-bullet_2.svg"
                     alt=""
                   />
                 </h3>
