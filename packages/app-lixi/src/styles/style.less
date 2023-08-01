@@ -362,6 +362,7 @@ code {
   --text-color-on-dark: #e1e1e1;
   --border-color-dark-base: #70818a61;
 
+  --filter-svg-white-color: invert(100%) sepia(0%) saturate(7450%) hue-rotate(352deg) brightness(113%) contrast(100%);
   --filter-svg-gray-color: invert(73%) sepia(12%) saturate(19%) hue-rotate(251deg) brightness(92%) contrast(85%);
   --filter-color-primary: invert(28%) sepia(34%) saturate(3619%) hue-rotate(276deg) brightness(83%) contrast(99%);
   --border-radius-primary: 5px;
@@ -750,7 +751,7 @@ code {
 
   &.no-border-btn {
     color: var(--color-primary);
-    background: #ffffff;
+    background: transparent;
     border: 0;
     box-shadow: none;
 
@@ -1353,6 +1354,12 @@ code {
   }
 
   .ant-btn-primary {
+    .anticon-custom {
+      svg {
+        filter: var(--filter-svg-white-color) !important;
+      }
+    }
+
     &:disabled {
       background-color: rgba(30, 26, 29, 0.12);
       color: var(--text-color-on-dark) !important;
@@ -1503,6 +1510,11 @@ code {
   }
 
   .ant-btn-primary {
+    .anticon-custom {
+      svg {
+        filter: var(--filter-svg-white-color) !important;
+      }
+    }
     &:disabled {
       background-color: rgba(30, 26, 29, 0.12);
       color: var(--text-color-on-dark);
@@ -1891,6 +1903,11 @@ code {
   }
 
   .ant-btn-primary {
+    .anticon-custom {
+      svg {
+        filter: var(--filter-svg-white-color) !important;
+      }
+    }
     &:disabled {
       background-color: rgba(30, 26, 29, 0.12);
       color: var(--text-color-on-dark);
@@ -2207,6 +2224,26 @@ code {
 
       .ant-comment-content-detail {
         color: var(--text-color-on-dark);
+      }
+    }
+
+    .images-post {
+      background: var(--bg-color-dark-item);
+      .react-photo-gallery--gallery > div {
+        background: var(--bg-color-dark-item) !important;
+      }
+      .ant-image {
+        width: 100%;
+        height: 100%;
+        img {
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+      &.images-post-mobile {
+        img {
+          border-color: var(--border-color-dark-base) !important;
+        }
       }
     }
 

@@ -28,7 +28,8 @@ export default {
     'Trang là không gian nơi mọi người có thể kết nối công khai với doanh nghiệp, thương hiệu cá nhân hoặc tổ chức của bạn. Bạn có thể làm những việc như giới thiệu sản phẩm và dịch vụ, quyên góp.',
   'text.createPageName':
     'Sử dụng tên doanh nghiệp, thương hiệu hoặc tổ chức của bạn hoặc tên giải thích nội dung của Trang.',
-  'text.createPageCategory': 'Chọn một danh mục mô tả loại hình kinh doanh, tổ chức hoặc chủ đề mà Trang đại diện.',
+  'text.createPageCategory':
+    'Chọn một danh mục mô tả loại hình kinh doanh, tổ chức hoặc chủ đề mà Trang đại diện.',
   'text.createPageDescription':
     'Viết về hoạt động kinh doanh của bạn, các dịch vụ bạn cung cấp hoặc mục đích của Trang.',
   'text.post': 'bài viết',
@@ -92,7 +93,8 @@ export default {
   'general.subTitleEditPage': 'Thay đổi thông tin trang của bạn',
   'general.subTitleClaimed': 'Chi tiết lì xì đâ nhận',
   'general.notFoundTitle': 'Opp! Không tìm thấy trang',
-  'general.notFoundDescription': 'Xin lỗi, Chúng tôi không thể tìm thấy trang bạn đang tìm',
+  'general.notFoundDescription':
+    'Xin lỗi, Chúng tôi không thể tìm thấy trang bạn đang tìm',
   'general.goBackToHome': 'Trở về trang chủ',
   'general.searchResults': 'Kết quả tìm kiếm của "{text}"',
   'general.post': 'Đăng',
@@ -161,7 +163,8 @@ export default {
   'account.familyFriendly': 'Gia đình cùng nhận Lì xì',
   'account.sub-lixi': 'Lì xì phụ',
   'account.couldNotFetchAccount': 'Không thể làm mới tài khoản.',
-  'account.unableGetAccountFromServer': 'Không thể lấy thông tin tài khoản từ máy chủ',
+  'account.unableGetAccountFromServer':
+    'Không thể lấy thông tin tài khoản từ máy chủ',
   'account.couldNotPostAccount': 'Không thể cập nhật thông tin tài khoản.',
   'account.createAccountSuccessful': 'Tạo tài khoản thành công.',
   'account.unableToCreateServer': 'Máy chủ không thể thực hiện tạo tài khoản.',
@@ -171,12 +174,15 @@ export default {
   'account.unableToChangeLocaleAccount': 'Đổi ngôn ngữ không thành công.',
   'account.unableToDelete': 'Không thể xóa tài khoản.',
   'account.unableToRefresh': 'Không thể làm mới danh sách Lì xì.',
-  'account.renameFailed': 'Đổi tên tài khoản không thành công. Hãy thử lại với một tên khác.',
+  'account.renameFailed':
+    'Đổi tên tài khoản không thành công. Hãy thử lại với một tên khác.',
   'account.deleteFailed': 'Xóa tài khoản không thành công.',
-  'account.accountRenamedSuccess': 'Tài khoản được sửa lại thành {accountName}.',
+  'account.accountRenamedSuccess':
+    'Tài khoản được sửa lại thành {accountName}.',
   'account.accountDeleteSuccess': 'Xóa tài khoản thành công.',
   'account.accountImportSuccess': 'Tài khoản được nhập thành công.',
-  'account.accountChangeLocaleSuccess': 'Ngôn ngữ được cập nhật thành {language}.',
+  'account.accountChangeLocaleSuccess':
+    'Ngôn ngữ được cập nhật thành {language}.',
   'account.login': 'Đăng nhập',
   'account.register': 'Đăng ký',
   'account.verify': 'Xác thực',
@@ -188,7 +194,8 @@ export default {
   'account.repeatPassword': 'Vui lòng nhập lại mật khẩu ',
   'account.nameRequired': 'Vui lòng nhập tên đăng nhập',
   'account.verificationCodeRequired': 'Vui lòng nhập mã xác thực',
-  'account.verificationCodeSent': 'Mã xác thực đã được gửi tới <b>{email}</b>. Vui lòng kiểm tra email của bạn !',
+  'account.verificationCodeSent':
+    'Mã xác thực đã được gửi tới <b>{email}</b>. Vui lòng kiểm tra email của bạn !',
   'account.transactionHistory': 'Lịch sử giao dịch',
   'account.loginSuccess': 'Đăng nhập thành công!',
   'account.loginFailed': 'Đăng nhập thất bại',
@@ -208,7 +215,7 @@ export default {
   'account.insufficientBurningFunds': 'Ví không còn đủ số dư để đốt tiếp',
   'account.burning': 'Đang đốt',
   'account.burningList': 'Đang đốt {burnForType} với {burnValue} XPI',
-
+  'account.edit': 'Chỉnh sửa trang cá nhân',
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',
   'lixi.sectionCreateLixi': 'Tạo lixi mới',
@@ -225,7 +232,8 @@ export default {
   'lixi.amount': 'Tổng cộng: {newLixiAmount}',
   'lixi.totalAmountRequire': 'Tổng số lượng cần: {newLixiAmount}',
   'lixi.NumberOfSub': 'Số lượng bao Lì xì phụ: {newNumberOfSubLixi}',
-  'lixi.numberLixiPerPackage': 'Số lượng bao lì xì phụ trong mỗi gói: {newNumberLixiPerPackage}',
+  'lixi.numberLixiPerPackage':
+    'Số lượng bao lì xì phụ trong mỗi gói: {newNumberLixiPerPackage}',
   'lixi.package': 'Package',
   'lixi.maxClaim': 'Số lần nhận tối đa: {newMaxClaim}',
   'lixi.country': 'Quốc gia: ',
@@ -297,7 +305,8 @@ export default {
   'lixi.withdrawSuccess': 'Rút Lì xì thành công.',
   'lixi.renameSuccess': 'Lì xì đã được đổi tên thành {lixiName}',
   'lixi.registerSuccess': 'Đăng ký pack Lì xì thành công',
-  'lixi.renameFailed': 'Đổi tên không thành công. Hãy thử lại với một tên khác.',
+  'lixi.renameFailed':
+    'Đổi tên không thành công. Hãy thử lại với một tên khác.',
   'lixi.isNFTEnabled': 'Kích hoạt NFT',
   'lixi.isCharity': 'Quỹ từ thiện',
   'lixi.optionNFTEnabled': 'Tùy chọn: Kích hoạt NFT',
@@ -316,9 +325,12 @@ export default {
   'NetworkType.SingleIP': 'Một địa chỉ duy nhất',
   'NetworkType.FamilyFriendly': 'Gia đình thân thiêt',
   'NetworkType.NoWifiRestriction': 'Không giới hạn',
-  'NetworkType.SingleIPInfo': 'Chỉ một người dùng có thể nhận Lixi trong mạng wifi',
-  'NetworkType.FamilyFriendlyInfo': 'Tối đa người dùng có thể nhận Lixi trong mạng wifi',
-  'NetworkType.NoWifiRestrictionInfo': 'Không giới hạn người dùng có thể nhận Lixi trong mạng wifi',
+  'NetworkType.SingleIPInfo':
+    'Chỉ một người dùng có thể nhận Lixi trong mạng wifi',
+  'NetworkType.FamilyFriendlyInfo':
+    'Tối đa người dùng có thể nhận Lixi trong mạng wifi',
+  'NetworkType.NoWifiRestrictionInfo':
+    'Không giới hạn người dùng có thể nhận Lixi trong mạng wifi',
   'lixi.detail': 'Chi tiết lì xì',
   'lixi.accountLixi': 'tài khoản của lì xì',
   'lixi.balance': 'Số dư',
@@ -370,13 +382,17 @@ export default {
   'settings.revealPhrase': 'Nhấp vào để hiển thị cụm từ bảo mật gốc',
   'settings.backupAccountWarning':
     'Cụm từ bảo mật gốc là chìa khóa duy nhất để bạn lấy lại ví. Viết ra và lưu cụm từ bảo mật gốc ở nơi an toàn.',
-  'settings.backupAccountHint': 'Sao chép và dán cụm từ bảo mật của bạn bên dưới để khôi phục tài khoản hiện có',
-  'settings.accountLengthMessage': 'Tên tài khoản phải là một chuỗi dài từ 1 đến 24 ký tự',
+  'settings.backupAccountHint':
+    'Sao chép và dán cụm từ bảo mật của bạn bên dưới để khôi phục tài khoản hiện có',
+  'settings.accountLengthMessage':
+    'Tên tài khoản phải là một chuỗi dài từ 1 đến 24 ký tự',
   'settings.enterAccountName': 'Nhập tên tài khoản',
   'settings.renameAccount': 'Đổi tên tài khoản',
   'settings.deleteAccountConfirm': 'Nhập "delete {account}" để xác nhận',
-  'settings.deleteAccountConfirmMessage': 'Bạn có chắc muốn xóa tài khoản "{account}"?',
-  'settings.yourConfirmationPhraseMustExact': 'Bạn phải nhập chính xác cụm từ xác nhận',
+  'settings.deleteAccountConfirmMessage':
+    'Bạn có chắc muốn xóa tài khoản "{account}"?',
+  'settings.yourConfirmationPhraseMustExact':
+    'Bạn phải nhập chính xác cụm từ xác nhận',
   'settings.en': 'Tiếng Anh',
   'settings.vi': 'Tiếng Việt',
   'settings.allowNotification': 'Cho phép thông báo cho',
@@ -384,13 +400,15 @@ export default {
   'settings.thenAllowNotification': 'Sau đó cho phép thông báo cho',
   'settings.lixilotusOnBrower': 'lixilotus.com trên trình duyệt của bạn',
   'settings.enableNotification': 'Bật thông báo',
-  'settings.grantPermisson': 'Bạn sẽ được nhắc cấp quyền cho thông báo, Vui lòng nhấp vào "Cho phép"',
+  'settings.grantPermisson':
+    'Bạn sẽ được nhắc cấp quyền cho thông báo, Vui lòng nhấp vào "Cho phép"',
   'settings.ok': 'OK',
   'settings.permisionError': 'Lỗi - Không có quyền truy cập',
   'settings.blockedDevice': 'Bị khóa bởi thiết bị của bạn',
   'settings.gotIt': 'Tôi biết rồi!',
   'settings.howEnableNotification': 'Làm thế nào để bật thông báo',
-  'settings.deviceSupport': 'Tính năng này hoạt động tốt nhất với Chrome hoặc Brave trên thiết bị Android',
+  'settings.deviceSupport':
+    'Tính năng này hoạt động tốt nhất với Chrome hoặc Brave trên thiết bị Android',
   'settings.twoStepEnableNotification': '2 bước để bật thông báo',
 
   /* 06.Countries */
@@ -412,8 +430,10 @@ export default {
   'onboarding.welcomeToLotus': 'Chào mừng bạn đến với Lixi!',
   'onboarding.lixiLotusIntroduce1':
     'Lixi là một ví sử dụng tiền mã hóa Lotus hoạt động trên trình duyệt web với mã nguồn mở không bị giám sát. ',
-  'onboarding.lixiLotusIntroduce2': 'Lixi cho phép bạn cho đi Lotus một cách dễ dàng.',
-  'onboarding.lixiLotusIntroduce3': 'Để bắt đầu, hãy cài đặt Lixi vào thiết bị của bạn theo',
+  'onboarding.lixiLotusIntroduce2':
+    'Lixi cho phép bạn cho đi Lotus một cách dễ dàng.',
+  'onboarding.lixiLotusIntroduce3':
+    'Để bắt đầu, hãy cài đặt Lixi vào thiết bị của bạn theo',
   'onboarding.lixiLotusIntroduce4': 'hướng dẫn',
   'onboarding.maybeLater': 'Để sau',
   'onboarding.registration': 'Tài khoản',
@@ -439,7 +459,8 @@ export default {
 
   /* 12.Send */
   'send.unableToSend': 'Không thể gửi thành công',
-  'send.sendAmountSmallerThanDust': 'Số tiền gửi nhỏ hơn số tiền gửi tối thiểu"',
+  'send.sendAmountSmallerThanDust':
+    'Số tiền gửi nhỏ hơn số tiền gửi tối thiểu"',
   'send.utxoEmpty': 'Danh sách UTXO trống',
   'send.unableSendTransaction': 'Không thể gửi giao dịch',
   'send.insufficientFund': 'Số dư tài khoản không đủ',
@@ -454,17 +475,22 @@ export default {
   'send.canNotEncryptMessage': 'Không thể mã hoá tin nhắn',
   'send.addressNoOutgoingTrans':
     'Địa chỉ này không có giao dịch gửi đi trước đó, không thể gửi tin nhắn tới địa chỉ này',
-  'send.newAddress': 'Địa chỉ này mới được khởi tạo, hãy kiểm tra kỹ trước khi thực hiện giao dịch với số tiền lớn',
+  'send.newAddress':
+    'Địa chỉ này mới được khởi tạo, hãy kiểm tra kỹ trước khi thực hiện giao dịch với số tiền lớn',
   'send.canNotSendToYourSelf': 'Không thể tự gửi cho bản thân!',
   'send.calcMaxError': 'Không thể tính số tiền tối đa bạn có thể gửi',
-  'send.sendModalTitle': 'Bạn có muốn gửi số tiền {value} {ticker} tới {address}?',
+  'send.sendModalTitle':
+    'Bạn có muốn gửi số tiền {value} {ticker} tới {address}?',
   'send.queryString':
     'Bạn đang gửi giao dịch với định dạng đặc biệt "{queryStringText}." Chỉ có tham số "amount", với đồng tiền {currency} satoshis, được hỗ trợ.',
   'send.optionalPrivateMessage': 'Tin nhắn riêng tư',
   /* 12.Zero balance header */
-  'zeroBalanceHeader.noBalance': 'Hiện tại bạn đang có {ticker} trong tài khoản',
-  'zeroBalanceHeader.deposit': 'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch',
-  'send.syntaxError': 'Lỗi cú pháp. XPI để tặng không được nhỏ hơn hoặc bằng 0 ',
+  'zeroBalanceHeader.noBalance':
+    'Hiện tại bạn đang có {ticker} trong tài khoản',
+  'zeroBalanceHeader.deposit':
+    'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch',
+  'send.syntaxError':
+    'Lỗi cú pháp. XPI để tặng không được nhỏ hơn hoặc bằng 0 ',
   'send.sendXpi': ' Gửi',
 
   /* 13.Page */
@@ -664,5 +690,5 @@ export default {
   'toast.error': 'Lỗi',
   'toast.info': 'Thông tin',
   'toast.open': 'Mở',
-  'toast.burning': 'Đang đốt...'
+  'toast.burning': 'Đang đốt...',
 };

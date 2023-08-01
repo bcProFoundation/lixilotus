@@ -238,7 +238,7 @@ const ClaimComponent = ({ isClaimFromAccount, claimCodeFromURL }: ClaimProps) =>
                   }
                   inputProps={{
                     onChange: e => handleClaimCodeChange(e),
-                    value: currentClaimCode
+                    defaultValue: currentClaimCode
                   }}
                 ></FormItemClaimCodeXpiInput>
                 <div
@@ -268,7 +268,7 @@ const ClaimComponent = ({ isClaimFromAccount, claimCodeFromURL }: ClaimProps) =>
             }
             inputProps={{
               onChange: e => handleClaimCodeChange(e),
-              value: currentClaimCode
+              defaultValue: currentClaimCode
             }}
           ></FormItemClaimCodeXpiInput>
           <PrimaryButton onClick={handleOnClick}>{intl.get('claim.claim')}</PrimaryButton>

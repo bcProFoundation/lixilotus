@@ -44,6 +44,7 @@ import CommentListItem, { CommentItem } from './CommentListItem';
 import { EditPostModalProps } from './EditPostModalPopup';
 import { OPTION_BURN_VALUE } from '@bcpros/lixi-models/constants';
 import PostTranslate from './PostTranslate';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -193,6 +194,39 @@ const PostContentDetail = styled.div`
       max-height: 100vh;
       object-fit: contain;
     }
+    &.images-post-mobile {
+      display: flex;
+      overflow-x: auto;
+      gap: 5px;
+      -ms-overflow-style: none; // Internet Explorer 10+
+      scrollbar-width: none; // Firefox
+      ::-webkit-scrollbar {
+        display: none; // Safari and Chrome
+      }
+      .ant-image {
+        width: auto !important;
+        height: auto !important;
+      }
+      img {
+        width: auto;
+        height: 100% !important;
+        max-width: 50vw;
+        max-height: 60vh;
+        object-fit: cover !important;
+        border-radius: var(--border-radius-primary);
+        border: 1px solid var(--lt-color-gray-100);
+        @media (max-width: 468px) {
+          max-width: 75vw;
+          max-height: 50vh;
+        }
+      }
+      &.only-one-image {
+        justify-content: center;
+        img {
+          max-width: 100%;
+        }
+      }
+    }
   }
 `;
 
@@ -296,6 +330,13 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const filterValue = useAppSelector(getFilterPostsHome);
   const [showTranslation, setShowTranslation] = useState(false);
   const accountInfoTemp = useAppSelector(getAccountInfoTemp);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    const isMobile = width < 960 ? true : false;
+    setIsMobileView(isMobile);
+  }, [width]);
 
   const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
     useRepostMutation();
@@ -658,7 +699,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   return (
     <>
-      <StyledContainerPostDetail className="post-detail">
+      <StyledContainerPostDetail className="post-detail" style={{ paddingBottom: isMobileView ? '3rem' : '1rem' }}>
         <NavBarHeader onClick={() => router.back()}>
           <LeftOutlined style={{ marginRight: '0.5rem' }} />
           <InfoCardUser
@@ -693,7 +734,31 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
               <PostTranslate postTranslate={post.translations[0].translateContent} />
             </div>
           )}
-          {post.uploads.length != 0 && (
+          {post.uploads.length != 0 && isMobileView && (
+            <>
+              {post.uploads.length > 1 && (
+                <div className="images-post images-post-mobile">
+                  <Image.PreviewGroup>
+                    {imagesList.map((img, index) => {
+                      return <Image key={index} src={img.src} />;
+                    })}
+                  </Image.PreviewGroup>
+                </div>
+              )}
+              {post.uploads.length === 1 && (
+                <>
+                  <div className="images-post images-post-mobile only-one-image">
+                    <Image.PreviewGroup>
+                      {imagesList.map((img, index) => {
+                        return <Image key={index} src={img.src} />;
+                      })}
+                    </Image.PreviewGroup>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+          {post.uploads.length != 0 && !isMobileView && (
             <div className="images-post">
               <Image.PreviewGroup>
                 <Gallery photos={imagesList} renderImage={imageRenderer} />
