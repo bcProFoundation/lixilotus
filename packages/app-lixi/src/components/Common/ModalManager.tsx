@@ -34,7 +34,7 @@ const modalComponentLookupTable = {
   BurnModal,
   FollowModal,
   PostDetailModal,
-  AuthorizationModal
+  AuthorizationModal,
 };
 
 const ModalManager = () => {

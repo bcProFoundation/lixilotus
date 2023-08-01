@@ -352,8 +352,6 @@ export default {
   'claim.withdrawSuccess': 'Rút thành công',
   'claim.refreshSuccess': 'Làm mới thành công',
 
-  'settings.settings': 'Cài đặt',
-
   /* 05.Settings */
   'settings.languages': 'Ngôn ngữ',
   'settings.general': 'Thiết lập chung',

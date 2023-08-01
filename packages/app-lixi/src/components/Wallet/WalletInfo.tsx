@@ -218,7 +218,7 @@ const WalletInfoComponent: React.FC = () => {
             <SendOutlined />
             {intl.get('general.send')}
           </ButtonSend>
-          <CopyToClipboard text={selectedAccount.address} onCopy={handleOnCopy}>
+          <CopyToClipboard text={selectedAccount ? selectedAccount.address : ''} onCopy={handleOnCopy}>
             <span>
               <FormattedWalletAddress
                 address={selectedWalletPath?.xAddress}
