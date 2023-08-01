@@ -74,10 +74,12 @@ const PathDirection = styled.div`
 
   .menu-mobile {
     display: none;
-    margin-left: 6px;
+    margin: 0 10px;
     @media (max-width: 960px) {
       display: block;
     }
+    max-width: 22px;
+    max-height: 22px;
   }
 
   .path-direction-text {
@@ -629,7 +631,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   return (
     <StyledHeader style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={className}>
       <PathDirection>
-        <img className="menu-mobile" src="/images/ico-menu.svg" alt="" onClick={handleMenuClick} />
+        <img className="menu-mobile" src="/images/ico-list-bullet_2.svg" alt="" onClick={handleMenuClick} />
         {currentPathName == '/' && (
           <picture>
             <img
