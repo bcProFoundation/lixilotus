@@ -362,7 +362,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
     try {
       let filterValue: number;
-      if (pureContent === '' || _.isNil(pureContent)) {
+      if (_.trim(pureContent) === '' || _.isNil(pureContent)) {
         return;
       }
 
@@ -483,10 +483,10 @@ const CreatePostCard = (props: CreatePostCardProp) => {
               placeholder={
                 hashtags && hashtags.length > 0
                   ? `Write about ${hashtags
-                      .map(hashtag => {
-                        return `${hashtag}`;
-                      })
-                      .join(' ')}`
+                    .map(hashtag => {
+                      return `${hashtag}`;
+                    })
+                    .join(' ')}`
                   : `What's on your mind?`
               }
               value=""
@@ -509,9 +509,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
       <MobileCreatePost
         hidden={!showCreatePostMobile}
-        className={`animate__animated ${
-          showCreatePostMobile ? 'animate__fadeIn' : 'animate__fadeOut'
-        } create-post-card-container`}
+        className={`animate__animated ${showCreatePostMobile ? 'animate__fadeIn' : 'animate__fadeOut'
+          } create-post-card-container`}
         onClick={handleNewPostClick}
       >
         <div className="fab-btn">
