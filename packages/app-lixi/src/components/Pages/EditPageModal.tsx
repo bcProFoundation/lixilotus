@@ -49,7 +49,8 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled, cl
   const {
     handleSubmit,
     formState: { errors },
-    control
+    control,
+    setValue
   } = useForm({
     defaultValues: {
       id: page.id,
@@ -116,6 +117,10 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled, cl
   const handleOnCancel = () => {
     dispatch(closeModal());
   };
+
+  useEffect(() => {
+    dispatch(getStates(page.countryId));
+  }, []);
 
   return (
     <>
@@ -251,7 +256,11 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled, cl
                         className="select-after edit-page"
                         showSearch
                         defaultValue={page.countryName}
-                        onChange={onChange}
+                        onSelect={value => {
+                          onChange(value);
+                          dispatch(getStates(value));
+                          setValue('stateId', null);
+                        }}
                         placeholder={intl.get('page.country')}
                         optionFilterProp="children"
                         filterOption={(input, option) =>

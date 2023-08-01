@@ -227,6 +227,7 @@ export class PageResolver {
             : undefined
         },
         state: {
+          disconnect: !data.stateId,
           connect: data.stateId
             ? {
                 id: Number(data.stateId)

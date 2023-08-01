@@ -40,7 +40,6 @@ function* getCountriesFailureSaga(action: PayloadAction<string>) {
 function* getStatesSaga(action: PayloadAction<number>) {
   try {
     const id = action.payload;
-    console.log('id: ', id);
     const data = yield call(countryApi.getStates, id);
     yield put(getStatesSuccess(data));
   } catch (err) {
