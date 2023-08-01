@@ -604,7 +604,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     if (selectedAccountId == user?.id) {
       urlCoverAccount = accountInfoTemp?.cover || URL_COVER_DEFAULT;
     } else {
-      const cfUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${user?.avatar.upload.cfImageId}/public`;
+      const cfUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${user?.cover.upload.cfImageId}/public`;
       urlCoverAccount = cfUrl || URL_COVER_DEFAULT;
     }
     return urlCoverAccount;
@@ -629,10 +629,12 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
         <ProfileCardHeader>
           <div className="container-img">
             <img className="cover-img" src={getCoverAccount()} alt="" />
-            <Button type="primary" className="no-border-btn" onClick={() => uploadModal(false)}>
-              <CameraOutlined />
-              {intl.get('page.editCoverPhoto')}
-            </Button>
+            {selectedAccountId == user.id && (
+              <Button type="primary" className="no-border-btn" onClick={() => uploadModal(false)}>
+                <CameraOutlined />
+                {intl.get('page.editCoverPhoto')}
+              </Button>
+            )}
           </div>
           <div className="info-profile">
             <div className="wrapper-avatar">
@@ -647,7 +649,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
             </div>
             <div className="title-profile">
               <div>
-                <h2>{selectedAccount.name}</h2>
+                <h2>{user.name}</h2>
                 <p className="add">{user?.address.slice(6, 11) + '...' + user?.address.slice(-5)}</p>
               </div>
             </div>

@@ -12,22 +12,15 @@ import {
 } from '@store/settings/selectors';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import 'animate.css';
+import { SliderMarks } from 'antd/es/slider';
 
 const FilterStyle = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin: 5px;
-  margin-top: 10px;
+  align-items: baseline;
+  gap: 4px;
   p {
-    margin: 0px;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    letter-spacing: 0.5px;
-    color: rgba(30, 26, 29, 0.6);
-    flex: none;
+    margin: 0;
+    font-weight: 500;
   }
 
   .ant-input-group {
@@ -35,7 +28,7 @@ const FilterStyle = styled.div`
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    gap: 10px;
+    gap: 4px;
 
     Button {
       &.down-value {
@@ -67,10 +60,7 @@ const FilterStyle = styled.div`
   }
 `;
 
-const FilterContainer = styled.div`
-  display: flex;
-  flex-direction: row-reverse;
-`;
+const FilterContainer = styled.div``;
 
 type FilterBurntProps = {
   filterForType: FilterType;
@@ -113,7 +103,7 @@ export const FilterBurnt = (props: FilterBurntProps) => {
     <>
       <FilterContainer>
         <FilterStyle>
-          <p>{intl.get('general.level')} &nbsp;</p>
+          <p>{intl.get('general.level')}: </p>
           <Input.Group>
             <Button
               className="down-value"

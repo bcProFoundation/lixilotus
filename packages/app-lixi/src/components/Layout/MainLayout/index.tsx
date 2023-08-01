@@ -1,6 +1,6 @@
 import { getGraphqlRequestStatus, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { Button, Layout, Spin } from 'antd';
+import { Button, ConfigProvider, Layout, Spin } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
@@ -33,6 +33,8 @@ import useThemeDetector from '@local-hooks/useThemeDetector';
 import { setShowCreatePost } from '@store/post/actions';
 const { Content } = Layout;
 import ToastNotificationManage from '@components/Common/ToastNotificationManage';
+import lightTheme from 'src/styles/themes/lightTheme';
+import darkTheme from 'src/styles/themes/darkTheme';
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -326,50 +328,57 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   };
 
   return (
-    <ThemeProvider theme={theme as DefaultTheme}>
-      <GlobalStyle />
-      {intlInitDone && (
-        <Spin spinning={loading} indicator={LoadingIcon}>
-          <LixiApp className={currentTheme === 'dark' ? 'dark' : ''}>
-            <Layout>
-              <AppBody>
-                <ModalManager />
-                <AppContainer className="app-container">
-                  <Sidebar className="sidebar-mobile" />
-                  {/* Need to reimplement top bar */}
-                  {/* <Topbar ref={ref}/> */}
-                  <Topbar
-                    className={`animate__animated ${
-                      isMobile ? (visible ? 'animate__fadeInDown' : 'animate__fadeOutUp') : ''
-                    }`}
-                  />
-                  {/* @ts-ignore */}
-                  <div className="container-content" id="scrollableDiv" ref={scrollRef} onScroll={e => handleScroll(e)}>
-                    <SidebarShortcut />
-                    <div
-                      className="content-child animate__animated animate__fadeIn"
-                      style={{ paddingTop: isMobile ? 64 : 0 }}
-                    >
-                      {children}
-                    </div>
-                    {/* This below is just a dummy sidebar */}
-                    {/* TODO: Implement SidebarRanking in future */}
-                    {(selectedKey === '/wallet' || selectedKey === '/') && <SidebarRanking></SidebarRanking>}
-                    <DummySidebar />
-                    <Footer
-                      classList={`animate__animated ${visible ? 'animate__fadeInUp' : 'animate__fadeOutDown'}`}
-                      notifications={notifications}
+    <ConfigProvider theme={currentTheme === 'dark' ? darkTheme : lightTheme}>
+      <ThemeProvider theme={theme as DefaultTheme}>
+        <GlobalStyle />
+        {intlInitDone && (
+          <Spin spinning={loading} indicator={LoadingIcon}>
+            <LixiApp className={currentTheme === 'dark' ? 'dark' : ''}>
+              <Layout>
+                <AppBody>
+                  <ModalManager />
+                  <AppContainer className="app-container">
+                    <Sidebar className="sidebar-mobile" />
+                    {/* Need to reimplement top bar */}
+                    {/* <Topbar ref={ref}/> */}
+                    <Topbar
+                      className={`animate__animated ${
+                        isMobile ? (visible ? 'animate__fadeInDown' : 'animate__fadeOutUp') : ''
+                      }`}
                     />
-                  </div>
-                </AppContainer>
-                <ActionSheet />
-                <ToastNotificationManage />
-              </AppBody>
-            </Layout>
-          </LixiApp>
-        </Spin>
-      )}
-    </ThemeProvider>
+                    {/* @ts-ignore */}
+                    <div
+                      className="container-content"
+                      id="scrollableDiv"
+                      ref={scrollRef}
+                      onScroll={e => handleScroll(e)}
+                    >
+                      <SidebarShortcut />
+                      <div
+                        className="content-child animate__animated animate__fadeIn"
+                        style={{ paddingTop: isMobile ? 64 : 0 }}
+                      >
+                        {children}
+                      </div>
+                      {/* This below is just a dummy sidebar */}
+                      {/* TODO: Implement SidebarRanking in future */}
+                      {(selectedKey === '/wallet' || selectedKey === '/') && <SidebarRanking></SidebarRanking>}
+                      <DummySidebar />
+                      <Footer
+                        classList={`animate__animated ${visible ? 'animate__fadeInUp' : 'animate__fadeOutDown'}`}
+                        notifications={notifications}
+                      />
+                    </div>
+                  </AppContainer>
+                  <ActionSheet />
+                  <ToastNotificationManage />
+                </AppBody>
+              </Layout>
+            </LixiApp>
+          </Spin>
+        )}
+      </ThemeProvider>
+    </ConfigProvider>
   );
 };
 

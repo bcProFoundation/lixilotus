@@ -264,6 +264,11 @@ const PopoverStyled = styled.div`
 `;
 
 const TitleFilterStyled = styled.span`
+  display: flex;
+  justify-content: space-between;
+  .follow-title {
+    font-weight: 500;
+  }
   svg {
     width: 12px;
     height: 12px;
@@ -449,8 +454,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       {router?.pathname == '/' && (
         <PopoverStyled>
           <TitleFilterStyled>
-            {intl.get('general.postFilter')}
-            <Icon component={() => <FollowSvg />} />
+            <p className="follow-title">
+              {intl.get('general.postFilter')} <Icon component={() => <FollowSvg />} />
+            </p>
             <Switch
               checkedChildren={intl.get('general.on')}
               unCheckedChildren={intl.get('general.off')}

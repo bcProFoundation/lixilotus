@@ -97,9 +97,7 @@ const LixiApp = ({ Component, ...rest }) => {
                 <OutsideCallConsumer config={callConfig}>
                   <Layout className="lixi-app-layout">
                     <ConnectedRouter>
-                      <ConfigProvider theme={lightTheme}>
-                        <Component {...props.pageProps} />
-                      </ConfigProvider>
+                      <Component {...props.pageProps} />
                     </ConnectedRouter>
                   </Layout>
                 </OutsideCallConsumer>

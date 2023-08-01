@@ -843,14 +843,14 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
               />
               <StyledIconContainer>
                 <Button
+                  type="text"
                   disabled={isLoadingCreateComment || isSendingXPI}
-                  style={{ fontSize: '20px' }}
+                  style={{ borderColor: 'transparent !important' }}
                   onClick={async () => {
                     await handleCreateNewComment(getValues('comment'));
                   }}
-                >
-                  <SendOutlined style={{ fontSize: '20px' }} />
-                </Button>
+                  icon={<SendOutlined style={{ fontSize: '20px' }} />}
+                />
               </StyledIconContainer>
             </StyledCommentContainer>
           </CommentInputContainer>

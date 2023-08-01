@@ -31,6 +31,7 @@ export const RenameAccountModal: React.FC<RenameAccountModalProps> = (props: Ren
       dispatch(newAction);
     }
     dispatch(closeModal());
+    location.reload();
   };
 
   const handleOnCancel = () => {
