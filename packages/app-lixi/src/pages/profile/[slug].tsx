@@ -60,7 +60,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   const slug: string = _.isArray(context.params.slug) ? context.params.slug[0] : context.params.slug;
   const userAddress: string = slug;
 
-  const result = await prisma.account.findFirst({
+  const account = await prisma.account.findFirst({
     where: {
       address: userAddress
     },
@@ -74,6 +74,31 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
     }
   });
 
+  let followersCount = 0;
+  let followingsCount = 0;
+  let followingPagesCount = 0;
+  const followingsCountPromise = prisma.followAccount.count({
+    where: { followerAccountId: account.id }
+  });
+  const followersCountPromise = prisma.followAccount.count({
+    where: { followingAccountId: account.id }
+  });
+  const followingPagesCountPromise = prisma.followPage.count({
+    where: { accountId: account.id }
+  });
+
+  [followersCount, followingsCount, followingPagesCount] = await Promise.all([
+    followersCountPromise,
+    followingsCountPromise,
+    followingPagesCountPromise
+  ]);
+
+  const result = {
+    ...account,
+    followersCount: followersCount,
+    followingsCount: followingsCount,
+    followingPagesCount: followingPagesCount
+  }
   const accountAsString = JSON.stringify(result);
 
   return {
