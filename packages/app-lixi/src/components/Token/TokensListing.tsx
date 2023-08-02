@@ -406,9 +406,7 @@ const TokensListing = () => {
   useDidMountEffectNotification();
 
   const handleBurnForToken = async (isUpVote: boolean, token: any, optionBurn?: string) => {
-    isUpVote
-      ? handleBurn(true, { data: token, burnForType: BurnForType.Token }, optionBurn)
-      : handleBurn(false, { data: token, burnForType: BurnForType.Token }, optionBurn);
+    handleBurn(isUpVote ? true : false, { data: token, burnForType: BurnForType.Token }, optionBurn);
   };
 
   const handleBurn = async (isUpVote: boolean, burnData: BurnTokenData, optionBurn?: string) => {
@@ -423,7 +421,6 @@ const TokensListing = () => {
       const burnedBy = hash160;
       const burnForId = data.tokenId;
       let tipToAddresses: { address: string; amount: string }[] = [];
-      let queryParams;
 
       if (
         slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
@@ -438,11 +435,12 @@ const TokensListing = () => {
         burnForType: burnForType,
         burnedBy,
         burnForId: burnForId,
-        tokenId: data.tokenId,
-        burnValue,
         tipToAddresses: tipToAddresses,
-        queryParams: queryParams,
-        minBurnFilter: 0
+        burnValue,
+        extraArguments: {
+          tokenId: data.tokenId,
+          minBurnFilter: 0
+        }
       };
 
       dispatch(addBurnQueue(burnCommand));

@@ -38,6 +38,8 @@ export class BurnCommand {
 }
 
 export class BurnQueueCommand {
+  txHex?: string;
+
   @IsNotEmpty()
   burnType: BurnType;
 
@@ -55,6 +57,20 @@ export class BurnQueueCommand {
 
   defaultFee: number;
 
+  tipToAddresses?: { address: string; amount: string }[];
+
+  worshipType?: WORSHIP_TYPES;
+
+  extraArguments?: BurnExtraArguments;
+}
+
+export class BurnExtraArguments {
+  isTop?: boolean;
+
+  query?: string;
+
+  hashtags?: string[];
+
   postQueryTag?: string;
 
   minBurnFilter?: number;
@@ -63,18 +79,11 @@ export class BurnQueueCommand {
 
   tokenId?: string;
 
+  postId?: string;
+
   userId?: string;
 
   hashtagId?: string;
 
-  tipToAddresses?: { address: string; amount: string }[];
-  // Params to patch rtk query data
-  queryParams?: any;
-
-  worshipType?: WORSHIP_TYPES;
-
-  // 2 fields below is for hashtag
-  query?: string;
-
-  hashtags?: string[];
+  orderBy?: any;
 }

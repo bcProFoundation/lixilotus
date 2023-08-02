@@ -18,7 +18,7 @@ import { useCommentQuery } from '@store/comment/comments.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { closeModal } from '@store/modal/actions';
 import { usePostQuery } from '@store/post/posts.generated';
-import { getFilterPostsHome } from '@store/settings/selectors';
+import { getFilterPostsHome, getIsTopPosts } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { useTokenQuery } from '@store/token/tokens.generated';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
@@ -130,6 +130,7 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
   const postQuery = usePostQuery({ id: id }, { skip: burnForType !== BurnForType.Post }).currentData;
   const commentQuery = useCommentQuery({ id: id }, { skip: burnForType !== BurnForType.Comment }).currentData;
   const filterValue = useAppSelector(getFilterPostsHome);
+  let isTop = useAppSelector(getIsTopPosts);
 
   const handleBurn = async (isUpVote: boolean) => {
     try {
@@ -192,18 +193,15 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
           });
 
           queryParams = {
-            id: comment.commentToId,
-            orderBy: {
-              direction: OrderDirection.Asc,
-              field: CommentOrderField.UpdatedAt
-            }
+            direction: OrderDirection.Asc,
+            field: CommentOrderField.UpdatedAt
           };
           break;
 
         case BurnForType.Token:
           const token = tokenQuery.token as TokenItem;
           tokenId = token.tokenId;
-          id = token.id;
+          id = token.tokenId;
           break;
       }
 
@@ -224,13 +222,16 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
         burnForType: burnForType,
         burnedBy,
         burnForId: id,
-        tokenId: tokenId,
         burnValue,
         tipToAddresses: tipToAddresses,
-        queryParams: queryParams,
-        postQueryTag: tag,
-        pageId: pageId,
-        minBurnFilter: filterValue
+        extraArguments: {
+          isTop: isTop,
+          postQueryTag: tag,
+          tokenId: tokenId,
+          orderBy: queryParams,
+          pageId: pageId,
+          minBurnFilter: filterValue
+        }
       };
 
       dispatch(addBurnQueue(burnCommand));

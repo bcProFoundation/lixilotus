@@ -447,12 +447,15 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         burnForId,
         burnValue,
         tipToAddresses: tipToAddresses,
-        postQueryTag: tag,
-        pageId: post.page?.id,
-        tokenId: post.token?.id,
-        minBurnFilter: filterValue,
-        query: query,
-        hashtags: hashtags
+        extraArguments: {
+          isTop: isTop,
+          postQueryTag: tag,
+          pageId: post.page?.id,
+          tokenId: post.token?.id,
+          minBurnFilter: filterValue,
+          query: query,
+          hashtags: hashtags
+        }
       };
 
       dispatch(addBurnQueue(_.omit(burnCommand)));

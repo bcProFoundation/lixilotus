@@ -380,11 +380,13 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        postQueryTag: PostsQueryTag.PostsByTokenId,
-        tokenId: post.token?.id,
-        minBurnFilter: filterValue,
-        query: query,
-        hashtags: hashtags
+        extraArguments: {
+          postQueryTag: PostsQueryTag.PostsByTokenId,
+          tokenId: post.token?.id,
+          minBurnFilter: filterValue,
+          query: query,
+          hashtags: hashtags
+        }
       };
 
       dispatch(addBurnQueue(burnCommand));

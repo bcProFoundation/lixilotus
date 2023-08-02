@@ -160,6 +160,7 @@ input CreatePageInput {
 
 input CreatePostInput {
   createFeeHex: String
+  extraArguments: ExtraArguments
   htmlContent: String!
   pageAccountId: Int
   pageId: String
@@ -232,6 +233,15 @@ input DeleteFollowPageInput {
 input DeleteFollowTokenInput {
   accountId: Int!
   tokenId: String!
+}
+
+input ExtraArguments {
+  hashtagId: String
+  hashtags: [String!]
+  isTop: String
+  minBurnFilter: Int
+  orderBy: PostOrder
+  query: String
 }
 
 type FollowAccount {

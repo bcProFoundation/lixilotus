@@ -369,6 +369,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
       const burnedBy = hash160;
       const burnForId = data.id;
       let queryParams;
+      let postId: string;
 
       let tipToAddresses: { address: string; amount: string }[] = [];
 
@@ -389,12 +390,10 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
             amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
           });
 
+          postId = comment.commentToId;
           queryParams = {
-            id: comment.commentToId,
-            orderBy: {
-              direction: OrderDirection.Asc,
-              field: CommentOrderField.UpdatedAt
-            }
+            direction: OrderDirection.Asc,
+            field: CommentOrderField.UpdatedAt
           };
           break;
       }
@@ -418,9 +417,12 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
         burnForId,
         burnValue,
         tipToAddresses: tipToAddresses,
-        postQueryTag: PostsQueryTag.Post,
-        queryParams: queryParams,
-        minBurnFilter: filterValue
+        extraArguments: {
+          postQueryTag: PostsQueryTag.Post,
+          postId: postId,
+          orderBy: queryParams,
+          minBurnFilter: filterValue
+        }
       };
 
       dispatch(addBurnQueue(burnCommand));

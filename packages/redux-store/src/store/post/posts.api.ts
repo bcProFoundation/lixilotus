@@ -171,7 +171,118 @@ const enhancedApi = api.enhanceEndpoints({
       }
     },
 
-    createPost: {},
+    createPost: {
+      async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
+        const { extraArguments, pageId, tokenPrimaryId } = input;
+        const { hashtagId, hashtags, isTop, minBurnFilter, orderBy, query } = extraArguments;
+
+        try {
+          const { data: result } = await queryFulfilled;
+          dispatch(
+            api.util.updateQueryData('Posts', { minBurnFilter: minBurnFilter, isTop: isTop }, draft => {
+              draft.allPosts.edges.unshift({
+                cursor: result.createPost.id,
+                node: {
+                  ...result.createPost
+                }
+              });
+              draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
+            })
+          );
+
+          if (hashtagId) {
+            dispatch(
+              api.util.updateQueryData('PostsByHashtagId', { id: hashtagId }, draft => {
+                draft.allPostsByHashtagId.edges.unshift({
+                  cursor: result.createPost.id,
+                  node: {
+                    ...result.createPost
+                  }
+                });
+                draft.allPostsByHashtagId.totalCount = draft.allPostsByHashtagId.totalCount + 1;
+              })
+            );
+          }
+
+          if (hashtags || query) {
+            dispatch(
+              api.util.updateQueryData(
+                'PostsBySearchWithHashtag',
+                { hashtags: hashtags, query: query, minBurnFilter: minBurnFilter },
+                draft => {
+                  draft.allPostsBySearchWithHashtag.edges.unshift({
+                    cursor: result.createPost.id,
+                    node: {
+                      ...result.createPost
+                    }
+                  });
+                }
+              )
+            );
+          }
+
+          if (pageId) {
+            dispatch(
+              api.util.updateQueryData(
+                'PostsBySearchWithHashtagAtPage',
+                { minBurnFilter: minBurnFilter, pageId: pageId, hashtags: hashtags, query: query },
+                draft => {
+                  draft.allPostsBySearchWithHashtagAtPage.edges.unshift({
+                    cursor: result.createPost.id,
+                    node: {
+                      ...result.createPost
+                    }
+                  });
+                }
+              )
+            );
+            dispatch(
+              api.util.updateQueryData('PostsByPageId', { id: pageId, minBurnFilter: minBurnFilter }, draft => {
+                draft.allPostsByPageId.edges.unshift({
+                  cursor: result.createPost.id,
+                  node: {
+                    ...result.createPost
+                  }
+                });
+                draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount + 1;
+              })
+            );
+          }
+
+          if (tokenPrimaryId) {
+            dispatch(
+              api.util.updateQueryData(
+                'PostsBySearchWithHashtagAtToken',
+                { minBurnFilter: minBurnFilter, tokenId: tokenPrimaryId, hashtags: hashtags, query: query },
+                draft => {
+                  draft.allPostsBySearchWithHashtagAtToken.edges.unshift({
+                    cursor: result.createPost.id,
+                    node: {
+                      ...result.createPost
+                    }
+                  });
+                }
+              )
+            );
+            dispatch(
+              api.util.updateQueryData(
+                'PostsByTokenId',
+                { id: tokenPrimaryId, minBurnFilter: minBurnFilter },
+                draft => {
+                  draft.allPostsByTokenId.edges.unshift({
+                    cursor: result.createPost.id,
+                    node: {
+                      ...result.createPost
+                    }
+                  });
+                  draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount + 1;
+                }
+              )
+            );
+          }
+        } catch {}
+      }
+    },
     updatePost: {},
     repost: {}
   }

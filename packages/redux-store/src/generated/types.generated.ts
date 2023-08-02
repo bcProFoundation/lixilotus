@@ -178,6 +178,7 @@ export type CreatePageInput = {
 
 export type CreatePostInput = {
   createFeeHex?: InputMaybe<Scalars['String']>;
+  extraArguments?: InputMaybe<ExtraArguments>;
   htmlContent: Scalars['String'];
   pageAccountId?: InputMaybe<Scalars['Int']>;
   pageId?: InputMaybe<Scalars['String']>;
@@ -242,6 +243,15 @@ export type DeleteFollowPageInput = {
 export type DeleteFollowTokenInput = {
   accountId: Scalars['Int'];
   tokenId: Scalars['String'];
+};
+
+export type ExtraArguments = {
+  hashtagId?: InputMaybe<Scalars['String']>;
+  hashtags?: InputMaybe<Array<Scalars['String']>>;
+  isTop?: InputMaybe<Scalars['String']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
+  query?: InputMaybe<Scalars['String']>;
 };
 
 export type FollowAccount = {

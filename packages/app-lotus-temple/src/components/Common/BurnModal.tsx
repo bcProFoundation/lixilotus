@@ -186,21 +186,21 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
           break;
       }
 
-      const burnCommand: BurnQueueCommand = {
-        defaultFee: currency.defaultFee,
-        burnType,
-        burnForType: burnForType,
-        burnedBy,
-        burnForId: data.id,
-        tokenId: tokenId,
-        burnValue,
-        queryParams: queryParams,
-        postQueryTag: tag,
-        pageId: pageId
-      };
+      // const burnCommand: BurnQueueCommand = {
+      //   defaultFee: currency.defaultFee,
+      //   burnType,
+      //   burnForType: burnForType,
+      //   burnedBy,
+      //   burnForId: data.id,
+      //   tokenId: tokenId,
+      //   burnValue,
+      //   queryParams: queryParams,
+      //   postQueryTag: tag,
+      //   pageId: pageId
+      // };
 
-      dispatch(addBurnQueue(burnCommand));
-      dispatch(addBurnTransaction(burnCommand));
+      // dispatch(addBurnQueue(burnCommand));
+      // dispatch(addBurnTransaction(burnCommand));
       // dispatch(closeModal());
     } catch (e) {
       const errorMessage = e.message || intl.get('post.unableToBurn');

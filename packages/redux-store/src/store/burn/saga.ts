@@ -20,6 +20,7 @@ import intl from 'react-intl-universal';
 import { buffers, Channel } from 'redux-saga';
 import { actionChannel, flush, getContext, put, select } from 'redux-saga/effects';
 import {
+  CommentOrder,
   CreateWorshipInput,
   OrderDirection,
   PostOrderField,
@@ -44,14 +45,14 @@ import { getBurnQueue, getFailQueue } from './selectors';
 import { api as worshipApi } from '@store/worship/worshipedPerson.api';
 import { api as templeApi } from '@store/temple/temple.api';
 
-function* createTxHexSaga(action: any) {
+function* createTxHexSaga(action: PayloadAction<BurnQueueCommand>) {
   const data = action.payload;
   const { XPI } = callConfig.call.walletContext;
   const xpiContext = yield getContext('useXPI');
   const walletPaths = yield select(getAllWalletPaths);
   const slpBalancesAndUtxos = yield select(getSlpBalancesAndUtxos);
   const { createBurnTransaction } = xpiContext();
-  const burnForId = data.burnForType === BurnForType.Token ? data.tokenId : data.burnForId;
+  const burnForId = data.burnForType === BurnForType.Token ? data.extraArguments.tokenId : data.burnForId;
   const tipToAddresses = data.tipToAddresses ? data.tipToAddresses : null;
 
   try {
@@ -75,11 +76,11 @@ function* createTxHexSaga(action: any) {
   }
 }
 
-function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
+function* burnForUpDownVoteSaga(action: PayloadAction<BurnQueueCommand>) {
   let patches, patch: PatchCollection;
   const command = action.payload;
 
-  const { burnForId: postId, queryParams } = command;
+  const { burnForId: postId, extraArguments } = command;
   let burnValue = _.toNumber(command.burnValue);
   yield put(createTxHex(command));
   const { payload } = yield take(returnTxHex.type);
@@ -179,9 +180,6 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
       }
     } else if (command.burnForType === BurnForType.Comment) {
       message = (err as Error)?.message ?? intl.get('comment.unableToBurn');
-      if (patches) {
-        yield put(commentApi.util.patchQueryData('CommentsToPostId', queryParams, patches.inversePatches));
-      }
     } else if (command.burnForType === BurnForType.Worship) {
       message = (err as Error)?.message ?? intl.get('comment.unableToBurn');
       if (patches) {
@@ -210,7 +208,8 @@ function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
 }
 
 function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
-  const command = action.payload;
+  const { extraArguments, burnValue: burnValueAsString, burnType, burnForId } = action.payload;
+  const { isTop, hashtagId, hashtags, minBurnFilter, pageId, query, tokenId, userId, postQueryTag } = extraArguments;
   // @todo: better control the params for search/others
   const params = {
     orderBy: {
@@ -219,20 +218,20 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
     }
   };
 
-  let burnValue = _.toNumber(command.burnValue);
+  let burnValue = _.toNumber(burnValueAsString);
 
   //BUG: All token and page post show up on home page will not optimistic update becuz of PostQueryTag
   // The algo will check for PostQueryTag then updateQueryData according to it. It only update normal post not page's post and token's post at homepage.
   // That's why we need to update the all Posts here first then updateQueryData later. Not the best way to handle. Maybe come back later.
   yield put(
     //THis is hardcoded, it wont work if isTop other than false, need to find better way to handle this
-    postApi.util.updateQueryData('Posts', { minBurnFilter: command.minBurnFilter, isTop: 'false' }, draft => {
-      const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
+    postApi.util.updateQueryData('Posts', { minBurnFilter: minBurnFilter, isTop: String(isTop) }, draft => {
+      const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === burnForId);
       const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
       if (postToUpdateIndex >= 0) {
         let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
         let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-        if (command.burnType == BurnType.Up) {
+        if (burnType == BurnType.Up) {
           lotusBurnUp = lotusBurnUp + burnValue;
         } else {
           lotusBurnDown = lotusBurnDown + burnValue;
@@ -253,19 +252,17 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
     postApi.util.updateQueryData(
       'PostsBySearchWithHashtag',
       {
-        minBurnFilter: command.minBurnFilter,
-        query: command.query,
-        hashtags: command.hashtags
+        minBurnFilter: minBurnFilter,
+        query: query,
+        hashtags: hashtags
       },
       draft => {
-        const postToUpdateIndex = draft.allPostsBySearchWithHashtag.edges.findIndex(
-          item => item.node.id === command.burnForId
-        );
+        const postToUpdateIndex = draft.allPostsBySearchWithHashtag.edges.findIndex(item => item.node.id === burnForId);
         const postToUpdate = draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex];
         if (postToUpdateIndex >= 0) {
           let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
           let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-          if (command.burnType == BurnType.Up) {
+          if (burnType == BurnType.Up) {
             lotusBurnUp = lotusBurnUp + burnValue;
           } else {
             lotusBurnDown = lotusBurnDown + burnValue;
@@ -283,10 +280,10 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
   );
 
   yield put(
-    postApi.util.updateQueryData('Post', { id: command.burnForId }, draft => {
+    postApi.util.updateQueryData('Post', { id: burnForId }, draft => {
       let lotusBurnUp = draft?.post?.lotusBurnUp ?? 0;
       let lotusBurnDown = draft?.post?.lotusBurnDown ?? 0;
-      if (command.burnType == BurnType.Up) {
+      if (burnType == BurnType.Up) {
         lotusBurnUp = lotusBurnUp + burnValue;
       } else {
         lotusBurnDown = lotusBurnDown + burnValue;
@@ -298,52 +295,54 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
     })
   );
 
-  yield put(
-    postApi.util.updateQueryData('PostsByHashtagId', { id: command.hashtagId }, draft => {
-      const postToUpdateIndex = draft.allPostsByHashtagId.edges.findIndex(item => item.node.id === command.burnForId);
-      const postToUpdate = draft.allPostsByHashtagId.edges[postToUpdateIndex];
-      if (postToUpdateIndex >= 0) {
-        let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-        let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-        if (command.burnType == BurnType.Up) {
-          lotusBurnUp = lotusBurnUp + burnValue;
-        } else {
-          lotusBurnDown = lotusBurnDown + burnValue;
+  if (hashtagId) {
+    yield put(
+      postApi.util.updateQueryData('PostsByHashtagId', { id: hashtagId }, draft => {
+        const postToUpdateIndex = draft.allPostsByHashtagId.edges.findIndex(item => item.node.id === burnForId);
+        const postToUpdate = draft.allPostsByHashtagId.edges[postToUpdateIndex];
+        if (postToUpdateIndex >= 0) {
+          let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+          let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+          if (burnType == BurnType.Up) {
+            lotusBurnUp = lotusBurnUp + burnValue;
+          } else {
+            lotusBurnDown = lotusBurnDown + burnValue;
+          }
+          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+          if (lotusBurnScore < 0) {
+            draft.allPostsByHashtagId.edges.splice(postToUpdateIndex, 1);
+            draft.allPostsByHashtagId.totalCount = draft.allPostsByHashtagId.totalCount - 1;
+          }
         }
-        const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-        draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-        draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-        draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-        if (lotusBurnScore < 0) {
-          draft.allPostsByHashtagId.edges.splice(postToUpdateIndex, 1);
-          draft.allPostsByHashtagId.totalCount = draft.allPostsByHashtagId.totalCount - 1;
-        }
-      }
-    })
-  );
+      })
+    );
+  }
 
   //TODO: There are no optimistic burn update for query post by hashtag, We need to pass query and hashtags
   // in order to update. Need better way to handle rather than passing arg
-  switch (command.postQueryTag) {
+  switch (postQueryTag) {
     case PostsQueryTag.PostsByPageId:
       yield put(
         postApi.util.updateQueryData(
           'PostsBySearchWithHashtagAtPage',
           {
-            pageId: command.pageId,
-            minBurnFilter: command.minBurnFilter,
-            query: command.query,
-            hashtags: command.hashtags
+            pageId: pageId,
+            minBurnFilter: minBurnFilter,
+            query: query,
+            hashtags: hashtags
           },
           draft => {
             const postToUpdateIndex = draft.allPostsBySearchWithHashtagAtPage.edges.findIndex(
-              item => item.node.id === command.burnForId
+              item => item.node.id === burnForId
             );
             const postToUpdate = draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex];
             if (postToUpdateIndex >= 0) {
               let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
               let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-              if (command.burnType == BurnType.Up) {
+              if (burnType == BurnType.Up) {
                 lotusBurnUp = lotusBurnUp + burnValue;
               } else {
                 lotusBurnDown = lotusBurnDown + burnValue;
@@ -360,53 +359,47 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
         )
       );
       return yield put(
-        postApi.util.updateQueryData(
-          'PostsByPageId',
-          { id: command.pageId, minBurnFilter: command.minBurnFilter },
-          draft => {
-            const postToUpdateIndex = draft.allPostsByPageId.edges.findIndex(
-              item => item.node.id === command.burnForId
-            );
-            const postToUpdate = draft.allPostsByPageId.edges[postToUpdateIndex];
-            if (postToUpdateIndex >= 0) {
-              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-              if (command.burnType == BurnType.Up) {
-                lotusBurnUp = lotusBurnUp + burnValue;
-              } else {
-                lotusBurnDown = lotusBurnDown + burnValue;
-              }
-              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-              draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-              draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-              draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-              if (lotusBurnScore < 0) {
-                draft.allPostsByPageId.edges.splice(postToUpdateIndex, 1);
-                draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount - 1;
-              }
+        postApi.util.updateQueryData('PostsByPageId', { id: pageId, minBurnFilter: minBurnFilter }, draft => {
+          const postToUpdateIndex = draft.allPostsByPageId.edges.findIndex(item => item.node.id === burnForId);
+          const postToUpdate = draft.allPostsByPageId.edges[postToUpdateIndex];
+          if (postToUpdateIndex >= 0) {
+            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+            if (burnType == BurnType.Up) {
+              lotusBurnUp = lotusBurnUp + burnValue;
+            } else {
+              lotusBurnDown = lotusBurnDown + burnValue;
+            }
+            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+            if (lotusBurnScore < 0) {
+              draft.allPostsByPageId.edges.splice(postToUpdateIndex, 1);
+              draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount - 1;
             }
           }
-        )
+        })
       );
     case PostsQueryTag.PostsByTokenId:
       yield put(
         postApi.util.updateQueryData(
           'PostsBySearchWithHashtagAtToken',
           {
-            tokenId: command.tokenId,
-            minBurnFilter: command.minBurnFilter,
-            query: command.query,
-            hashtags: command.hashtags
+            tokenId: tokenId,
+            minBurnFilter: minBurnFilter,
+            query: query,
+            hashtags: hashtags
           },
           draft => {
             const postToUpdateIndex = draft.allPostsBySearchWithHashtagAtToken.edges.findIndex(
-              item => item.node.id === command.burnForId
+              item => item.node.id === burnForId
             );
             const postToUpdate = draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex];
             if (postToUpdateIndex >= 0) {
               let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
               let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-              if (command.burnType == BurnType.Up) {
+              if (burnType == BurnType.Up) {
                 lotusBurnUp = lotusBurnUp + burnValue;
               } else {
                 lotusBurnDown = lotusBurnDown + burnValue;
@@ -423,73 +416,61 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
         )
       );
       return yield put(
-        postApi.util.updateQueryData(
-          'PostsByTokenId',
-          { id: command.tokenId, minBurnFilter: command.minBurnFilter },
-          draft => {
-            const postToUpdateIndex = draft.allPostsByTokenId.edges.findIndex(
-              item => item.node.id === command.burnForId
-            );
-            const postToUpdate = draft.allPostsByTokenId.edges[postToUpdateIndex];
-            if (postToUpdateIndex >= 0) {
-              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-              if (command.burnType == BurnType.Up) {
-                lotusBurnUp = lotusBurnUp + burnValue;
-              } else {
-                lotusBurnDown = lotusBurnDown + burnValue;
-              }
-              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-              draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-              draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-              draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-              if (lotusBurnScore < 0) {
-                draft.allPostsByTokenId.edges.splice(postToUpdateIndex, 1);
-                draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount - 1;
-              }
+        postApi.util.updateQueryData('PostsByTokenId', { id: tokenId, minBurnFilter: minBurnFilter }, draft => {
+          const postToUpdateIndex = draft.allPostsByTokenId.edges.findIndex(item => item.node.id === burnForId);
+          const postToUpdate = draft.allPostsByTokenId.edges[postToUpdateIndex];
+          if (postToUpdateIndex >= 0) {
+            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+            if (burnType == BurnType.Up) {
+              lotusBurnUp = lotusBurnUp + burnValue;
+            } else {
+              lotusBurnDown = lotusBurnDown + burnValue;
+            }
+            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+            if (lotusBurnScore < 0) {
+              draft.allPostsByTokenId.edges.splice(postToUpdateIndex, 1);
+              draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount - 1;
             }
           }
-        )
+        })
       );
     case PostsQueryTag.PostsByUserId:
       return yield put(
-        postApi.util.updateQueryData(
-          'PostsByUserId',
-          { id: command.userId, minBurnFilter: command.minBurnFilter },
-          draft => {
-            const postToUpdateIndex = draft.allPostsByUserId.edges.findIndex(
-              item => item.node.id === command.burnForId
-            );
-            const postToUpdate = draft.allPostsByUserId.edges[postToUpdateIndex];
-            if (postToUpdateIndex >= 0) {
-              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-              if (command.burnType == BurnType.Up) {
-                lotusBurnUp = lotusBurnUp + burnValue;
-              } else {
-                lotusBurnDown = lotusBurnDown + burnValue;
-              }
-              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-              draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-              draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-              draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-              if (lotusBurnScore < 0) {
-                draft.allPostsByUserId.edges.splice(postToUpdateIndex, 1);
-                draft.allPostsByUserId.totalCount = draft.allPostsByUserId.totalCount - 1;
-              }
+        postApi.util.updateQueryData('PostsByUserId', { id: userId, minBurnFilter: minBurnFilter }, draft => {
+          const postToUpdateIndex = draft.allPostsByUserId.edges.findIndex(item => item.node.id === burnForId);
+          const postToUpdate = draft.allPostsByUserId.edges[postToUpdateIndex];
+          if (postToUpdateIndex >= 0) {
+            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+            if (burnType == BurnType.Up) {
+              lotusBurnUp = lotusBurnUp + burnValue;
+            } else {
+              lotusBurnDown = lotusBurnDown + burnValue;
+            }
+            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+            draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+            draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+            draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+            if (lotusBurnScore < 0) {
+              draft.allPostsByUserId.edges.splice(postToUpdateIndex, 1);
+              draft.allPostsByUserId.totalCount = draft.allPostsByUserId.totalCount - 1;
             }
           }
-        )
+        })
       );
     default:
       return yield put(
-        postApi.util.updateQueryData('OrphanPosts', { minBurnFilter: command.minBurnFilter }, draft => {
-          const postToUpdateIndex = draft.allOrphanPosts.edges.findIndex(item => item.node.id === command.burnForId);
+        postApi.util.updateQueryData('OrphanPosts', { minBurnFilter: minBurnFilter }, draft => {
+          const postToUpdateIndex = draft.allOrphanPosts.edges.findIndex(item => item.node.id === burnForId);
           const postToUpdate = draft.allOrphanPosts.edges[postToUpdateIndex];
           if (postToUpdateIndex >= 0) {
             let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
             let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-            if (command.burnType == BurnType.Up) {
+            if (burnType == BurnType.Up) {
               lotusBurnUp = lotusBurnUp + burnValue;
             } else {
               lotusBurnDown = lotusBurnDown + burnValue;
@@ -556,21 +537,21 @@ function* updateWorshipBurnValue(data) {
   }
 }
 
-function* updateCommentBurnValue(action: PayloadAction<BurnCommand>) {
-  const command = action.payload;
-  const { queryParams: params } = command;
-  const burnValue = _.toNumber(command.burnValue);
+function* updateCommentBurnValue(action: PayloadAction<BurnQueueCommand>) {
+  const { extraArguments, burnValue: burnValueAsString, burnType, burnForId } = action.payload;
+  const orderBy = extraArguments.orderBy as CommentOrder;
+  const { postId } = extraArguments;
+
+  const burnValue = _.toNumber(burnValueAsString);
 
   return yield put(
-    commentApi.util.updateQueryData('CommentsToPostId', params, draft => {
-      const commentToUpdateIndex = draft.allCommentsToPostId.edges.findIndex(
-        item => item.node.id === command.burnForId
-      );
+    commentApi.util.updateQueryData('CommentsToPostId', { id: postId, orderBy: orderBy }, draft => {
+      const commentToUpdateIndex = draft.allCommentsToPostId.edges.findIndex(item => item.node.id === burnForId);
       const commentToUpdate = draft.allCommentsToPostId.edges[commentToUpdateIndex];
       if (commentToUpdateIndex >= 0) {
         let lotusBurnUp = commentToUpdate?.node?.lotusBurnUp ?? 0;
         let lotusBurnDown = commentToUpdate?.node?.lotusBurnDown ?? 0;
-        if (command.burnType == BurnType.Up) {
+        if (burnType == BurnType.Up) {
           lotusBurnUp = lotusBurnUp + burnValue;
         } else {
           lotusBurnDown = lotusBurnDown + burnValue;
@@ -588,9 +569,10 @@ function* updateCommentBurnValue(action: PayloadAction<BurnCommand>) {
   );
 }
 
-function* updateTokenBurnValue(action: PayloadAction<BurnCommand>) {
-  const command = action.payload;
-  let burnValue = _.toNumber(command.burnValue);
+function* updateTokenBurnValue(action: PayloadAction<BurnQueueCommand>) {
+  const { extraArguments, burnValue: burnValueAsString, burnType, burnForId } = action.payload;
+  const { tokenId } = extraArguments;
+  let burnValue = _.toNumber(burnValueAsString);
   const params = {
     orderBy: {
       direction: OrderDirection.Desc,
@@ -599,10 +581,10 @@ function* updateTokenBurnValue(action: PayloadAction<BurnCommand>) {
   };
 
   yield put(
-    tokenApi.util.updateQueryData('Token', { tokenId: command.tokenId }, draft => {
+    tokenApi.util.updateQueryData('Token', { tokenId: tokenId }, draft => {
       let lotusBurnUp = draft?.token.lotusBurnUp ?? 0;
       let lotusBurnDown = draft?.token?.lotusBurnDown ?? 0;
-      if (command.burnType == BurnType.Up) {
+      if (burnType == BurnType.Up) {
         lotusBurnUp = lotusBurnUp + burnValue;
       } else {
         lotusBurnDown = lotusBurnDown + burnValue;
@@ -616,11 +598,11 @@ function* updateTokenBurnValue(action: PayloadAction<BurnCommand>) {
 
   return yield put(
     tokenApi.util.updateQueryData('Tokens', params, draft => {
-      const tokenBurnValueIndex = draft.allTokens.edges.findIndex(item => item.node.id === command.burnForId);
+      const tokenBurnValueIndex = draft.allTokens.edges.findIndex(item => item.node.tokenId === tokenId);
       const tokenBurnValue = draft.allTokens.edges[tokenBurnValueIndex];
       let lotusBurnUp = tokenBurnValue?.node?.lotusBurnUp ?? 0;
       let lotusBurnDown = tokenBurnValue?.node?.lotusBurnDown ?? 0;
-      if (command.burnType == BurnType.Up) {
+      if (burnType == BurnType.Up) {
         lotusBurnUp = lotusBurnUp + burnValue;
       } else {
         lotusBurnDown = lotusBurnDown + burnValue;

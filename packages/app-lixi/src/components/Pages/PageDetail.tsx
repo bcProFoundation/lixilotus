@@ -657,11 +657,13 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
         burnForId,
         burnValue,
         tipToAddresses: tipToAddresses,
-        postQueryTag: PostsQueryTag.PostsByPageId,
-        pageId: post.page?.id,
-        minBurnFilter: filterValue,
-        query: query,
-        hashtags: hashtags
+        extraArguments: {
+          postQueryTag: PostsQueryTag.PostsByPageId,
+          pageId: post.page?.id,
+          minBurnFilter: filterValue,
+          query: query,
+          hashtags: hashtags
+        }
       };
 
       dispatch(addBurnQueue(burnCommand));

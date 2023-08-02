@@ -398,6 +398,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       const burnedBy = hash160;
       const burnForId = data.id;
       let queryParams;
+      let postId: string;
 
       let tipToAddresses: { address: string; amount: string }[] = [];
 
@@ -418,12 +419,10 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
           });
 
+          postId = comment.commentToId;
           queryParams = {
-            id: comment.commentToId,
-            orderBy: {
-              direction: OrderDirection.Asc,
-              field: CommentOrderField.UpdatedAt
-            }
+            direction: OrderDirection.Asc,
+            field: CommentOrderField.UpdatedAt
           };
           break;
       }
@@ -447,9 +446,12 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         burnForId,
         burnValue,
         tipToAddresses: tipToAddresses,
-        postQueryTag: PostsQueryTag.Post,
-        queryParams: queryParams,
-        minBurnFilter: filterValue
+        extraArguments: {
+          postQueryTag: PostsQueryTag.Post,
+          orderBy: queryParams,
+          postId: postId,
+          minBurnFilter: filterValue
+        }
       };
 
       dispatch(addBurnQueue(burnCommand));

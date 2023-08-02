@@ -127,11 +127,13 @@ const Hashtag = ({ hashtag, isMobile }: HashtagProps) => {
         burnForId,
         burnValue,
         tipToAddresses: tipToAddresses,
-        postQueryTag: tag,
-        pageId: post.page?.id,
-        tokenId: post.token?.id,
-        hashtagId: hashtag.id,
-        minBurnFilter: filterValue
+        extraArguments: {
+          pageId: post.page?.id,
+          tokenId: post.token?.id,
+          hashtagId: hashtag.id,
+          minBurnFilter: filterValue,
+          postQueryTag: tag
+        }
       };
 
       dispatch(addBurnQueue(_.omit(burnCommand)));

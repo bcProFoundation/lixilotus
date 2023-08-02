@@ -364,20 +364,20 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
-      const burnCommand: BurnQueueCommand = {
-        defaultFee: currency.defaultFee,
-        burnType,
-        burnForType: burnForType,
-        burnedBy,
-        burnForId,
-        burnValue,
-        tipToAddresses: tipToAddresses,
-        postQueryTag: PostsQueryTag.Post,
-        queryParams: queryParams
-      };
+      // const burnCommand: BurnQueueCommand = {
+      //   defaultFee: currency.defaultFee,
+      //   burnType,
+      //   burnForType: burnForType,
+      //   burnedBy,
+      //   burnForId,
+      //   burnValue,
+      //   tipToAddresses: tipToAddresses,
+      //   postQueryTag: PostsQueryTag.Post,
+      //   queryParams: queryParams
+      // };
 
-      dispatch(addBurnQueue(burnCommand));
-      dispatch(addBurnTransaction(burnCommand));
+      // dispatch(addBurnQueue(burnCommand));
+      // dispatch(addBurnTransaction(burnCommand));
     } catch (e) {
       const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(

@@ -465,10 +465,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         burnForId,
         burnValue,
         tipToAddresses: tipToAddresses,
-        postQueryTag: tag,
-        pageId: post.page?.id,
-        tokenId: post.token?.id,
-        minBurnFilter: filterValue
+        extraArguments: {
+          postQueryTag: tag,
+          pageId: post.page?.id,
+          tokenId: post.token?.id,
+          minBurnFilter: filterValue
+        }
       };
 
       dispatch(addBurnQueue(_.omit(burnCommand)));
