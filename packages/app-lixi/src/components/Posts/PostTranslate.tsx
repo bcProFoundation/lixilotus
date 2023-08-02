@@ -7,8 +7,8 @@ import { ReadMoreMore } from 'read-more-more';
 const PostTranslate = ({ postTranslate }) => {
   const content: any = parse(postTranslate, {
     replace: (domNode: any) => {
-      if (domNode.attribs && domNode.attribs.class === 'EditorLexical_hashtag') {
-        const hashtag: string = domNode.children[0].data;
+      if (domNode?.attribs && domNode?.attribs?.class === 'EditorLexical_hashtag') {
+        const hashtag: string = domNode?.children[0]?.data;
         return (
           <span
             rel="noopener noreferrer"
@@ -16,7 +16,7 @@ const PostTranslate = ({ postTranslate }) => {
             id={`${hashtag}`}
             style={{ color: 'var(--color-primary)' }}
           >
-            {domNode.children.map(child => child.data)}
+            {domNode?.children.map(child => child?.data)}
           </span>
         );
       }

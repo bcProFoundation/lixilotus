@@ -448,7 +448,7 @@ const SidebarRanking = () => {
                         <h4 className="distance" key={`${item.id}-${item.address}`}>
                           <ShortcutItemAccess
                             burnValue={item.totalBurned}
-                            icon={''}
+                            icon={getTopAccountAvatar(item)}
                             text={item.name}
                             href={`/profile/${item.address}`}
                             icoRanking="/images/ico-circled-2-ranking.png"
@@ -459,7 +459,7 @@ const SidebarRanking = () => {
                         <h4 className="distance" key={`${item.id}-${item.address}`}>
                           <ShortcutItemAccess
                             burnValue={item.totalBurned}
-                            icon={''}
+                            icon={getTopAccountAvatar(item)}
                             text={item.name}
                             href={`/profile/${item.address}`}
                             icoRanking="/images/ico-circled-3-ranking.png"
@@ -470,7 +470,7 @@ const SidebarRanking = () => {
                         <h4 className="distance" key={`${item.id}-${item.address}`}>
                           <ShortcutItemAccess
                             burnValue={item.totalBurned}
-                            icon={''}
+                            icon={getTopAccountAvatar(item)}
                             text={item.name}
                             href={`/profile/${item.address}`}
                           />

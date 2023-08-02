@@ -595,7 +595,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
       urlAvatarAccount = accountInfoTemp?.avatar || URL_AVATAR_DEFAULT;
     } else {
       const cfUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${user?.avatar?.upload?.cfImageId}/public`;
-      urlAvatarAccount = cfUrl || URL_AVATAR_DEFAULT;
+      urlAvatarAccount = cfUrl.includes('undefined') ? URL_AVATAR_DEFAULT : cfUrl;
     }
     return urlAvatarAccount;
   };
@@ -606,7 +606,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
       urlCoverAccount = accountInfoTemp?.cover || URL_COVER_DEFAULT;
     } else {
       const cfUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${user?.cover?.upload?.cfImageId}/public`;
-      urlCoverAccount = cfUrl || URL_COVER_DEFAULT;
+      urlCoverAccount = cfUrl.includes('undefined') ? URL_COVER_DEFAULT : cfUrl;
     }
     return urlCoverAccount;
   };

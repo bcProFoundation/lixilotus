@@ -104,6 +104,12 @@ const StyledComment = styled(Comment)`
     letter-spacing: 0.5px;
     color: #1e1a1d;
   }
+  .ant-avatar {
+    img {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
   &.readed {
     background: #fff;
   }
@@ -192,10 +198,12 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
   };
 
   const handleReadAll = () => {
-    dispatch(readAllNotifications({
-      accountId: selectedAccountId,
-      mnemonichHash: account.mnemonicHash
-    }));
+    dispatch(
+      readAllNotifications({
+        accountId: selectedAccountId,
+        mnemonichHash: account.mnemonicHash
+      })
+    );
   };
 
   const menuItems = [{ label: 'All', key: 'all' }];
