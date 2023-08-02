@@ -118,6 +118,7 @@ export default {
   'general.postFilter': 'Bài Theo Dõi: ',
   'general.dana': ' Dana',
   'general.support': 'Hỗ trợ',
+  'general.all': 'Tất cả',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',

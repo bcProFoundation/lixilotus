@@ -190,12 +190,12 @@ function* readNotificationFailureSaga(action: PayloadAction<Notification>) {
   yield put(hideLoading(readNotification.type));
 }
 
-function* readAllNotificationsSaga(action: PayloadAction<{ mnemonichHash }>) {
+function* readAllNotificationsSaga(action: PayloadAction<{ accountId, mnemonichHash }>) {
   try {
     yield put(showLoading(readAllNotifications.type));
     const data = yield call(notificationApi.readAllNotifications);
     const notifications = (data ?? []) as Notification[];
-    yield put(readAllNotificationsSuccess({ notifications: notifications }));
+    yield put(readAllNotificationsSuccess({ accountId: action.payload.accountId, mnemonichHash: action.payload.mnemonichHash, notifications: notifications }));
   } catch (err) {
     const message =
       (err as Error).message ?? intl.get('notification.unableToRead');
@@ -204,8 +204,12 @@ function* readAllNotificationsSaga(action: PayloadAction<{ mnemonichHash }>) {
 }
 
 function* readAllNotificationsSuccessSaga(
-  action: PayloadAction<Notification[]>
+  action: PayloadAction<{ accountId, mnemonichHash, notifications }>
 ) {
+  yield put(fetchNotifications({
+    accountId: action.payload.accountId,
+    mnemonichHash: action.payload.mnemonichHash
+  }))
   yield put(hideLoading(readAllNotifications.type));
 }
 
@@ -329,7 +333,7 @@ function createSocketChannel(socket: Socket) {
     const handler = (data: Notification) => {
       emit(data);
     };
-    const handlerNewPost = (data: any) => {};
+    const handlerNewPost = (data: any) => { };
     socket.on('notification', handler);
     socket.on('newpost', handlerNewPost);
     return () => {
