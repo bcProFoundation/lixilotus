@@ -844,7 +844,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
           <div className="container-img">
             <img
               className="cover-img"
-              src={urlPageCoverUpload || pageDetailData.cover || '/images/default-cover.jpg'}
+              src={urlPageCoverUpload || pageDetailData?.cover || '/images/default-cover.jpg'}
               alt=""
             />
             {selectedAccountId == pageDetailData?.pageAccountId && (
@@ -859,7 +859,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
               <picture>
                 <img
                   className="avatar-img"
-                  src={urlPageAvatarUpload || pageDetailData.avatar || '/images/default-avatar.jpg'}
+                  src={urlPageAvatarUpload || pageDetailData?.avatar || '/images/default-avatar.jpg'}
                   alt=""
                 />
               </picture>

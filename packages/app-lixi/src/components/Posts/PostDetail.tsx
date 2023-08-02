@@ -193,6 +193,7 @@ const PostContentDetail = styled.div`
       max-width: 100%;
       max-height: 100vh;
       object-fit: contain;
+      border-radius: var(--border-radius-primary);
     }
     &.images-post-mobile {
       display: flex;
@@ -226,6 +227,15 @@ const PostContentDetail = styled.div`
           max-width: 100%;
         }
       }
+    }
+    &.images-post-desktop {
+      img {
+        object-fit: cover;
+      }
+    }
+    .react-photo-gallery--gallery > div {
+      gap: 4px;
+      background: #fff;
     }
   }
 `;
@@ -761,9 +771,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             </>
           )}
           {post.uploads.length != 0 && !isMobileView && (
-            <div className="images-post">
+            <div className={`images-post ${imagesList.length > 1 ? 'images-post-desktop' : ''}`}>
               <Image.PreviewGroup>
-                <Gallery photos={imagesList} renderImage={imageRenderer} />
+                <Gallery margin={4} photos={imagesList} renderImage={imageRenderer} />
               </Image.PreviewGroup>
             </div>
           )}

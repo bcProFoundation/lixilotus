@@ -594,7 +594,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     if (selectedAccountId == user.id) {
       urlAvatarAccount = accountInfoTemp?.avatar || URL_AVATAR_DEFAULT;
     } else {
-      const cfUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${user?.avatar.upload.cfImageId}/public`;
+      const cfUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${user?.avatar?.upload?.cfImageId}/public`;
       urlAvatarAccount = cfUrl || URL_AVATAR_DEFAULT;
     }
     return urlAvatarAccount;
@@ -605,7 +605,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     if (selectedAccountId == user?.id) {
       urlCoverAccount = accountInfoTemp?.cover || URL_COVER_DEFAULT;
     } else {
-      const cfUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${user?.cover.upload.cfImageId}/public`;
+      const cfUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${user?.cover?.upload?.cfImageId}/public`;
       urlCoverAccount = cfUrl || URL_COVER_DEFAULT;
     }
     return urlCoverAccount;
