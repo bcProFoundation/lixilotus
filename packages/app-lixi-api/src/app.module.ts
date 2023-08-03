@@ -1,7 +1,7 @@
 import { RedisClientOptions, RedisModule } from '@liaoliaots/nestjs-redis';
 import { BullModule } from '@nestjs/bullmq';
 import { CacheModule } from '@nestjs/cache-manager';
-import { Logger, Module, OnApplicationShutdown } from '@nestjs/common';
+import { HttpException, Logger, Module, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -99,6 +99,16 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
               message: (error?.extensions?.exception as any)?.response?.message || error?.message
             };
             return graphQLFormattedError;
+          },
+          errorFormatter: execution => {
+            const [error] = execution.errors; // take first error
+            const originalError = error?.originalError;
+            if (originalError instanceof HttpException)
+              return {
+                statusCode: originalError?.getStatus(),
+                response: { data: originalError?.getResponse() as any }
+              };
+            return { statusCode: 500, response: execution };
           },
           context: ({ req }: { req: FastifyRequest }) => ({
             req
