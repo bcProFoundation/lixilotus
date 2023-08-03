@@ -27,10 +27,10 @@ const PostTranslate = ({ postTranslate }) => {
     <div className="read-more">
       <ReadMoreMore
         id="readMore"
-        linesToShow={5}
+        linesToShow={10000}
         parseHtml
         text={ReactDomServer.renderToStaticMarkup(content)}
-        checkFor={500}
+        checkFor={10000}
         transDuration={0}
         readMoreText={intl.get('general.showMore')}
         readLessText={' '}

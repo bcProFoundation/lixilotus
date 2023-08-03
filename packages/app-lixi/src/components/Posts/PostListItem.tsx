@@ -229,6 +229,7 @@ const StyledTranslate = styled.div`
   text-align: left;
   margin-bottom: 5px;
   font-size: 12px;
+  pointer-events: none;
 `;
 
 const PostListItemContainer = styled(List.Item)`

@@ -44,6 +44,7 @@ import Link from 'next/link';
 import { getModals } from '@store/modal/selectors';
 import { showToast } from '@store/toast/actions';
 import { getSelectedWalletPath, getWalletStatus } from '@store/wallet';
+import { ReactSVG } from 'react-svg';
 
 export type TopbarProps = {
   className?: string;
@@ -282,7 +283,8 @@ const BadgeStyled = styled(Badge)`
     min-width: 10px !important;
     height: 10px !important;
     margin-top: 0 !important;
-    right: 0px !important;
+    right: 5px !important;
+    top: 5px;
   }
   .ant-scroll-number-only {
     display: none !important;
@@ -300,6 +302,18 @@ const StyledHeader = styled(Header)`
     width: 100%;
     height: 64px;
   }
+`;
+
+const ButtonTopbar = styled(Button)`
+  width: 44px !important;
+  height: 44px !important;
+  background: var(--bg-color-light-theme);
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
 `;
 
 // eslint-disable-next-line react/display-name
@@ -669,11 +683,11 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       </div>
       <SpaceStyled direction="horizontal" size={15}>
         <div className="action-bar-header">
-          <Button
+          <ButtonTopbar
             onClick={() => handleIconClick('/')}
-            className="home-btn animate__animated animate__heartBeat"
+            className="btn-topbar home-btn animate__animated animate__heartBeat"
             type="text"
-            icon={<HomeOutlined />}
+            icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-home-topbar.svg'} />}
           />
           <Popover
             overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} filter-btn`}
@@ -681,7 +695,11 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             content={contentFilterBurn}
             placement="bottom"
           >
-            <Button className="animate__animated animate__heartBeat" type="text" icon={<FilterOutlined />} />
+            <ButtonTopbar
+              className="btn-topbar animate__animated animate__heartBeat"
+              type="text"
+              icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-filter.svg'} />}
+            />
           </Popover>
           <Popover
             overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} nofication-btn`}
@@ -695,7 +713,11 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
               offset={[notifications?.length < 10 ? 0 : 5, 8]}
               color="var(--color-primary)"
             >
-              <Button className="animate__animated animate__heartBeat" type="text" icon={<BellOutlined />} />
+              <ButtonTopbar
+                className="btn-topbar animate__animated animate__heartBeat"
+                type="text"
+                icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-notification.svg'} />}
+              />
             </BadgeStyled>
           </Popover>
           <Popover
@@ -706,7 +728,11 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             placement="bottom"
             open={openMoreOption}
           >
-            <Button className="animate__animated animate__heartBeat" type="text" icon={<AppstoreOutlined />} />
+            <ButtonTopbar
+              className="btn-topbar animate__animated animate__heartBeat"
+              type="text"
+              icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-category.svg'} />}
+            />
           </Popover>
         </div>
         <div className="account-bar">

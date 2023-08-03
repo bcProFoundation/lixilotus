@@ -21,6 +21,7 @@ import {
   removeRecentHashtagAtToken
 } from '@store/account';
 import { getCurrentThemes } from '@store/settings';
+import { ReactSVG } from 'react-svg';
 
 const Container = styled.div`
   display: flex;
@@ -421,7 +422,7 @@ const SearchBox = () => {
       >
         <SearchBoxContainer className="searchbox-container">
           <div className="btn-search">
-            <SearchOutlined />
+            <ReactSVG className="react-svg-custom" wrapper="span" src="/images/ico-search.svg" />
           </div>
           <TagContainer>
             {tags.slice(0, numberOfTags).map(tag => (

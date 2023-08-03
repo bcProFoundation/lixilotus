@@ -8,6 +8,18 @@ const StyledAvatar = styled(Avatar)`
   font-size: 18px;
   display: flex;
   align-items: center;
+  border-radius: 50%;
+  .ant-avatar-string {
+    position: absolute;
+    left: 50%;
+    transform-origin: 0 center;
+  }
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
 `;
 
 type AvatarUserProps = {

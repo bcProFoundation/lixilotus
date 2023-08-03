@@ -88,6 +88,10 @@ code {
   }
 }
 
+.react-svg-custom {
+  line-height: initial;
+}
+
 .ant-notification-notice-message {
   font-weight: 500;
   font-size: 32px;
@@ -1051,6 +1055,10 @@ code {
   }
 }
 
+.nofication-btn {
+  max-width: 350px;
+}
+
 .card {
   border-radius: 0.313rem;
   box-shadow: 1rem 1rem 2.5rem 0 rgb(0 0 0 / 5%);
@@ -1630,10 +1638,6 @@ code {
     &.readed {
       background: var(--bg-color-dark-item) !important;
     }
-  }
-
-  &.nofication-btn {
-    max-width: 350px;
   }
 }
 
@@ -2374,6 +2378,11 @@ code {
       }
     }
   }
+  .btn-topbar {
+    svg {
+      filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%) !important;
+    }
+  }
 
   .ant-space-item .ant-badge sup {
     background: #303031 !important;
@@ -2536,6 +2545,13 @@ code {
       .content {
         color: var(--text-color-on-dark);
       }
+    }
+  }
+
+  //ReactSVG
+  .react-svg-custom {
+    svg {
+      filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%) !important;
     }
   }
 }
