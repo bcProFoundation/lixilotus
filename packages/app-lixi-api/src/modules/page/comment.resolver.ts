@@ -52,7 +52,6 @@ export class CommentResolver {
   }
 
   @Query(() => CommentConnection)
-  @UseGuards(GqlJwtAuthGuard)
   async allCommentsToPostId(
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last }: PaginationArgs,
@@ -88,7 +87,7 @@ export class CommentResolver {
                   { commentToId: id },
                   {
                     commentAccount: {
-                      id: account?.id ?? null
+                      id: account?.id ?? undefined
                     }
                   }
                 ]
@@ -119,7 +118,7 @@ export class CommentResolver {
                   { commentToId: id },
                   {
                     commentAccount: {
-                      id: account?.id ?? null
+                      id: account?.id ?? undefined
                     }
                   }
                 ]

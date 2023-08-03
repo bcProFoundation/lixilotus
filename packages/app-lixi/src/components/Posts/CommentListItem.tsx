@@ -18,11 +18,13 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
 import { useRouter } from 'next/router';
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import intl from 'react-intl-universal';
 import { CommentOrderField, OrderDirection } from '@generated/types.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { BurnData } from './PostDetail';
+import { AuthorizationContext } from '@context/index';
+import useAuthorization from '@components/Common/Authorization/use-authorization.hooks';
 
 export type CommentItem = CommentQuery['comment'];
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
@@ -36,23 +38,31 @@ type CommentListItemProps = {
 
 const CommentListItem = ({ index, item, post, handleBurn }: CommentListItemProps) => {
   const dispatch = useAppDispatch();
-
   const history = useRouter();
   const ref = useRef<HTMLDivElement | null>(null);
-
-  const Wallet = React.useContext(WalletContext);
+  const Wallet = useContext(WalletContext);
   const { XPI, chronik } = Wallet;
   const { createBurnTransaction } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const authorization = useContext(AuthorizationContext);
+  const askAuthorization = useAuthorization();
 
   const upVoteComment = (dataItem: CommentItem) => {
-    handleBurn(true, { data: dataItem, burnForType: BurnForType.Comment });
+    if (authorization.authorized) {
+      handleBurn(true, { data: dataItem, burnForType: BurnForType.Comment });
+    } else {
+      askAuthorization();
+    }
   };
 
   const downVoteComment = (dataItem: CommentItem) => {
-    handleBurn(false, { data: dataItem, burnForType: BurnForType.Comment });
+    if (authorization.authorized) {
+      handleBurn(true, { data: dataItem, burnForType: BurnForType.Comment });
+    } else {
+      askAuthorization();
+    }
   };
 
   const showUsername = () => {
