@@ -64,6 +64,9 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
     where: {
       address: userAddress
     },
+    orderBy: {
+      updatedAt: 'desc'
+    },
     include: {
       avatar: {
         include: { upload: true }
@@ -98,7 +101,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
     followersCount: followersCount,
     followingsCount: followingsCount,
     followingPagesCount: followingPagesCount
-  }
+  };
   const accountAsString = JSON.stringify(result);
 
   return {

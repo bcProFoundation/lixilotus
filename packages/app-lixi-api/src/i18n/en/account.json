@@ -1,6 +1,7 @@
 {
   "messages": {
     "accountNotExist": "The account does not exist in the database.",
+    "walletAlreadyExist": "The wallet already exist in database.",
     "unableGetAccount": "Unable to get account.",
     "unableCreateAccount": "Unable to create new account.",
     "unableUpdateAccount": "Unable to update account.",

@@ -109,6 +109,19 @@ export class AccountResolver {
         const { address, publicKey } = await this.walletService.deriveAddress(data.mnemonic, 0);
         const name = address.slice(12, 17);
 
+        const existedWallet = await this.prisma.account.findFirst({
+          where: {
+            address: address
+          },
+          orderBy: {
+            updatedAt: 'desc'
+          }
+        });
+
+        if (existedWallet) {
+          throw new Error('account.messages.walletAlreadyExist');
+        }
+
         // Create random account secret then encrypt it using mnemonic
         const accountSecret: string = generateRandomBase58Str(10);
         const encryptedSecret = await aesGcmEncrypt(accountSecret, data.mnemonic);
