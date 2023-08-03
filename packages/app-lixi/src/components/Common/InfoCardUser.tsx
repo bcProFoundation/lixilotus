@@ -12,6 +12,7 @@ import { CaretRightOutlined } from '@ant-design/icons';
 import FollowSvg from '@assets/icons/follow.svg';
 import { currency } from '@components/Common/Ticker';
 import { openActionSheet } from '@store/action-sheet/actions';
+import { PostListType } from '@bcpros/lixi-models/constants';
 
 type InfoCardProps = {
   imgUrl: any;
@@ -29,6 +30,7 @@ type InfoCardProps = {
   followPostOwner?: boolean;
   followedPage?: boolean;
   post?: any;
+  postListType?: PostListType;
 };
 
 const CardUser = styled.div`
@@ -150,7 +152,8 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     lotusBurnScore,
     followPostOwner,
     followedPage,
-    post
+    post,
+    postListType
   } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const history = useRouter();
@@ -189,58 +192,62 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     // }
   };
 
+  const normalInfor = (
+    <div className="card-container">
+      <div onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+        {imgUrl ? <Avatar src={imgUrl} /> : <AvatarUser name={name} isMarginRight={true} />}
+      </div>
+      <div className="card-info">
+        <span className="name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+          {name}
+        </span>
+        <p className="title">
+          {title}
+          <span style={{ marginLeft: '4px', fontSize: '10px' }}>· {activatePostLocation && postLocation()}</span>
+          <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
+            {postEdited && intl.get('post.edited')}
+          </span>
+        </p>
+      </div>
+    </div>
+  );
+
   //if not token or page, nothing will be displayed. If it is a page, it will display the page name and have an Arrow. If it is a token, it will show the token name and have an Arrow
   return (
     <>
       <InfoCardUserContainer className={`info-card-user ${type === 'card' ? 'card' : ''}`}>
         <CardUser>
-          {!page && !token && (
-            <div className="card-container">
-              <div onClick={() => history.push(`/profile/${postAccountAddress}`)}>
-                {imgUrl ? <Avatar src={imgUrl} /> : <AvatarUser name={name} isMarginRight={true} />}
-              </div>
-              <div className="card-info">
-                <span className="name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
-                  {name}
-                </span>
-                <p className="title">
-                  {title}
-                  <span style={{ marginLeft: '4px', fontSize: '10px' }}>
-                    · {activatePostLocation && postLocation()}
+          {!page && !token && normalInfor}
+          {page &&
+            page?.name &&
+            (postListType === PostListType.Page ? (
+              normalInfor
+            ) : (
+              <div className="card-container">
+                <div className="page-bar" onClick={() => history.push(`/page/${page.id}}`)}>
+                  <img className="image-page" src={page?.avatar ? page?.avatar : '/images/default-avatar.jpg'} />
+                  <AvatarUser icon={imgUrl} name={name} isMarginRight={true} />
+                </div>
+                <div className="card-info">
+                  <span className="name" onClick={() => history.push(`/page/${page.id}`)}>
+                    {page?.name}
                   </span>
-                  <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
-                    {postEdited && intl.get('post.edited')}
-                  </span>
-                </p>
+                  <p className="title">
+                    <span className="account-name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+                      {name}
+                    </span>{' '}
+                    · {title} ·
+                    <span style={{ marginLeft: '4px', fontSize: '10px' }}>
+                      {activatePostLocation && postLocation()}{' '}
+                      {followPostOwner && <Icon className="follow-icon" component={() => <FollowSvg />} />}
+                    </span>
+                    <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
+                      {postEdited && intl.get('post.edited')}
+                    </span>
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
-          {page && page?.name && (
-            <div className="card-container">
-              <div className="page-bar" onClick={() => history.push(`/page/${page.id}}`)}>
-                <img className="image-page" src={page?.avatar ? page?.avatar : '/images/default-avatar.jpg'} />
-                <AvatarUser icon={imgUrl} name={name} isMarginRight={true} />
-              </div>
-              <div className="card-info">
-                <span className="name" onClick={() => history.push(`/page/${page.id}`)}>
-                  {page?.name}
-                </span>
-                <p className="title">
-                  <span className="account-name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
-                    {name}
-                  </span>{' '}
-                  · {title} ·
-                  <span style={{ marginLeft: '4px', fontSize: '10px' }}>
-                    {activatePostLocation && postLocation()}{' '}
-                    {followPostOwner && <Icon className="follow-icon" component={() => <FollowSvg />} />}
-                  </span>
-                  <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
-                    {postEdited && intl.get('post.edited')}
-                  </span>
-                </p>
-              </div>
-            </div>
-          )}
+            ))}
           {token && token?.name && (
             <div className="card-container">
               <div className="page-bar" onClick={() => history.push(`/token/${token?.tokenId}}`)}>
