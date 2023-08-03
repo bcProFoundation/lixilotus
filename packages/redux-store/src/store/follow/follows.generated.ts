@@ -30,6 +30,7 @@ export type AllFollowersByFollowingQueryVariables = Types.Exact<{
   last?: Types.InputMaybe<Types.Scalars['Int']>;
   orderBy?: Types.InputMaybe<Types.AccountOrder>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  followingAccountId?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type AllFollowersByFollowingQuery = {
@@ -77,6 +78,7 @@ export type AllFollowingsByFollowerQueryVariables = Types.Exact<{
   last?: Types.InputMaybe<Types.Scalars['Int']>;
   orderBy?: Types.InputMaybe<Types.AccountOrder>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  followerAccountId?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type AllFollowingsByFollowerQuery = {
@@ -360,7 +362,7 @@ export const CheckIfFollowAccountDocument = `
 }
     `;
 export const AllFollowersByFollowingDocument = `
-    query allFollowersByFollowing($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: AccountOrder, $skip: Int) {
+    query allFollowersByFollowing($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: AccountOrder, $skip: Int, $followingAccountId: Int) {
   allFollowersByFollowing(
     after: $after
     before: $before
@@ -368,6 +370,7 @@ export const AllFollowersByFollowingDocument = `
     last: $last
     orderBy: $orderBy
     skip: $skip
+    followingAccountId: $followingAccountId
   ) {
     totalCount
     edges {
@@ -384,7 +387,7 @@ export const AllFollowersByFollowingDocument = `
     ${AccountFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const AllFollowingsByFollowerDocument = `
-    query allFollowingsByFollower($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: AccountOrder, $skip: Int) {
+    query allFollowingsByFollower($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: AccountOrder, $skip: Int, $followerAccountId: Int) {
   allFollowingsByFollower(
     after: $after
     before: $before
@@ -392,6 +395,7 @@ export const AllFollowingsByFollowerDocument = `
     last: $last
     orderBy: $orderBy
     skip: $skip
+    followerAccountId: $followerAccountId
   ) {
     totalCount
     edges {

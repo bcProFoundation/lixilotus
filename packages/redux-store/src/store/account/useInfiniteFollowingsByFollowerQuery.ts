@@ -15,7 +15,7 @@ const { selectAll, selectEntities, selectIds, selectTotal } = accountsAdapter.ge
 
 interface AccountListByIdParams extends PaginationArgs {
   orderBy?: AccountOrder;
-  id?: number;
+  followerAccountId?: number;
 }
 
 export function useInfiniteFollowingsByFollowerQuery(

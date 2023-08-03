@@ -88,7 +88,7 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
   } = useInfiniteFollowersByFollowingQuery(
     {
       first: 10,
-      id: props.accountId
+      followingAccountId: props.accountId
     },
     false
   );
@@ -109,7 +109,7 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
   } = useInfiniteFollowingsByFollowerQuery(
     {
       first: 10,
-      id: props.accountId
+      followerAccountId: props.accountId
     },
     false
   );
