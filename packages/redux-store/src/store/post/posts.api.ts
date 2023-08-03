@@ -178,15 +178,23 @@ const enhancedApi = api.enhanceEndpoints({
 
         try {
           const { data: result } = await queryFulfilled;
+          /* Dont know why onQueryStarted will be called 4 times when create new post
+            So we need to prevent multiple update to cache
+            https://github.com/reduxjs/redux-toolkit/issues/2394#issuecomment-1198430740 &&
+            https://github.com/reduxjs/redux-toolkit/issues/2394#issuecomment-1198589018
+          */
           dispatch(
             api.util.updateQueryData('Posts', { minBurnFilter: minBurnFilter, isTop: isTop }, draft => {
-              draft.allPosts.edges.unshift({
-                cursor: result.createPost.id,
-                node: {
-                  ...result.createPost
-                }
-              });
-              draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
+              const oldDraft = draft.allPosts.edges.map(el => el.cursor);
+              if (!oldDraft.includes(result.createPost.id)) {
+                draft.allPosts.edges.unshift({
+                  cursor: result.createPost.id,
+                  node: {
+                    ...result.createPost
+                  }
+                });
+                draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
+              }
             })
           );
 
