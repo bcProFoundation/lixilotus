@@ -54,6 +54,7 @@ export const RenameAccountModal: React.FC<RenameAccountModalProps> = (props: Ren
       <Modal
         title={`${intl.get('settings.enterAccountName')} ${account.name}`}
         className={`${props?.classStyle}`}
+        transitionName=''
         open={true}
         onOk={handleOnOk}
         onCancel={handleOnCancel}

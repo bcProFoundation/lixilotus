@@ -296,6 +296,7 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
 
   return (
     <Modal
+      transitionName=''
       width={450}
       className={`${classStyle} custom-burn-modal`}
       open={true}

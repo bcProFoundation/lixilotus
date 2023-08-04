@@ -38,7 +38,7 @@ export const QRCodeModalPopup: React.FC<QRCodeModalProps> = (props: QRCodeModalP
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const handleOk = () => {};
+  const handleOk = () => { };
   const handleCancel = () => {
     dispatch(closeModal());
   };
@@ -54,8 +54,8 @@ export const QRCodeModalPopup: React.FC<QRCodeModalProps> = (props: QRCodeModalP
 
   return (
     <>
-      <Modal open={true} footer={null} width={400}>
-        <StyledModel width={490} open={true} onOk={handleOk} onCancel={handleCancel} closable={false} footer={null}>
+      <Modal open={true} footer={null} width={400} transitionName=''>
+        <StyledModel width={490} open={true} onOk={handleOk} onCancel={handleCancel} closable={false} transitionName='' footer={null}>
           <Descriptions bordered>
             <Descriptions.Item label={<QRCode address={props.address} size={300} />}>
               {/* <Button type='primary' onClick={handleCopy}> */}

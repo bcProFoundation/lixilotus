@@ -251,6 +251,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     <>
       <Modal
         title={intl.get('lixi.settingConfirm')}
+        transitionName=''
         open={true}
         onOk={() => handleOnOk()}
         onCancel={() => handleOnCancel()}

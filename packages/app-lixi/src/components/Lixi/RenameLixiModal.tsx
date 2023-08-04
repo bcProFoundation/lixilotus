@@ -54,6 +54,7 @@ export const RenameLixiModal: React.FC<RenameLixiModalProps> = (props: RenameLix
     <>
       <Modal
         className={`${props?.classStyle}`}
+        transitionName=''
         title={`${intl.get('lixi.renameLixi')} ${lixi.name}`}
         open={true}
         onOk={handleOnOk}

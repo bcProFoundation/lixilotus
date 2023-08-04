@@ -55,6 +55,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = (props: Del
     <>
       <Modal
         title={intl.get('settings.deleteAccountConfirmMessage', { account: account.name })}
+        transitionName=''
         open={true}
         onOk={handleOnOk}
         onCancel={() => handleOnCancel()}

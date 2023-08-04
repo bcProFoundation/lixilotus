@@ -125,6 +125,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled, cl
   return (
     <>
       <Modal
+        transitionName=''
         width={1192}
         className={`${classStyle} custom-edit-page-modal`}
         title={intl.get('page.updatePage')}

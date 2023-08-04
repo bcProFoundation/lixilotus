@@ -149,6 +149,7 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({
           width={400}
           className={`${classStyle} custom-create-page-modal`}
           title={intl.get('page.createNewPage')}
+          transitionName=''
           open={true}
           onCancel={handleOnCancel}
           footer={

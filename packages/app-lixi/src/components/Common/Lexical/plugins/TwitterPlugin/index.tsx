@@ -127,6 +127,7 @@ const TwitterPlugin: React.FC = () => {
       <Modal
         className="embed-tweet"
         title="Embed Tweet"
+        transitionName=''
         open={isModalOpen}
         footer={null}
         onCancel={() => setIsModalOpen(false)}
