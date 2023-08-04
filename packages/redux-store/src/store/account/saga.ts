@@ -201,7 +201,7 @@ function* postAccountSuccessSaga(action: PayloadAction<Account>) {
       name: newNameGenerator
     };
     yield put(renameAccount(command));
-    yield put(saveClaimAddress(account.address))
+    yield put(saveClaimAddress(account.address));
   }
   yield put(
     showToast('success', {
@@ -519,7 +519,7 @@ function* refreshLixiListSilentSaga(action: PayloadAction<number>) {
     const lixiesData = yield call(lixiApi.getByAccountId, accountId);
     const lixies = (lixiesData ?? []) as Lixi[];
     yield put(refreshLixiListSilentSuccess({ account: account, lixies: lixies }));
-  } catch (err) { }
+  } catch (err) {}
 }
 
 function* registerViaEmailNoVerifiedSaga(action: PayloadAction<RegisterViaEmailNoVerifiedCommand>) {

@@ -95,6 +95,8 @@ export class PostResolver {
       });
       const listFollowingsAccountIds = followingsAccount.map(item => item.followingAccountId);
 
+      // const listFollowingsAccountIds = await this.followCacheService.getAccountFollowings(accountId);
+
       const followingPagesAccount = await this.prisma.followPage.findMany({
         where: { accountId: account.id },
         select: { pageId: true, tokenId: true }
@@ -109,18 +111,11 @@ export class PostResolver {
           {
             postAccount: { id: account.id }
           },
-          {
-            page: { id: { in: listFollowingsPageIds } }
-          },
           ...(isTop == 'true'
-            ? [
-                {
-                  AND: [{ postAccount: { id: { in: listFollowingsAccountIds } } }, { lotusBurnScore: { gte: 0 } }]
-                },
-                {
-                  AND: [{ pageId: { in: listFollowingsPageIds } }, { lotusBurnScore: { gte: 1 } }]
-                }
-              ]
+            ? [{ AND: [{ postAccount: { id: { in: listFollowingsAccountIds } } }, { lotusBurnScore: { gte: 0 } }] }]
+            : []),
+          ...(isTop == 'true'
+            ? [{ AND: [{ pageId: { in: listFollowingsPageIds } }, { lotusBurnScore: { gte: 1 } }] }]
             : [])
         ]
       };

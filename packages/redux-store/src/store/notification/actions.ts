@@ -21,10 +21,14 @@ export const receiveNotification = createAction<NotificationDto>('notification/r
 export const sendXpiNotification = createAction<string>('notification/sendXpiNotification');
 export const xpiReceivedNotificationWebSocket = createAction<string>('notification/xpiReceivedNotificationWebSocket');
 
-export const readAllNotifications = createAction<{ accountId: number, mnemonichHash: string }>('notifications/readAllNotifications');
-export const readAllNotificationsSuccess = createAction<{ accountId: number, mnemonichHash: string, notifications: NotificationDto[] }>(
-  'notifications/readAllNotificationsSuccess'
+export const readAllNotifications = createAction<{ accountId: number; mnemonichHash: string }>(
+  'notifications/readAllNotifications'
 );
+export const readAllNotificationsSuccess = createAction<{
+  accountId: number;
+  mnemonichHash: string;
+  notifications: NotificationDto[];
+}>('notifications/readAllNotificationsSuccess');
 export const readAllNotificationsFailure = createAction<string>('notifications/readAllNotificationsFailure');
 
 export const userOnline = createAction<SocketUser>('notification/userOnline');

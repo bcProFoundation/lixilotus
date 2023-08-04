@@ -32,11 +32,13 @@ export const ItemActionSheetBottom = ({
   icon,
   type,
   text,
+  className,
   onClickItem
 }: {
   icon?: string;
   type?: string;
   text?: string;
+  className?: string;
   onClickItem?: () => void;
 }) => {
   return (
@@ -44,7 +46,7 @@ export const ItemActionSheetBottom = ({
       <span style={{ color: type === 'danger' ? 'var(--color-danger)' : '' }} className="text-action-sheet">
         {text}
       </span>
-      {icon && <img className="img-action-sheet-item" src={icon} />}
+      {icon && <img className={`img-action-sheet-item ${className}`} src={icon} />}
     </ItemActionSheet>
   );
 };
@@ -81,6 +83,10 @@ export const ItemActionSheet = styled.div`
     width: 17px;
     height: 17px;
     filter: var(--filter-svg-gray-color);
+    
+    &.isFollowed {
+      filter: var(--filter-color-primary) !important;
+    }
   }
 `;
 
@@ -223,6 +229,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
             <ItemActionSheetBottom
               text={`${intl.get('general.unfollow')} ${page?.name}`}
               icon="/images/follow.svg"
+              className='isFollowed'
               onClickItem={handleUnfollowPage}
             />
           )}
@@ -237,6 +244,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
             <ItemActionSheetBottom
               text={`${intl.get('general.unfollow')} ${post.postAccount?.name}`}
               icon="/images/follow.svg"
+              className='isFollowed'
               onClickItem={handleUnfollowAccount}
             />
           )}
