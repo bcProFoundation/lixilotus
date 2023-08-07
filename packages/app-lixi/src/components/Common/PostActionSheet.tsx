@@ -101,7 +101,8 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(true);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
-  const [isFollowed, setIsFollowed] = useState<boolean>(false);
+  const [isFollowedPage, setIsFollowedPage] = useState<boolean>(false);
+  const [isFollowedAccount, setIsFollowedAccount] = useState<boolean>(false);
 
   const [
     createFollowPageTrigger,
@@ -142,14 +143,10 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
       error: errorOnDeleteAccount
     }
   ] = useDeleteFollowAccountMutation();
-
   useEffect(() => {
-    if (isSuccessCreateFollowPage) setIsFollowed(true);
-  }, [isSuccessCreateFollowPage]);
-
-  useEffect(() => {
-    if (isSuccessDeleteFollowPage) setIsFollowed(false);
-  }, [isSuccessDeleteFollowPage]);
+    setIsFollowedPage(followedPage);
+    setIsFollowedAccount(followPostOwner);
+  }, [followedPage, followPostOwner]);
 
   const onClose = () => {
     setOpen(false);
@@ -173,7 +170,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
       accountId: selectedAccountId,
       pageId: page?.id
     };
-
+    setIsFollowedPage(!isFollowedPage);
     await createFollowPageTrigger({ input: createFollowPageInput });
   };
 
@@ -182,7 +179,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
       accountId: selectedAccountId,
       pageId: page?.id
     };
-
+    setIsFollowedPage(!isFollowedPage);
     await deleteFollowPageTrigger({ input: deleteFollowPageInput });
   };
 
@@ -191,7 +188,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
       followingAccountId: parseInt(post.postAccount.id),
       followerAccountId: selectedAccountId
     };
-
+    setIsFollowedAccount(!isFollowedAccount);
     await createFollowAccountTrigger({ input: createFollowAccountInput });
   };
 
@@ -200,7 +197,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
       followingAccountId: parseInt(post.postAccount.id),
       followerAccountId: selectedAccountId
     };
-
+    setIsFollowedAccount(!isFollowedAccount);
     await deleteFollowAccountTrigger({ input: deleteFollowAccountInput });
   };
 
@@ -218,14 +215,14 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
           <div className="bar-close" onClick={onClose}></div>
           {isEditPost && <ItemActionSheetBottom text="Edit post" icon="/images/ico-edit.svg" onClickItem={editPost} />}
           {/* <ItemActionSheetBottom type="danger" text="Remove" /> */}
-          {post.page && !followedPage && (
+          {post.page && !isFollowedPage && (
             <ItemActionSheetBottom
               text={`${intl.get('general.follow')} ${page?.name}`}
               icon="/images/follow.svg"
               onClickItem={handleFollowPage}
             />
           )}
-          {post.page && followedPage && (
+          {post.page && isFollowedPage && (
             <ItemActionSheetBottom
               text={`${intl.get('general.unfollow')} ${page?.name}`}
               icon="/images/follow.svg"
@@ -233,14 +230,14 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
               onClickItem={handleUnfollowPage}
             />
           )}
-          {post.postAccount.id != selectedAccountId && !followPostOwner && (
+          {post.postAccount.id != selectedAccountId && !isFollowedAccount && (
             <ItemActionSheetBottom
               text={`${intl.get('general.follow')} ${post.postAccount?.name}`}
               icon="/images/follow.svg"
               onClickItem={handleFollowAccount}
             />
           )}
-          {post.postAccount.id != selectedAccountId && followPostOwner && (
+          {post.postAccount.id != selectedAccountId && isFollowedAccount && (
             <ItemActionSheetBottom
               text={`${intl.get('general.unfollow')} ${post.postAccount?.name}`}
               icon="/images/follow.svg"
@@ -252,4 +249,4 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
       </Drawer>
     </>
   );
-};
+};  

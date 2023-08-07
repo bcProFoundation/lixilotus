@@ -59,7 +59,7 @@ const CommentListItem = ({ index, item, post, handleBurn }: CommentListItemProps
 
   const downVoteComment = (dataItem: CommentItem) => {
     if (authorization.authorized) {
-      handleBurn(true, { data: dataItem, burnForType: BurnForType.Comment });
+      handleBurn(false, { data: dataItem, burnForType: BurnForType.Comment });
     } else {
       askAuthorization();
     }
