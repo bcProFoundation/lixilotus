@@ -45,6 +45,22 @@ interface PlaygroundEmbedConfig extends EmbedConfig {
   description?: string;
 }
 
+const getStatusLink = (url: string) => {
+  const urlText = url.toLowerCase();
+  let id;
+  const afterStatus = urlText.slice(urlText.indexOf('status/') + 7);
+  const beforeStatus = urlText.slice(0, urlText.indexOf('status/'));
+  if (afterStatus.includes('/')) {
+    id = afterStatus.slice(0, afterStatus.indexOf('/'));
+  } else if (afterStatus.includes('?')) {
+    id = afterStatus.slice(0, afterStatus.indexOf('?'));
+  } else {
+    id = afterStatus;
+  }
+  const result = `${beforeStatus}status/${id}`;
+  return result;
+};
+
 export const YoutubeEmbedConfig: PlaygroundEmbedConfig = {
   contentName: 'Youtube Video',
 
@@ -97,7 +113,8 @@ export const TwitterEmbedConfig: PlaygroundEmbedConfig = {
 
   // Determine if a given URL is a match and return url data.
   parseUrl: (text: string) => {
-    const match = /^https:\/\/twitter\.com\/(#!\/)?(\w+)\/status(es)*\/(\d+)$/.exec(text);
+    const trimUrl = text.includes('status') ? getStatusLink(text) : text;
+    const match = /^https:\/\/twitter\.com\/(#!\/)?(\w+)\/status(es)*\/(\d+)$/.exec(trimUrl);
 
     if (match != null) {
       return {
@@ -313,7 +330,7 @@ export default function AutoEmbedPlugin(): JSX.Element {
                 <div
                   className="typeahead-popover auto-embed-menu"
                   style={{
-                    marginLeft: anchorElementRef.current.style.width,
+                    marginTop: anchorElementRef.current.style.height,
                     width: 200
                   }}
                 >

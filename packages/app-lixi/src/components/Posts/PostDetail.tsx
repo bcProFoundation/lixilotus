@@ -180,6 +180,12 @@ const PostContentDetail = styled.div`
     a {
       cursor: pointer;
     }
+    iframe {
+      max-width: 100%;
+      @media (max-width: 960px) {
+        height: 35vh;
+      }
+    }
   }
   .description-translate {
     font-weight: 400;
@@ -240,6 +246,7 @@ const PostContentDetail = styled.div`
       &.only-one-image {
         justify-content: center;
         img {
+          width: 100%;
           max-width: 100%;
         }
       }

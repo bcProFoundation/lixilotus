@@ -121,31 +121,34 @@ const TwitterPlugin: React.FC = () => {
     return result;
   };
 
-  return (
-    <>
-      <TwitterButton type="text" icon={<TwitterOutlined />} onClick={() => setIsModalOpen(true)}></TwitterButton>
-      <Modal
-        className="embed-tweet"
-        title="Embed Tweet"
-        transitionName=""
-        open={isModalOpen}
-        footer={null}
-        onCancel={() => setIsModalOpen(false)}
-      >
-        <Input
-          type="text"
-          placeholder="https://twitter.com/jack/status/20"
-          value={valueInput}
-          onChange={e => handleValueChange(e)}
-          status={errorTweet ? 'error' : ''}
-        />
-        {errorTweet && <p className="error-msg">Tweet url not correct</p>}
-        <Button disabled={!valueInput} type="primary" onClick={() => handleClick(valueInput)}>
-          Embed
-        </Button>
-      </Modal>
-    </>
-  );
+  // TODO: Btn Tweet
+  // return (
+  //   <>
+  //     <TwitterButton type="text" icon={<TwitterOutlined />} onClick={() => setIsModalOpen(true)}></TwitterButton>
+  //     <Modal
+  //       className="embed-tweet"
+  //       title="Embed Tweet"
+  //       transitionName=''
+  //       open={isModalOpen}
+  //       footer={null}
+  //       onCancel={() => setIsModalOpen(false)}
+  //     >
+  //       <Input
+  //         type="text"
+  //         placeholder="https://twitter.com/jack/status/20"
+  //         value={valueInput}
+  //         onChange={e => handleValueChange(e)}
+  //         status={errorTweet ? 'error' : ''}
+  //       />
+  //       {errorTweet && <p className="error-msg">Tweet url not correct</p>}
+  //       <Button disabled={!valueInput} type="primary" onClick={() => handleClick(valueInput)}>
+  //         Embed
+  //       </Button>
+  //     </Modal>
+  //   </>
+  // );
+
+  return null;
 };
 
 export default TwitterPlugin;

@@ -91,7 +91,15 @@ const Content = styled.div`
       }
     }
     iframe {
-      width: 100% !important;
+      min-width: 560px !important;
+      width: 750px !important;
+      max-width: 100% !important;
+      height: 50vh;
+      @media (max-width: 960px) {
+        min-width: auto !important;
+        width: 560px !important;
+        height: 30vh;
+      }
       // &#twitter-widget-0 {
       //   height: 750px !important;
       //   @media (min-width: 960px) {
@@ -198,6 +206,7 @@ const Content = styled.div`
       &.only-one-image {
         justify-content: center;
         img {
+          width: 100%;
           max-width: 100%;
         }
       }

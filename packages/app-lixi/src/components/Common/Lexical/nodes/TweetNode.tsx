@@ -107,7 +107,7 @@ const TweetComponent = ({
   return (
     <BlockWithAlignableContents className={className} format={format} nodeKey={nodeKey}>
       {isTweetLoading ? loadingComponent : null}
-      <div style={{ display: 'inline-block', width: '550px' }} ref={containerRef} />
+      <div ref={containerRef} />
     </BlockWithAlignableContents>
   );
 };

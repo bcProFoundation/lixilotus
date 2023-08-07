@@ -32,6 +32,8 @@ import Gallery from 'react-photo-gallery';
 import intl from 'react-intl-universal';
 import { removeUpload } from '@store/account';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import YouTubePlugin from './plugins/YouTubePlugin';
+import FigmaPlugin from './plugins/FigmaPlugin';
 
 export type EditorLexicalProps = {
   initialContent?: string;
@@ -62,6 +64,9 @@ const StyledEditorLexical = styled.div`
     padding: 8px 8px;
     min-height: calc(100% - 16px);
     margin-bottom: 24px;
+    iframe {
+      max-width: 100%;
+    }
   }
 
   .EditorLexical_hashtag {
@@ -126,6 +131,7 @@ const StyledEditorLexical = styled.div`
       &.only-one-image {
         justify-content: center;
         img {
+          width: 100%;
           max-width: 100%;
         }
       }
@@ -249,6 +255,8 @@ const EditorLexical = (props: EditorLexicalProps) => {
             <LinkPlugin />
             <HashtagPlugin />
             <AutoEmbedPlugin />
+            <YouTubePlugin />
+            <FigmaPlugin />
             <MyCustomAutoFocusPlugin
               initialContent={setInitialContent(hashtags, initialContent, isEditMode)}
               hashtags={hashtags}
