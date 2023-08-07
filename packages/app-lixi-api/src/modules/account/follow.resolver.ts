@@ -313,15 +313,25 @@ export class FollowResolver {
           };
 
     const result = await findManyCursorConnection(
-      paginationArgs => {
-        const pageFollowings = this.prisma.followPage.findMany({
+      async paginationArgs => {
+        const pageFollowings = await this.prisma.followPage.findMany({
           where: queryFollowPagesWhere,
           include: queryFollowPagesInclude,
           orderBy: { createdAt: 'asc' },
           ...paginationArgs
         });
 
-        return pageFollowings;
+        const result = pageFollowings.map(row => ({
+          ...row,
+          page: row.page
+            ? {
+                ...row.page,
+                totalBurnForPage: row.page.danaBurnScore + row.page.totalPostsBurnScore
+              }
+            : null
+        }));
+
+        return result;
       },
       () =>
         this.prisma.followPage.count({

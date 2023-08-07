@@ -148,6 +148,7 @@ fragment FollowPageFields on FollowPage {
       id
       name
     }
+    totalBurnForPage
   }
   tokenId
   token {
