@@ -4,7 +4,7 @@ import { Order } from '../../../core';
 
 export enum PostOrderField {
   id = 'id',
-  lotusBurnScore = 'lotusBurnScore',
+  danaBurnScore = 'danaBurnScore',
   createdAt = 'createdAt',
   updatedAt = 'updatedAt',
   lastRepostAt = 'lastRepostAt',

@@ -278,7 +278,7 @@ const PageHome = () => {
       orderBy: [
         {
           direction: OrderDirection.Desc,
-          field: PageOrderField.LotusBurnScore
+          field: PageOrderField.DanaBurnScore
         },
         {
           direction: OrderDirection.Desc,

@@ -268,7 +268,7 @@ const SidebarRanking = () => {
       orderBy: [
         {
           direction: OrderDirection.Desc,
-          field: PageOrderField.LotusBurnScore
+          field: PageOrderField.DanaBurnScore
         },
         {
           direction: OrderDirection.Desc,
@@ -483,8 +483,9 @@ const SidebarRanking = () => {
             </div>
             <img
               className="animation-top-ranking"
-              src={`${currentTheme === 'dark' ? '/images/ico-fire-heart-static.png' : '/images/ico-fire-heart-animation.gif'
-                }`}
+              src={`${
+                currentTheme === 'dark' ? '/images/ico-fire-heart-static.png' : '/images/ico-fire-heart-animation.gif'
+              }`}
               alt=""
             />
           </div>
@@ -578,7 +579,7 @@ const SidebarRanking = () => {
       <StyledModal
         className={`${currentTheme === 'dark' ? 'ant-modal-dark' : ''}`}
         title="Import account"
-        transitionName=''
+        transitionName=""
         open={open}
         footer={null}
         onCancel={() => setOpen(false)}

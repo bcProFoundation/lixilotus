@@ -134,18 +134,18 @@ async function updateLotusScoreForHashtag() {
       include: {
         post: {
           select: {
-            lotusBurnDown: true,
-            lotusBurnScore: true,
-            lotusBurnUp: true
+            danaBurnDown: true,
+            danaBurnScore: true,
+            danaBurnUp: true
           }
         }
       }
     });
 
     postHashtags.map(postHashtag => {
-      hashtagBurnScore += postHashtag.post?.lotusBurnScore ?? 0;
-      hashtagBurnUp += postHashtag.post?.lotusBurnUp ?? 0;
-      hashtagBurnDown += postHashtag.post?.lotusBurnDown ?? 0;
+      hashtagBurnScore += postHashtag.post?.danaBurnScore ?? 0;
+      hashtagBurnUp += postHashtag.post?.danaBurnUp ?? 0;
+      hashtagBurnDown += postHashtag.post?.danaBurnDown ?? 0;
     });
 
     await prisma.hashtag.update({
@@ -153,9 +153,9 @@ async function updateLotusScoreForHashtag() {
         id: hashtag.id
       },
       data: {
-        lotusBurnDown: hashtagBurnDown,
-        lotusBurnScore: hashtagBurnScore,
-        lotusBurnUp: hashtagBurnUp
+        danaBurnDown: hashtagBurnDown,
+        danaBurnScore: hashtagBurnScore,
+        danaBurnUp: hashtagBurnUp
       }
     });
   });

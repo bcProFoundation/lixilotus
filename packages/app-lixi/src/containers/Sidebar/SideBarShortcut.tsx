@@ -569,7 +569,7 @@ export const ShortCutItem = ({
           <div className="time-score">
             <p className="create-date">{transformCreatedAt(item?.createdAt)}</p>
             <div className="content-score">
-              <p className="lotus-burn-score">{item?.lotusBurnScore}</p>
+              <p className="lotus-burn-score">{item?.danaBurnScore}</p>
             </div>
           </div>
         </div>
@@ -628,7 +628,7 @@ export const ShortCutTopicItem = ({
     let burnScore = 0;
     if (posts.length > 0) {
       burnScore = posts.reduce((result, post) => {
-        return (result += post?.lotusBurnScore);
+        return (result += post?.danaBurnScore);
       }, 0);
     }
     return burnScore;
@@ -724,7 +724,7 @@ export const ShortCutPageItem = ({
           <div className="time-score">
             <p className="create-date">{transformCreatedAt(item?.createdAt)}</p>
             <div className="content-score">
-              <p className="lotus-burn-score">{item?.lotusBurnScore}</p>
+              <p className="lotus-burn-score">{item?.danaBurnScore}</p>
             </div>
           </div>
         </div>
@@ -803,7 +803,7 @@ const SidebarShortcut = () => {
       first: 10,
       orderBy: {
         direction: OrderDirection.Desc,
-        field: HashtagOrderField.LotusBurnScore
+        field: HashtagOrderField.DanaBurnScore
       },
       id: pageId
     },

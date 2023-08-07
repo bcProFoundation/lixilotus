@@ -26,7 +26,7 @@ type InfoCardProps = {
   onEditPostClick?: () => void;
   postEdited?: boolean;
   isDropdown?: boolean;
-  lotusBurnScore?: number;
+  danaBurnScore?: number;
   followPostOwner?: boolean;
   followedPage?: boolean;
   post?: any;
@@ -149,7 +149,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     postAccountAddress,
     postEdited,
     isDropdown,
-    lotusBurnScore,
+    danaBurnScore,
     followPostOwner,
     followedPage,
     post,
@@ -163,7 +163,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     {
       key: 'editPost',
       label: <a onClick={onEditPostClick}>{intl.get('post.editPost')}</a>,
-      disabled: lotusBurnScore !== 0
+      disabled: danaBurnScore !== 0
     }
   ];
   const postLocation = () => {

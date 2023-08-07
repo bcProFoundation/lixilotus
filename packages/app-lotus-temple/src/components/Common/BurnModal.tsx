@@ -231,14 +231,14 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
             <div className="banner-item">
               <LikeOutlined />
               <div className="count-bar">
-                <p className="title">{data.lotusBurnUp + ' XPI'}</p>
+                <p className="title">{data.danaBurnUp + ' XPI'}</p>
                 <p className="sub-title">burnt to up</p>
               </div>
             </div>
             <div className="banner-item">
               <DislikeOutlined />
               <div className="count-bar">
-                <p className="title">{data.lotusBurnDown + ' XPI'}</p>
+                <p className="title">{data.danaBurnDown + ' XPI'}</p>
                 <p className="sub-title">burnt to down</p>
               </div>
             </div>

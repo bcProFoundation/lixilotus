@@ -67,9 +67,9 @@ fragment CommentFields on Comment {
       }
     }
   }
-  lotusBurnUp
-  lotusBurnDown
-  lotusBurnScore
+  danaBurnUp
+  danaBurnDown
+  danaBurnScore
   createdAt
   updatedAt
 }

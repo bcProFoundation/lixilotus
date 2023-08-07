@@ -544,14 +544,14 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <div className="reaction-container">
             <div className="reaction-ico">
               <IconBurn
-                burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
+                burnValue={formatBalance(post?.danaBurnUp ?? 0)}
                 imgUrl="/images/ico-burn-up.svg"
                 key={`list-vertical-upvote-o-${post.id}`}
                 dataItem={post}
                 onClickIcon={() => upVotePost(post)}
               />
               <IconBurn
-                burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
+                burnValue={formatBalance(post?.danaBurnDown ?? 0)}
                 imgUrl="/images/custom-burn.svg"
                 key={`list-vertical-downvote-o-${post.id}`}
                 dataItem={post}

@@ -347,10 +347,10 @@ const TokensListing = () => {
     },
     {
       title: intl.get('general.dana'),
-      key: 'lotusBurn',
-      sorter: ({ node: a }, { node: b }) => a.lotusBurnScore - b.lotusBurnScore,
+      key: 'danaBurn',
+      sorter: ({ node: a }, { node: b }) => a.danaBurnScore - b.danaBurnScore,
       defaultSortOrder: 'descend',
-      render: (_, { node: record }) => <Counter num={formatBalance(record.lotusBurnScore)} />
+      render: (_, { node: record }) => <Counter num={formatBalance(record.danaBurnScore)} />
     },
     {
       title: intl.get('label.comment'),
@@ -638,7 +638,7 @@ const TokensListing = () => {
       <Modal
         className={`${currentTheme === 'dark' ? 'ant-modal-dark' : ''} modal-import-token`}
         title={intl.get('token.importToken')}
-        transitionName=''
+        transitionName=""
         open={isModalVisible}
         onOk={handleSubmit(addTokenbyId)}
         onCancel={() => setIsModalVisible(!isModalVisible)}

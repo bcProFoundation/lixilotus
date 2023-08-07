@@ -386,9 +386,9 @@ fragment PostFields on Post {
       address
     }
   }
-  lotusBurnUp
-  lotusBurnDown
-  lotusBurnScore
+  danaBurnUp
+  danaBurnDown
+  danaBurnScore
   totalComments
   createdAt
   updatedAt
@@ -451,9 +451,9 @@ fragment PostMeiliFields on Post {
       address
     }
   }
-  lotusBurnUp
-  lotusBurnDown
-  lotusBurnScore
+  danaBurnUp
+  danaBurnDown
+  danaBurnScore
   totalComments
   createdAt
   updatedAt

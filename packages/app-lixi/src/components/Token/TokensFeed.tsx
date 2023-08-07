@@ -260,7 +260,7 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
       first: 3,
       orderBy: {
         direction: OrderDirection.Desc,
-        field: HashtagOrderField.LotusBurnScore
+        field: HashtagOrderField.DanaBurnScore
       },
       id: token.id
     },
@@ -534,7 +534,7 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
               </div>
               <InfoSubCard typeName={intl.get('token.ticker')} content={tokenDetailData.ticker} />
               <InfoSubCard typeName={intl.get('token.name')} content={tokenDetailData.name} />
-              <InfoSubCard typeName={intl.get('general.dana')} content={tokenDetailData.lotusBurnUp} />
+              <InfoSubCard typeName={intl.get('general.dana')} content={tokenDetailData.danaBurnUp} />
             </div>
             <div className="info-ticker__right">
               <CopyToClipboard text={tokenDetailData.tokenId} onCopy={() => handleOnCopy(tokenDetailData.tokenId)}>
@@ -560,7 +560,7 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
           <LikeOutlined style={{ marginRight: '10px', fontSize: '1.2rem' }} />
           <IconBurn
             imgUrl="/images/ico-burn-up.svg"
-            burnValue={formatBalance(tokenDetailData?.lotusBurnUp ?? 0)}
+            burnValue={formatBalance(tokenDetailData?.danaBurnUp ?? 0)}
             key={`list-vertical-upvote-o-${tokenDetailData.id}`}
             dataItem={tokenDetailData}
             onClickIcon={() => {}}

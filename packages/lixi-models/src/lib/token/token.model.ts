@@ -33,15 +33,15 @@ export class Token {
 
   @IsOptional()
   @Field(() => Float)
-  lotusBurnUp: number;
+  danaBurnUp: number;
 
   @IsOptional()
   @Field(() => Float)
-  lotusBurnDown: number;
+  danaBurnDown: number;
 
   @IsOptional()
   @Field(() => Float)
-  lotusBurnScore: number;
+  danaBurnScore: number;
 
   @Field(() => String, { nullable: true })
   initialTokenQuantity: string;

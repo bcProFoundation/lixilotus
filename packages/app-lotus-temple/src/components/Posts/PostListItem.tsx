@@ -372,14 +372,14 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
       <ActionBar>
         <GroupIconText>
           <IconBurn
-            burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
+            burnValue={formatBalance(post?.danaBurnUp ?? 0)}
             imgUrl="/images/ico-burn-up.svg"
             key={`list-vertical-upvote-o-${item.id}`}
             dataItem={item}
             onClickIcon={e => upVotePost(e, item)}
           />
           <IconBurn
-            burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
+            burnValue={formatBalance(post?.danaBurnDown ?? 0)}
             imgUrl="/images/custom-burn.svg"
             key={`list-vertical-downvote-o-${item.id}`}
             dataItem={item}
@@ -387,14 +387,14 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
           />
           {/* TODO: complete next Release */}
           {/* <IconBurn
-            burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
+            burnValue={formatBalance(post?.danaBurnDown ?? 0)}
             imgUrl="/images/ico-comments.svg"
             key={`list-vertical-comments-o-${item.id}`}
             dataItem={item}
             onClickIcon={e => downVotePost(e, item)}
           />
           <IconBurn
-            burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
+            burnValue={formatBalance(post?.danaBurnDown ?? 0)}
             imgUrl="/images/ico-share.svg"
             key={`list-vertical-share-o-${item.id}`}
             dataItem={item}

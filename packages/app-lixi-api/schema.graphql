@@ -81,10 +81,10 @@ type Comment {
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
+  danaBurnDown: Float!
+  danaBurnScore: Float!
+  danaBurnUp: Float!
   id: ID!
-  lotusBurnDown: Float!
-  lotusBurnScore: Float!
-  lotusBurnUp: Float!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -109,8 +109,8 @@ input CommentOrder {
 """Properties by which comment connections can be ordered."""
 enum CommentOrderField {
   createdAt
+  danaBurnScore
   id
-  lotusBurnScore
   updatedAt
 }
 
@@ -298,10 +298,10 @@ type Hashtag {
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime
+  danaBurnDown: Float!
+  danaBurnScore: Float!
+  danaBurnUp: Float!
   id: ID!
-  lotusBurnDown: Float!
-  lotusBurnScore: Float!
-  lotusBurnUp: Float!
   normalizedContent: String!
   postHashtags: [PostHashtag!]
 
@@ -328,8 +328,8 @@ input HashtagOrder {
 """Properties by which hashtag connections can be ordered."""
 enum HashtagOrderField {
   createdAt
+  danaBurnScore
   id
-  lotusBurnScore
   updatedAt
 }
 
@@ -383,13 +383,13 @@ type Page {
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
+  danaBurnDown: Float!
+  danaBurnScore: Float!
+  danaBurnUp: Float!
   description: String!
   encryptedMnemonic: String
   followersCount: Int
   id: ID!
-  lotusBurnDown: Float!
-  lotusBurnScore: Float!
-  lotusBurnUp: Float!
   name: String!
   pageAccount: Account!
   pageAccountId: Int!
@@ -437,8 +437,8 @@ input PageOrder {
 """Properties by which page connections can be ordered."""
 enum PageOrderField {
   createdAt
+  danaBurnScore
   id
-  lotusBurnScore
   name
   title
   totalPostsBurnScore
@@ -450,12 +450,12 @@ type Post {
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
+  danaBurnDown: Float!
+  danaBurnScore: Float!
+  danaBurnUp: Float!
   followPostOwner: Boolean
   followedPage: Boolean
   id: ID!
-  lotusBurnDown: Float!
-  lotusBurnScore: Float!
-  lotusBurnUp: Float!
   originalLanguage: String
   page: Page
   pageId: String
@@ -519,9 +519,9 @@ input PostOrder {
 enum PostOrderField {
   content
   createdAt
+  danaBurnScore
   id
   lastRepostAt
-  lotusBurnScore
   updatedAt
 }
 
@@ -769,13 +769,13 @@ type Token {
 
   """Identifies the date and time when the object was created."""
   createdDate: DateTime!
+  danaBurnDown: Float!
+  danaBurnScore: Float!
+  danaBurnUp: Float!
   decimals: Int!
   id: ID!
   initialTokenQuantity: String
   isFollowed: Boolean
-  lotusBurnDown: Float!
-  lotusBurnScore: Float!
-  lotusBurnUp: Float!
   name: String!
   rank: Int
   ticker: String!
@@ -805,10 +805,10 @@ input TokenOrder {
 """Properties by which token connections can be ordered."""
 enum TokenOrderField {
   createdDate
+  danaBurnDown
+  danaBurnScore
+  danaBurnUp
   id
-  lotusBurnDown
-  lotusBurnScore
-  lotusBurnUp
   name
   ticker
   tokenId

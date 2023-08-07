@@ -97,10 +97,10 @@ export type Comment = {
   content: Scalars['String'];
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
+  danaBurnDown: Scalars['Float'];
+  danaBurnScore: Scalars['Float'];
+  danaBurnUp: Scalars['Float'];
   id: Scalars['ID'];
-  lotusBurnDown: Scalars['Float'];
-  lotusBurnScore: Scalars['Float'];
-  lotusBurnUp: Scalars['Float'];
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
 };
@@ -126,8 +126,8 @@ export type CommentOrder = {
 /** Properties by which comment connections can be ordered. */
 export enum CommentOrderField {
   CreatedAt = 'createdAt',
+  DanaBurnScore = 'danaBurnScore',
   Id = 'id',
-  LotusBurnScore = 'lotusBurnScore',
   UpdatedAt = 'updatedAt'
 }
 
@@ -309,10 +309,10 @@ export type Hashtag = {
   content: Scalars['String'];
   /** Identifies the date and time when the object was created. */
   createdAt?: Maybe<Scalars['DateTime']>;
+  danaBurnDown: Scalars['Float'];
+  danaBurnScore: Scalars['Float'];
+  danaBurnUp: Scalars['Float'];
   id: Scalars['ID'];
-  lotusBurnDown: Scalars['Float'];
-  lotusBurnScore: Scalars['Float'];
-  lotusBurnUp: Scalars['Float'];
   normalizedContent: Scalars['String'];
   postHashtags?: Maybe<Array<PostHashtag>>;
   /** Identifies the date and time when the object was last updated. */
@@ -340,8 +340,8 @@ export type HashtagOrder = {
 /** Properties by which hashtag connections can be ordered. */
 export enum HashtagOrderField {
   CreatedAt = 'createdAt',
+  DanaBurnScore = 'danaBurnScore',
   Id = 'id',
-  LotusBurnScore = 'lotusBurnScore',
   UpdatedAt = 'updatedAt'
 }
 
@@ -474,13 +474,13 @@ export type Page = {
   createPostFee: Scalars['String'];
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
+  danaBurnDown: Scalars['Float'];
+  danaBurnScore: Scalars['Float'];
+  danaBurnUp: Scalars['Float'];
   description: Scalars['String'];
   encryptedMnemonic?: Maybe<Scalars['String']>;
   followersCount?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
-  lotusBurnDown: Scalars['Float'];
-  lotusBurnScore: Scalars['Float'];
-  lotusBurnUp: Scalars['Float'];
   name: Scalars['String'];
   pageAccount: Account;
   pageAccountId: Scalars['Int'];
@@ -529,8 +529,8 @@ export type PageOrder = {
 /** Properties by which page connections can be ordered. */
 export enum PageOrderField {
   CreatedAt = 'createdAt',
+  DanaBurnScore = 'danaBurnScore',
   Id = 'id',
-  LotusBurnScore = 'lotusBurnScore',
   Name = 'name',
   Title = 'title',
   TotalPostsBurnScore = 'totalPostsBurnScore',
@@ -542,12 +542,12 @@ export type Post = {
   content: Scalars['String'];
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
+  danaBurnDown: Scalars['Float'];
+  danaBurnScore: Scalars['Float'];
+  danaBurnUp: Scalars['Float'];
   followPostOwner?: Maybe<Scalars['Boolean']>;
   followedPage?: Maybe<Scalars['Boolean']>;
   id: Scalars['ID'];
-  lotusBurnDown: Scalars['Float'];
-  lotusBurnScore: Scalars['Float'];
-  lotusBurnUp: Scalars['Float'];
   originalLanguage?: Maybe<Scalars['String']>;
   page?: Maybe<Page>;
   pageId?: Maybe<Scalars['String']>;
@@ -614,9 +614,9 @@ export type PostOrder = {
 export enum PostOrderField {
   Content = 'content',
   CreatedAt = 'createdAt',
+  DanaBurnScore = 'danaBurnScore',
   Id = 'id',
   LastRepostAt = 'lastRepostAt',
-  LotusBurnScore = 'lotusBurnScore',
   UpdatedAt = 'updatedAt'
 }
 
@@ -1138,13 +1138,13 @@ export type Token = {
   comments?: Maybe<Scalars['DateTime']>;
   /** Identifies the date and time when the object was created. */
   createdDate: Scalars['DateTime'];
+  danaBurnDown: Scalars['Float'];
+  danaBurnScore: Scalars['Float'];
+  danaBurnUp: Scalars['Float'];
   decimals: Scalars['Int'];
   id: Scalars['ID'];
   initialTokenQuantity?: Maybe<Scalars['String']>;
   isFollowed?: Maybe<Scalars['Boolean']>;
-  lotusBurnDown: Scalars['Float'];
-  lotusBurnScore: Scalars['Float'];
-  lotusBurnUp: Scalars['Float'];
   name: Scalars['String'];
   rank?: Maybe<Scalars['Int']>;
   ticker: Scalars['String'];
@@ -1176,10 +1176,10 @@ export type TokenOrder = {
 /** Properties by which token connections can be ordered. */
 export enum TokenOrderField {
   CreatedDate = 'createdDate',
+  DanaBurnDown = 'danaBurnDown',
+  DanaBurnScore = 'danaBurnScore',
+  DanaBurnUp = 'danaBurnUp',
   Id = 'id',
-  LotusBurnDown = 'lotusBurnDown',
-  LotusBurnScore = 'lotusBurnScore',
-  LotusBurnUp = 'lotusBurnUp',
   Name = 'name',
   Ticker = 'ticker',
   TokenId = 'tokenId'

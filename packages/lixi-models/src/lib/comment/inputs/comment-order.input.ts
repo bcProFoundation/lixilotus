@@ -4,7 +4,7 @@ import { Order } from '../../../core';
 
 export enum CommentOrderField {
   id = 'id',
-  lotusBurnScore = 'lotusBurnScore',
+  danaBurnScore = 'danaBurnScore',
   createdAt = 'createdAt',
   updatedAt = 'updatedAt'
 }

@@ -98,7 +98,7 @@ export const AuthorizationModal = ({ classStyle }: AuthorizationModalProps) => {
         dispatch(generateAccount());
         dispatch(closeModal());
       },
-      onCancel() { }
+      onCancel() {}
     });
   }
 

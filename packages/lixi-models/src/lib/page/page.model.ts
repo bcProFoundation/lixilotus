@@ -51,13 +51,13 @@ export class Page {
   website?: string;
 
   @Field(() => Float)
-  lotusBurnUp: number;
+  danaBurnUp: number;
 
   @Field(() => Float)
-  lotusBurnDown: number;
+  danaBurnDown: number;
 
   @Field(() => Float)
-  lotusBurnScore: number;
+  danaBurnScore: number;
 
   @Field(() => Float, { nullable: true, description: 'The sum of burn amount for every post on page' })
   totalBurnForPage?: number;

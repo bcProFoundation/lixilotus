@@ -129,31 +129,31 @@ export class BurnController {
             }
           });
 
-          let lotusBurnUp = post?.lotusBurnUp ?? 0;
-          let lotusBurnDown = post?.lotusBurnDown ?? 0;
+          let danaBurnUp = post?.danaBurnUp ?? 0;
+          let danaBurnDown = post?.danaBurnDown ?? 0;
           const xpiValue = value;
 
           if (command.burnType == BurnType.Up) {
-            lotusBurnUp = lotusBurnUp + xpiValue;
+            danaBurnUp = danaBurnUp + xpiValue;
           } else {
-            lotusBurnDown = lotusBurnDown + xpiValue;
+            danaBurnDown = danaBurnDown + xpiValue;
           }
-          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+          const danaBurnScore = danaBurnUp - danaBurnDown;
 
           await this.prisma.post.update({
             where: {
               id: command.burnForId
             },
             data: {
-              lotusBurnDown,
-              lotusBurnUp,
-              lotusBurnScore
+              danaBurnDown,
+              danaBurnUp,
+              danaBurnScore
             }
           });
 
-          //Translate if lotusBurnScore >= TRANSLATION_REQUIRE_AMOUNT and hasnt been translate before
+          //Translate if danaBurnScore >= TRANSLATION_REQUIRE_AMOUNT and hasnt been translate before
           //For now, the code below only support 2 langs (vi - en), need to rework code if support more than 2 langs
-          if (lotusBurnScore >= TRANSLATION_REQUIRE_AMOUNT && post?.originalLanguage === null) {
+          if (danaBurnScore >= TRANSLATION_REQUIRE_AMOUNT && post?.originalLanguage === null) {
             await this.translateService.translatePostAndSave(TranslateProvider.AZURE, post?.content, post.id);
           }
 
@@ -186,23 +186,23 @@ export class BurnController {
             const hashtagBurnValue = xpiValue / postHashtags.length;
             await this.prisma.$transaction(
               postHashtags.map(postHashtag => {
-                let hashtagLotusBurnUp = postHashtag.hashtag.lotusBurnUp ?? 0;
-                let hashtagLotusBurnDown = postHashtag.hashtag.lotusBurnDown ?? 0;
+                let hashtagDanaBurnUp = postHashtag.hashtag.danaBurnUp ?? 0;
+                let hashtagDanaBurnDown = postHashtag.hashtag.danaBurnDown ?? 0;
 
                 if (command.burnType == BurnType.Up) {
-                  hashtagLotusBurnUp = hashtagLotusBurnUp + hashtagBurnValue;
+                  hashtagDanaBurnUp = hashtagDanaBurnUp + hashtagBurnValue;
                 } else {
-                  hashtagLotusBurnDown = hashtagLotusBurnDown + hashtagBurnValue;
+                  hashtagDanaBurnDown = hashtagDanaBurnDown + hashtagBurnValue;
                 }
-                const hashTagLotusBurnScore = hashtagLotusBurnUp - hashtagLotusBurnDown;
+                const hashTagDanaBurnScore = hashtagDanaBurnUp - hashtagDanaBurnDown;
                 return this.prisma.hashtag.update({
                   where: {
                     id: postHashtag?.hashtag.id
                   },
                   data: {
-                    lotusBurnUp: hashtagLotusBurnUp,
-                    lotusBurnDown: hashtagLotusBurnDown,
-                    lotusBurnScore: hashTagLotusBurnScore
+                    danaBurnUp: hashtagDanaBurnUp,
+                    danaBurnDown: hashtagDanaBurnDown,
+                    danaBurnScore: hashTagDanaBurnScore
                   }
                 });
               })
@@ -215,25 +215,25 @@ export class BurnController {
             }
           });
 
-          let lotusBurnUp = token?.lotusBurnUp ?? 0;
-          let lotusBurnDown = token?.lotusBurnDown ?? 0;
+          let danaBurnUp = token?.danaBurnUp ?? 0;
+          let danaBurnDown = token?.danaBurnDown ?? 0;
           const xpiValue = value;
 
           if (command.burnType == BurnType.Up) {
-            lotusBurnUp = lotusBurnUp + xpiValue;
+            danaBurnUp = danaBurnUp + xpiValue;
           } else {
-            lotusBurnDown = lotusBurnDown + xpiValue;
+            danaBurnDown = danaBurnDown + xpiValue;
           }
-          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+          const danaBurnScore = danaBurnUp - danaBurnDown;
 
           const updatedToken = await this.prisma.token.update({
             where: {
               tokenId: command.burnForId
             },
             data: {
-              lotusBurnDown,
-              lotusBurnUp,
-              lotusBurnScore
+              danaBurnDown,
+              danaBurnUp,
+              danaBurnScore
             }
           });
 
@@ -241,7 +241,7 @@ export class BurnController {
           const keyPrefix = `tokens:list`;
           const hashPrefix = `tokens:items-data`;
           const tokenRepository = new SortedItemRepository<Token>(keyPrefix, hashPrefix, this.redis);
-          await tokenRepository.set(updatedToken, lotusBurnScore);
+          await tokenRepository.set(updatedToken, danaBurnScore);
         } else if (command.burnForType === BurnForType.Comment) {
           const comment = await this.prisma.comment.findFirst({
             where: {
@@ -249,25 +249,25 @@ export class BurnController {
             }
           });
 
-          let lotusBurnUp = comment?.lotusBurnUp ?? 0;
-          let lotusBurnDown = comment?.lotusBurnDown ?? 0;
+          let danaBurnUp = comment?.danaBurnUp ?? 0;
+          let danaBurnDown = comment?.danaBurnDown ?? 0;
           const xpiValue = value;
 
           if (command.burnType == BurnType.Up) {
-            lotusBurnUp = lotusBurnUp + xpiValue;
+            danaBurnUp = danaBurnUp + xpiValue;
           } else {
-            lotusBurnDown = lotusBurnDown + xpiValue;
+            danaBurnDown = danaBurnDown + xpiValue;
           }
-          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+          const danaBurnScore = danaBurnUp - danaBurnDown;
 
           await this.prisma.comment.update({
             where: {
               id: command.burnForId
             },
             data: {
-              lotusBurnDown,
-              lotusBurnUp,
-              lotusBurnScore
+              danaBurnDown,
+              danaBurnUp,
+              danaBurnScore
             }
           });
         }

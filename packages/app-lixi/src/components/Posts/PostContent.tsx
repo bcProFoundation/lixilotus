@@ -9,7 +9,7 @@ const PostContent = ({ post }) => {
 
   const calculateLineShow = () => {
     let lineNum = 6.5;
-    const postScore = post?.lotusBurnScore;
+    const postScore = post?.danaBurnScore;
     if (postScore >= 50 && postScore < 200) {
       lineNum = 11;
     } else if (postScore >= 200) {

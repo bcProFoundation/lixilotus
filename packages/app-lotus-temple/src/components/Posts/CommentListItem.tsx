@@ -67,16 +67,16 @@ const CommentListItem = ({ index, item, post, handleBurn }: CommentListItemProps
     <span key={`comment-up-vote-${item.id}`}>
       <Tooltip title={intl.get('general.burnUp')}>
         <Space onClick={() => upVoteComment(item)}>
-          {item?.lotusBurnUp > 0 ? <LikeFilled /> : <LikeOutlined />}
-          <Counter num={formatBalance(item?.lotusBurnUp ?? 0)} />
+          {item?.danaBurnUp > 0 ? <LikeFilled /> : <LikeOutlined />}
+          <Counter num={formatBalance(item?.danaBurnUp ?? 0)} />
         </Space>
       </Tooltip>
     </span>,
     <span key={`comment-down-vote-${item.id}`}>
       <Tooltip title={intl.get('general.burnDown')}>
         <Space onClick={() => downVoteComment(item)}>
-          {item?.lotusBurnDown > 0 ? <DislikeFilled /> : <DislikeOutlined />}
-          <Counter num={formatBalance(item?.lotusBurnDown ?? 0)} />
+          {item?.danaBurnDown > 0 ? <DislikeFilled /> : <DislikeOutlined />}
+          <Counter num={formatBalance(item?.danaBurnDown ?? 0)} />
         </Space>
       </Tooltip>
     </span>

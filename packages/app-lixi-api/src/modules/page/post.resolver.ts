@@ -106,16 +106,16 @@ export class PostResolver {
       const queryPosts: any = {
         OR: [
           {
-            lotusBurnScore: { gte: minBurnFilter ?? 0 }
+            danaBurnScore: { gte: minBurnFilter ?? 0 }
           },
           {
             postAccount: { id: account.id }
           },
           ...(isTop == 'true'
-            ? [{ AND: [{ postAccount: { id: { in: listFollowingsAccountIds } } }, { lotusBurnScore: { gte: 0 } }] }]
+            ? [{ AND: [{ postAccount: { id: { in: listFollowingsAccountIds } } }, { danaBurnScore: { gte: 0 } }] }]
             : []),
           ...(isTop == 'true'
-            ? [{ AND: [{ pageId: { in: listFollowingsPageIds } }, { lotusBurnScore: { gte: 1 } }] }]
+            ? [{ AND: [{ pageId: { in: listFollowingsPageIds } }, { danaBurnScore: { gte: 1 } }] }]
             : [])
         ]
       };
@@ -160,7 +160,7 @@ export class PostResolver {
           this.prisma.post.findMany({
             include: { postAccount: true, comments: true },
             where: {
-              lotusBurnScore: {
+              danaBurnScore: {
                 gte: minBurnFilter ?? 0
               }
             },
@@ -170,7 +170,7 @@ export class PostResolver {
         () =>
           this.prisma.post.count({
             where: {
-              lotusBurnScore: {
+              danaBurnScore: {
                 gte: minBurnFilter ?? 0
               }
             }
@@ -217,7 +217,7 @@ export class PostResolver {
                     token: null
                   },
                   {
-                    lotusBurnScore: {
+                    danaBurnScore: {
                       gte: minBurnFilter ?? 0
                     }
                   }
@@ -242,7 +242,7 @@ export class PostResolver {
                     token: null
                   },
                   {
-                    lotusBurnScore: {
+                    danaBurnScore: {
                       gte: minBurnFilter ?? 0
                     }
                   }
@@ -294,7 +294,7 @@ export class PostResolver {
                   AND: [{ postAccountId: account.id }, { pageId: id }]
                 },
                 {
-                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
+                  AND: [{ pageId: id }, { danaBurnScore: { gte: minBurnFilter ?? 0 } }]
                 }
               ]
             },
@@ -321,7 +321,7 @@ export class PostResolver {
                   AND: [{ postAccountId: account.id }, { pageId: id }]
                 },
                 {
-                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
+                  AND: [{ pageId: id }, { danaBurnScore: { gte: minBurnFilter ?? 0 } }]
                 }
               ]
             }
@@ -339,7 +339,7 @@ export class PostResolver {
                   AND: [{ postAccountId: account.id }, { pageId: id }]
                 },
                 {
-                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
+                  AND: [{ pageId: id }, { danaBurnScore: { gte: minBurnFilter ?? 0 } }]
                 }
               ]
             },
@@ -354,7 +354,7 @@ export class PostResolver {
                   AND: [{ postAccountId: account.id }, { pageId: id }]
                 },
                 {
-                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
+                  AND: [{ pageId: id }, { danaBurnScore: { gte: minBurnFilter ?? 0 } }]
                 }
               ]
             }
@@ -451,7 +451,7 @@ export class PostResolver {
       //         id: { in: postsId }
       //       },
       //       {
-      //         lotusBurnScore: {
+      //         danaBurnScore: {
       //           gte: minBurnFilter ?? 0
       //         }
       //       }
@@ -470,7 +470,7 @@ export class PostResolver {
                   id: { in: postsId }
                 },
                 {
-                  lotusBurnScore: {
+                  danaBurnScore: {
                     gte: minBurnFilter ?? 0
                   }
                 }
@@ -487,7 +487,7 @@ export class PostResolver {
                   id: { in: postsId }
                 },
                 {
-                  lotusBurnScore: {
+                  danaBurnScore: {
                     gte: minBurnFilter ?? 0
                   }
                 }
@@ -559,7 +559,7 @@ export class PostResolver {
             id: { in: postsId }
           },
           {
-            lotusBurnScore: {
+            danaBurnScore: {
               gte: minBurnFilter ?? 0
             }
           }
@@ -622,7 +622,7 @@ export class PostResolver {
             id: { in: postsId }
           },
           {
-            lotusBurnScore: {
+            danaBurnScore: {
               gte: minBurnFilter ?? 0
             }
           }
@@ -667,7 +667,7 @@ export class PostResolver {
                     tokenId: id
                   },
                   {
-                    lotusBurnScore: {
+                    danaBurnScore: {
                       gte: minBurnFilter ?? 0
                     }
                   }
@@ -691,7 +691,7 @@ export class PostResolver {
                     tokenId: id
                   },
                   {
-                    lotusBurnScore: {
+                    danaBurnScore: {
                       gte: minBurnFilter ?? 0
                     }
                   }
@@ -732,7 +732,7 @@ export class PostResolver {
                   postAccountId: _.toSafeInteger(id)
                 },
                 {
-                  lotusBurnScore: {
+                  danaBurnScore: {
                     gte: minBurnFilter ?? 0
                   }
                 },
@@ -751,7 +751,7 @@ export class PostResolver {
                   postAccountId: _.toSafeInteger(id)
                 },
                 {
-                  lotusBurnScore: {
+                  danaBurnScore: {
                     gte: minBurnFilter ?? 0
                   }
                 },
@@ -773,7 +773,7 @@ export class PostResolver {
                   postAccountId: _.toSafeInteger(id)
                 },
                 {
-                  lotusBurnScore: {
+                  danaBurnScore: {
                     gte: minBurnFilter ?? 0
                   }
                 },
@@ -792,7 +792,7 @@ export class PostResolver {
                   postAccountId: _.toSafeInteger(id)
                 },
                 {
-                  lotusBurnScore: {
+                  danaBurnScore: {
                     gte: minBurnFilter ?? 0
                   }
                 },
@@ -1084,7 +1084,7 @@ export class PostResolver {
       throw new Error(noPermissionToUpdate);
     }
 
-    if (post?.lotusBurnScore !== 0) {
+    if (post?.danaBurnScore !== 0) {
       const noPermissionToUpdate = await this.i18n.t('post.messages.noPermissionToUpdate');
       throw new Error(noPermissionToUpdate);
     }

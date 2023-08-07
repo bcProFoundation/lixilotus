@@ -43,14 +43,14 @@ export const tokenReducer = createReducer(initialState, builder => {
         let bunrUpValue = 0;
         let bunrDownValue = 0;
         burnType === BurnType.Up ? (bunrUpValue = burnValue) : (bunrDownValue = burnValue);
-        const newLotusBurnUp = token.lotusBurnUp + bunrUpValue;
-        const newLotusBurnDown = token.lotusBurnDown + bunrDownValue;
+        const newDanaBurnUp = token.danaBurnUp + bunrUpValue;
+        const newDanaBurnDown = token.danaBurnDown + bunrDownValue;
         const changes: Update<Token> = {
           id: id,
           changes: {
-            lotusBurnUp: newLotusBurnUp,
-            lotusBurnDown: newLotusBurnDown,
-            lotusBurnScore: newLotusBurnUp - newLotusBurnDown
+            danaBurnUp: newDanaBurnUp,
+            danaBurnDown: newDanaBurnDown,
+            danaBurnScore: newDanaBurnUp - newDanaBurnDown
           }
         };
         tokenAdapter.updateOne(state, changes);
@@ -63,14 +63,14 @@ export const tokenReducer = createReducer(initialState, builder => {
         let bunrUpValue = 0;
         let bunrDownValue = 0;
         burnType === BurnType.Up ? (bunrUpValue = burnValue) : (bunrDownValue = burnValue);
-        const newLotusBurnUp = token.lotusBurnUp - bunrUpValue;
-        const newLotusBurnDown = token.lotusBurnDown - bunrDownValue;
+        const newDanaBurnUp = token.danaBurnUp - bunrUpValue;
+        const newDanaBurnDown = token.danaBurnDown - bunrDownValue;
         const changes: Update<Token> = {
           id: id,
           changes: {
-            lotusBurnUp: newLotusBurnUp,
-            lotusBurnDown: newLotusBurnDown,
-            lotusBurnScore: newLotusBurnUp - newLotusBurnDown
+            danaBurnUp: newDanaBurnUp,
+            danaBurnDown: newDanaBurnDown,
+            danaBurnScore: newDanaBurnUp - newDanaBurnDown
           }
         };
         tokenAdapter.updateOne(state, changes);

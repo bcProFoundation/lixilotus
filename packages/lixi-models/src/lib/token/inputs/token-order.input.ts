@@ -7,9 +7,9 @@ export enum TokenOrderField {
   tokenId = 'tokenId',
   name = 'name',
   ticker = 'ticker',
-  lotusBurnUp = 'lotusBurnUp',
-  lotusBurnDown = 'lotusBurnDown',
-  lotusBurnScore = 'lotusBurnScore',
+  danaBurnUp = 'danaBurnUp',
+  danaBurnDown = 'danaBurnDown',
+  danaBurnScore = 'danaBurnScore',
   createdDate = 'createdDate'
 }
 

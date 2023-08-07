@@ -143,7 +143,7 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
 
   return (
     <Modal
-      transitionName=''
+      transitionName=""
       width={500}
       className={`${classStyle} custom-edit-page-modal`}
       title={isAvatar ? intl.get('page.avatar') : intl.get('page.cover')}

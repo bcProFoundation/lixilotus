@@ -86,9 +86,9 @@ fragment PageFields on Page {
   stateName
   address
   website
-  lotusBurnUp
-  lotusBurnDown
-  lotusBurnScore
+  danaBurnUp
+  danaBurnDown
+  danaBurnScore
   totalBurnForPage
   followersCount
   createPostFee

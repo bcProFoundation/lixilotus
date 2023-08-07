@@ -156,7 +156,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
       first: 10,
       orderBy: {
         direction: OrderDirection.Desc,
-        field: HashtagOrderField.LotusBurnScore
+        field: HashtagOrderField.DanaBurnScore
       },
       id: pageId
     },

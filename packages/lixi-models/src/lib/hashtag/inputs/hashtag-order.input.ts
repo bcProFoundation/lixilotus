@@ -4,7 +4,7 @@ import { Order } from '../../../core';
 
 export enum HashtagOrderField {
   id = 'id',
-  lotusBurnScore = 'lotusBurnScore',
+  danaBurnScore = 'danaBurnScore',
   createdAt = 'createdAt',
   updatedAt = 'updatedAt'
 }

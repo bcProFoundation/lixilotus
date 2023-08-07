@@ -12,9 +12,9 @@ async function main() {
 
   const updatedPages = allPages
     .map((page) => {
-      const totalPostsBurnUp = page.posts.reduce((a, b) => a + b.lotusBurnUp, 0);
-      const totalPostsBurnDown = page.posts.reduce((a, b) => a + b.lotusBurnDown, 0);
-      const totalPostsBurnScore = page.posts.reduce((a, b) => a + b.lotusBurnScore, 0);
+      const totalPostsBurnUp = page.posts.reduce((a, b) => a + b.danaBurnUp, 0);
+      const totalPostsBurnDown = page.posts.reduce((a, b) => a + b.danaBurnDown, 0);
+      const totalPostsBurnScore = page.posts.reduce((a, b) => a + b.danaBurnScore, 0);
 
       return {
         ...page,

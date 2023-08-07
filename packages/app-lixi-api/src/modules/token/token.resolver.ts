@@ -76,7 +76,7 @@ export class TokenResolver {
         orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
       });
 
-      const scores = tokens.map(token => token.lotusBurnScore);
+      const scores = tokens.map(token => token.danaBurnScore);
       await tokenRepository.setItems(tokens, scores);
       await this.redis.expire(keyPrefix, 3600);
     }
@@ -137,7 +137,7 @@ export class TokenResolver {
           data: tokenToInsert
         });
 
-        tokenRepository.set(createdToken, createdToken.lotusBurnScore);
+        tokenRepository.set(createdToken, createdToken.danaBurnScore);
 
         const resultApi = { ...createdToken };
 

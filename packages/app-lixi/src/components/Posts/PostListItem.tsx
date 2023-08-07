@@ -399,7 +399,7 @@ const PostListItem = ({
             onEditPostClick={editPost}
             postEdited={post.createdAt !== post.updatedAt}
             isDropdown={true}
-            lotusBurnScore={post.lotusBurnScore}
+            danaBurnScore={post.danaBurnScore}
             followPostOwner={post.followPostOwner}
             followedPage={post.followedPage}
             post={post}

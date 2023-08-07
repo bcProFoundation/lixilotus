@@ -229,18 +229,18 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
       const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === burnForId);
       const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
       if (postToUpdateIndex >= 0) {
-        let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-        let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+        let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
+        let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
         if (burnType == BurnType.Up) {
-          lotusBurnUp = lotusBurnUp + burnValue;
+          danaBurnUp = danaBurnUp + burnValue;
         } else {
-          lotusBurnDown = lotusBurnDown + burnValue;
+          danaBurnDown = danaBurnDown + burnValue;
         }
-        const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-        draft.allPosts.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-        draft.allPosts.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-        draft.allPosts.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-        if (lotusBurnScore < 0) {
+        const danaBurnScore = danaBurnUp - danaBurnDown;
+        draft.allPosts.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
+        draft.allPosts.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
+        draft.allPosts.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
+        if (danaBurnScore < 0) {
           draft.allPosts.edges.splice(postToUpdateIndex, 1);
           draft.allPosts.totalCount = draft.allPosts.totalCount - 1;
         }
@@ -260,18 +260,18 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
         const postToUpdateIndex = draft.allPostsBySearchWithHashtag.edges.findIndex(item => item.node.id === burnForId);
         const postToUpdate = draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex];
         if (postToUpdateIndex >= 0) {
-          let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-          let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+          let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
+          let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
           if (burnType == BurnType.Up) {
-            lotusBurnUp = lotusBurnUp + burnValue;
+            danaBurnUp = danaBurnUp + burnValue;
           } else {
-            lotusBurnDown = lotusBurnDown + burnValue;
+            danaBurnDown = danaBurnDown + burnValue;
           }
-          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-          draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-          draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-          draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-          if (lotusBurnScore < 0) {
+          const danaBurnScore = danaBurnUp - danaBurnDown;
+          draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
+          draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
+          draft.allPostsBySearchWithHashtag.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
+          if (danaBurnScore < 0) {
             draft.allPostsBySearchWithHashtag.edges.splice(postToUpdateIndex, 1);
           }
         }
@@ -281,17 +281,17 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
 
   yield put(
     postApi.util.updateQueryData('Post', { id: burnForId }, draft => {
-      let lotusBurnUp = draft?.post?.lotusBurnUp ?? 0;
-      let lotusBurnDown = draft?.post?.lotusBurnDown ?? 0;
+      let danaBurnUp = draft?.post?.danaBurnUp ?? 0;
+      let danaBurnDown = draft?.post?.danaBurnDown ?? 0;
       if (burnType == BurnType.Up) {
-        lotusBurnUp = lotusBurnUp + burnValue;
+        danaBurnUp = danaBurnUp + burnValue;
       } else {
-        lotusBurnDown = lotusBurnDown + burnValue;
+        danaBurnDown = danaBurnDown + burnValue;
       }
-      const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-      draft.post.lotusBurnUp = lotusBurnUp;
-      draft.post.lotusBurnDown = lotusBurnDown;
-      draft.post.lotusBurnScore = lotusBurnScore;
+      const danaBurnScore = danaBurnUp - danaBurnDown;
+      draft.post.danaBurnUp = danaBurnUp;
+      draft.post.danaBurnDown = danaBurnDown;
+      draft.post.danaBurnScore = danaBurnScore;
     })
   );
 
@@ -301,18 +301,18 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
         const postToUpdateIndex = draft.allPostsByHashtagId.edges.findIndex(item => item.node.id === burnForId);
         const postToUpdate = draft.allPostsByHashtagId.edges[postToUpdateIndex];
         if (postToUpdateIndex >= 0) {
-          let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-          let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+          let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
+          let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
           if (burnType == BurnType.Up) {
-            lotusBurnUp = lotusBurnUp + burnValue;
+            danaBurnUp = danaBurnUp + burnValue;
           } else {
-            lotusBurnDown = lotusBurnDown + burnValue;
+            danaBurnDown = danaBurnDown + burnValue;
           }
-          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-          if (lotusBurnScore < 0) {
+          const danaBurnScore = danaBurnUp - danaBurnDown;
+          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
+          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
+          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
+          if (danaBurnScore < 0) {
             draft.allPostsByHashtagId.edges.splice(postToUpdateIndex, 1);
             draft.allPostsByHashtagId.totalCount = draft.allPostsByHashtagId.totalCount - 1;
           }
@@ -340,18 +340,18 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
             );
             const postToUpdate = draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex];
             if (postToUpdateIndex >= 0) {
-              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+              let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
+              let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
               if (burnType == BurnType.Up) {
-                lotusBurnUp = lotusBurnUp + burnValue;
+                danaBurnUp = danaBurnUp + burnValue;
               } else {
-                lotusBurnDown = lotusBurnDown + burnValue;
+                danaBurnDown = danaBurnDown + burnValue;
               }
-              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-              draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-              draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-              draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-              if (lotusBurnScore < 0) {
+              const danaBurnScore = danaBurnUp - danaBurnDown;
+              draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
+              draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
+              draft.allPostsBySearchWithHashtagAtPage.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
+              if (danaBurnScore < 0) {
                 draft.allPostsBySearchWithHashtagAtPage.edges.splice(postToUpdateIndex, 1);
               }
             }
@@ -363,18 +363,18 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
           const postToUpdateIndex = draft.allPostsByPageId.edges.findIndex(item => item.node.id === burnForId);
           const postToUpdate = draft.allPostsByPageId.edges[postToUpdateIndex];
           if (postToUpdateIndex >= 0) {
-            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+            let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
+            let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
             if (burnType == BurnType.Up) {
-              lotusBurnUp = lotusBurnUp + burnValue;
+              danaBurnUp = danaBurnUp + burnValue;
             } else {
-              lotusBurnDown = lotusBurnDown + burnValue;
+              danaBurnDown = danaBurnDown + burnValue;
             }
-            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-            if (lotusBurnScore < 0) {
+            const danaBurnScore = danaBurnUp - danaBurnDown;
+            draft.allPostsByPageId.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
+            draft.allPostsByPageId.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
+            draft.allPostsByPageId.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
+            if (danaBurnScore < 0) {
               draft.allPostsByPageId.edges.splice(postToUpdateIndex, 1);
               draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount - 1;
             }
@@ -397,18 +397,18 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
             );
             const postToUpdate = draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex];
             if (postToUpdateIndex >= 0) {
-              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+              let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
+              let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
               if (burnType == BurnType.Up) {
-                lotusBurnUp = lotusBurnUp + burnValue;
+                danaBurnUp = danaBurnUp + burnValue;
               } else {
-                lotusBurnDown = lotusBurnDown + burnValue;
+                danaBurnDown = danaBurnDown + burnValue;
               }
-              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-              draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-              draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-              draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-              if (lotusBurnScore < 0) {
+              const danaBurnScore = danaBurnUp - danaBurnDown;
+              draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
+              draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
+              draft.allPostsBySearchWithHashtagAtToken.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
+              if (danaBurnScore < 0) {
                 draft.allPostsBySearchWithHashtagAtToken.edges.splice(postToUpdateIndex, 1);
               }
             }
@@ -420,18 +420,18 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
           const postToUpdateIndex = draft.allPostsByTokenId.edges.findIndex(item => item.node.id === burnForId);
           const postToUpdate = draft.allPostsByTokenId.edges[postToUpdateIndex];
           if (postToUpdateIndex >= 0) {
-            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+            let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
+            let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
             if (burnType == BurnType.Up) {
-              lotusBurnUp = lotusBurnUp + burnValue;
+              danaBurnUp = danaBurnUp + burnValue;
             } else {
-              lotusBurnDown = lotusBurnDown + burnValue;
+              danaBurnDown = danaBurnDown + burnValue;
             }
-            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-            if (lotusBurnScore < 0) {
+            const danaBurnScore = danaBurnUp - danaBurnDown;
+            draft.allPostsByTokenId.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
+            draft.allPostsByTokenId.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
+            draft.allPostsByTokenId.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
+            if (danaBurnScore < 0) {
               draft.allPostsByTokenId.edges.splice(postToUpdateIndex, 1);
               draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount - 1;
             }
@@ -444,18 +444,18 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
           const postToUpdateIndex = draft.allPostsByUserId.edges.findIndex(item => item.node.id === burnForId);
           const postToUpdate = draft.allPostsByUserId.edges[postToUpdateIndex];
           if (postToUpdateIndex >= 0) {
-            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+            let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
+            let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
             if (burnType == BurnType.Up) {
-              lotusBurnUp = lotusBurnUp + burnValue;
+              danaBurnUp = danaBurnUp + burnValue;
             } else {
-              lotusBurnDown = lotusBurnDown + burnValue;
+              danaBurnDown = danaBurnDown + burnValue;
             }
-            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-            draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-            draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-            draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-            if (lotusBurnScore < 0) {
+            const danaBurnScore = danaBurnUp - danaBurnDown;
+            draft.allPostsByUserId.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
+            draft.allPostsByUserId.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
+            draft.allPostsByUserId.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
+            if (danaBurnScore < 0) {
               draft.allPostsByUserId.edges.splice(postToUpdateIndex, 1);
               draft.allPostsByUserId.totalCount = draft.allPostsByUserId.totalCount - 1;
             }
@@ -468,18 +468,18 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
           const postToUpdateIndex = draft.allOrphanPosts.edges.findIndex(item => item.node.id === burnForId);
           const postToUpdate = draft.allOrphanPosts.edges[postToUpdateIndex];
           if (postToUpdateIndex >= 0) {
-            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+            let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
+            let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
             if (burnType == BurnType.Up) {
-              lotusBurnUp = lotusBurnUp + burnValue;
+              danaBurnUp = danaBurnUp + burnValue;
             } else {
-              lotusBurnDown = lotusBurnDown + burnValue;
+              danaBurnDown = danaBurnDown + burnValue;
             }
-            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-            draft.allOrphanPosts.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-            draft.allOrphanPosts.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-            draft.allOrphanPosts.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-            if (lotusBurnScore < 0) {
+            const danaBurnScore = danaBurnUp - danaBurnDown;
+            draft.allOrphanPosts.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
+            draft.allOrphanPosts.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
+            draft.allOrphanPosts.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
+            if (danaBurnScore < 0) {
               draft.allOrphanPosts.edges.splice(postToUpdateIndex, 1);
               draft.allOrphanPosts.totalCount = draft.allOrphanPosts.totalCount - 1;
             }
@@ -549,18 +549,18 @@ function* updateCommentBurnValue(action: PayloadAction<BurnQueueCommand>) {
       const commentToUpdateIndex = draft.allCommentsToPostId.edges.findIndex(item => item.node.id === burnForId);
       const commentToUpdate = draft.allCommentsToPostId.edges[commentToUpdateIndex];
       if (commentToUpdateIndex >= 0) {
-        let lotusBurnUp = commentToUpdate?.node?.lotusBurnUp ?? 0;
-        let lotusBurnDown = commentToUpdate?.node?.lotusBurnDown ?? 0;
+        let danaBurnUp = commentToUpdate?.node?.danaBurnUp ?? 0;
+        let danaBurnDown = commentToUpdate?.node?.danaBurnDown ?? 0;
         if (burnType == BurnType.Up) {
-          lotusBurnUp = lotusBurnUp + burnValue;
+          danaBurnUp = danaBurnUp + burnValue;
         } else {
-          lotusBurnDown = lotusBurnDown + burnValue;
+          danaBurnDown = danaBurnDown + burnValue;
         }
-        const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-        draft.allCommentsToPostId.edges[commentToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-        draft.allCommentsToPostId.edges[commentToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-        draft.allCommentsToPostId.edges[commentToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-        if (lotusBurnScore < 0) {
+        const danaBurnScore = danaBurnUp - danaBurnDown;
+        draft.allCommentsToPostId.edges[commentToUpdateIndex].node.danaBurnUp = danaBurnUp;
+        draft.allCommentsToPostId.edges[commentToUpdateIndex].node.danaBurnDown = danaBurnDown;
+        draft.allCommentsToPostId.edges[commentToUpdateIndex].node.danaBurnScore = danaBurnScore;
+        if (danaBurnScore < 0) {
           draft.allCommentsToPostId.edges.splice(commentToUpdateIndex, 1);
           draft.allCommentsToPostId.totalCount = draft.allCommentsToPostId.totalCount - 1;
         }
@@ -582,17 +582,17 @@ function* updateTokenBurnValue(action: PayloadAction<BurnQueueCommand>) {
 
   yield put(
     tokenApi.util.updateQueryData('Token', { tokenId: tokenId }, draft => {
-      let lotusBurnUp = draft?.token.lotusBurnUp ?? 0;
-      let lotusBurnDown = draft?.token?.lotusBurnDown ?? 0;
+      let danaBurnUp = draft?.token.danaBurnUp ?? 0;
+      let danaBurnDown = draft?.token?.danaBurnDown ?? 0;
       if (burnType == BurnType.Up) {
-        lotusBurnUp = lotusBurnUp + burnValue;
+        danaBurnUp = danaBurnUp + burnValue;
       } else {
-        lotusBurnDown = lotusBurnDown + burnValue;
+        danaBurnDown = danaBurnDown + burnValue;
       }
-      const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-      draft.token.lotusBurnUp = lotusBurnUp;
-      draft.token.lotusBurnDown = lotusBurnDown;
-      draft.token.lotusBurnScore = lotusBurnScore;
+      const danaBurnScore = danaBurnUp - danaBurnDown;
+      draft.token.danaBurnUp = danaBurnUp;
+      draft.token.danaBurnDown = danaBurnDown;
+      draft.token.danaBurnScore = danaBurnScore;
     })
   );
 
@@ -600,17 +600,17 @@ function* updateTokenBurnValue(action: PayloadAction<BurnQueueCommand>) {
     tokenApi.util.updateQueryData('Tokens', params, draft => {
       const tokenBurnValueIndex = draft.allTokens.edges.findIndex(item => item.node.tokenId === tokenId);
       const tokenBurnValue = draft.allTokens.edges[tokenBurnValueIndex];
-      let lotusBurnUp = tokenBurnValue?.node?.lotusBurnUp ?? 0;
-      let lotusBurnDown = tokenBurnValue?.node?.lotusBurnDown ?? 0;
+      let danaBurnUp = tokenBurnValue?.node?.danaBurnUp ?? 0;
+      let danaBurnDown = tokenBurnValue?.node?.danaBurnDown ?? 0;
       if (burnType == BurnType.Up) {
-        lotusBurnUp = lotusBurnUp + burnValue;
+        danaBurnUp = danaBurnUp + burnValue;
       } else {
-        lotusBurnDown = lotusBurnDown + burnValue;
+        danaBurnDown = danaBurnDown + burnValue;
       }
-      const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-      draft.allTokens.edges[tokenBurnValueIndex].node.lotusBurnUp = lotusBurnUp;
-      draft.allTokens.edges[tokenBurnValueIndex].node.lotusBurnDown = lotusBurnDown;
-      draft.allTokens.edges[tokenBurnValueIndex].node.lotusBurnScore = lotusBurnScore;
+      const danaBurnScore = danaBurnUp - danaBurnDown;
+      draft.allTokens.edges[tokenBurnValueIndex].node.danaBurnUp = danaBurnUp;
+      draft.allTokens.edges[tokenBurnValueIndex].node.danaBurnDown = danaBurnDown;
+      draft.allTokens.edges[tokenBurnValueIndex].node.danaBurnScore = danaBurnScore;
     })
   );
 }

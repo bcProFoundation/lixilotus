@@ -82,9 +82,9 @@ model Token {
   tokenDocumentUrl     String       @default("") @map("token_document_url") @db.VarChar(1000)
   totalBurned          String       @default("") @map("total_burned")
   totalMinted          String       @default("") @map("total_minted")
-  lotusBurnUp          Float        @default(0.0) @map("lotus_burn_up")
-  lotusBurnDown        Float        @default(0.0) @map("lotus_burn_down")
-  lotusBurnScore       Float        @default(0.0) @map("lotus_burn_score")
+  danaBurnUp           Float        @default(0.0) @map("dana_burn_up")
+  danaBurnDown         Float        @default(0.0) @map("dana_burn_down")
+  danaBurnScore        Float        @default(0.0) @map("dana_burn_score")
   initialTokenQuantity String       @default("") @map("initial_token_quantity")
   comments             DateTime?    @default(now()) @map("comments") @db.Timestamptz
   createdAt            DateTime     @default(now()) @map("created_at") @db.Timestamptz
@@ -129,9 +129,9 @@ model Page {
   address             String        @default("") @map("address")
   createdAt           DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt           DateTime      @default(now()) @map("updated_at") @db.Timestamptz
-  lotusBurnUp         Float         @default(0.0) @map("lotus_burn_up")
-  lotusBurnDown       Float         @default(0.0) @map("lotus_burn_down")
-  lotusBurnScore      Float         @default(0.0) @map("lotus_burn_score")
+  danaBurnUp          Float         @default(0.0) @map("dana_burn_up")
+  danaBurnDown        Float         @default(0.0) @map("dana_burn_down")
+  danaBurnScore       Float         @default(0.0) @map("dana_burn_score")
   createPostFee       String        @default("1.0") @map("create_post_fee")
   createCommentFee    String        @default("0.00055") @map("create_comment_fee")
   posts               Post[]
@@ -157,9 +157,9 @@ model Post {
   createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime          @default(now()) @map("updated_at") @db.Timestamptz
   uploadedCovers   UploadDetail[]    @relation("PostCover")
-  lotusBurnUp      Float             @default(0.0) @map("lotus_burn_up")
-  lotusBurnDown    Float             @default(0.0) @map("lotus_burn_down")
-  lotusBurnScore   Float             @default(0.0) @map("lotus_burn_score")
+  danaBurnUp       Float             @default(0.0) @map("dana_burn_up")
+  danaBurnDown     Float             @default(0.0) @map("dana_burn_down")
+  danaBurnScore    Float             @default(0.0) @map("dana_burn_score")
   comments         Comment[]
   postHashtags     PostHashtag[]
   createFee        Float?            @map("create_fee")
@@ -182,9 +182,9 @@ model Comment {
   commentText        String   @default("") @map("comment_text")
   createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt          DateTime @default(now()) @map("updated_at") @db.Timestamptz
-  lotusBurnUp        Float    @default(0.0) @map("lotus_burn_up")
-  lotusBurnDown      Float    @default(0.0) @map("lotus_burn_down")
-  lotusBurnScore     Float    @default(0.0) @map("lotus_burn_score")
+  danaBurnUp         Float    @default(0.0) @map("dana_burn_up")
+  danaBurnDown       Float    @default(0.0) @map("dana_burn_down")
+  danaBurnScore      Float    @default(0.0) @map("dana_burn_score")
   giveTip            GiveTip?
   createFee          Float?   @map("create_fee")
   txid               String?
@@ -745,9 +745,9 @@ model Hashtag {
   content           String        @unique
   normalizedContent String        @unique
   postHashtags      PostHashtag[]
-  lotusBurnUp       Float         @default(0.0) @map("lotus_burn_up")
-  lotusBurnDown     Float         @default(0.0) @map("lotus_burn_down")
-  lotusBurnScore    Float         @default(0.0) @map("lotus_burn_score")
+  danaBurnUp        Float         @default(0.0) @map("dana_burn_up")
+  danaBurnDown      Float         @default(0.0) @map("dana_burn_down")
+  danaBurnScore     Float         @default(0.0) @map("dana_burn_score")
   createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt         DateTime      @default(now()) @map("updated_at") @db.Timestamptz
 

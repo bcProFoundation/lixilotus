@@ -76,7 +76,7 @@ export class CommentResolver {
                     commentToId: id
                   },
                   {
-                    lotusBurnScore: {
+                    danaBurnScore: {
                       gte: 0
                     }
                   }
@@ -107,7 +107,7 @@ export class CommentResolver {
                     commentToId: id
                   },
                   {
-                    lotusBurnScore: {
+                    danaBurnScore: {
                       gte: 0
                     }
                   }

@@ -413,7 +413,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
       (claimType == ClaimType.OneTime &&
         Number(value) > 0 &&
         fromSmallestDenomination(account.balance) >=
-        Number(value) + fromSmallestDenomination(txFee) * Number(newNumberOfSubLixi))
+          Number(value) + fromSmallestDenomination(txFee) * Number(newNumberOfSubLixi))
     ) {
       setNewLixiAmountValueIsValid(true);
     } else {
@@ -974,7 +974,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
         width={1240}
         className={`${classStyle} custom-create-lixi-modal`}
         title={intl.get('lixi.createLixi')}
-        transitionName=''
+        transitionName=""
         open={true}
         onCancel={handleOnCancel}
         footer={
@@ -1176,10 +1176,10 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
                         !newEnvelopeId && !envelopeUpload
                           ? '/images/lotus_logo.png'
                           : (newEnvelopeId &&
-                            !envelopeUpload &&
-                            baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
-                          (envelopeUpload &&
-                            `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${envelopeUpload.cfImageId}/small`)
+                              !envelopeUpload &&
+                              baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
+                            (envelopeUpload &&
+                              `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${envelopeUpload.cfImageId}/small`)
                       }
                       style={{
                         position: 'absolute',

@@ -60,7 +60,7 @@ export class PageResolver {
     const result = {
       ...page,
       followersCount: followersCount,
-      totalBurnForPage: page ? page.lotusBurnScore + page.totalPostsBurnScore : 0,
+      totalBurnForPage: page ? page.danaBurnScore + page.totalPostsBurnScore : 0,
       categoryId: page?.categoryId ?? DEFAULT_CATEGORY,
       countryName: page?.country?.name ?? undefined,
       stateName: page?.state?.name ?? undefined
@@ -92,7 +92,7 @@ export class PageResolver {
             pages
               .map(page => ({
                 ...page,
-                totalBurnForPage: page.lotusBurnScore + page.totalPostsBurnScore ?? 0,
+                totalBurnForPage: page.danaBurnScore + page.totalPostsBurnScore ?? 0,
                 categoryId: page?.categoryId ?? DEFAULT_CATEGORY
               }))
               .sort((a, b) => b.totalBurnForPage - a.totalBurnForPage)
@@ -131,7 +131,7 @@ export class PageResolver {
         const output = pages.map(page => ({
           ...page,
           categoryId: page?.categoryId ?? DEFAULT_CATEGORY,
-          totalBurnForPage: page.lotusBurnScore + page.totalPostsBurnScore ?? 0
+          totalBurnForPage: page.danaBurnScore + page.totalPostsBurnScore ?? 0
         }));
 
         return output;

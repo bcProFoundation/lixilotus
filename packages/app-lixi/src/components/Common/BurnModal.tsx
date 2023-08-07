@@ -268,27 +268,27 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
     }
   };
 
-  const getLotusBurnUp = (burnForType: BurnForType) => {
+  const getDanaBurnUp = (burnForType: BurnForType) => {
     switch (burnForType) {
       case BurnForType.Token:
-        return (tokenQuery && tokenQuery.token.lotusBurnUp) || 0;
+        return (tokenQuery && tokenQuery.token.danaBurnUp) || 0;
       case BurnForType.Comment:
-        return (commentQuery && commentQuery.comment.lotusBurnUp) || 0;
+        return (commentQuery && commentQuery.comment.danaBurnUp) || 0;
       case BurnForType.Post:
-        return (postQuery && postQuery.post.lotusBurnUp) || 0;
+        return (postQuery && postQuery.post.danaBurnUp) || 0;
       default:
         return 0;
     }
   };
 
-  const getLotusBurnDown = (burnForType: BurnForType) => {
+  const getDanaBurnDown = (burnForType: BurnForType) => {
     switch (burnForType) {
       case BurnForType.Token:
-        return (tokenQuery && tokenQuery.token.lotusBurnDown) || 0;
+        return (tokenQuery && tokenQuery.token.danaBurnDown) || 0;
       case BurnForType.Comment:
-        return (commentQuery && commentQuery.comment.lotusBurnDown) || 0;
+        return (commentQuery && commentQuery.comment.danaBurnDown) || 0;
       case BurnForType.Post:
-        return (postQuery && postQuery.post.lotusBurnDown) || 0;
+        return (postQuery && postQuery.post.danaBurnDown) || 0;
       default:
         return 0;
     }
@@ -296,7 +296,7 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
 
   return (
     <Modal
-      transitionName=''
+      transitionName=""
       width={450}
       className={`${classStyle} custom-burn-modal`}
       open={true}
@@ -309,13 +309,13 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
             <div className="banner-item">
               <LikeOutlined />
               <div className="count-bar">
-                <p className="title">{getLotusBurnUp(burnForType) + intl.get('general.dana')}</p>
+                <p className="title">{getDanaBurnUp(burnForType) + intl.get('general.dana')}</p>
               </div>
             </div>
             <div className="banner-item">
               <DislikeOutlined />
               <div className="count-bar">
-                <p className="title">{getLotusBurnDown(burnForType) + intl.get('general.dana')}</p>
+                <p className="title">{getDanaBurnDown(burnForType) + intl.get('general.dana')}</p>
               </div>
             </div>
           </div>

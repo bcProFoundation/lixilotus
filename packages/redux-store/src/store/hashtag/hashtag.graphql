@@ -2,9 +2,9 @@ fragment HashtagFields on Hashtag {
   id
   content
   normalizedContent
-  lotusBurnUp
-  lotusBurnDown
-  lotusBurnScore
+  danaBurnUp
+  danaBurnDown
+  danaBurnScore
   createdAt
   updatedAt
 }

@@ -147,7 +147,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
       <StyledModal
         title={intl.get('general.scanQRCode')}
         open={visible}
-        transitionName=''
+        transitionName=""
         onCancel={() => setVisible(false)}
         destroyOnClose={true}
         footer={null}

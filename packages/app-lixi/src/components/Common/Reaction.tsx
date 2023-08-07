@@ -358,7 +358,7 @@ const Reaction = ({ post, handleBurnForPost }: ReactionProps) => {
 
   return (
     <>
-      <IconBurnHover burnValue={formatBalance(post?.lotusBurnScore ?? 0)} />
+      <IconBurnHover burnValue={formatBalance(post?.danaBurnScore ?? 0)} />
     </>
   );
 };

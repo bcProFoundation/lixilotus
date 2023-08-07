@@ -18,13 +18,13 @@ export class Hashtag {
   postHashtags?: [PostHashtag];
 
   @Field(() => Float)
-  lotusBurnUp: number;
+  danaBurnUp: number;
 
   @Field(() => Float)
-  lotusBurnDown: number;
+  danaBurnDown: number;
 
   @Field(() => Float)
-  lotusBurnScore: number;
+  danaBurnScore: number;
 
   @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was created.',

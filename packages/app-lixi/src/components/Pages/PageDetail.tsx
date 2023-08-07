@@ -564,7 +564,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
       first: 3,
       orderBy: {
         direction: OrderDirection.Desc,
-        field: HashtagOrderField.LotusBurnScore
+        field: HashtagOrderField.DanaBurnScore
       },
       id: page.id
     },

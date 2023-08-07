@@ -341,7 +341,7 @@ const ReactionToken = ({ token, handleBurnForToken }: ReactionTokenProps) => {
 
   return (
     <>
-      <IconBurnHover burnValue={formatBalance(token?.lotusBurnScore ?? 0)} />
+      <IconBurnHover burnValue={formatBalance(token?.danaBurnScore ?? 0)} />
     </>
   );
 };
