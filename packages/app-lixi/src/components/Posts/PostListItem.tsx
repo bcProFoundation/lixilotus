@@ -377,7 +377,7 @@ const PostListItem = ({
   };
 
   const reposted = () => {
-    if (!_.isNil(post.reposts) && post.reposts.length != 0 && post.followPostOwner) {
+    if (!_.isNil(post.reposts) && post.reposts.length != 0) {
       return (
         <p className="retweet">
           <RetweetOutlined />{' '}

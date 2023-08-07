@@ -203,7 +203,10 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
         </span>
         <p className="title">
           {title}
-          <span style={{ marginLeft: '4px', fontSize: '10px' }}>· {activatePostLocation && postLocation()}</span>
+          <span style={{ marginLeft: '4px', fontSize: '10px' }}>
+            {activatePostLocation && postLocation()}&nbsp;
+            {followPostOwner && <Icon className="follow-icon" component={() => <FollowSvg />} />}
+          </span>
           <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
             {postEdited && intl.get('post.edited')}
           </span>
@@ -224,7 +227,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
               normalInfor
             ) : (
               <div className="card-container">
-                <div className="page-bar" onClick={() => history.push(`/page/${page.id}}`)}>
+                <div className="page-bar" onClick={() => history.push(`/page/${page.id}`)}>
                   <img className="image-page" src={page?.avatar ? page?.avatar : '/images/default-avatar.jpg'} />
                   <AvatarUser icon={imgUrl} name={name} isMarginRight={true} />
                 </div>
@@ -237,17 +240,11 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                       {name}
                     </span>{' '}
                     · {title} ·
-                    <span
-                      style={{
-                        marginLeft: '4px',
-                        fontSize: '10px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}
-                    >
-                      {activatePostLocation && postLocation()}{' '}
-                      {followPostOwner && <Icon className="follow-icon" component={() => <FollowSvg />} />}
+                    <span style={{ marginLeft: '4px', fontSize: '10px' }}>
+                      {activatePostLocation && postLocation()}&nbsp;
+                      {(followPostOwner || followedPage) && (
+                        <Icon className="follow-icon" component={() => <FollowSvg />} />
+                      )}
                     </span>
                     <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
                       {postEdited && intl.get('post.edited')}
@@ -256,29 +253,37 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                 </div>
               </div>
             ))}
-          {token && token?.name && (
-            <div className="card-container">
-              <div className="page-bar" onClick={() => history.push(`/token/${token?.tokenId}}`)}>
-                <img className="image-page" src={`${currency.tokenIconsUrl}/64/${token.tokenId}.png`} />
-                <AvatarUser name={name} isMarginRight={true} />
-              </div>
-              <div className="card-info">
-                <span className="name" onClick={() => history.push(`/token/${token?.tokenId}`)}>
-                  {token?.name}
-                </span>
-                <p className="title">
-                  <span className="account-name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
-                    {name}
-                  </span>{' '}
-                  · {title} ·
-                  <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()}</span>
-                  <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
-                    {postEdited && intl.get('post.edited')}
+          {token &&
+            token?.name &&
+            (postListType === PostListType.Token ? (
+              normalInfor
+            ) : (
+              <div className="card-container">
+                <div className="page-bar" onClick={() => history.push(`/token/${token?.tokenId}`)}>
+                  <img className="image-page" src={`${currency.tokenIconsUrl}/64/${token.tokenId}.png`} />
+                  <AvatarUser name={name} isMarginRight={true} />
+                </div>
+                <div className="card-info">
+                  <span className="name" onClick={() => history.push(`/token/${token?.tokenId}`)}>
+                    {token?.name}
                   </span>
-                </p>
+                  <p className="title">
+                    <span className="account-name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+                      {name}
+                    </span>{' '}
+                    · {title} ·
+                    <span style={{ marginLeft: '4px', fontSize: '10px' }}>
+                      {activatePostLocation && postLocation()}&nbsp;
+                      {followPostOwner ||
+                        (followedPage && <Icon className="follow-icon" component={() => <FollowSvg />} />)}
+                    </span>
+                    <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
+                      {postEdited && intl.get('post.edited')}
+                    </span>
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
+            ))}
         </CardUser>
         {isDropdown && (
           <>
