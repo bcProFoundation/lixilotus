@@ -32,10 +32,7 @@ const MyCustomAutoFocusPlugin: React.FC<any> = ({ hashtags, initialContent }) =>
     });
   }, [initialContent]);
 
-  useEffect(() => {
-    // Focus the editor when the effect fires!
-    editor.focus();
-  }, [editor]);
+  editor.focus();
 
   return null;
 };

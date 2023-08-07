@@ -85,7 +85,6 @@ const DesktopCreatePost = styled.div`
         font-size: 11px;
         line-height: 24px;
         letter-spacing: 0.3px;
-        cursor: pointer;
       }
       .ant-avatar {
         min-width: 46px;
@@ -419,7 +418,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       <WrapEditor>
         <Modal
           className={`${currentTheme === 'dark' ? 'ant-modal-dark' : ''} custom-modal-editor`}
-          transitionName=''
+          transitionName=""
           title="Create Post"
           open={enableEditor}
           footer={null}

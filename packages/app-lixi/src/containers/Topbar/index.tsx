@@ -585,7 +585,12 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           active={currentPathName === '/notifications'}
           direction="horizontal"
           key="notifications"
-          onClickItem={() => handleIconClick('/notifications')}
+          onClickItem={() => {
+            if (authorization.authorized) handleIconClick('/notifications');
+            else {
+              currentModal.length === 0 && askAuthorization();
+            }
+          }}
         />
         <ItemAccess
           icon={'/images/ico-support.png'}
@@ -638,7 +643,12 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           active={currentPathName === '/settings'}
           direction="horizontal"
           key="settings"
-          onClickItem={() => handleIconClick('/settings')}
+          onClickItem={() => {
+            if (authorization.authorized) handleIconClick('/settings');
+            else {
+              currentModal.length === 0 && askAuthorization();
+            }
+          }}
         />
       </div>
     </PopoverStyled>
