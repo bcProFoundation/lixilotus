@@ -1192,7 +1192,7 @@ const SidebarShortcut = () => {
             )}
             {navCollapsed && (
               <>
-                <h3 style={{ marginBottom: '0' }} onClick={handleMenuClick}>
+                <h3 style={{ marginBottom: '0.5rem' }} onClick={handleMenuClick}>
                   <img
                     className="animate__animated animate__heartBeat"
                     style={{ margin: '5px', cursor: 'pointer' }}

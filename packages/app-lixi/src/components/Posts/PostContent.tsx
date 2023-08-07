@@ -10,7 +10,7 @@ const PostContent = ({ post }) => {
   const calculateLineShow = () => {
     let lineNum = 6.5;
     const postScore = post?.lotusBurnScore;
-    if (postScore >= 50) {
+    if (postScore >= 50 && postScore < 200) {
       lineNum = 11;
     } else if (postScore >= 200) {
       lineNum = 17.5;

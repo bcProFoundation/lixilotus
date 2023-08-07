@@ -6,7 +6,7 @@ const StyledAvatar = styled(Avatar)`
   width: 46px;
   height: 46px;
   font-size: 18px;
-  display: flex;
+  display: flex !important;
   align-items: center;
   border-radius: 50%;
   .ant-avatar-string {

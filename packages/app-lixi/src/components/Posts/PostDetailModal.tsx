@@ -717,16 +717,17 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
   return (
     <React.Fragment>
       <Modal
-        transitionName=''
+        transitionName=""
         width={'50vw'}
-        className={`${classStyle} post-detail-custom-modal ${isMobile
-          ? openPost
-            ? 'animate__animated animate__faster animate__slideInRight'
-            : 'animate__animated animate__faster animate__slideOutRight'
-          : openPost
+        className={`${classStyle} post-detail-custom-modal ${
+          isMobile
+            ? openPost
+              ? 'animate__animated animate__faster animate__slideInRight'
+              : 'animate__animated animate__faster animate__slideOutRight'
+            : openPost
             ? 'animate__animated animate__faster animate__zoomIn'
             : 'animate__animated animate__faster animate__zoomOut'
-          }`}
+        }`}
         style={{ top: 30 }}
         open={true}
         onCancel={handleOnCancel}
@@ -737,7 +738,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
           className={`${!borderColorHeader ? 'no-border-color' : ''} post-detail-modal`}
           onScroll={e => handleSrcolling(e)}
         >
-          <NavBarHeader>
+          <NavBarHeader onClick={handleOnCancel}>
             <InfoCardUser
               imgUrl={post.postAccount.avatar ? post.postAccount.avatar : ''}
               name={post.postAccount.name}

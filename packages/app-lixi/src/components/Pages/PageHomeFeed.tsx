@@ -107,7 +107,6 @@ const YourPageContainer = styled.div`
   h2 {
     button {
       padding: 0.5rem 1rem !important;
-      font-size: 14pt !important;
       display: inline-block !important;
     }
     display: flex;

@@ -237,7 +237,15 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                       {name}
                     </span>{' '}
                     · {title} ·
-                    <span style={{ marginLeft: '4px', fontSize: '10px' }}>
+                    <span
+                      style={{
+                        marginLeft: '4px',
+                        fontSize: '10px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
                       {activatePostLocation && postLocation()}{' '}
                       {followPostOwner && <Icon className="follow-icon" component={() => <FollowSvg />} />}
                     </span>
