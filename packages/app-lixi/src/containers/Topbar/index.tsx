@@ -45,6 +45,7 @@ import { getModals } from '@store/modal/selectors';
 import { showToast } from '@store/toast/actions';
 import { getSelectedWalletPath, getWalletStatus } from '@store/wallet';
 import { ReactSVG } from 'react-svg';
+import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { openActionSheet } from '@store/action-sheet/actions';
 
 export type TopbarProps = {
@@ -168,6 +169,9 @@ const AccountBox = styled.div`
       }
     }
     .sub-account-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       flex: 1;
       p {
         margin: 0;
@@ -493,11 +497,8 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   );
 
   const balanceAccount = (acc?: any) => {
-    let balanceString;
-    let amount;
-    acc?.balance && acc?.balance > 0 ? (amount = acc?.balance) : (amount = 0);
-    balanceString = amount > 0 ? `~ ${fromSmallestDenomination(amount).toFixed(2)}` : `0`;
-    return balanceString;
+    const balanceString = fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0)
+    return `~ ${balanceString.toFixed(2)}`;
   };
 
   const handleOnCopy = () => {
@@ -533,7 +534,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             </div>
 
             <div className="profile-feature">
-              <span>{balanceAccount(selectedAccount)} XPI</span>
+              <span>{balanceAccount(selectedAccount)} {currency.ticker}</span>
               <Link href="/send">
                 <span>
                   <SendOutlined style={{ fontSize: '16px' }} />
@@ -552,8 +553,8 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
               return (
                 <div className="sub-account" key={index}>
                   <div className="sub-account-info">
-                    <p className="name">{acc?.name}</p>
-                    <p className="address">{balanceAccount(acc)} XPI</p>
+                    <AvatarUser name={acc?.name || null} icon={acc?.avatar} isMarginRight={false} />
+                    <span className="name">{acc?.name}</span>
                   </div>
                   <Button
                     type="primary"
@@ -776,7 +777,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
               <p className="account-info">
                 <span className="account-name">{selectedAccount?.name}</span>
                 <span className="account-balance">
-                  {balanceAccount(selectedAccount)} <span className="unit">XPI</span>
+                  {balanceAccount(selectedAccount)} <span className="unit">{currency.ticker}</span>
                 </span>
               </p>
             </div>

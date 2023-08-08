@@ -149,6 +149,7 @@ const CommentInputContainer = styled.div`
   margin-top: 1rem;
   gap: 1rem;
   .ava-ico-cmt {
+    padding-top: 1px;
     .ant-avatar {
       width: 40px !important;
       height: 40px !important;
@@ -309,7 +310,9 @@ const StyledCommentContainer = styled.div`
   border: 1px solid var(--border-color-dark-base);
   border-radius: var(--border-radius-primary);
   width: 100%;
-  padding: 0px 0px 10px 0px;
+  padding: 5px 0px;
+  display: flex;
+  align-items: center;
 `;
 
 const StyledIconContainer = styled.div`

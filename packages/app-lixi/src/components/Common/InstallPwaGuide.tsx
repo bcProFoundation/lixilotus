@@ -17,7 +17,7 @@ const ContainerGuide = styled.div`
       align-items: center;
     }
     h3 {
-      font-size: 14px;
+      font-size: 16px;
       font-family: 'Poppins', sans-serif;
       font-weight: 600;
       margin: 0;
@@ -25,12 +25,12 @@ const ContainerGuide = styled.div`
     }
     .close-btn {
       position: absolute;
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      top: 1rem;
+      top: 1.5rem;
       right: 1rem;
       border: 1px solid var(--color-primary);
       border-radius: 50%;
@@ -45,7 +45,7 @@ const ContainerGuide = styled.div`
     padding: 1rem;
     p {
       font-family: 'Poppins', sans-serif;
-      font-size: 12px;
+      font-size: 14px;
       &:last-child {
         margin: 0;
       }

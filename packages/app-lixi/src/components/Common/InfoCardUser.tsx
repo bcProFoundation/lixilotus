@@ -53,6 +53,8 @@ const CardUser = styled.div`
         }
       }
       .title {
+        display: flex;
+        align-items: baseline;
         font-size: 11px;
         letter-spacing: 0.25px;
         margin: 0;

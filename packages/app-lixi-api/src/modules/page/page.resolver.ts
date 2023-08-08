@@ -209,6 +209,7 @@ export class PageResolver {
       },
       data: {
         ..._.omit(data, ['categoryId', 'countryId', 'stateId', 'parentId', 'avatar', 'cover']),
+        description: data.description?.trim() ?? '',
         avatar: { connect: uploadAvatarDetail ? { id: uploadAvatarDetail.id } : undefined },
         cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined },
         category: {
