@@ -840,6 +840,7 @@ input UpdatePageInput {
 }
 
 input UpdatePostInput {
+  extraArguments: ExtraArguments
   htmlContent: String!
   id: ID!
   pureContent: String!

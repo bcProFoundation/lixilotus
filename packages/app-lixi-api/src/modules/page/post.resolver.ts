@@ -1127,6 +1127,13 @@ export class PostResolver {
       throw new Error(noPermissionToUpdate);
     }
 
+    //Hashtag
+    const hashtags = await this.hashtagService.extractAndSave(
+      `${process.env.MEILISEARCH_BUCKET}_${HASHTAG}`,
+      pureContent,
+      post.id
+    );
+
     const updatedPost = await this.prisma.post.update({
       where: {
         id: id
@@ -1140,7 +1147,8 @@ export class PostResolver {
     const indexedPost = {
       id: updatedPost.id,
       content: pureContent,
-      updatedAt: updatedPost.updatedAt
+      updatedAt: updatedPost.updatedAt,
+      hashtag: hashtags
     };
 
     await this.meiliService.update(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, updatedPost.id);

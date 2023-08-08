@@ -1,5 +1,7 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
+
+import { ExtraArguments } from './createPost.input';
 @InputType()
 export class UpdatePostInput {
   @Field(() => ID)
@@ -12,6 +14,10 @@ export class UpdatePostInput {
   @Field(() => String)
   @IsNotEmpty()
   htmlContent: string;
+
+  @IsOptional()
+  @Field(() => ExtraArguments, { nullable: true })
+  extraArguments?: ExtraArguments;
 
   //Will need later
 

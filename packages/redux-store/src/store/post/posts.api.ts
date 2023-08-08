@@ -291,7 +291,21 @@ const enhancedApi = api.enhanceEndpoints({
         } catch {}
       }
     },
-    updatePost: {},
+    updatePost: {
+      async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
+        const { extraArguments } = input;
+        const { isTop, minBurnFilter } = extraArguments;
+        try {
+          const { data: result } = await queryFulfilled;
+          dispatch(
+            api.util.updateQueryData('Posts', { minBurnFilter: minBurnFilter, isTop: isTop }, draft => {
+              const index = draft.allPosts.edges.findIndex(x => x.cursor === result.updatePost.id);
+              draft.allPosts.edges[index].node.content = result.updatePost.content;
+            })
+          );
+        } catch {}
+      }
+    },
     repost: {}
   }
 });

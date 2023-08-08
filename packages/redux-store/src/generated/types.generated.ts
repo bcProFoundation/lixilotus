@@ -1211,6 +1211,7 @@ export type UpdatePageInput = {
 };
 
 export type UpdatePostInput = {
+  extraArguments?: InputMaybe<ExtraArguments>;
   htmlContent: Scalars['String'];
   id: Scalars['ID'];
   pureContent: Scalars['String'];

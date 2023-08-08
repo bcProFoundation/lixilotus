@@ -13,7 +13,7 @@ import { UpdatePostInput, OrderDirection, PostOrderField } from '@generated/type
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { UpdatePostMutation } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
-import { getFilterPostsHome } from '@store/settings/selectors';
+import { getFilterPostsHome, getIsTopPosts } from '@store/settings/selectors';
 
 const UserCreate = styled.div`
   .user-create-post {
@@ -66,6 +66,7 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const filterValue = useAppSelector(getFilterPostsHome);
+  const isTop = useAppSelector(getIsTopPosts);
 
   const [
     updatePostTrigger,
@@ -81,24 +82,15 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
     const editPostInput: UpdatePostInput = {
       htmlContent: htmlContent,
       pureContent: pureContent,
-      id: props.postId
-    };
-
-    const params = {
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
+      id: props.postId,
+      extraArguments: {
+        isTop: String(isTop),
+        minBurnFilter: filterValue
       }
     };
 
     try {
-      const result = await updatePostTrigger({ input: editPostInput }).unwrap();
-      const patches = dispatch(
-        postApi.util.updateQueryData('Posts', { ...params, minBurnFilter: filterValue }, draft => {
-          const index = draft.allPosts.edges.findIndex(x => x.cursor === result.updatePost.id);
-          draft.allPosts.edges[index].node.content = result.updatePost.content;
-        })
-      );
+      await updatePostTrigger({ input: editPostInput }).unwrap();
 
       dispatch(closeModal());
       dispatch(
@@ -110,9 +102,6 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
       );
     } catch (err) {
       const message = intl.get('post.unableEditPostServer');
-      if (patches) {
-        dispatch(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
-      }
       dispatch(
         showToast('error', {
           message: 'Error',
