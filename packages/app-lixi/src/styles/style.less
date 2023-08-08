@@ -1,6 +1,7 @@
 @import '~antd/dist/reset.css';
 @import '~@fortawesome/fontawesome-free/css/all.css';
 @import url('https://fonts.googleapis.com/css?family=Khula&display=swap&.css');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&family=Roboto:ital@0;1&display=swap');
 
 /* Hide scrollbars but keep functionality*/
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -49,7 +50,7 @@ body {
 
 body {
   margin: 0;
-  font-family: 'Roboto';
+  font-family: var(--font-family-primary);
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -66,7 +67,15 @@ body {
 }
 
 code {
-  font-family: 'source-code-pro, Menlo, Monaco, Consolas, Courier New, monospace';
+  font-family: var(--font-family-primary);
+}
+
+.ant-layout {
+  font-family: var(--font-family-primary);
+  & * {
+    font-family: var(--font-family-primary);
+    letter-spacing: 0.1px;
+  }
 }
 
 /* Hide scroll bars on antd modals*/
@@ -331,6 +340,8 @@ code {
 
 // Define global css variable in app
 :root {
+  // Default Font
+  --font-family-primary: 'Roboto', sans-serif;
   /** Light theme **/
   // Color
   --color-primary: #9e2a9c;
@@ -773,6 +784,18 @@ code {
     }
     .item-action-sheet {
       background: #303031;
+    }
+    // Install Pwa Guide Dark
+    &.action-sheet-install-pwa-guide {
+      h3 {
+        color: var(--text-color-primary-dark);
+      }
+      p {
+        color: var(--text-color-on-dark);
+      }
+      .close-btn {
+        background: var(--bg-color-dark-item);
+      }
     }
   }
 }
@@ -1563,6 +1586,9 @@ code {
     }
     .comment-container {
       background: #303031;
+    }
+    .hashtag-link {
+      color: var(--color-primary) !important;
     }
   }
 

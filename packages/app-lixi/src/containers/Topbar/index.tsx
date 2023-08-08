@@ -45,6 +45,7 @@ import { getModals } from '@store/modal/selectors';
 import { showToast } from '@store/toast/actions';
 import { getSelectedWalletPath, getWalletStatus } from '@store/wallet';
 import { ReactSVG } from 'react-svg';
+import { openActionSheet } from '@store/action-sheet/actions';
 
 export type TopbarProps = {
   className?: string;
@@ -457,6 +458,11 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     setOpenMoreOption(false);
   };
 
+  const handleClickInstall = () => {
+    setOpenMoreOption(false);
+    dispatch(openActionSheet('InstallPwaGuide', {}));
+  };
+
   const HandleMenuPosts = (checked: boolean) => {
     dispatch(saveTopPostsFilter(checked));
   };
@@ -599,6 +605,14 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           direction="horizontal"
           key="support"
           onClickItem={() => handleIconClick('/page/clbm6r1v91486308n7w6za1qcu')}
+        />
+        <ItemAccess
+          icon={'/images/ico-download.svg'}
+          text={intl.get('general.installApp')}
+          active={null}
+          direction="horizontal"
+          key="support"
+          onClickItem={handleClickInstall}
         />
       </div>
       <div className="social-feature">

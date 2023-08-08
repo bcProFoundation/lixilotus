@@ -226,7 +226,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
             <ItemActionSheetBottom
               text={`${intl.get('general.unfollow')} ${page?.name}`}
               icon="/images/follow.svg"
-              className={isFollowedPage ? "isFollowed" : ""}
+              className={isFollowedPage ? 'isFollowed' : ''}
               onClickItem={handleUnfollowPage}
             />
           )}
@@ -241,7 +241,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
             <ItemActionSheetBottom
               text={`${intl.get('general.unfollow')} ${post.postAccount?.name}`}
               icon="/images/follow.svg"
-              className={isFollowedAccount ? "isFollowed" : ""}
+              className={isFollowedAccount ? 'isFollowed' : ''}
               onClickItem={handleUnfollowAccount}
             />
           )}
@@ -249,4 +249,4 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
       </Drawer>
     </>
   );
-};  
+};

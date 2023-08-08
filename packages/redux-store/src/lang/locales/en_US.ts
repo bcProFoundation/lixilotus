@@ -118,6 +118,7 @@ export default {
   'general.dana': ' Dana',
   'general.support': 'Support',
   'general.all': 'All',
+  'general.installApp': 'Install App',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -667,5 +668,12 @@ export default {
   'toast.error': 'Error',
   'toast.info': 'Info',
   'toast.open': 'Open',
-  'toast.burn': 'Burning...'
+  'toast.burn': 'Burning...',
+
+  /* 22. Guide */
+  'guide.title': 'Install Lixi Social',
+  'guide.body': 'Install the app on your device to easily access it anytime. No app store. No download. No hassle.',
+  'guide.descOne': '1. Open in Safari (optional)',
+  'guide.descTwo': '2. Tap on',
+  'guide.descThree': '3. Select'
 };

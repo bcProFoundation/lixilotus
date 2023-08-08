@@ -7,10 +7,12 @@ import { getCurrentThemes } from '@store/settings';
 import darkTheme from 'src/styles/themes/darkTheme';
 import styled from 'styled-components';
 import { PostActionSheet } from './PostActionSheet';
+import { InstallPwaGuide } from './InstallPwaGuide';
 import _ from 'lodash';
 
 const actionSheetComponentLookupTable = {
-  PostActionSheet
+  PostActionSheet,
+  InstallPwaGuide
 };
 
 const ActionSheet = () => {

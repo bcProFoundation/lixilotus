@@ -117,6 +117,7 @@ export default {
   'general.dana': ' Dana',
   'general.support': 'Hỗ trợ',
   'general.all': 'Tất cả',
+  'general.installApp': 'Cài đặt ứng dụng',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -665,5 +666,13 @@ export default {
   'toast.error': 'Lỗi',
   'toast.info': 'Thông tin',
   'toast.open': 'Mở',
-  'toast.burning': 'Đang đốt...'
+  'toast.burning': 'Đang đốt...',
+
+  /* 22. Guide */
+  'guide.title': 'Cài đặt Lixi Social',
+  'guide.body':
+    'Cài đặt ứng dụng trên thiết bị của bạn để dễ dàng truy cập bất cứ lúc nào. Không có cửa hàng ứng dụng. Không tải xuống. Không có rắc rối.',
+  'guide.descOne': '1. Mở trình duyệt Safari (Tuỳ chọn)',
+  'guide.descTwo': '2. Ấn vào',
+  'guide.descThree': '3. Chọn'
 };
