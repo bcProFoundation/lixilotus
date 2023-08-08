@@ -497,7 +497,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   );
 
   const balanceAccount = (acc?: any) => {
-    const balanceString = fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0)
+    const balanceString = fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0);
     return `~ ${balanceString.toFixed(2)}`;
   };
 
@@ -534,7 +534,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             </div>
 
             <div className="profile-feature">
-              <span>{balanceAccount(selectedAccount)} {currency.ticker}</span>
+              <span>
+                {balanceAccount(selectedAccount)} {currency.ticker}
+              </span>
               <Link href="/send">
                 <span>
                   <SendOutlined style={{ fontSize: '16px' }} />
@@ -762,7 +764,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
         </div>
         <div className="account-bar">
           <Popover
-            overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''}`}
+            overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} account-popover`}
             arrow={false}
             content={contentSelectAccount}
             placement="bottom"

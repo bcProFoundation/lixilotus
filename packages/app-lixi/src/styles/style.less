@@ -162,6 +162,12 @@ code {
       }
     }
   }
+  .avatar-account {
+    .ant-avatar {
+      background: rgba(0, 0, 0, 0.25);
+      color: #fff;
+    }
+  }
 }
 
 .ant-modal-footer {
@@ -203,6 +209,22 @@ code {
     transform: scale(1) translateX(-50%);
     position: absolute;
     left: 50%;
+  }
+}
+
+.avatar-account {
+  .ant-avatar {
+    background: rgba(0, 0, 0, 0.25);
+    color: #fff;
+  }
+}
+
+.ant-popover {
+  .avatar-account {
+    .ant-avatar {
+      background: rgba(0, 0, 0, 0.25);
+      color: #fff;
+    }
   }
 }
 
@@ -1363,6 +1385,17 @@ code {
     color: var(--text-color-on-dark) !important;
   }
 
+  .ant-avatar {
+    background: #303031 !important;
+    color: gray !important;
+    span {
+      color: gray !important;
+    }
+    &.ant-avatar-image {
+      background: transparent !important;
+    }
+  }
+
   input,
   textarea,
   .ant-input-affix-wrapper,
@@ -1736,6 +1769,15 @@ code {
 
     &.readed {
       background: var(--bg-color-dark-item) !important;
+    }
+  }
+  .ant-avatar {
+    background: #303031 !important;
+    color: gray !important;
+  }
+  &.account-popover {
+    .ant-avatar {
+      background: rgba(0, 0, 0, 0.25) !important;
     }
   }
 }

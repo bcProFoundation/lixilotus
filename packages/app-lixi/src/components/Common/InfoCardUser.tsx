@@ -54,7 +54,7 @@ const CardUser = styled.div`
       }
       .title {
         display: flex;
-        align-items: baseline;
+        align-items: center;
         font-size: 11px;
         letter-spacing: 0.25px;
         margin: 0;
@@ -63,6 +63,7 @@ const CardUser = styled.div`
         .account-name {
           cursor: pointer;
           color: var(--text-color-on-background);
+          margin-right: 2px;
         }
 
         .follow-icon {
