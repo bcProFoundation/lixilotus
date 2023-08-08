@@ -586,6 +586,8 @@ model Burn {
   burnedValue Float     @default(0) @map("burned_value")
   createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@map("burn")
 }
 
 model GiveTip {

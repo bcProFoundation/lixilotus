@@ -1,0 +1,1 @@
+ALTER TABLE "Burn" RENAME TO "burn";
