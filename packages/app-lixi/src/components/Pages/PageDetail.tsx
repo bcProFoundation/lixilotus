@@ -49,7 +49,7 @@ import { Button, Skeleton, Space, Tabs, Tag } from 'antd';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtPage';
 import { useInfiniteHashtagByPageQuery } from '@store/hashtag/useInfiniteHashtagByPageQuery';
@@ -62,6 +62,8 @@ import { getSelectedPostId } from '@store/post/selectors';
 import { setSelectedPost } from '@store/post/actions';
 import { ReactSVG } from 'react-svg';
 import { PostListType } from '@bcpros/lixi-models/constants';
+import { AuthorizationContext } from '@context/index';
+import useAuthorization from '@components/Common/Authorization/use-authorization.hooks';
 
 export type PageItem = PageQuery['page'];
 
@@ -463,7 +465,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [pageDetailData, setPageDetailData] = useState<any>(page);
-  const [isFollowed, setIsFollowed] = useState<boolean>(checkIsFollowed);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const walletStatus = useAppSelector(getWalletStatus);
@@ -481,6 +482,8 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const pageCoverUpload = useAppSelector(getPageCoverUpload);
   const [urlPageAvatarUpload, setUrlPageAvatarUpload] = useState('');
   const [urlPageCoverUpload, setUrlPageCoverUpload] = useState('');
+  const authorization = useContext(AuthorizationContext);
+  const askAuthorization = useAuthorization();
 
   useEffect(() => {
     if (!_.isNil(pageAvatarUpload?.cfImageId)) {
@@ -530,14 +533,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
       error: errorOnDelete
     }
   ] = useDeleteFollowPageMutation();
-
-  useEffect(() => {
-    if (isSuccessCreateFollowPage) setIsFollowed(true);
-  }, [isSuccessCreateFollowPage]);
-
-  useEffect(() => {
-    if (isSuccessDeleteFollowPage) setIsFollowed(false);
-  }, [isSuccessDeleteFollowPage]);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
@@ -682,21 +677,29 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   };
 
   const handleFollowPage = async () => {
-    const createFollowPageInput: CreateFollowPageInput = {
-      accountId: selectedAccountId,
-      pageId: pageDetailData.id
-    };
+    if (authorization.authorized) {
+      const createFollowPageInput: CreateFollowPageInput = {
+        accountId: selectedAccountId,
+        pageId: pageDetailData.id
+      };
 
-    await createFollowPageTrigger({ input: createFollowPageInput });
+      await createFollowPageTrigger({ input: createFollowPageInput });
+    } else {
+      askAuthorization();
+    }
   };
 
   const handleUnfollowPage = async () => {
-    const deleteFollowPageInput: DeleteFollowPageInput = {
-      accountId: selectedAccountId,
-      pageId: pageDetailData.id
-    };
+    if (authorization.authorized) {
+      const deleteFollowPageInput: DeleteFollowPageInput = {
+        accountId: selectedAccountId,
+        pageId: pageDetailData.id
+      };
 
-    await deleteFollowPageTrigger({ input: deleteFollowPageInput });
+      await deleteFollowPageTrigger({ input: deleteFollowPageInput });
+    } else {
+      askAuthorization();
+    }
   };
 
   //#region QueryVirtuoso
@@ -899,8 +902,8 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             {/* Follow */}
             {selectedAccountId != pageDetailData?.pageAccountId && (
               <div>
-                <Button onClick={isFollowed ? handleUnfollowPage : handleFollowPage}>
-                  {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
+                <Button onClick={checkIsFollowed ? handleUnfollowPage : handleFollowPage}>
+                  {checkIsFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
                 </Button>
               </div>
             )}

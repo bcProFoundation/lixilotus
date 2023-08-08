@@ -40,7 +40,6 @@ export class PageResolver {
   }
 
   @Query(() => Page)
-  @UseGuards(GqlJwtAuthGuard)
   async page(@PageAccountEntity() account: Account, @Args('id', { type: () => String }) id: string) {
     const page = await this.prisma.page.findFirst({
       where: { id: id },

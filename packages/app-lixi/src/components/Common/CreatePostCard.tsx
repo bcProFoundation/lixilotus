@@ -431,7 +431,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
                 <p className="title-user">{selectedAccount?.name}</p>
                 <div className="location-fee">
                   <Button className="btn-select">{getCreatePostLocation()}</Button>
-                  {page && page.createPostFee && selectedAccount.id != page.pageAccountId && (
+                  {page && page.createPostFee && selectedAccount?.id != page.pageAccountId && (
                     <p className="post-fee">{`${intl.get('general.fee')} ${page.createPostFee} ${currency.ticker}`}</p>
                   )}
                 </div>

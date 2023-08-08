@@ -9,6 +9,7 @@ import {
   PostTranslation,
   RepostInput,
   Token,
+  Repost,
   UpdatePostInput
 } from '@bcpros/lixi-models';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
@@ -55,7 +56,7 @@ export class PostResolver {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -258,7 +259,7 @@ export class PostResolver {
 
   @SkipThrottle()
   @Query(() => PostConnection)
-  @UseGuards(GqlJwtAuthGuard)
+  @UseGuards(GqlJwtAuthGuardByPass)
   async allPostsByPageId(
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
@@ -278,7 +279,44 @@ export class PostResolver {
       }
     });
 
-    if (account.id === page?.pageAccountId) {
+    if (!account) {
+      result = await findManyCursorConnection(
+        args =>
+          this.prisma.post.findMany({
+            include: { postAccount: true, comments: true, reposts: { select: { account: true, accountId: true } } },
+            where: {
+              OR: [
+                {
+                  pageId: id
+                },
+                {
+                  AND: [{ pageId: id }, { danaBurnScore: { gte: minBurnFilter ?? 0 } }]
+                }
+              ]
+            },
+            orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
+            ...args
+          }),
+        () =>
+          this.prisma.post.count({
+            where: {
+              OR: [
+                {
+                  pageId: id
+                },
+                {
+                  AND: [{ pageId: id }, { danaBurnScore: { gte: minBurnFilter ?? 0 } }]
+                }
+              ]
+            }
+          }),
+        { first, last, before, after }
+      );
+
+      return result;
+    }
+
+    if (account?.id === page?.pageAccountId) {
       result = await findManyCursorConnection(
         async args => {
           const posts = await this.prisma.post.findMany({
@@ -328,7 +366,7 @@ export class PostResolver {
           }),
         { first, last, before, after }
       );
-    } else {
+    } else if (account) {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
@@ -882,10 +920,10 @@ export class PostResolver {
         connect:
           uploadDetailIds.length > 0
             ? uploadDetailIds.map((uploadDetail: any) => {
-              return {
-                id: uploadDetail
-              };
-            })
+                return {
+                  id: uploadDetail
+                };
+              })
             : undefined
       },
       page: {
@@ -1162,6 +1200,28 @@ export class PostResolver {
     });
 
     return reposted ? true : false;
+  }
+
+  @ResolveField('reposts', () => Repost)
+  async reposts(@Parent() post: Post) {
+    const reposts = await this.prisma.repost.findMany({
+      where: {
+        id: post.id
+      }
+    });
+
+    return reposts;
+  }
+
+  @ResolveField('repostCount', () => Repost)
+  async repostCount(@Parent() post: Post) {
+    const repostCount = await this.prisma.repost.count({
+      where: {
+        id: post.id
+      }
+    });
+
+    return repostCount;
   }
 
   @ResolveField('postAccount', () => Account)

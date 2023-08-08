@@ -220,7 +220,7 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment, isSetBorde
           <Tooltip title={`${intl.get('page.repostFee')}: ${post.page.createPostFee} ${currency.ticker}`}>
             <Space style={{ padding: '8px' }} className="repost" size={5} onClick={() => handleRepost(post)}>
               <RetweetOutlined />
-              <Counter isShowXPI={false} num={post.reposts.length ?? 0} />
+              <Counter isShowXPI={false} num={post.reposts?.length ?? 0} />
             </Space>
           </Tooltip>
         )}

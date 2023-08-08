@@ -8,35 +8,35 @@ import { NextSeo } from 'next-seo';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import MainLayout from '@components/Layout/MainLayout';
 import { END } from 'redux-saga';
+import { useAppSelector } from '@store/hooks';
+import { getSelectedAccount } from '@store/account';
+import React from 'react';
 
 const PageDetailPage = props => {
   const { pageId, isMobile } = props;
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `pages/${pageId}`;
-  let currentPage;
-  let checkIsFollowed;
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const { currentData: currentDataPageQuery, isSuccess: isSuccessPageQuery } = usePageQuery({ id: pageId });
-  const { currentData: currentDataCheckIsFollowed, isSuccess: isSuccessCheckIsFollowed } = useCheckIfFollowPageQuery({
-    pageId: pageId
-  });
-
-  if (isSuccessPageQuery && isSuccessCheckIsFollowed) {
-    currentPage = currentDataPageQuery.page;
-    checkIsFollowed = currentDataCheckIsFollowed.checkIfFollowPage;
-  }
+  const { currentData: currentDataCheckIsFollowed, isSuccess: isSuccessCheckIsFollowed } = useCheckIfFollowPageQuery(
+    {
+      pageId: pageId
+    },
+    { skip: !selectedAccount || !isSuccessPageQuery }
+  );
 
   return (
-    <>
-      {isSuccessPageQuery && isSuccessCheckIsFollowed && (
-        <>
+    <React.Fragment>
+      {isSuccessPageQuery && (
+        <React.Fragment>
           <NextSeo
-            title={currentPage.name}
+            title={currentDataPageQuery.page.name}
             description="The lixi program send you a small gift ."
             canonical={canonicalUrl}
             openGraph={{
               url: canonicalUrl,
               title: 'Lixi',
-              description: currentPage.description || 'Save your attention save the world!',
+              description: currentDataPageQuery.page.description || 'Save your attention save the world!',
               images: [{ url: '' }],
               site_name: 'Lixi'
             }}
@@ -46,10 +46,14 @@ const PageDetailPage = props => {
               cardType: 'summary_large_image'
             }}
           />
-          <PageDetail page={currentPage} isMobile={isMobile} checkIsFollowed={checkIsFollowed} />
-        </>
+          <PageDetail
+            page={currentDataPageQuery.page}
+            isMobile={isMobile}
+            checkIsFollowed={currentDataCheckIsFollowed?.checkIfFollowPage}
+          />
+        </React.Fragment>
       )}
-    </>
+    </React.Fragment>
   );
 };
 

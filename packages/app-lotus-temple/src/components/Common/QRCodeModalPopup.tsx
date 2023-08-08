@@ -47,30 +47,28 @@ export const QRCodeModalPopup: React.FC<QRCodeModalProps> = (props: QRCodeModalP
   };
 
   return (
-    <>
-      <Modal open={true} footer={null} width={400}>
-        <StyledModel width={490} open={true} onOk={handleOk} onCancel={handleCancel} closable={false} footer={null}>
-          <Descriptions bordered>
-            <Descriptions.Item label={<QRCode address={props.address} size={300} />}>
-              {/* <Button type='primary' onClick={handleCopy}> */}
-              <StyledButton type="primary">
-                <CopyToClipboard text={props.address} onCopy={handleOnCopy}>
-                  <div>
-                    <CopyOutlined style={{ fontSize: '24px', color: '#fff' }} />
-                    <br /> {intl.get('special.copy')}
-                  </div>
-                </CopyToClipboard>
-              </StyledButton>
-              <br />
-              <br />
-              <StyledButton type="primary" onClick={handleCancel}>
-                <CloseCircleOutlined style={{ fontSize: '24px', color: '#fff' }} />
-                <br /> {intl.get('special.cancel')}
-              </StyledButton>
-            </Descriptions.Item>
-          </Descriptions>
-        </StyledModel>
-      </Modal>
-    </>
+    <React.Fragment>
+      <StyledModel width={490} open={true} onOk={handleOk} onCancel={handleCancel} closable={false} footer={null}>
+        <Descriptions bordered>
+          <Descriptions.Item label={<QRCode address={props.address} size={300} />}>
+            {/* <Button type='primary' onClick={handleCopy}> */}
+            <StyledButton type="primary">
+              <CopyToClipboard text={props.address} onCopy={handleOnCopy}>
+                <div>
+                  <CopyOutlined style={{ fontSize: '24px', color: '#fff' }} />
+                  <br /> {intl.get('special.copy')}
+                </div>
+              </CopyToClipboard>
+            </StyledButton>
+            <br />
+            <br />
+            <StyledButton type="primary" onClick={handleCancel}>
+              <CloseCircleOutlined style={{ fontSize: '24px', color: '#fff' }} />
+              <br /> {intl.get('special.cancel')}
+            </StyledButton>
+          </Descriptions.Item>
+        </Descriptions>
+      </StyledModel>
+    </React.Fragment>
   );
 };

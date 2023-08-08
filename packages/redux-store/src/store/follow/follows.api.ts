@@ -6,10 +6,34 @@ const enhancedApi = api.enhanceEndpoints({
     checkIfFollowAccount: {},
     checkIfFollowPage: {},
     createFollowAccount: {},
-    createFollowPage: {},
+    createFollowPage: {
+      async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
+        const { pageId } = input;
+        try {
+          await queryFulfilled;
+          dispatch(
+            api.util.updateQueryData('checkIfFollowPage', { pageId: pageId }, draft => {
+              draft.checkIfFollowPage = true;
+            })
+          );
+        } catch {}
+      }
+    },
     createFollowToken: {},
     deleteFollowAccount: {},
-    deleteFollowPage: {},
+    deleteFollowPage: {
+      async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
+        const { pageId } = input;
+        try {
+          await queryFulfilled;
+          dispatch(
+            api.util.updateQueryData('checkIfFollowPage', { pageId: pageId }, draft => {
+              draft.checkIfFollowPage = false;
+            })
+          );
+        } catch {}
+      }
+    },
     deleteFollowToken: {}
   }
 });

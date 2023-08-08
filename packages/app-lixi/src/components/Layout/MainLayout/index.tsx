@@ -243,9 +243,12 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const isSystemThemes = useAppSelector(getIsSystemThemes);
 
   let userInfo;
-  const { currentData: currentDataGetAccount, isSuccess: isSuccessGetAccount } = useGetAccountByAddressQuery({
-    address: selectedAccount?.address
-  });
+  const { currentData: currentDataGetAccount, isSuccess: isSuccessGetAccount } = useGetAccountByAddressQuery(
+    {
+      address: selectedAccount?.address
+    },
+    { skip: !selectedAccount?.address }
+  );
 
   if (isSuccessGetAccount) userInfo = currentDataGetAccount?.getAccountByAddress;
   dispatch(setAccountInfoTemp(userInfo));
