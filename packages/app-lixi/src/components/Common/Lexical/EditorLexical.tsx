@@ -14,7 +14,7 @@ import editorConfig from './editorConfig';
 import CustomButtonSubmitPlugin from './plugins/CustomButtonSubmitPlugin';
 import onChange from './onChange';
 import EmojisPlugin from './plugins/EmojisPlugin';
-import EmojiPickerPlugin from './plugins/EmojiPickerPlugin';
+// import EmojiPickerPlugin from './plugins/EmojiPickerPlugin';
 import TwitterPlugin from './plugins/TwitterPlugin';
 import AutoLinkPlugin from './plugins/AutoLinkPlugin';
 import AutoEmbedPlugin from './plugins/AutoEmbedPlugin';
@@ -249,6 +249,9 @@ const EditorLexical = (props: EditorLexicalProps) => {
               }}
             /> */}
             {/* <TreeViewPlugin /> */}
+            <TwitterPlugin />
+            <YouTubePlugin />
+            <FigmaPlugin />
             <EmojisPlugin />
             <HistoryPlugin />
             <AutoLinkPlugin />
@@ -315,7 +318,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
               )}
             </div>
             <div className="EditorLexical_action">
-              <EmojiPickerPlugin />
+              {/* <EmojiPickerPlugin /> */}
               <MultiUploader
                 type={UPLOAD_TYPES.POST}
                 isIcon={true}
@@ -325,7 +328,6 @@ const EditorLexical = (props: EditorLexicalProps) => {
                 showUploadList={false}
               />
               <ButtonLinkPlugin />
-              <TwitterPlugin />
             </div>
           </div>
           <CustomButtonSubmitPlugin onSubmit={value => onSubmit(value)} loading={loading} isEditMode={isEditMode} />

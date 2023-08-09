@@ -23,13 +23,23 @@ const PostTranslate = ({ postTranslate }) => {
     }
   });
 
+  const handleContentEmbed = () => {
+    let staticMarkupContent = ReactDomServer.renderToStaticMarkup(content);
+    if (staticMarkupContent.includes('iframe')) {
+      let newContent = staticMarkupContent.split('<div data-lexical-decorator="true" contenteditable="false">');
+      let contentText = newContent[0] || null;
+      staticMarkupContent = contentText;
+    }
+    return staticMarkupContent;
+  };
+
   return (
     <div className="read-more">
       <ReadMoreMore
         id="readMore"
         linesToShow={10000}
         parseHtml
-        text={ReactDomServer.renderToStaticMarkup(content)}
+        text={handleContentEmbed()}
         checkFor={10000}
         transDuration={0}
         readMoreText={intl.get('general.showMore')}

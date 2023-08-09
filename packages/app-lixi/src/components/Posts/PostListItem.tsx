@@ -99,6 +99,7 @@ const Content = styled.div`
         min-width: auto !important;
         width: 560px !important;
         height: 30vh;
+        max-height: 60vh;
       }
       // &#twitter-widget-0 {
       //   height: 750px !important;

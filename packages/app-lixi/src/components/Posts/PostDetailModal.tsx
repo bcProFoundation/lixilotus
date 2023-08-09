@@ -131,6 +131,10 @@ const PostContentDetail = styled.div`
     div {
       max-width: 100%;
     }
+    div[data-lexical-decorator] {
+      display: flex;
+      justify-content: center;
+    }
     iframe {
       max-width: 100%;
       @media (max-width: 960px) {

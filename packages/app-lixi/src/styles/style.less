@@ -50,7 +50,7 @@ body {
 
 body {
   margin: 0;
-  font-family: var(--font-family-primary);
+  // font-family: var(--font-family-primary);
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -67,14 +67,14 @@ body {
 }
 
 code {
-  font-family: var(--font-family-primary);
+  // font-family: var(--font-family-primary);
 }
 
 .ant-layout {
-  font-family: var(--font-family-primary);
+  // font-family: var(--font-family-primary);
   & * {
-    font-family: var(--font-family-primary);
-    letter-spacing: 0.1px;
+    // font-family: var(--font-family-primary);
+    // letter-spacing: 0.1px;
   }
 }
 
@@ -1313,6 +1313,10 @@ code {
   .ant-popover-inner {
     padding: 0;
   }
+
+  .message {
+    color: var(--text-color-on-dark) !important;
+  }
 }
 
 .slick-active {
@@ -1623,6 +1627,9 @@ code {
     }
     .hashtag-link {
       color: var(--color-primary) !important;
+    }
+    .description-post {
+      color: var(--text-color-on-dark) !important;
     }
   }
 
@@ -2651,6 +2658,7 @@ code {
   }
 
   .description-post {
+    color: var(--text-color-on-dark);
     p {
       color: var(--text-color-on-dark) !important;
     }

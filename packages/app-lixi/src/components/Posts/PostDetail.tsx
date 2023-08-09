@@ -178,6 +178,10 @@ const PostContentDetail = styled.div`
     margin: 1rem 0;
     text-align: left;
     word-break: break-word;
+    div[data-lexical-decorator] {
+      display: flex;
+      justify-content: center;
+    }
     a {
       cursor: pointer;
     }
