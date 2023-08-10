@@ -374,6 +374,7 @@ export default {
   'settings.backupAccountWarning':
     'Your seed phrase is the only way to restore your account. Write it down. Keep it safe.',
   'settings.backupAccountHint': 'Copy and paste your mnemonic seed phrase below to import an existing account',
+  'settings.accountNameEmpty': 'Account name must must not be empty',
   'settings.accountLengthMessage': 'Account name must be a string between 1 and 24 characters long',
   'settings.enterAccountName': 'Enter new account name',
   'settings.renameAccount': 'Rename Account',

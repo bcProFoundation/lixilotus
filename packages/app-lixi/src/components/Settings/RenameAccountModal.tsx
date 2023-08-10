@@ -1,10 +1,10 @@
 import { Form, Input, Modal } from 'antd';
 import intl from 'react-intl-universal';
 import * as _ from 'lodash';
-import React, { useState } from 'react';
+import React from 'react';
 import { useAppDispatch } from '@store/hooks';
 import { closeModal } from '@store/modal/actions';
-
+import { Controller, useForm } from 'react-hook-form';
 import { Account } from '@bcpros/lixi-models';
 import { ProfileFilled } from '@ant-design/icons';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
@@ -17,36 +17,27 @@ export type RenameAccountModalProps = {
 };
 
 export const RenameAccountModal: React.FC<RenameAccountModalProps> = (props: RenameAccountModalProps) => {
-  const [newAccountName, setNewAccountName] = useState('');
-  const [newAccountNameIsValid, setNewAccountNameIsValid] = useState<boolean | null>(null);
   const dispatch = useAppDispatch();
   const { account } = props;
+  const {
+    formState: { errors },
+    control,
+    handleSubmit
+  } = useForm();
 
-  const handleOnOk = () => {
+  const handleOnOk = ({ name }: { name: string }) => {
     if (props.onOkAction) {
       // There's an action should be dispatch on ok
       // Set selected name to the clone action and dispatch
       const newAction = _.cloneDeep(props.onOkAction);
-      newAction.payload.name = newAccountName;
+      newAction.payload.name = name.trim();
       dispatch(newAction);
     }
     dispatch(closeModal());
-    location.reload();
   };
 
   const handleOnCancel = () => {
     dispatch(closeModal());
-  };
-
-  const handleAccountNameInput = e => {
-    const { value } = e.target;
-    // validation
-    if (value && value.length && value.length < 24) {
-      setNewAccountNameIsValid(true);
-    } else {
-      setNewAccountNameIsValid(false);
-    }
-    setNewAccountName(value);
   };
 
   return (
@@ -56,23 +47,34 @@ export const RenameAccountModal: React.FC<RenameAccountModalProps> = (props: Ren
         className={`${props?.classStyle}`}
         transitionName=""
         open={true}
-        onOk={handleOnOk}
+        onOk={handleSubmit(handleOnOk)}
         onCancel={handleOnCancel}
       >
         <AntdFormWrapper>
           <Form style={{ width: 'auto' }}>
-            <Form.Item
-              validateStatus={newAccountNameIsValid === null || newAccountNameIsValid ? '' : 'error'}
-              help={
-                newAccountNameIsValid === null || newAccountNameIsValid ? '' : intl.get('settings.accountLengthMessage')
-              }
-            >
-              <Input
-                prefix={<ProfileFilled />}
-                placeholder={intl.get('settings.enterAccountName')}
-                name="newName"
-                value={newAccountName}
-                onChange={e => handleAccountNameInput(e)}
+            <Form.Item validateStatus={!errors.name ? '' : 'error'} help={!errors.name ? '' : errors.name.message}>
+              <Controller
+                name="name"
+                control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: intl.get('settings.accountNameEmpty')
+                  },
+                  maxLength: {
+                    value: 24,
+                    message: intl.get('settings.accountLengthMessage')
+                  }
+                }}
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <Input
+                    prefix={<ProfileFilled />}
+                    placeholder={intl.get('settings.enterAccountName')}
+                    value={value}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                  />
+                )}
               />
             </Form.Item>
           </Form>

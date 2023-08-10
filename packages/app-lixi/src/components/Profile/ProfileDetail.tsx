@@ -650,7 +650,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
             </div>
             <div className="title-profile">
               <div>
-                <h2>{user.name}</h2>
+                <h2>{selectedAccount?.name}</h2>
                 <p className="add">{user?.address.slice(6, 11) + '...' + user?.address.slice(-5)}</p>
               </div>
             </div>

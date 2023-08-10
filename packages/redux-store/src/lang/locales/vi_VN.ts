@@ -373,6 +373,7 @@ export default {
   'settings.backupAccountWarning':
     'Cụm từ bảo mật gốc là chìa khóa duy nhất để bạn lấy lại ví. Viết ra và lưu cụm từ bảo mật gốc ở nơi an toàn.',
   'settings.backupAccountHint': 'Sao chép và dán cụm từ bảo mật của bạn bên dưới để khôi phục tài khoản hiện có',
+  'settings.accountNameEmpty': 'Tên tài khoản không được để trống',
   'settings.accountLengthMessage': 'Tên tài khoản phải là một chuỗi dài từ 1 đến 24 ký tự',
   'settings.enterAccountName': 'Nhập tên tài khoản',
   'settings.renameAccount': 'Đổi tên tài khoản',
