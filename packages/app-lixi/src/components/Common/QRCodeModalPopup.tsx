@@ -14,6 +14,7 @@ export type QRCodeModalProps = {
   address: string;
   type: string;
   onClick?: Function;
+  logoImage?: string;
 };
 
 export const QRCodeModalPopup: React.FC<QRCodeModalProps> = (props: QRCodeModalProps) => {

@@ -69,68 +69,35 @@ const Content = styled.div`
     word-break: break-word;
     cursor: pointer;
     margin-bottom: 1rem;
-    div > div > [data-lexical-decorator] {
+    div[data-lexical-decorator] {
       display: flex;
       justify-content: center;
-      @media (max-width: 960px) {
-        max-height: 500px;
-      }
-    }
-    p {
-      font-size: 14px;
-      line-height: 22px;
-    }
-    .read-more-more-module_btn__33IaH {
-      font-size: 14px;
-    }
-    @media (max-width: 960px) {
       div {
-        &[data-lexical-decorator='true'] > div > div {
-          width: 100% !important;
+        max-width: 100%;
+      }
+      iframe {
+        max-width: 100% !important;
+        &[title='YouTube video'] {
+          width: 700px !important;
+          height: 400px;
         }
-      }
-    }
-    iframe {
-      min-width: 560px !important;
-      width: 750px !important;
-      max-width: 100% !important;
-      height: 50vh;
-      @media (max-width: 960px) {
-        min-width: auto !important;
-        width: 560px !important;
-        height: 30vh;
-        max-height: 60vh;
-      }
-      // &#twitter-widget-0 {
-      //   height: 750px !important;
-      //   @media (min-width: 960px) {
-      //     width: 550px !important;
-      //     margin: auto !important;
-      //   }
-      //   @media (max-width: 960px) {
-      //     height: 620px !important;
-      //   }
-      // }
-      &#reddit-embed {
-        height: 500px !important;
-        @media (max-width: 960px) {
-          height: 450px !important;
-        }
-      }
-      &#facebook-embed {
-        height: 700px !important;
-        @media (max-width: 960px) {
-          height: 580px !important;
+        @media (max-width: 526px) {
+          &[title='YouTube video'] {
+            max-height: 25vh;
+          }
+          &[title='Twitter Tweet'] {
+            max-height: 70vh;
+          }
         }
       }
     }
     p {
       margin: 0;
+      font-size: 14px;
+      line-height: 22px;
     }
-    .read-more {
-      & > div > div {
-        // max-height: 130px !important;
-      }
+    .read-more-more-module_btn__33IaH {
+      font-size: 14px;
     }
   }
   .description-translate {

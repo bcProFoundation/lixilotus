@@ -42,10 +42,14 @@ const PostContent = ({ post }) => {
     let staticMarkupContent = ReactDomServer.renderToStaticMarkup(content);
     const postScore = post?.danaBurnScore;
     if (staticMarkupContent.includes('iframe') && postScore >= 50) {
-      let newContent = staticMarkupContent.split('<div data-lexical-decorator="true" contenteditable="false">');
-      let contentText = newContent[0] || null;
-      let iframeEmbed = newContent[1] || null;
-      iFrameEmbed = iframeEmbed;
+      let indexOfIframe = staticMarkupContent.indexOf('<div data-lexical-decorator="true" contenteditable="false">');
+      let contentText = staticMarkupContent.slice(0, indexOfIframe) || null;
+      let iframe = staticMarkupContent.slice(indexOfIframe) || null;
+      iFrameEmbed = iframe;
+      if (iframe.includes('EditorLexical_paragraph')) {
+        let indexOfSecondPara = iframe.indexOf('<p class="EditorLexical_paragraph');
+        iFrameEmbed = iframe.slice(0, indexOfSecondPara);
+      }
       staticMarkupContent = contentText;
     }
     return staticMarkupContent;

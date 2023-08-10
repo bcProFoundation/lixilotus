@@ -61,7 +61,7 @@ export const QRCode = ({ address, size = 210, logoImage, ...otherProps }: QRCode
   );
 };
 
-export const QRCodeModal = ({ address, type, onClick = () => null }: QRCodeModalProps) => {
+export const QRCodeModal = ({ logoImage, address, type, onClick = () => null }: QRCodeModalProps) => {
   const dispatch = useAppDispatch();
 
   const showBigModal = () => {
@@ -75,7 +75,7 @@ export const QRCodeModal = ({ address, type, onClick = () => null }: QRCodeModal
   return (
     <>
       <div onClick={showBigModal}>
-        <QRCode address={address} />
+        <QRCode logoImage={logoImage} address={address} />
       </div>
     </>
   );
