@@ -23,6 +23,7 @@
     "@bcpros/minimal-xpi-slp-wallet": "3.0.10",
     "@fortawesome/fontawesome-free": "^6.2.1",
     "@lexical/react": "0.11.3",
+    "@lexical/utils": "0.11.3",
     "@reduxjs/toolkit": "^1.9.5",
     "@zxing/browser": "^0.1.1",
     "animate.css": "^4.1.1",

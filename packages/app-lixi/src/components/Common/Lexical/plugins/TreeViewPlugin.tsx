@@ -6,6 +6,7 @@ const TreeViewPlugin: React.FC = () => {
   const [editor] = useLexicalComposerContext();
   return (
     <TreeView
+      treeTypeButtonClassName="tree-view-button"
       viewClassName="tree-view-output"
       timeTravelPanelClassName="debug-timetravel-panel"
       timeTravelButtonClassName="debug-timetravel-button"
