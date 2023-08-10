@@ -65,10 +65,20 @@ type UploaderProps = {
   isIcon?: boolean;
   icon?: any;
   showUploadList?: boolean;
+  loading?: boolean;
+  setUploadingImage?: (state: boolean) => void;
 };
 
-export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList, icon }: UploaderProps) => {
-  const [loading, setLoading] = useState(false);
+export const Uploader = ({
+  type,
+  buttonName,
+  buttonType,
+  isIcon,
+  showUploadList,
+  icon,
+  loading,
+  setUploadingImage
+}: UploaderProps) => {
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -139,16 +149,16 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList,
     const { status } = info.file;
     switch (status) {
       case 'uploading':
-        setLoading(true);
+        setUploadingImage(true);
         break;
       case 'done':
-        setLoading(false);
+        setUploadingImage(false);
         dispatch(
           showToast('success', { message: intl.get('toast.success'), description: intl.get('lixi.fileUploadSuccess') })
         );
         break;
       case 'error':
-        setLoading(false);
+        setUploadingImage(false);
         dispatch(
           showToast('error', { message: intl.get('toast.error'), description: intl.get('lixi.fileUploadError') })
         );

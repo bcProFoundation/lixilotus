@@ -257,10 +257,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
     try {
       let filterValue: number;
-      if (_.trim(pureContent) === '' || _.isNil(pureContent)) {
-        return;
-      }
-
       let createFeeHex;
       if (pathname.includes('/token')) {
         filterValue = filterToken;

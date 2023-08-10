@@ -15,7 +15,7 @@ import { useUpdatePageMutation } from '@store/page/pages.generated';
 import { showToast } from '@store/toast/actions';
 import intl from 'react-intl-universal';
 import { closeModal } from '@store/modal/actions';
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { setAccount } from '@store/account';
 import { useUpdateAccountMutation } from '@store/account/accounts.generated';
 
@@ -47,6 +47,7 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
   const dispatch = useAppDispatch();
   const avatar = profile ? useAppSelector(getAccountAvatarUpload) : useAppSelector(getPageAvatarUpload);
   const cover = profile ? useAppSelector(getAccountCoverUpload) : useAppSelector(getPageCoverUpload);
+  const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
 
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
@@ -140,6 +141,9 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
   const handleOnCancel = () => {
     dispatch(closeModal());
   };
+  const setUploadingImage = state => {
+    setIsUploadingImage(state);
+  };
 
   return (
     <Modal
@@ -150,7 +154,13 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
       open={true}
       onCancel={handleOnCancel}
       footer={
-        <Button type="primary" htmlType="submit" onClick={profile ? handleOnEditProfile : handleOnEditPage}>
+        <Button
+          loading={isUploadingImage}
+          disabled={isUploadingImage}
+          type="primary"
+          htmlType="submit"
+          onClick={profile ? handleOnEditProfile : handleOnEditPage}
+        >
           {intl.get('post.upload')}
         </Button>
       }
@@ -160,11 +170,19 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
       <Form>
         {isAvatar ? (
           <Form.Item name="avatar" valuePropName="fileList" getValueFromEvent={normFile}>
-            <StyledUploader type={profile ? UPLOAD_TYPES.ACCOUNT_AVATAR : UPLOAD_TYPES.PAGE_AVATAR} />
+            <StyledUploader
+              loading={isUploadingImage}
+              setUploadingImage={setUploadingImage}
+              type={profile ? UPLOAD_TYPES.ACCOUNT_AVATAR : UPLOAD_TYPES.PAGE_AVATAR}
+            />
           </Form.Item>
         ) : (
           <Form.Item name="cover" valuePropName="fileList" getValueFromEvent={normFile}>
-            <StyledUploader type={profile ? UPLOAD_TYPES.ACCOUNT_COVER : UPLOAD_TYPES.PAGE_COVER} />
+            <StyledUploader
+              loading={isUploadingImage}
+              setUploadingImage={setUploadingImage}
+              type={profile ? UPLOAD_TYPES.ACCOUNT_COVER : UPLOAD_TYPES.PAGE_COVER}
+            />
           </Form.Item>
         )}
       </Form>

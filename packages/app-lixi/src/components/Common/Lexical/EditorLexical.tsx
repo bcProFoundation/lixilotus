@@ -173,6 +173,8 @@ const EditorLexical = (props: EditorLexicalProps) => {
     };
     return objImg;
   });
+  const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
+  const [currentContent, setCurrentContent] = useState<String>('');
 
   useEffect(() => {
     const isMobile = width < 960 ? true : false;
@@ -223,6 +225,13 @@ const EditorLexical = (props: EditorLexicalProps) => {
     );
   }, []);
 
+  const setUploadingImage = state => {
+    setIsUploadingImage(state);
+  };
+  const setContent = content => {
+    setCurrentContent(content);
+  };
+
   return (
     <React.Fragment>
       <StyledEditorLexical>
@@ -237,15 +246,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
               placeholder={Placeholder}
               ErrorBoundary={LexicalErrorBoundary}
             />
-            <OnChangePlugin onChange={onChange} />
-            {/* <OnChangePlugin
-              onChange={(editorState, editor) => {
-                editorState.read(() => {
-                  const value = JSON.stringify(editorState); // or JSON.stringify(editorState.toJSON())
-                  console.log(value + editor.getEditorState());
-                });
-              }}
-            /> */}
+            <OnChangePlugin onChange={editorState => onChange(editorState, setContent)} />
             {/* <TreeViewPlugin /> */}
             <TwitterPlugin />
             <YouTubePlugin />
@@ -323,11 +324,19 @@ const EditorLexical = (props: EditorLexicalProps) => {
                 buttonName=" "
                 buttonType="text"
                 showUploadList={false}
+                loading={isUploadingImage}
+                setUploadingImage={setUploadingImage}
               />
               <ButtonLinkPlugin />
             </div>
           </div>
-          <CustomButtonSubmitPlugin onSubmit={value => onSubmit(value)} loading={loading} isEditMode={isEditMode} />
+          <CustomButtonSubmitPlugin
+            onSubmit={value => onSubmit(value)}
+            loading={loading || isUploadingImage}
+            isEditMode={isEditMode}
+            currentContent={currentContent}
+            image={postCoverUploads}
+          />
         </LexicalComposer>
       </StyledEditorLexical>
     </React.Fragment>

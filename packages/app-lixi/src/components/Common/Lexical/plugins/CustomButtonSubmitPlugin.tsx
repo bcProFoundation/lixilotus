@@ -6,6 +6,7 @@ import React, { useEffect } from 'react';
 import intl from 'react-intl-universal';
 import { useAppDispatch } from '@store/hooks';
 import { saveEditorTextToCache } from '@store/account/actions';
+import _ from 'lodash';
 
 // Lexical React plugins are React components, which makes them
 // highly composable. Furthermore, you can lazy load plugins if
@@ -52,6 +53,7 @@ const CustomButtonSubmitPlugin = props => {
       props.onSubmit({ htmlContent: rootElementString, pureContent: getEditorStateTextString() });
     });
   };
+  const invalidPost = _.trim(props.currentContent) === '' && props.image.length === 0;
 
   return (
     <Button
@@ -60,6 +62,7 @@ const CustomButtonSubmitPlugin = props => {
       type="primary"
       onClick={handleClick}
       loading={props.loading}
+      disabled={invalidPost}
     >
       {intl.get('general.post')}
     </Button>

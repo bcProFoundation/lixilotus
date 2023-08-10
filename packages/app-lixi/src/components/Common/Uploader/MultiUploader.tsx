@@ -65,10 +65,20 @@ type UploaderProps = {
   isIcon?: boolean;
   showUploadList?: boolean;
   icon?: any;
+  loading?: boolean;
+  setUploadingImage: (state: boolean) => void;
 };
 
-export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUploadList, icon }: UploaderProps) => {
-  const [loading, setLoading] = useState(false);
+export const MultiUploader = ({
+  type,
+  buttonName,
+  buttonType,
+  isIcon,
+  showUploadList,
+  icon,
+  loading,
+  setUploadingImage
+}: UploaderProps) => {
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -142,10 +152,10 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
     const { status } = info.file;
     switch (status) {
       case 'uploading':
-        setLoading(true);
+        setUploadingImage(true);
         break;
       case 'done':
-        setLoading(false);
+        setUploadingImage(false);
         dispatch(
           showToast('success', {
             message: intl.get('toast.success'),
@@ -154,7 +164,7 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
         );
         break;
       case 'error':
-        setLoading(false);
+        setUploadingImage(false);
         dispatch(
           showToast('error', {
             message: intl.get('toast.error'),
