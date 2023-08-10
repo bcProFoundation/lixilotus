@@ -1,0 +1,58 @@
+fragment MessageFields on Message {
+  id
+  body
+  author {
+    id
+    name
+    address
+  }
+  pageMessageSession {
+    id
+  }
+  isPageOwner
+  createdAt
+  updatedAt
+}
+
+query Message($id: String!) {
+  message(id: $id) {
+    ...MessageFields
+  }
+}
+
+query MessageByPageMessageSessionId(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $id: String
+  $orderBy: MessageOrder
+  $skip: Int
+) {
+  allMessageByPageMessageSessionId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    id: $id
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...MessageFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+mutation CreateMessage($input: CreateMessageInput!) {
+  createMessage(data: $input) {
+    ...MessageFields
+  }
+}

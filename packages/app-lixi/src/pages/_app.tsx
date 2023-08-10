@@ -13,7 +13,8 @@ import {
   AuthorizationProvider,
   ServiceWorkerProvider,
   WalletProvider,
-  callConfig
+  callConfig,
+  SocketProvider
 } from '@context/index';
 import { wrapper } from '@store/store';
 import { ConfigProvider } from 'antd';
@@ -90,21 +91,23 @@ const LixiApp = ({ Component, ...rest }) => {
         }}
       />
       <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
-        <ServiceWorkerProvider>
-          <WalletProvider>
-            <AuthenticationProvider>
-              <AuthorizationProvider>
-                <OutsideCallConsumer config={callConfig}>
-                  <Layout className="lixi-app-layout">
-                    <ConnectedRouter>
-                      <Component {...props.pageProps} />
-                    </ConnectedRouter>
-                  </Layout>
-                </OutsideCallConsumer>
-              </AuthorizationProvider>
-            </AuthenticationProvider>
-          </WalletProvider>
-        </ServiceWorkerProvider>
+        <SocketProvider>
+          <ServiceWorkerProvider>
+            <WalletProvider>
+              <AuthenticationProvider>
+                <AuthorizationProvider>
+                  <OutsideCallConsumer config={callConfig}>
+                    <Layout className="lixi-app-layout">
+                      <ConnectedRouter>
+                        <Component {...props.pageProps} />
+                      </ConnectedRouter>
+                    </Layout>
+                  </OutsideCallConsumer>
+                </AuthorizationProvider>
+              </AuthenticationProvider>
+            </WalletProvider>
+          </ServiceWorkerProvider>
+        </SocketProvider>
       </PersistGate>
     </Provider>
   );

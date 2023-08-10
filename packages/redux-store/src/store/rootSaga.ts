@@ -17,6 +17,8 @@ import tokenSaga from './token/saga';
 import walletSaga from './wallet/saga';
 import worshipSaga from './worship/saga';
 import webpushSaga from './webpush/saga';
+import messageSaga from './message/saga';
+import { websocketSaga } from './websocket/saga';
 
 export default function* rootSaga() {
   yield all([
@@ -36,6 +38,8 @@ export default function* rootSaga() {
     countrySaga(),
     tokenSaga(),
     burnSaga(),
-    categorySaga()
+    categorySaga(),
+    messageSaga(),
+    websocketSaga()
   ]);
 }

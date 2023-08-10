@@ -8,6 +8,7 @@ import {
   getPageSuccess,
   postPageSuccess,
   setPage,
+  setPageMessageSession,
   setPagesByAccountId,
   setSelectedPage
 } from './action';
@@ -17,7 +18,8 @@ export const pageAdapter = createEntityAdapter<Page>({});
 
 const initialState: PageState = pageAdapter.getInitialState({
   selectedId: '',
-  pagesByAccountId: []
+  pagesByAccountId: [],
+  currentPageMessageSession: null
 });
 
 export const pageReducer = createReducer(initialState, builder => {
@@ -59,5 +61,9 @@ export const pageReducer = createReducer(initialState, builder => {
         }
       };
       pageAdapter.updateOne(state, updatePage);
+    })
+    .addCase(setPageMessageSession, (state, action) => {
+      const pageMessageSession = action.payload;
+      state.currentPageMessageSession = pageMessageSession;
     });
 });

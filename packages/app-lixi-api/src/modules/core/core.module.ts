@@ -24,6 +24,7 @@ import { UploadService } from './upload/upload.service';
 import { MeiliService } from '../page/meili.service';
 import { TranslateService } from './translate/translate.service';
 import { CloudflareModule } from '../../common/modules/cloudflare/cloudflare.module';
+import { MessageModule } from '../message/message.module';
 const baseCorsConfig = cors({
   origin: process.env.BASE_URL ?? ''
 });
@@ -42,7 +43,8 @@ const baseCorsConfig = cors({
     }),
     AuthModule,
     NotificationModule,
-    CloudflareModule
+    CloudflareModule,
+    MessageModule
   ],
   controllers: [
     AccountController,

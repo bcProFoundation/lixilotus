@@ -7,9 +7,12 @@ import {
   LixiType,
   LotteryAddress,
   NetworkType,
+  SessionAction,
+  SessionActionEnum,
   toSmallestDenomination,
   ViewClaimDto
 } from '@bcpros/lixi-models';
+import { PageMessageSessionStatus } from '@bcpros/lixi-prisma';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Logger, Param, Post } from '@nestjs/common';
@@ -27,6 +30,7 @@ import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmDecrypt, base58ToNumber } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
+import { NotificationGateway } from 'src/common/modules/notifications/notification.gateway';
 
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
 const PROJECT_ID = 'lixilotus';
@@ -41,7 +45,8 @@ export class ClaimController {
     private readonly lixiService: LixiService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @Inject('xpijs') private XPI: BCHJS,
-    private readonly config: ConfigService
+    private readonly config: ConfigService,
+    private notificationGateway: NotificationGateway
   ) {}
 
   @Get(':id')
@@ -521,6 +526,59 @@ export class ClaimController {
                 thumbnail = cfXsmallUrl;
               }
             }
+          }
+
+          //If lixi claimed other page owner, the session will closed automatically
+          const pageMessageSession = await this.prisma.pageMessageSession.findUnique({
+            where: {
+              lixiId: lixi.id
+            },
+            include: {
+              page: {
+                select: {
+                  pageAccount: {
+                    select: {
+                      id: true,
+                      name: true,
+                      address: true
+                    }
+                  }
+                }
+              }
+            }
+          });
+
+          if (pageMessageSession && pageMessageSession.page.pageAccount.address !== claimApi.claimAddress) {
+            const result = await this.prisma.pageMessageSession.update({
+              where: {
+                id: pageMessageSession.id
+              },
+              data: {
+                status: PageMessageSessionStatus.CLOSE,
+                sessionClosedAt: new Date()
+              },
+              include: {
+                account: true,
+                lixi: {
+                  select: {
+                    id: true,
+                    name: true,
+                    amount: true,
+                    expiryAt: true,
+                    activationAt: true,
+                    status: true
+                  }
+                },
+                page: true
+              }
+            });
+
+            const sessionAction: SessionAction = {
+              type: SessionActionEnum.CLOSE,
+              payload: result
+            };
+
+            this.notificationGateway.publishSessionAction(pageMessageSession.id, sessionAction);
           }
 
           let result: ViewClaimDto = {

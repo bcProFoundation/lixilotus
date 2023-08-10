@@ -5,6 +5,7 @@ import { getSelectedAccount } from '@store/account';
 import { getIsServerStatusOn, userOffline, userOnline } from '@store/notification';
 import { getDeviceId } from '@store/settings';
 import { Account, SocketUser } from '@bcpros/lixi-models';
+import { useSocket } from '@context/socketContext';
 
 /**
  * Tracking user status
@@ -15,10 +16,11 @@ const useUserStatus = () => {
   const previousSelectedAccount: Account = usePrevious(selectedAccount);
   const isServerStatusOn = useAppSelector(getIsServerStatusOn);
   const deviceId = useAppSelector(getDeviceId);
+  const socket = useSocket();
 
   useEffect(() => {
     if (selectedAccount && deviceId) {
-      if (isServerStatusOn) {
+      if (socket) {
         // user will be online
         const user: SocketUser = {
           address: selectedAccount.address,
@@ -37,7 +39,7 @@ const useUserStatus = () => {
         }
       }
     }
-  }, [selectedAccount, isServerStatusOn, deviceId]);
+  }, [selectedAccount, isServerStatusOn, deviceId, socket]);
 };
 
 export default useUserStatus;

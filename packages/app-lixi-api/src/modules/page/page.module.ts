@@ -26,10 +26,9 @@ import { Account } from 'aws-sdk';
     MeiliService,
     CommentResolver,
     NotificationService,
-    NotificationGateway,
     HashtagModule,
     FollowCacheService
   ],
-  exports: [MeiliService, NotificationService, NotificationGateway, FollowCacheService]
+  exports: [MeiliService, NotificationService, FollowCacheService]
 })
 export class PageModule {}

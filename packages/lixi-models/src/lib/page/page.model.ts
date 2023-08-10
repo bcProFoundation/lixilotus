@@ -4,6 +4,7 @@ import { GraphQLDateTime } from 'graphql-scalars';
 
 import { Account } from '../account';
 import { Category } from '../category/';
+import { PageMessageSession } from '../message';
 
 @ObjectType()
 export class Page {
@@ -107,4 +108,16 @@ export class Page {
 
   @Field(() => Float)
   totalPostsBurnScore: number;
+
+  @Field(() => [PageMessageSession], { nullable: true })
+  pageMessageSessions?: [PageMessageSession];
+
+  @Field(() => Float, { nullable: true })
+  accessMessageFee?: number;
+
+  @Field(() => Float, { nullable: true })
+  minDanaForMessage?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  followerFreeMessage?: boolean;
 }

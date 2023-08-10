@@ -1,5 +1,5 @@
 import { WalletContext } from '@context/index';
-import { Button, Descriptions, message, Progress, Space } from 'antd';
+import { Button, Descriptions, message, Popover, Progress, Space } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
 import * as _ from 'lodash';
@@ -29,7 +29,8 @@ import {
   ExclamationCircleOutlined,
   LoadingOutlined,
   QuestionCircleOutlined,
-  ReloadOutlined
+  ReloadOutlined,
+  WarningOutlined
 } from '@ant-design/icons';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import QRCode, { FormattedWalletAddress } from '@bcpros/lixi-components/components/Common/QRCode';
@@ -55,6 +56,7 @@ import LixiClaimedList from './LixiClaimedList';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { QRCodeModal } from '@components/Common/QRCodeModal';
 import { QRCodeModalType } from '@bcpros/lixi-models/constants';
+import { PageMessageSessionStatus } from '../../../../redux-store/src/generated/types.generated';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -282,6 +284,11 @@ const StyledQRCode = styled.div`
   }
 `;
 
+const StyledStatusContainer = styled.div`
+  display: flex;
+  gap: 5px;
+`;
+
 const Lixi = props => {
   const { lixi } = props;
   const dispatch = useAppDispatch();
@@ -476,9 +483,17 @@ const Lixi = props => {
     const expiryAt = selectedLixi.expiryAt;
     switch (true) {
       case !_.isEmpty(activeAt) && _.isEmpty(expiryAt):
-        return <>{moment(activeAt).format('YYYY-MM-DD HH:mm')} - 'N/A'</>;
+        return (
+          <>
+            {moment(activeAt).format('YYYY-MM-DD HH:mm')} - {'N/A'}
+          </>
+        );
       case _.isEmpty(activeAt) && !_.isEmpty(expiryAt):
-        return <>'N/A' - {moment(expiryAt).format('YYYY-MM-DD HH:mm')}</>;
+        return (
+          <>
+            {'N/A'} - {moment(expiryAt).format('YYYY-MM-DD HH:mm')}
+          </>
+        );
       case !_.isEmpty(activeAt) && !_.isEmpty(expiryAt):
         return (
           <>
@@ -486,7 +501,7 @@ const Lixi = props => {
           </>
         );
       default:
-        return <>'N/A' - 'N/A'</>;
+        return <>{`'N/A' - 'N/A'`}</>;
     }
   };
 
@@ -656,7 +671,8 @@ const Lixi = props => {
           fontSize: '14px',
           letterSpacing: '0.25px',
           marginTop: '4px',
-          background: bgStatus
+          background: bgStatus,
+          marginBottom: '0'
         }}
       >
         {intl.get(status)}
@@ -668,7 +684,7 @@ const Lixi = props => {
     return (
       <>
         <div className="group-action-btn">
-          <StyleButton shape="round" onClick={archiveButton}>
+          <StyleButton shape="round" onClick={archiveButton} disabled={selectedLixi.pageMessageSession}>
             {selectedLixi.status == 'active' ? intl.get('lixi.archive') : intl.get('lixi.unarchive')}
           </StyleButton>
           <StyleButton shape="round" onClick={withdrawButton}>
@@ -702,7 +718,16 @@ const Lixi = props => {
                         onClickIcon={e => showPopulatedRenameLixiModal(e)}
                         icon={EditOutlined}
                       />
-                      {StatusOfLixi()}
+                      <StyledStatusContainer>
+                        {StatusOfLixi()}
+                        {selectedLixi.pageMessageSession &&
+                          claimReportSingleCode.length === 0 &&
+                          selectedLixi.pageMessageSession.status !== PageMessageSessionStatus.Close && (
+                            <Popover content={'This lixi is for page message. If claimed, the session will close'}>
+                              <WarningOutlined style={{ fontSize: '20px', color: '#FF9966' }} />
+                            </Popover>
+                          )}
+                      </StyledStatusContainer>
                     </div>
                   </div>
                   {GroupActionBtn()}

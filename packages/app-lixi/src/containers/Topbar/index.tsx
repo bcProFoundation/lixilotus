@@ -368,12 +368,12 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     setOtherAccounts(_.filter(savedAccounts, acc => acc && acc.id !== selectedAccount?.id));
   }, [savedAccounts]);
 
-  useEffect(() => {
-    dispatch(startChannel());
-    return () => {
-      stopChannel();
-    };
-  }, []);
+  // useEffect(() => {
+  //   dispatch(startChannel());
+  //   return () => {
+  //     stopChannel();
+  //   };
+  // }, []);
 
   const handleMenuClick = e => {
     dispatch(toggleCollapsedSideNav(!navCollapsed));
@@ -582,7 +582,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           icon={'/images/ico-page.svg'}
           text={intl.get('general.page')}
           active={
-            currentPathName.includes('/page') && !currentAbsolutePathName.includes('page/clbm6r1v91486308n7w6za1qcu')
+            currentPathName.includes('/page') &&
+            !currentAbsolutePathName.includes('page/clbm6r1v91486308n7w6za1qcu') &&
+            !currentAbsolutePathName.includes('/page-message')
           }
           direction="horizontal"
           key="page-feed"
@@ -616,6 +618,14 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           direction="horizontal"
           key="support"
           onClickItem={handleClickInstall}
+        />
+        <ItemAccess
+          icon={'/images/ico-support.png'}
+          text={'Page Message'}
+          active={currentPathName === '/page-message'}
+          direction="horizontal"
+          key="support"
+          onClickItem={() => handleIconClick('/page-message')}
         />
       </div>
       <div className="social-feature">

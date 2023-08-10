@@ -17,6 +17,7 @@ import lightTheme from 'src/styles/themes/lightTheme';
 import { FollowModal } from './FollowModal';
 import { PostDetailModal } from '../Posts/PostDetailModal';
 import { AuthorizationModal } from './Authorization/AuthorizationModal';
+import PageMessageLixiModal from '@components/PageMessage/PageMessageLixiModal';
 import { getCurrentThemes } from '@store/settings';
 import darkTheme from 'src/styles/themes/darkTheme';
 
@@ -34,7 +35,8 @@ const modalComponentLookupTable = {
   BurnModal,
   FollowModal,
   PostDetailModal,
-  AuthorizationModal
+  AuthorizationModal,
+  PageMessageLixiModal
 };
 
 const ModalManager = () => {
@@ -47,8 +49,8 @@ const ModalManager = () => {
     const ModalComponent = modalComponentLookupTable[modalType];
 
     return (
-      <ConfigProvider theme={currentTheme === 'dark' ? darkTheme : lightTheme}>
-        <ModalComponent {...newModalProps} key={modalType + index} />
+      <ConfigProvider theme={currentTheme === 'dark' ? darkTheme : lightTheme} key={modalType + index}>
+        <ModalComponent {...newModalProps} />
       </ConfigProvider>
     );
   });

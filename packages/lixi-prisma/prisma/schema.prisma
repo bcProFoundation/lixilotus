@@ -106,41 +106,45 @@ model Category {
 }
 
 model Page {
-  id                  String        @id @default(cuid())
-  pageAccount         Account       @relation(fields: [pageAccountId], references: [id])
-  pageAccountId       Int           @map("page_account_id")
-  name                String        @default("") @map("name") @db.VarChar(255)
-  title               String        @default("") @map("title") @db.VarChar(255)
-  category            Category?     @relation(fields: [categoryId], references: [id])
-  categoryId          Int?          @map("category_id")
-  description         String        @default("") @map("description") @db.VarChar(1000)
-  children            Page[]        @relation("subPages")
-  parent              Page?         @relation("subPages", fields: [parentId], references: [id])
-  parentId            String?       @map("parent_id")
+  id                  String               @id @default(cuid())
+  pageAccount         Account              @relation(fields: [pageAccountId], references: [id])
+  pageAccountId       Int                  @map("page_account_id")
+  name                String               @default("") @map("name") @db.VarChar(255)
+  title               String               @default("") @map("title") @db.VarChar(255)
+  category            Category?            @relation(fields: [categoryId], references: [id])
+  categoryId          Int?                 @map("category_id")
+  description         String               @default("") @map("description") @db.VarChar(1000)
+  children            Page[]               @relation("subPages")
+  parent              Page?                @relation("subPages", fields: [parentId], references: [id])
+  parentId            String?              @map("parent_id")
   // handle        Handle  @relation(fields: [handleId], references: [id])
   // handleId      String  @map("handle_id")
-  website             String        @default("") @map("website")
-  avatar              UploadDetail? @relation("PageAvatar")
-  cover               UploadDetail? @relation("PageCover")
-  country             Country?      @relation(fields: [countryId], references: [id])
-  countryId           Int?          @map("country_id")
-  state               State?        @relation(fields: [stateId], references: [id])
-  stateId             Int?          @map("state_id")
-  address             String        @default("") @map("address")
-  createdAt           DateTime      @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt           DateTime      @default(now()) @map("updated_at") @db.Timestamptz
-  danaBurnUp          Float         @default(0.0) @map("dana_burn_up")
-  danaBurnDown        Float         @default(0.0) @map("dana_burn_down")
-  danaBurnScore       Float         @default(0.0) @map("dana_burn_score")
-  createPostFee       String        @default("1.0") @map("create_post_fee")
-  createCommentFee    String        @default("0.00055") @map("create_comment_fee")
+  website             String               @default("") @map("website")
+  avatar              UploadDetail?        @relation("PageAvatar")
+  cover               UploadDetail?        @relation("PageCover")
+  country             Country?             @relation(fields: [countryId], references: [id])
+  countryId           Int?                 @map("country_id")
+  state               State?               @relation(fields: [stateId], references: [id])
+  stateId             Int?                 @map("state_id")
+  address             String               @default("") @map("address")
+  createdAt           DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime             @default(now()) @map("updated_at") @db.Timestamptz
+  danaBurnUp          Float                @default(0.0) @map("dana_burn_up")
+  danaBurnDown        Float                @default(0.0) @map("dana_burn_down")
+  danaBurnScore       Float                @default(0.0) @map("dana_burn_score")
+  createPostFee       String               @default("1.0") @map("create_post_fee")
+  createCommentFee    String               @default("0.00055") @map("create_comment_fee")
   posts               Post[]
   followers           FollowPage[]
-  encryptedMnemonic   String?       @map("encrypted_mnemonic")
-  salt                String?       @map("salt") @db.VarChar(10)
-  totalPostsBurnUp    Float         @default(0.0) @map("total_posts_burn_up")
-  totalPostsBurnDown  Float         @default(0.0) @map("total_posts_burn_down")
-  totalPostsBurnScore Float         @default(0.0) @map("total_posts_burn_score")
+  encryptedMnemonic   String?              @map("encrypted_mnemonic")
+  salt                String?              @map("salt") @db.VarChar(10)
+  totalPostsBurnUp    Float                @default(0.0) @map("total_posts_burn_up")
+  totalPostsBurnDown  Float                @default(0.0) @map("total_posts_burn_down")
+  totalPostsBurnScore Float                @default(0.0) @map("total_posts_burn_score")
+  pageMessageSessions PageMessageSession[]
+  accessMessageFee    Float?               @default(0.0) @map("access_message_fee")
+  minDanaForMessage   Float?               @default(0.0) @map("min_dana_for_message")
+  followerFreeMessage Boolean?             @default(false) @map("follower_free_message")
 
   @@map("page")
 }
@@ -196,30 +200,32 @@ model Comment {
 }
 
 model Account {
-  id                 Int                 @id @default(autoincrement())
-  name               String
-  encryptedMnemonic  String              @map("encrypted_mnemonic")
-  encryptedSecret    String              @default("") @map("encrypted_secret")
-  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt          DateTime            @default(now()) @map("updated_at") @db.Timestamptz
-  lixies             Lixi[]
-  mnemonicHash       String              @map("mnemonic_hash")
-  address            String              @default("") @map("address")
-  notifications      Notification[]
-  language           String              @default("en")
-  publicKey          String              @default("") @map("public_key")
-  email              String?             @unique
-  uploadDetail       UploadDetail[]
-  pages              Page[]
-  posts              Post[]
-  comments           Comment[]
-  Worship            Worship[]
-  temples            Temple[]
-  followers          FollowAccount[]     @relation("followerAccount")
-  followings         FollowAccount[]     @relation("followingAccount")
-  followingPages     FollowPage[]
-  webpushSubscribers WebpushSubscriber[]
-  reposts            Repost[]
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  encryptedMnemonic   String               @map("encrypted_mnemonic")
+  encryptedSecret     String               @default("") @map("encrypted_secret")
+  createdAt           DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime             @default(now()) @map("updated_at") @db.Timestamptz
+  lixies              Lixi[]
+  mnemonicHash        String               @map("mnemonic_hash")
+  address             String               @default("") @map("address")
+  notifications       Notification[]
+  language            String               @default("en")
+  publicKey           String               @default("") @map("public_key")
+  email               String?              @unique
+  uploadDetail        UploadDetail[]
+  pages               Page[]
+  posts               Post[]
+  comments            Comment[]
+  Worship             Worship[]
+  temples             Temple[]
+  followers           FollowAccount[]      @relation("followerAccount")
+  followings          FollowAccount[]      @relation("followingAccount")
+  followingPages      FollowPage[]
+  webpushSubscribers  WebpushSubscriber[]
+  reposts             Repost[]
+  messages            Message[]
+  pageMessageSessions PageMessageSession[]
 
   //profile 
   avatar UploadDetail? @relation("avatar")
@@ -230,52 +236,53 @@ model Account {
 }
 
 model Lixi {
-  id                   Int                @id @default(autoincrement())
+  id                   Int                 @id @default(autoincrement())
   name                 String
-  maxClaim             Int                @default(0) @map("max_claim")
-  claimedNum           Int                @default(0) @map("claimed_num")
-  claimType            Int                @default(0) @map("claim_type")
-  lixiType             Int                @default(0) @map("lixi_type")
-  minValue             Float              @map("min_value")
-  maxValue             Float              @map("max_value")
-  fixedValue           Float              @map("fixed_value")
-  dividedValue         Int                @default(1) @map("divided_value")
-  encryptedXPriv       String             @map("encrypted_xpriv")
-  encryptedClaimCode   String             @map("encrypted_claim_code")
-  totalClaim           BigInt             @default(0) @map("total_claim")
-  createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt            DateTime           @default(now()) @map("updated_at") @db.Timestamptz
-  minStaking           Float              @default(0) @map("min_staking")
-  expiryAt             DateTime?          @map("expiry_at") @db.Timestamptz
-  activationAt         DateTime?          @map("activation_at") @db.Timestamptz
-  country              String?            @map("country")
-  isFamilyFriendly     Boolean            @map("is_family_friendly")
+  maxClaim             Int                 @default(0) @map("max_claim")
+  claimedNum           Int                 @default(0) @map("claimed_num")
+  claimType            Int                 @default(0) @map("claim_type")
+  lixiType             Int                 @default(0) @map("lixi_type")
+  minValue             Float               @map("min_value")
+  maxValue             Float               @map("max_value")
+  fixedValue           Float               @map("fixed_value")
+  dividedValue         Int                 @default(1) @map("divided_value")
+  encryptedXPriv       String              @map("encrypted_xpriv")
+  encryptedClaimCode   String              @map("encrypted_claim_code")
+  totalClaim           BigInt              @default(0) @map("total_claim")
+  createdAt            DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime            @default(now()) @map("updated_at") @db.Timestamptz
+  minStaking           Float               @default(0) @map("min_staking")
+  expiryAt             DateTime?           @map("expiry_at") @db.Timestamptz
+  activationAt         DateTime?           @map("activation_at") @db.Timestamptz
+  country              String?             @map("country")
+  isFamilyFriendly     Boolean             @map("is_family_friendly")
   claims               Claim[]
-  joinLotteryProgram   Boolean            @default(false) @map("join_lottery_program")
-  status               String             @default("active") @map("status")
-  previousStatus       String             @default("active") @map("previous_status")
-  inventoryStatus      String             @default("initialized") @map("invetory_status")
-  account              Account            @relation(fields: [accountId], references: [id])
-  accountId            Int                @map("account_id")
-  derivationIndex      Int                @default(0) @map("derivation_index")
-  address              String             @map("address")
-  amount               Float              @default(0) @map("amount")
-  numberOfSubLixi      Int?               @map("sub_lixi_value")
-  parent               Lixi?              @relation("parentSubLixi", fields: [parentId], references: [id])
-  subLixies            Lixi[]             @relation("parentSubLixi")
-  parentId             Int?               @map("parent_id")
-  envelopeId           Int?               @map("envelope_id")
-  envelope             Envelope?          @relation(fields: [envelopeId], references: [id])
-  envelopeMessage      String             @default("") @map("envelope_message")
-  isClaimed            Boolean?           @default(false) @map("check_claim")
-  isNFTEnabled         Boolean            @default(false) @map("is_nft_enabled")
-  numberLixiPerPackage Int?               @map("number_lixi_per_package")
-  packageId            Int?               @map("package_id")
-  package              Package?           @relation(fields: [packageId], references: [id])
+  joinLotteryProgram   Boolean             @default(false) @map("join_lottery_program")
+  status               String              @default("active") @map("status")
+  previousStatus       String              @default("active") @map("previous_status")
+  inventoryStatus      String              @default("initialized") @map("invetory_status")
+  account              Account             @relation(fields: [accountId], references: [id])
+  accountId            Int                 @map("account_id")
+  derivationIndex      Int                 @default(0) @map("derivation_index")
+  address              String              @map("address")
+  amount               Float               @default(0) @map("amount")
+  numberOfSubLixi      Int?                @map("sub_lixi_value")
+  parent               Lixi?               @relation("parentSubLixi", fields: [parentId], references: [id])
+  subLixies            Lixi[]              @relation("parentSubLixi")
+  parentId             Int?                @map("parent_id")
+  envelopeId           Int?                @map("envelope_id")
+  envelope             Envelope?           @relation(fields: [envelopeId], references: [id])
+  envelopeMessage      String              @default("") @map("envelope_message")
+  isClaimed            Boolean?            @default(false) @map("check_claim")
+  isNFTEnabled         Boolean             @default(false) @map("is_nft_enabled")
+  numberLixiPerPackage Int?                @map("number_lixi_per_package")
+  packageId            Int?                @map("package_id")
+  package              Package?            @relation(fields: [packageId], references: [id])
   distributions        LixiDistribution[]
   uploadDetail         UploadDetail?
-  uploadDetailId       String?            @map("upload_detail_id")
-  networkType          String             @default("single-ip") @map("network_type")
+  uploadDetailId       String?             @map("upload_detail_id")
+  networkType          String              @default("single-ip") @map("network_type")
+  pageMessageSession   PageMessageSession?
 
   @@map("lixi")
 }
@@ -781,4 +788,45 @@ model PostTranslation {
   updatedAt         DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
   @@map("post_translation")
+}
+
+model Message {
+  id                   String              @id @default(cuid())
+  body                 String
+  author               Account             @relation(fields: [authorId], references: [id])
+  authorId             Int                 @map("author_id")
+  isPageOwner          Boolean?            @map("is_page_owner")
+  createdAt            DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime            @default(now()) @map("updated_at") @db.Timestamptz
+  pageMessageSession   PageMessageSession? @relation(fields: [pageMessageSessionId], references: [id])
+  pageMessageSessionId String?             @map("page_message_session_id")
+
+  @@map("message")
+}
+
+model PageMessageSession {
+  id              String                    @id @default(cuid())
+  name            String?
+  page            Page                      @relation(fields: [pageId], references: [id])
+  pageId          String                    @map("page_id")
+  account         Account                   @relation(fields: [accountId], references: [id])
+  accountId       Int                       @map("account_id")
+  lixi            Lixi?                     @relation(fields: [lixiId], references: [id])
+  lixiId          Int?                      @unique @map("lixi_id")
+  lixiClaimCode   String?                   @map("lixi_claim_code")
+  messages        Message[]
+  latestMessage   String?                   @map("latest_message")
+  sessionOpenedAt DateTime?                 @map("session_opened_at")
+  sessionClosedAt DateTime?                 @map("session_closed_at")
+  status          PageMessageSessionStatus? @default(CLOSE)
+  createdAt       DateTime                  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime                  @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("page_message_session")
+}
+
+enum PageMessageSessionStatus {
+  PENDING
+  OPEN
+  CLOSE
 }

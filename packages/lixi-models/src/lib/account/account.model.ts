@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { GraphQLDateTime } from 'graphql-scalars';
 
+import { Message, PageMessageSession } from '../message';
 import { Page } from '../page';
 
 @ObjectType()
@@ -59,6 +60,12 @@ export class Account {
 
   @Field(() => Number, { nullable: true })
   followingPagesCount?: number;
+
+  @Field(() => [Message], { nullable: true })
+  messages?: [Message];
+
+  @Field(() => [PageMessageSession], { nullable: true })
+  pageMessageSessions?: [PageMessageSession];
 
   @Field(() => String, { nullable: true })
   avatar?: string;

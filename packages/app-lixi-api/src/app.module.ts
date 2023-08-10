@@ -30,6 +30,7 @@ import { TokenModule } from './modules/token/token.module';
 import { HashtagModule } from './modules/hashtag/hashtag.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { WorshipModule } from './modules/worship/worship.module';
+import { MessageModule } from './modules/message/message.module';
 import { CloudflareModule } from './common/modules/cloudflare/cloudflare.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
@@ -153,6 +154,7 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     WorshipModule,
     TempleModule,
     HashtagModule,
+    MessageModule,
     S3Module.forRootAsync({
       useFactory: () => ({
         config: {

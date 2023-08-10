@@ -16,11 +16,13 @@ import { currency } from '@components/Common/Ticker';
 import PostListItem from '@components/Posts/PostListItem';
 import {
   CreateFollowPageInput,
+  CreatePageMessageInput,
   DeleteFollowPageInput,
   HashtagOrderField,
   OrderDirection,
   PostOrderField,
-  RepostInput
+  RepostInput,
+  PageMessageSessionStatus
 } from '@generated/types.generated';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import {
@@ -58,8 +60,16 @@ import styled from 'styled-components';
 import { PageQuery } from '@store/page/pages.generated';
 import { useRepostMutation } from '@store/post/posts.api';
 import _ from 'lodash';
+import PageMessage from '@components/PageMessage/PageMessageForOwner';
+import { pageOwnerSubcribeToPageChannel, startChannel, stopChannel } from '@store/message/actions';
+import PageMessageForOwner from '@components/PageMessage/PageMessageForOwner';
+import PageMessageForUser from '@components/PageMessage/PageMessageForUser';
 import { getSelectedPostId } from '@store/post/selectors';
 import { setSelectedPost } from '@store/post/actions';
+import {
+  useCreatePageMessageSessionMutation,
+  useUserHadMessageToPageQuery
+} from '@store/message/pageMessageSession.generated';
 import { ReactSVG } from 'react-svg';
 import { PostListType } from '@bcpros/lixi-models/constants';
 import { AuthorizationContext } from '@context/index';
@@ -406,7 +416,6 @@ const StyledMenu = styled(Tabs)`
   width: 100%;
   // TODO: Display none to hide tabs untill add more option tabs
   .ant-tabs-nav {
-    display: none;
     border-bottom-right-radius: 20px;
     border-bottom-left-radius: 20px;
     padding: 1rem 24px;
@@ -499,6 +508,26 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   }, [pageAvatarUpload, pageCoverUpload]);
 
   useEffect(() => {
+    dispatch(startChannel());
+
+    return () => {
+      stopChannel();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (page.pageAccount.address === selectedAccount.address) {
+      dispatch(pageOwnerSubcribeToPageChannel(page.id));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (router.query.q) {
+      setQuery(router.query.q);
+    } else {
+      setQuery(null);
+    }
+
     if (router.query.hashtags) {
       setHashtags((router.query.hashtags as string).split(' '));
     } else {
@@ -533,6 +562,23 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
       error: errorOnDelete
     }
   ] = useDeleteFollowPageMutation();
+
+  const [
+    createPageMessageSessionTrigger,
+    {
+      isLoading: isLoadingCreatePageMessageSession,
+      isSuccess: isSuccessCreatePageMessageSession,
+      isError: isErrorCreatePageMessageSession
+    }
+  ] = useCreatePageMessageSessionMutation();
+
+  const { data: pageMessageSessionData, refetch: pageMessageSessionRefetch } = useUserHadMessageToPageQuery(
+    {
+      accountId: selectedAccount.id,
+      pageId: page.id
+    },
+    { skip: selectedAccount.id === page.pageAccountId }
+  );
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
@@ -843,6 +889,10 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     );
   };
 
+  const openPageMessageLixiModal = () => {
+    dispatch(openModal('PageMessageLixiModal', { account: selectedAccount, page: page, wallet: walletStatus }));
+  };
+
   return (
     <React.Fragment>
       <StyledContainerProfileDetail className="page-detail">
@@ -898,6 +948,20 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   {intl.get('page.editCoverPhoto')}
                 </Button>
               </div>
+            )}
+            {/* Chat */}
+            {selectedAccountId != pageDetailData?.pageAccountId && _.isNil(pageMessageSessionData) && (
+              <Button onClick={() => openPageMessageLixiModal()}>Chat with me</Button>
+            )}
+            {selectedAccountId != pageDetailData?.pageAccountId && pageMessageSessionData && (
+              <React.Fragment>
+                {
+                  {
+                    [PageMessageSessionStatus.Open]: <Button>Open message</Button>,
+                    [PageMessageSessionStatus.Pending]: <Button disabled>Pending Message</Button>
+                  }[pageMessageSessionData.userHadMessageToPage.status]
+                }
+              </React.Fragment>
             )}
             {/* Follow */}
             {selectedAccountId != pageDetailData?.pageAccountId && (
@@ -1099,19 +1163,19 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   <div className="about-content">
                     <SubAbout
                       dataItem={pageDetailData?.description}
-                      onClickIcon={() => { }}
+                      onClickIcon={() => {}}
                       icon={InfoCircleOutlined}
                       text={pageDetailData?.description}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.address}
-                      onClickIcon={() => { }}
+                      onClickIcon={() => {}}
                       icon={CompassOutlined}
                       text={pageDetailData?.address}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.website}
-                      onClickIcon={() => { }}
+                      onClickIcon={() => {}}
                       icon={HomeOutlined}
                       text={pageDetailData?.website}
                     />
@@ -1122,6 +1186,13 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             {/* TODO: implement in the future */}
             {/* <Tabs.TabPane tab="Friend" key="friend"></Tabs.TabPane>
             <Tabs.TabPane tab="Picture" key="picture"></Tabs.TabPane> */}
+            <Tabs.TabPane tab="Message" key="message">
+              {page.pageAccount.address === selectedAccount.address ? (
+                <PageMessageForOwner page={page} />
+              ) : (
+                <PageMessageForUser page={page} account={selectedAccount} />
+              )}
+            </Tabs.TabPane>
           </StyledMenu>
         </ProfileContentContainer>
       </StyledContainerProfileDetail>

@@ -19,6 +19,7 @@ export class GqlHttpExceptionFilter implements GqlExceptionFilter {
 
     if (!(error instanceof VError)) {
       const unableToGetPage = await this.i18n.t('common.messages.unexpectedErrorOccurs');
+      this.logger.error(error);
       error = new VError.WError(error as Error, unableToGetPage);
     }
 

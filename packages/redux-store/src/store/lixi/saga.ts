@@ -32,11 +32,11 @@ import moment from 'moment';
 import intl from 'react-intl-universal';
 import * as Effects from 'redux-saga/effects';
 import { select } from 'redux-saga/effects';
-
+import { put as putEffect } from 'redux-saga/effects';
 import claimApi from '../claim/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
-
+import { api as pageMessageApi } from '@store/message/pageMessageSession.api';
 import {
   archiveLixi,
   archiveLixiFailure,
@@ -85,6 +85,7 @@ import {
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';
+import { CreatePageMessageInput } from '@generated/types.generated';
 
 const call: any = Effects.call;
 /**
@@ -128,7 +129,7 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     joinLotteryProgram: command.joinLotteryProgram
   };
 
-  yield put(postLixi(createLixiCommand));
+  yield put(postLixi({ command: createLixiCommand, pageId: command.pageId }));
 }
 
 /**
@@ -211,9 +212,9 @@ function* fetchMoreSubLixiesFailureSaga(action: PayloadAction<string>) {
   );
 }
 
-function* postLixiSaga(action: PayloadAction<CreateLixiCommand>) {
+function* postLixiSaga(action: PayloadAction<{ command: CreateLixiCommand; pageId?: string }>) {
   try {
-    const command = action.payload;
+    const { command, pageId } = action.payload;
 
     yield put(showLoading(postLixi.type));
 
@@ -228,6 +229,34 @@ function* postLixiSaga(action: PayloadAction<CreateLixiCommand>) {
     }
 
     const lixi = data.lixi;
+    const account: AccountDto = yield select(getAccountById(lixi.accountId));
+
+    if (!_.isNil(pageId)) {
+      const input: CreatePageMessageInput = {
+        accountId: lixi.accountId,
+        pageId: pageId,
+        lixiId: lixi.id,
+        accountSecret: account.secret
+      };
+      const promise = yield putEffect(
+        pageMessageApi.endpoints.CreatePageMessageSession.initiate({
+          input: input
+        })
+      );
+      yield promise;
+
+      const promiseToRefetch = yield putEffect(
+        pageMessageApi.endpoints.UserHadMessageToPage.initiate(
+          {
+            accountId: account.id,
+            pageId: pageId
+          },
+          { subscribe: false, forceRefetch: true }
+        )
+      );
+      yield promiseToRefetch;
+    }
+
     yield put(postLixiSuccess(lixi));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('lixi.couldNotPostLixi');
@@ -391,7 +420,7 @@ function* selectLixiSuccessSaga(action: PayloadAction<any>) {
   const { lixi } = action.payload;
   yield put(refreshLixiSilent(lixi.id));
   yield put(hideLoading(selectLixi.type));
-  yield put(push(`/lixi/${lixi.id}`));
+  // yield put(push(`/lixi/${lixi.id}`)); Dont need to push here
 }
 
 function* selectLixiFailureSaga(action: PayloadAction<string>) {

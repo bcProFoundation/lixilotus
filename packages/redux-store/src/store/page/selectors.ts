@@ -30,3 +30,8 @@ export const getPageById = (id: string) => createSelector(getAllPagesEntities, p
 export const getPageBySelectedAccount = createSelector([selectSelectedAccount, getAllPages], (accountId, pages) =>
   pages.find(page => page.pageAccountId === accountId)
 );
+
+export const getCurrentPageMessageSession = createSelector(
+  (state: RootState) => state.pages,
+  (state: PageState) => state.currentPageMessageSession
+);

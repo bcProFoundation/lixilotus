@@ -22,7 +22,19 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
       },
       include: {
         envelope: true,
-        distributions: true
+        distributions: true,
+        pageMessageSession: {
+          select: {
+            id: true,
+            status: true,
+            page: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
       }
     });
 

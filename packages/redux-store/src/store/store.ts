@@ -14,6 +14,8 @@ import { api as postApi } from './post/posts.api';
 import rootReducer, { serverReducer } from './rootReducer';
 import rootSaga from './rootSaga';
 import { api as worshipedPersonApi } from './worship/worshipedPerson.api';
+import { api as messageApi } from './message/message.api';
+import { api as pageMessageApi } from './message/pageMessageSession.api';
 
 export interface SagaStore extends Store {
   __sagaTask: Task;
@@ -61,6 +63,8 @@ const makeStore = (context: Context) => {
           .concat(postApi.middleware)
           .concat(commentsApi.middleware)
           .concat(worshipedPersonApi.middleware)
+          .concat(messageApi.middleware)
+          .concat(pageMessageApi.middleware)
           .concat(sagaMiddleware, routerMiddleware);
       },
       devTools:

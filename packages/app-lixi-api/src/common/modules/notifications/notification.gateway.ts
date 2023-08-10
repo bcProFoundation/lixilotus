@@ -1,4 +1,4 @@
-import { NotificationDto as Notification, SocketUser } from '@bcpros/lixi-models';
+import { NotificationDto as Notification, SessionAction, SocketUser } from '@bcpros/lixi-models';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
@@ -100,11 +100,109 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
     return true;
   }
 
+  @SubscribeMessage('subscribePageMessageSession')
+  handleSubscriptionToMessageSession(
+    @MessageBody() pageMessageSessionId: string,
+    @ConnectedSocket() client: Socket
+  ): WsResponse<string> {
+    //Check if already join a room
+    const joinedRoom = Array.from(client.rooms).find(room => {
+      return room === pageMessageSessionId;
+    });
+
+    if (!joinedRoom) {
+      client.join(pageMessageSessionId);
+      this.logger.log(
+        '🚀 ~ file: message.gateway.ts:47 ~ MessageGateway ~ pageMessageSessionId:',
+        pageMessageSessionId
+      );
+
+      return {
+        event: 'subscribePageMessageSession',
+        data: client.id
+      };
+    } else {
+      return {
+        event: '',
+        data: client.id
+      };
+    }
+  }
+
+  //Code below is for page owner listening for new PageMessageSession
+  @SubscribeMessage('subscribePageChannel')
+  handlePageMessageSessionSubscription(
+    @MessageBody() pageChannelId: string,
+    @ConnectedSocket() client: Socket
+  ): WsResponse<string> {
+    //Check if already join a room
+    const joinedRoom = Array.from(client.rooms).find(room => {
+      return room === pageChannelId;
+    });
+
+    if (!joinedRoom) {
+      client.join(pageChannelId);
+      this.logger.log('🚀 ~ file: message.gateway.ts:47 ~ MessageGateway ~ pageChannelId:', pageChannelId);
+
+      return {
+        event: 'pageChannelId',
+        data: client.id
+      };
+    } else {
+      return {
+        event: '',
+        data: client.id
+      };
+    }
+  }
+
+  @SubscribeMessage('subscribeAddressChannel')
+  handleAddressChannelSubscription(
+    @MessageBody() userAddress: string,
+    @ConnectedSocket() client: Socket
+  ): WsResponse<string> {
+    //Check if already join a room
+    const joinedRoom = Array.from(client.rooms).find(room => {
+      return room === userAddress;
+    });
+
+    if (!joinedRoom) {
+      client.join(userAddress);
+      this.logger.log('🚀 ~ file: message.gateway.ts:47 ~ MessageGateway ~ userAddress:', userAddress);
+
+      return {
+        event: 'userAddress',
+        data: client.id
+      };
+    } else {
+      return {
+        event: '',
+        data: client.id
+      };
+    }
+  }
+
   sendNotification(room: string, notification: Notification) {
     this.server.to(room).emit('notification', notification);
   }
 
   sendNewPostEvent(room: string, data: any) {
     this.server.to(room).emit('newpost', data);
+  }
+
+  publishMessage(pageMessageSessionId: string, message: any) {
+    this.server.to(pageMessageSessionId).emit('publishMessage', message);
+  }
+
+  publishPageChannel(pageChannelId: string, message: any) {
+    this.server.to(pageChannelId).emit('publishPageChannel', message);
+  }
+
+  publishAddressChannel(address: string, message: any) {
+    this.server.to(address).emit('publishAddressChannel', message);
+  }
+
+  publishSessionAction(pageMessageSessionId: string, message: SessionAction) {
+    this.server.to(pageMessageSessionId).emit('sessionAction', message);
   }
 }
