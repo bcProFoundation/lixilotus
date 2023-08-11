@@ -359,7 +359,7 @@ const ShortcutSideBar = styled(Sider)`
   }
 `;
 
-const SpaceShorcutItem = styled(Space)`
+export const SpaceShorcutItem = styled(Space)`
   width: 100%;
   gap: 8px !important;
   padding: 8px;
@@ -515,7 +515,7 @@ const SpaceShortCutTopicItem = styled(Space)`
   }
 `;
 
-const transformCreatedAt = date => {
+export const transformCreatedAt = date => {
   let dateFormated = '';
   const today = new Date();
   if (moment(date).isSame(today, 'day')) {

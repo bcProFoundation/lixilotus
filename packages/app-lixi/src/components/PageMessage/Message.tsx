@@ -1,36 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MessageQuery } from '@store/message/message.generated';
 import styled from 'styled-components';
+import { transformCreatedAt } from '@containers/Sidebar/SideBarShortcut';
 
 type MessageItem = {
   message: MessageQuery['message']; //MessageItem
   authorAddress: string; //Need address here to check own message
+  senderAvatar?: string;
+  receiverAvatar?: string;
 };
 
 const StyledMessageContainer = styled.div`
   display: flex;
+  flex-direction: row;
+  .message-txt {
+    cursor: default;
+    width: fit-content;
+    min-width: 10%;
+    max-width: 50%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+    word-wrap: break-word;
+    white-space-collapse: preserve;
+    text-align: left;
+    background: #f1f1f1;
+    color: #000;
+  }
+  &.author-address {
+    flex-direction: row-reverse;
+    p {
+      background: #615ef0 !important;
+      color: #fff;
+    }
+  }
+  .date-message {
+    font-size: 10px;
+    background: #fff !important;
+    color: gray !important;
+    align-self: center;
+    margin: 0;
+  }
 `;
 
-const StyledChat = styled.p`
-  width: fit-content;
-  border: 1px solid black;
-  margin-bottom: 10px;
-  padding: 5px;
-  border-radius: var(--border-radius-primary);
-  max-width: 50%;
-  word-wrap: break-word;
-  white-space-collapse: preserve;
-  text-align: left;
-  min-width: 10%;
-`;
+const Message = ({ message, authorAddress, senderAvatar, receiverAvatar }: MessageItem) => {
+  const [isShowDate, setIsShowDate] = useState(false);
 
-const Message = ({ message, authorAddress }: MessageItem) => {
   return (
     <React.Fragment>
-      <StyledMessageContainer
-        style={{ flexDirection: message.author.address === authorAddress ? 'row-reverse' : 'row' }}
-      >
-        <StyledChat>{message.body}</StyledChat>
+      <StyledMessageContainer className={message.author.address === authorAddress ? 'author-address' : ''}>
+        <p className="message-txt" onClick={() => setIsShowDate(!isShowDate)}>
+          {message.body}
+        </p>
+        {isShowDate && <p className="date-message">{transformCreatedAt(message.createdAt)}</p>}
       </StyledMessageContainer>
     </React.Fragment>
   );

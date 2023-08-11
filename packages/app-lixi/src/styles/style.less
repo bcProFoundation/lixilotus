@@ -2629,6 +2629,77 @@ code {
     }
   }
 
+  //Page Message
+  .page-message {
+    div,
+    p {
+      border-color: var(--border-color-dark-base);
+    }
+    .page-name,
+    .user-name {
+      color: var(--text-color-primary-dark) !important;
+    }
+
+    .account-name {
+      color: var(--text-color-on-dark);
+    }
+
+    .content-score {
+      background: var(--border-color-dark-base) !important;
+      &.pending {
+        background: var(--dark-error-background) !important;
+      }
+      &.open {
+        background: var(--dark-sucess-background) !important;
+      }
+      &.close {
+        background: var(--color-danger-dark) !important;
+      }
+    }
+
+    .sender-message-amount {
+      color: var(--text-color-primary-dark) !important;
+    }
+
+    .avatar-account {
+      border-color: var(--color-primary) !important;
+    }
+
+    .more-action-header {
+      svg {
+        filter: var(--filter-svg-gray-color);
+      }
+    }
+
+    .input-page-message {
+      background: #303031;
+      .ant-input {
+        background: #303031;
+        color: #fff;
+        &::placeholder {
+          color: var(--text-color-on-dark);
+        }
+      }
+    }
+
+    .message-txt {
+      background: #303031;
+      color: #fff;
+    }
+
+    .custom-user-info {
+      button {
+        background: transparent;
+      }
+    }
+
+    .ant-space {
+      &.is-active {
+        background: #303031 !important;
+      }
+    }
+  }
+
   //InfoCardUser
   .info-card-user {
     .card-container {
