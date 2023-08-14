@@ -40,6 +40,7 @@ import { useSocket } from '@context/index';
 import { SpaceShorcutItem, transformCreatedAt } from '@containers/Sidebar/SideBarShortcut';
 import { transformShortName } from '@components/Common/AvatarUser';
 import { ReactSVG } from 'react-svg';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 
 type PageMessageSessionItem = PageMessageSessionQuery['pageMessageSession'];
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
@@ -52,6 +53,11 @@ const StyledContainer = styled.div`
   margin-top: 1rem;
   background: #fff;
   height: 88vh;
+  @media (max-width: 526px) {
+    margin: 0;
+    border-radius: 0;
+    height: calc(100% - 60px);
+  }
 `;
 
 const StyledSideContainer = styled.div`
@@ -59,16 +65,35 @@ const StyledSideContainer = styled.div`
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border-color-base);
+  overflow: auto;
+  -ms-overflow-style: none; // Internet Explorer 10+
+  scrollbar-width: none; // Firefox
+  ::-webkit-scrollbar {
+    display: none; // Safari and Chrome
+  }
   .title-chat {
+    display: flex;
+    justify-content: space-between;
     padding: 1rem 1rem 0 1rem;
     text-align: left;
     margin-bottom: 1rem;
+    .badge-total-message {
+      background: var(--bg-color-light-theme);
+      color: var(--color-primary);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 12px;
+      line-height: 0;
+      display: inline-flex;
+      align-items: center;
+    }
   }
   .groups-page-message {
     .page-info {
       .ant-space {
         border: 0;
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 0.5rem 0.5rem 1rem;
         margin-bottom: 1rem;
         box-shadow: none;
         .avatar-account-page {
@@ -85,7 +110,7 @@ const StyledSideContainer = styled.div`
         }
         .collapse-action {
           button {
-            padding: 8px 0 8px 8px;
+            padding: 8px 0;
             width: fit-content;
             &:hover {
               background: transparent;
@@ -106,7 +131,7 @@ const StyledSideContainer = styled.div`
         }
         &.ant-space-child {
           margin-bottom: 0;
-          padding: 0.5rem 1rem;
+          padding: 0.5rem 1rem 0.5rem 1.5rem;
           .avatar-account-child {
             border-radius: 50%;
             .user-avatar {
@@ -130,12 +155,29 @@ const StyledSideContainer = styled.div`
       }
     }
   }
+  @media (max-width: 526px) {
+    &.hide-side-message {
+      display: none;
+    }
+    &.show-side-message {
+      width: 100%;
+      border-color: transparent !important;
+    }
+  }
 `;
 
 const StyledChatContainer = styled.div`
   width: 75%;
   display: grid;
-  grid-template-rows: 10% 80% 10%;
+  grid-template-rows: max-content 1fr max-content;
+  @media (max-width: 526px) {
+    &.full-content-chat {
+      width: 100%;
+    }
+    &.hide-content-chat {
+      display: none;
+    }
+  }
 `;
 
 const StyledChatbox = styled.div`
@@ -144,6 +186,12 @@ const StyledChatbox = styled.div`
   overflow: auto;
   display: flex;
   flex-direction: column-reverse;
+  overflow: auto;
+  -ms-overflow-style: none; // Internet Explorer 10+
+  scrollbar-width: none; // Firefox
+  ::-webkit-scrollbar {
+    display: none; // Safari and Chrome
+  }
 `;
 
 const InputContainer = styled.div`
@@ -153,8 +201,10 @@ const InputContainer = styled.div`
   border: 2px solid #e2e8f0;
   background: #fff;
   margin: 1rem;
+  height: fit-content;
   .ant-input {
     height: 100%;
+    max-height: 25vh;
     &[disabled] {
       background: transparent;
     }
@@ -162,7 +212,6 @@ const InputContainer = styled.div`
 `;
 
 const IconContainer = styled.div`
-  width: 5%;
   display: flex;
   justify-content: center;
 `;
@@ -187,6 +236,12 @@ const LixiContainer = styled.div`
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%) !important;
+    }
+    &.sender-avatar-page {
+      border-radius: 8px;
+      img {
+        border-radius: 8px;
+      }
     }
   }
 
@@ -220,6 +275,9 @@ const StyledChatHeader = styled.p`
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--border-color-base);
+  h2 {
+    margin: 0;
+  }
   .custom-user-info {
     display: flex;
     gap: 8px;
@@ -234,6 +292,12 @@ const StyledChatHeader = styled.p`
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%) !important;
+      }
+      &.user-avatar-page {
+        border-radius: 8px;
+        img {
+          border-radius: 8px;
+        }
       }
     }
     .user-name {
@@ -290,16 +354,26 @@ export const PageGroupItem = ({
   messages,
   classStyle,
   currentSessionId,
-  isPageOwner,
+  accountAddress,
   onClickIcon
 }: {
   messages?: any;
   classStyle?: string;
-  isPageOwner?: boolean;
+  accountAddress?: string;
   currentSessionId?: string;
   onClickIcon?: (e: any) => void;
 }) => {
   const [collapse, setCollapse] = useState(true);
+
+  const triggerCheckIsPageOwner = () => {
+    let isPageOwner = false;
+    if (messages[0]?.page?.pageAccount?.address === accountAddress) {
+      isPageOwner = true;
+    } else {
+      isPageOwner = false;
+    }
+    return isPageOwner;
+  };
 
   return (
     <>
@@ -307,14 +381,19 @@ export const PageGroupItem = ({
         messages.map((item, index) => {
           if (index == 0) {
             return (
-              <SpaceShorcutItem style={{ marginBottom: collapse ? '0' : '1rem' }} className="card" size={5}>
-                {isPageOwner ? (
+              <SpaceShorcutItem
+                key={item?.id}
+                style={{ marginBottom: collapse && triggerCheckIsPageOwner() ? '0' : '0.5rem' }}
+                className="card"
+                size={5}
+              >
+                {triggerCheckIsPageOwner() ? (
                   <>
-                    <div className="avatar-account avatar-account-page" onClick={() => onClickIcon(item)}>
+                    <div className="avatar-account avatar-account-page" onClick={() => setCollapse(!collapse)}>
                       {item?.page && <img src={item?.page?.avatar || '/images/default-avatar.jpg'} />}
                     </div>
                     <div className="content-account">
-                      <div className="info-account" onClick={() => onClickIcon(item)}>
+                      <div className="info-account" onClick={() => setCollapse(!collapse)}>
                         {item?.page?.name && <p className="page-name">{item?.page?.name}</p>}
                         <p className="account-name">{item?.account?.name}</p>
                         {item?.latestMessage ? (
@@ -323,7 +402,7 @@ export const PageGroupItem = ({
                           <p className="content">Give you {Math.round(item?.lixi?.amount)} XPI for messaging</p>
                         )}
                       </div>
-                      <div className="time-score" onClick={() => onClickIcon(item)}>
+                      <div className="time-score" onClick={() => setCollapse(!collapse)}>
                         <p className="create-date">Total: {messages.length}</p>
                         <div className="content-score">
                           <p className="lotus-burn-score">{transformCreatedAt(item?.updatedAt)}</p>
@@ -333,17 +412,31 @@ export const PageGroupItem = ({
                         <Button
                           type="primary"
                           className="no-border-btn"
-                          icon={!collapse ? <RightOutlined /> : <DownOutlined />}
+                          icon={
+                            !collapse ? (
+                              <ReactSVG
+                                src="/images/ico-arrow-right.svg"
+                                wrapper="span"
+                                className="anticon custom-svg"
+                              />
+                            ) : (
+                              <ReactSVG
+                                src="/images/ico-arrow-down.svg"
+                                wrapper="span"
+                                className="anticon custom-svg"
+                              />
+                            )
+                          }
                         />
                       </div>
                     </div>
                   </>
                 ) : (
                   <>
-                    <div className="avatar-account" onClick={() => onClickIcon(item)}>
+                    <div className="avatar-account avatar-account-page" onClick={() => onClickIcon(item)}>
                       {item?.page && <img src={item?.page?.avatar || '/images/default-avatar.jpg'} />}
                     </div>
-                    <div className="content-account">
+                    <div className="content-account" style={{ paddingRight: '0.5rem' }}>
                       <div className="info-account" onClick={() => onClickIcon(item)}>
                         {item?.page?.name && <p className="page-name">{item?.page?.name}</p>}
                         {item?.latestMessage ? (
@@ -366,11 +459,12 @@ export const PageGroupItem = ({
           }
         })}
       {collapse &&
-        isPageOwner &&
+        triggerCheckIsPageOwner() &&
         messages &&
-        messages.map(item => {
+        messages.map((item, index) => {
           return (
             <SpaceShorcutItem
+              key={item?.id}
               className={`${currentSessionId === item.id ? 'is-active' : ''} ant-space-child card`}
               onClick={() => onClickIcon(item)}
               size={5}
@@ -414,6 +508,13 @@ const PageMessage = () => {
   const Wallet = React.useContext(WalletContext);
   const { XPI } = Wallet;
   const socket = useSocket();
+  const [isMobile, setIsMobile] = useState(false);
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    const isMobile = width < 526 ? true : false;
+    setIsMobile(isMobile);
+  }, [width]);
 
   const [
     createMessageTrigger,
@@ -496,7 +597,6 @@ const PageMessage = () => {
       },
       false
     );
-
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
       fetchNext();
@@ -522,12 +622,8 @@ const PageMessage = () => {
     let cloneChats = _.cloneDeep(data);
     cloneChats = _.orderBy(cloneChats, ['updatedAt'], ['desc']);
     let groupPageChats = _.values(_.groupBy(cloneChats, 'page.id'));
-    if (data.length > 0) {
-      dispatch(setPageMessageSession(data[data.length - 1]));
-      setCurrentPageMessageSessionId(data[data.length - 1]?.id);
-    }
     return groupPageChats;
-  }, [data]);
+  }, [data, socket]);
 
   const {
     data: messageData,
@@ -635,10 +731,21 @@ const PageMessage = () => {
     setOpen(newOpen);
   };
 
+  const backToChat = () => {
+    dispatch(setPageMessageSession(null));
+    setCurrentPageMessageSessionId(null);
+  };
+
   return (
     <StyledContainer className="card page-message">
-      <StyledSideContainer>
-        <h2 className="title-chat">Chats</h2>
+      <StyledSideContainer
+        className={`${currentPageMessageSession ? 'hide-side-message' : 'show-side-message'} ${
+          isMobile ? 'animate__faster animate__animated animate__slideInLeft' : ''
+        }`}
+      >
+        <h2 className="title-chat">
+          Chats <span className="badge-total-message">{data.length}</span>
+        </h2>
         <div className="groups-page-message">
           {data.length > 0 && (
             <InfiniteScroll
@@ -655,7 +762,7 @@ const PageMessage = () => {
                       <PageGroupItem
                         key={index}
                         messages={chat}
-                        isPageOwner={isPageOwner}
+                        accountAddress={selectedAccount?.address}
                         currentSessionId={currentPageMessageSessionId}
                         onClickIcon={session => onClickMessage(session, session.id)}
                       />
@@ -667,136 +774,168 @@ const PageMessage = () => {
         </div>
       </StyledSideContainer>
 
-      <StyledChatContainer>
+      <StyledChatContainer
+        className={`${currentPageMessageSession ? 'full-content-chat' : 'hide-content-chat'} ${
+          isMobile ? 'animate__faster animate__animated animate__slideInRight' : ''
+        }`}
+      >
         <StyledChatHeader>
-          {currentPageMessageSession && isPageOwner && (
+          {currentPageMessageSession ? (
             <>
-              <div className="custom-user-info">
-                <Button type="text" icon={<LeftOutlined />}></Button>
-                <Avatar className="user-avatar" src={currentPageMessageSession?.account?.avatar}>
-                  {transformShortName(currentPageMessageSession?.account?.name)}
-                </Avatar>
-                <div className="user">
-                  <p className="user-name">{currentPageMessageSession?.account?.name}</p>
-                  <p className="user-address">
-                    {currentPageMessageSession?.account?.address.slice(0, 8) +
-                      '...' +
-                      currentPageMessageSession?.account?.address.slice(-6)}
-                  </p>
-                </div>
-              </div>
-              <div className="chat-header-action">
-                <div className={`${currentPageMessageSession?.status.toLowerCase()} status-current-session`}>
-                  {currentPageMessageSession?.status}
-                </div>
-                <Popover
-                  content={
+              {currentPageMessageSession?.page?.pageAccount?.address === selectedAccount?.address && (
+                <>
+                  <div className="custom-user-info">
                     <Button
-                      style={{ background: 'var(--dark-error-background)', fontSize: '12px' }}
-                      type="primary"
-                      onClick={closeSession}
+                      onClick={() => backToChat()}
+                      type="text"
+                      icon={<ReactSVG src="/images/ico-arrow-left.svg" wrapper="span" className="anticon custom-svg" />}
+                    ></Button>
+                    <Avatar className="user-avatar" src={currentPageMessageSession?.account?.avatar}>
+                      {transformShortName(currentPageMessageSession?.account?.name)}
+                    </Avatar>
+                    <div className="user">
+                      <p className="user-name">{currentPageMessageSession?.account?.name}</p>
+                      <p className="user-address">
+                        {currentPageMessageSession?.account?.address.slice(0, 8) +
+                          '...' +
+                          currentPageMessageSession?.account?.address.slice(-6)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="chat-header-action">
+                    <div className={`${currentPageMessageSession?.status.toLowerCase()} status-current-session`}>
+                      {currentPageMessageSession?.status}
+                    </div>
+                    <Popover
+                      content={
+                        <Button
+                          style={{ background: 'var(--dark-error-background)', fontSize: '12px' }}
+                          type="primary"
+                          onClick={closeSession}
+                        >
+                          Close session
+                        </Button>
+                      }
+                      placement="bottomRight"
+                      trigger="click"
+                      open={open}
+                      onOpenChange={handleOpenChange}
                     >
-                      Close session
-                    </Button>
-                  }
-                  placement="bottomRight"
-                  trigger="click"
-                  open={open}
-                  onOpenChange={handleOpenChange}
-                >
-                  <ReactSVG className="more-action-header" wrapper="span" src="/images/ico-more-vertical.svg" />
-                </Popover>
-              </div>
+                      <ReactSVG className="more-action-header" wrapper="span" src="/images/ico-more-vertical.svg" />
+                    </Popover>
+                  </div>
+                </>
+              )}
+              {currentPageMessageSession?.page?.pageAccount?.address !== selectedAccount?.address && (
+                <>
+                  <div className="custom-user-info">
+                    <Button
+                      type="text"
+                      onClick={() => backToChat()}
+                      icon={<ReactSVG src="/images/ico-arrow-left.svg" wrapper="span" className="anticon custom-svg" />}
+                    ></Button>
+                    <Avatar
+                      className="user-avatar user-avatar-page"
+                      src={currentPageMessageSession?.page?.avatar || '/images/default-avatar.jpg'}
+                    />
+                    <div className="user">
+                      <p className="user-name">{currentPageMessageSession?.page?.name}</p>
+                      <p className="user-address">
+                        {Math.round(parseInt(currentPageMessageSession?.lixi?.amount)) + ' XPI'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="chat-header-action">
+                    <div className={`${currentPageMessageSession?.status.toLowerCase()} status-current-session`}>
+                      {currentPageMessageSession?.status}
+                    </div>
+                  </div>
+                </>
+              )}
             </>
-          )}
-          {currentPageMessageSession && !isPageOwner && (
-            <>
-              <div className="custom-user-info">
-                <Button type="text" icon={<LeftOutlined />}></Button>
-                <Avatar className="user-avatar" src={currentPageMessageSession?.page?.avatar}>
-                  {transformShortName(currentPageMessageSession?.page?.name)}
-                </Avatar>
-                <div className="user">
-                  <p className="user-name">{currentPageMessageSession?.page?.name}</p>
-                  <p className="user-address">
-                    {Math.round(parseInt(currentPageMessageSession?.lixi?.amount)) + ' XPI'}
-                  </p>
-                </div>
-              </div>
-              <div className="chat-header-action">
-                <div className={`${currentPageMessageSession?.status.toLowerCase()} status-current-session`}>
-                  {currentPageMessageSession?.status}
-                </div>
-              </div>
-            </>
+          ) : (
+            <h2>Welcome Lixi Chat</h2>
           )}
         </StyledChatHeader>
         <StyledChatbox
           id="scrollableChatbox"
           style={{
-            justifyContent: currentPageMessageSession?.status !== PageMessageSessionStatus.Pending ? 'normal' : 'center'
+            justifyContent: currentPageMessageSession
+              ? currentPageMessageSession?.status !== PageMessageSessionStatus.Pending
+                ? 'normal'
+                : 'center'
+              : 'center'
           }}
         >
-          {currentPageMessageSession?.status !== PageMessageSessionStatus.Pending ? (
-            messageData.length > 0 && (
-              <StyledInfiniteScroll
-                dataLength={messageData.length}
-                next={loadMoreMessages}
-                hasMore={messageHasNext}
-                loader={<Skeleton active />}
-                endMessage={
-                  isPageOwner ? (
-                    <p>{`You accepted lixi from ${currentPageMessageSession.account.name}`}</p>
-                  ) : (
-                    <p>{`${currentPageMessageSession?.page.name} accepted your lixi`}</p>
-                  )
-                }
-                inverse
-                scrollableTarget="scrollableChatbox"
-              >
-                {messageData.map(item => {
-                  return (
-                    <Message
-                      senderAvatar={currentPageMessageSession?.page?.avatar}
-                      receiverAvatar={currentPageMessageSession?.account?.avatar}
-                      message={item}
-                      key={item.id}
-                      authorAddress={selectedAccount.address}
-                    />
-                  );
-                })}
-              </StyledInfiniteScroll>
-            )
-          ) : (
-            <LixiContainer>
-              {isPageOwner ? (
-                <div className="sender-message">
-                  <Avatar className="sender-avatar" src={currentPageMessageSession?.account?.avatar}>
-                    {transformShortName(currentPageMessageSession?.account?.name)}
-                  </Avatar>
-                  <h4 className="sender-name">{currentPageMessageSession?.account?.name}</h4>
-                  <p className="sender-created-at">{transformCreatedAt(currentPageMessageSession?.createdAt)}</p>
-                  <p className="sender-message-amount">{`Give you ${currentPageMessageSession?.lixi.amount} XPI for messaging`}</p>
-                  <div className="group-action-session">
-                    <Button type="primary" className="outline-btn" onClick={openSession}>
-                      Accept
-                    </Button>
-                    <Button type="primary" className="outline-btn" onClick={closeSession}>
-                      Deny
-                    </Button>
-                  </div>
-                </div>
+          {currentPageMessageSession ? (
+            <>
+              {currentPageMessageSession?.status !== PageMessageSessionStatus.Pending ? (
+                messageData.length > 0 && (
+                  <StyledInfiniteScroll
+                    dataLength={messageData.length}
+                    next={loadMoreMessages}
+                    hasMore={messageHasNext}
+                    loader={<Skeleton active />}
+                    endMessage={
+                      isPageOwner ? (
+                        <p>{`You accepted lixi from ${currentPageMessageSession?.account?.name}`}</p>
+                      ) : (
+                        <p>{`${currentPageMessageSession?.page?.name} accepted your lixi`}</p>
+                      )
+                    }
+                    inverse
+                    scrollableTarget="scrollableChatbox"
+                  >
+                    {messageData.map(item => {
+                      return (
+                        <Message
+                          senderAvatar={currentPageMessageSession?.page?.avatar}
+                          receiverAvatar={currentPageMessageSession?.account?.avatar}
+                          message={item}
+                          key={item.id}
+                          authorAddress={selectedAccount.address}
+                        />
+                      );
+                    })}
+                  </StyledInfiniteScroll>
+                )
               ) : (
-                <div className="sender-message">
-                  <Avatar className="sender-avatar" src={currentPageMessageSession?.page?.avatar}>
-                    {transformShortName(currentPageMessageSession?.page?.name)}
-                  </Avatar>
-                  <h4 className="sender-name">{currentPageMessageSession?.page?.name}</h4>
-                  <p className="sender-created-at">{transformCreatedAt(currentPageMessageSession?.createdAt)}</p>
-                  <p className="sender-message-amount">{`Waiting for ${currentPageMessageSession?.page?.name} to accept your lixi. Patience is a Virtue!`}</p>
-                </div>
+                <LixiContainer>
+                  {currentPageMessageSession?.page?.pageAccount?.address === selectedAccount?.address ? (
+                    <div className="sender-message">
+                      <Avatar className="sender-avatar" src={currentPageMessageSession?.account?.avatar}>
+                        {transformShortName(currentPageMessageSession?.account?.name)}
+                      </Avatar>
+                      <h4 className="sender-name">{currentPageMessageSession?.account?.name}</h4>
+                      <p className="sender-created-at">{transformCreatedAt(currentPageMessageSession?.createdAt)}</p>
+                      <p className="sender-message-amount">{`Give you ${currentPageMessageSession?.lixi.amount} XPI for messaging`}</p>
+                      <div className="group-action-session">
+                        <Button type="primary" className="outline-btn" onClick={openSession}>
+                          Accept
+                        </Button>
+                        <Button type="primary" className="outline-btn" onClick={closeSession}>
+                          Deny
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="sender-message">
+                      <Avatar
+                        className="sender-avatar sender-avatar-page"
+                        src={currentPageMessageSession?.page?.avatar || '/images/default-avatar.jpg'}
+                      />
+                      <h4 className="sender-name">{currentPageMessageSession?.page?.name}</h4>
+                      <p className="sender-created-at">{transformCreatedAt(currentPageMessageSession?.createdAt)}</p>
+                      <p className="sender-message-amount">{`Waiting for ${currentPageMessageSession?.page?.name} to accept your lixi. Patience is a Virtue!`}</p>
+                    </div>
+                  )}
+                </LixiContainer>
               )}
-            </LixiContainer>
+            </>
+          ) : (
+            <>
+              <span className="blank-chat">Select a chat to start messaging</span>
+            </>
           )}
         </StyledChatbox>
         {currentPageMessageSession && (
@@ -813,7 +952,7 @@ const PageMessage = () => {
               render={({ field: { onChange, onBlur, value, ref } }) => (
                 <TextArea
                   ref={ref}
-                  style={{ width: '95%', border: '0', borderRadius: '12px' }}
+                  style={{ border: '0', borderRadius: '12px' }}
                   onChange={onChange}
                   onBlur={onBlur}
                   value={value}

@@ -17,6 +17,7 @@ type PageMessageLixiModalProps = {
   account?: Account;
   page?: PageItem;
   wallet: WalletStatus;
+  classStyle?: String;
 };
 
 const StyledModal = styled(Modal)`
@@ -34,7 +35,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const PageMessageLixiModal = ({ account, page, wallet }: PageMessageLixiModalProps) => {
+const PageMessageLixiModal = ({ account, page, wallet, classStyle }: PageMessageLixiModalProps) => {
   const dispatch = useAppDispatch();
   const {
     control,
@@ -98,12 +99,13 @@ const PageMessageLixiModal = ({ account, page, wallet }: PageMessageLixiModalPro
 
   return (
     <StyledModal
+      className={`${classStyle}`}
       width={490}
       open={true}
       onOk={handleSubmit(handleOk)}
       onCancel={handleCancel}
       closable={false}
-      title={<div className="custom-burn-header">Create Lixi</div>}
+      title={<div className="custom-burn-header">Create lixi to chat with {page.name}</div>}
     >
       <Descriptions bordered column={1}>
         <Descriptions.Item>
@@ -131,7 +133,7 @@ const PageMessageLixiModal = ({ account, page, wallet }: PageMessageLixiModalPro
                 onBlur={onBlur}
                 value={value}
                 type="number"
-                placeholder={'min amount'}
+                placeholder={'Input amount...'}
               />
             )}
           />

@@ -357,6 +357,11 @@ const ShortcutSideBar = styled(Sider)`
       text-align: center;
     }
   }
+
+  &.hide-side-bar-shortcut {
+    width: 0 !important;
+    min-width: 0 !important;
+  }
 `;
 
 export const SpaceShorcutItem = styled(Space)`
@@ -519,7 +524,7 @@ export const transformCreatedAt = date => {
   let dateFormated = '';
   const today = new Date();
   if (moment(date).isSame(today, 'day')) {
-    dateFormated = moment(date).format('HH:SS');
+    dateFormated = moment(date).format('HH:mm');
   } else if (moment(date).isSame(today, 'week')) {
     dateFormated = moment(date).format('ddd');
   } else {
@@ -984,6 +989,9 @@ const SidebarShortcut = () => {
       className = '';
     } else {
       className = 'minimize-short-cut';
+    }
+    if (currentPathName == '/page-message') {
+      className = className + ' hide-side-bar-shortcut';
     }
     return className;
   };

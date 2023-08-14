@@ -40,6 +40,19 @@ const Footer = ({ notifications, classList }: { notifications?: any; classList?:
             />
           </NavButton>
         </Link>
+        <Link href="/page-message" passHref>
+          <NavButton active={currentPathName.includes('/page-message')}>
+            <img
+              className="ico-img"
+              src={
+                currentPathName.includes('/page-message')
+                  ? '/images/ico-message-heart-circle-active.svg'
+                  : '/images/ico-message-heart-circle.svg'
+              }
+              alt=""
+            />
+          </NavButton>
+        </Link>
         <Link href="/page/feed" passHref>
           <NavButton active={currentPathName.includes('/page/feed')}>
             <img
@@ -49,7 +62,7 @@ const Footer = ({ notifications, classList }: { notifications?: any; classList?:
             />
           </NavButton>
         </Link>
-        <Link href="/token/listing" passHref>
+        {/* <Link href="/token/listing" passHref>
           <NavButton active={currentPathName.includes('/token/listing')}>
             <img
               className="ico-img"
@@ -59,7 +72,7 @@ const Footer = ({ notifications, classList }: { notifications?: any; classList?:
               alt=""
             />
           </NavButton>
-        </Link>
+        </Link> */}
         <Link href="/notifications" passHref>
           <NavButton active={currentPathName == '/notifications'}>
             <Badge

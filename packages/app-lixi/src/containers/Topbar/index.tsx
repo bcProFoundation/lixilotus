@@ -65,6 +65,7 @@ const PathDirection = styled.div`
   }
   .logo-app-desktop {
     padding: 1rem 0.5rem;
+    cursor: pointer;
   }
   h3 {
     text-transform: capitalize;
@@ -579,6 +580,14 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       <div className="social-menu">
         <h3>Social</h3>
         <ItemAccess
+          icon={'/images/ico-message-heart-circle.svg'}
+          text={'Messenger'}
+          active={currentPathName === '/page-message'}
+          direction="horizontal"
+          key="support"
+          onClickItem={() => handleIconClick('/page-message')}
+        />
+        <ItemAccess
           icon={'/images/ico-page.svg'}
           text={intl.get('general.page')}
           active={
@@ -618,14 +627,6 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           direction="horizontal"
           key="support"
           onClickItem={handleClickInstall}
-        />
-        <ItemAccess
-          icon={'/images/ico-support.png'}
-          text={'Page Message'}
-          active={currentPathName === '/page-message'}
-          direction="horizontal"
-          key="support"
-          onClickItem={() => handleIconClick('/page-message')}
         />
       </div>
       <div className="social-feature">
@@ -690,14 +691,14 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     <StyledHeader style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={className}>
       <PathDirection>
         <img className="menu-mobile" src="/images/ico-list-bullet_2.svg" alt="" onClick={handleMenuClick} />
-        {currentPathName == '/' && (
+        {(currentPathName == '/' || currentPathName == '/page-message') && (
           <picture>
             <img
               className={`${isMobile ? '' : 'logo-app-desktop'} logo-app`}
               height={'64px'}
               src={`${isMobile ? '/images/lixilotus-logo.svg' : '/images/lixilotus-text.svg'}`}
               alt="lixilotus-logo"
-              onClick={() => handleLogoClick()}
+              onClick={() => handleIconClick('/')}
             />
           </picture>
         )}
@@ -713,7 +714,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             <span className="line line3"></span>
           </div>
         </div> */}
-        {pathDirection[1] != '' && <h3 className="path-direction-text">{pathDirection[1]}</h3>}
+        {pathDirection[1] != '' && currentPathName != '/page-message' && (
+          <h3 className="path-direction-text">{pathDirection[1]}</h3>
+        )}
       </PathDirection>
       <div className="filter-bar">
         <SearchBox />
@@ -721,10 +724,10 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       <SpaceStyled direction="horizontal" size={15}>
         <div className="action-bar-header">
           <ButtonTopbar
-            onClick={() => handleIconClick('/')}
+            onClick={() => handleIconClick('/page-message')}
             className="btn-topbar home-btn animate__animated animate__heartBeat"
             type="text"
-            icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-home-topbar.svg'} />}
+            icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-message-heart-circle.svg'} />}
           />
           <Popover
             overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} filter-btn`}
@@ -887,6 +890,14 @@ const StyledTopbar = styled(Topbar)`
         width: 20px;
         height: 20px;
         filter: var(--filter-color-primary);
+      }
+    }
+  }
+  .home-btn {
+    .anticon {
+      svg {
+        width: 28px;
+        height: 28px;
       }
     }
   }

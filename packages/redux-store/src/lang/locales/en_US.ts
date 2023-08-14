@@ -676,5 +676,8 @@ export default {
   'guide.body': 'Install the app on your device to easily access it anytime. No app store. No download. No hassle.',
   'guide.descOne': '1. Open in Safari (optional)',
   'guide.descTwo': '2. Tap on',
-  'guide.descThree': '3. Select'
+  'guide.descThree': '3. Select',
+
+  /* 23. Messenger */
+  'messenger.chat': 'Chat with '
 };

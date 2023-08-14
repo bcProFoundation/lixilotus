@@ -239,8 +239,6 @@ const ProfileCardHeader = styled.div`
     text-align: left;
     display: flex;
     flex-direction: column;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
     @media (max-width: 768px) {
       margin-left: 0;
       text-align: center;
@@ -949,24 +947,27 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                 </Button>
               </div>
             )}
-            {/* Chat */}
-            {selectedAccountId != pageDetailData?.pageAccountId && _.isNil(pageMessageSessionData) && (
-              <Button onClick={() => openPageMessageLixiModal()}>Chat with me</Button>
-            )}
-            {selectedAccountId != pageDetailData?.pageAccountId && pageMessageSessionData && (
-              <React.Fragment>
-                {
-                  {
-                    [PageMessageSessionStatus.Open]: <Button>Open message</Button>,
-                    [PageMessageSessionStatus.Pending]: <Button disabled>Pending Message</Button>
-                  }[pageMessageSessionData.userHadMessageToPage.status]
-                }
-              </React.Fragment>
-            )}
             {/* Follow */}
             {selectedAccountId != pageDetailData?.pageAccountId && (
               <div>
-                <Button onClick={checkIsFollowed ? handleUnfollowPage : handleFollowPage}>
+                {/* Chat */}
+                {selectedAccountId != pageDetailData?.pageAccountId && _.isNil(pageMessageSessionData) && (
+                  <Button onClick={() => openPageMessageLixiModal()}>Chat with me</Button>
+                )}
+                {selectedAccountId != pageDetailData?.pageAccountId && pageMessageSessionData && (
+                  <React.Fragment>
+                    {
+                      {
+                        [PageMessageSessionStatus.Open]: <Button>Open message</Button>,
+                        [PageMessageSessionStatus.Pending]: <Button disabled>Pending Message</Button>
+                      }[pageMessageSessionData.userHadMessageToPage.status]
+                    }
+                  </React.Fragment>
+                )}
+                <Button
+                  style={{ marginLeft: '0.5rem' }}
+                  onClick={checkIsFollowed ? handleUnfollowPage : handleFollowPage}
+                >
                   {checkIsFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
                 </Button>
               </div>
@@ -1186,13 +1187,13 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             {/* TODO: implement in the future */}
             {/* <Tabs.TabPane tab="Friend" key="friend"></Tabs.TabPane>
             <Tabs.TabPane tab="Picture" key="picture"></Tabs.TabPane> */}
-            <Tabs.TabPane tab="Message" key="message">
+            {/* <Tabs.TabPane tab="Message" key="message">
               {page.pageAccount.address === selectedAccount.address ? (
                 <PageMessageForOwner page={page} />
               ) : (
                 <PageMessageForUser page={page} account={selectedAccount} />
               )}
-            </Tabs.TabPane>
+            </Tabs.TabPane> */}
           </StyledMenu>
         </ProfileContentContainer>
       </StyledContainerProfileDetail>

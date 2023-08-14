@@ -13,10 +13,11 @@ import {
   useCreateFollowPageMutation,
   useDeleteFollowPageMutation
 } from '@store/follow/follows.generated';
-import { getSelectedAccountId } from '@store/account';
+import { getSelectedAccount, getSelectedAccountId } from '@store/account';
 import { usePageQuery } from '@store/page/pages.generated';
 import { useCreateFollowAccountMutation, useDeleteFollowAccountMutation } from '@store/follow/follows.api';
 import { CreateFollowAccountInput, DeleteFollowAccountInput } from '@generated/types.generated';
+import { getWalletStatus } from '@store/wallet';
 
 interface PostActionSheetProps {
   id?: string;
@@ -103,6 +104,8 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [isFollowedPage, setIsFollowedPage] = useState<boolean>(false);
   const [isFollowedAccount, setIsFollowedAccount] = useState<boolean>(false);
+  const selectedAccount = useAppSelector(getSelectedAccount);
+  const walletStatus = useAppSelector(getWalletStatus);
 
   const [
     createFollowPageTrigger,
@@ -201,6 +204,10 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     await deleteFollowAccountTrigger({ input: deleteFollowAccountInput });
   };
 
+  const openPageMessageLixiModal = () => {
+    dispatch(openModal('PageMessageLixiModal', { account: selectedAccount, page: page, wallet: walletStatus }));
+  };
+
   return (
     <>
       <Drawer
@@ -215,6 +222,13 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
           <div className="bar-close" onClick={onClose}></div>
           {isEditPost && <ItemActionSheetBottom text="Edit post" icon="/images/ico-edit.svg" onClickItem={editPost} />}
           {/* <ItemActionSheetBottom type="danger" text="Remove" /> */}
+          {post.page && post.postAccount.id != selectedAccountId && (
+            <ItemActionSheetBottom
+              text={`${intl.get('messenger.chat')} ${page?.name}`}
+              icon="/images/ico-message-heart-circle.svg"
+              onClickItem={openPageMessageLixiModal}
+            />
+          )}
           {post.page && !isFollowedPage && (
             <ItemActionSheetBottom
               text={`${intl.get('general.follow')} ${page?.name}`}

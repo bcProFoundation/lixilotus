@@ -675,5 +675,8 @@ export default {
     'Cài đặt ứng dụng trên thiết bị của bạn để dễ dàng truy cập bất cứ lúc nào. Không có cửa hàng ứng dụng. Không tải xuống. Không có rắc rối.',
   'guide.descOne': '1. Mở trình duyệt Safari (Tuỳ chọn)',
   'guide.descTwo': '2. Ấn vào',
-  'guide.descThree': '3. Chọn'
+  'guide.descThree': '3. Chọn',
+
+  /* 23. Messenger */
+  'messenger.chat': 'Nhắn tin với'
 };

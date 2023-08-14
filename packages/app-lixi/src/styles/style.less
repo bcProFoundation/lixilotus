@@ -2634,6 +2634,7 @@ code {
     div,
     p {
       border-color: var(--border-color-dark-base);
+      color: var(--text-color-primary-dark) !important;
     }
     .page-name,
     .user-name {
@@ -2697,6 +2698,27 @@ code {
       &.is-active {
         background: #303031 !important;
       }
+    }
+
+    .ant-btn-icon {
+      .custom-svg {
+        svg {
+          filter: var(--filter-svg-white-color);
+        }
+      }
+    }
+
+    .date-message {
+      background: transparent !important;
+    }
+
+    .blank-chat {
+      color: var(--text-color-on-dark);
+    }
+
+    .badge-total-message {
+      background: var(--border-color) !important;
+      color: #000 !important;
     }
   }
 

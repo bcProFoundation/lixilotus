@@ -16,8 +16,7 @@ const StyledMessageContainer = styled.div`
   .message-txt {
     cursor: default;
     width: fit-content;
-    min-width: 10%;
-    max-width: 50%;
+    max-width: 80%;
     padding: 8px 12px;
     border-radius: 12px;
     margin-bottom: 0.5rem;
@@ -36,10 +35,10 @@ const StyledMessageContainer = styled.div`
   }
   .date-message {
     font-size: 10px;
+    margin: 4px;
     background: #fff !important;
     color: gray !important;
     align-self: center;
-    margin: 0;
   }
 `;
 
