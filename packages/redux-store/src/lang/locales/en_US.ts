@@ -178,7 +178,7 @@ export default {
   'account.renameFailed': 'Rename failed. All accounts must have a unique name.',
   'account.deleteFailed': 'Delete failed. Could not delete the account.',
   'account.accountRenamedSuccess': 'Account has renamed to {accountName}',
-  'account.accountChangeLocaleSuccess': 'Account locale has changed to {language}',
+  'account.accountChangeLocaleSuccess': 'Account locale has changed to English',
   'account.accountDeleteSuccess': 'The account has been deleted successfully.',
   'account.accountImportSuccess': 'The account has been imported successfully.',
   'account.login': 'Sign In',

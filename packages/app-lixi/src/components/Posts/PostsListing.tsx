@@ -461,7 +461,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       dispatch(addBurnQueue(_.omit(burnCommand)));
       dispatch(addBurnTransaction(burnCommand));
     } catch (e) {
-      const errorMessage = e.message || intl.get('post.unableToBurn');
+      const errorMessage = intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
           message: errorMessage,

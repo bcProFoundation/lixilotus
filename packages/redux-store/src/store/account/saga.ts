@@ -432,9 +432,8 @@ function* changeAccountLocaleSaga(action: PayloadAction<ChangeAccountLocaleComma
 function* changeAccountLocaleSuccessSaga(action: PayloadAction<Account>) {
   const account = action.payload;
   yield put(hideLoading(changeAccountLocale.type));
-  const languageName: string = intl.get(account.language);
   Modal.success({
-    content: intl.get('account.accountChangeLocaleSuccess', { language: languageName })
+    content: intl.get('account.accountChangeLocaleSuccess')
   });
 }
 

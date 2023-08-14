@@ -392,7 +392,7 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
       dispatch(addBurnQueue(burnCommand));
       dispatch(addBurnTransaction(burnCommand));
     } catch (e) {
-      const errorMessage = e.message || intl.get('post.unableToBurn');
+      const errorMessage = intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
           message: errorMessage,

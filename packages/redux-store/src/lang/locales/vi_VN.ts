@@ -178,7 +178,7 @@ export default {
   'account.accountRenamedSuccess': 'Tài khoản được sửa lại thành {accountName}.',
   'account.accountDeleteSuccess': 'Xóa tài khoản thành công.',
   'account.accountImportSuccess': 'Tài khoản được nhập thành công.',
-  'account.accountChangeLocaleSuccess': 'Ngôn ngữ được cập nhật thành {language}.',
+  'account.accountChangeLocaleSuccess': 'Ngôn ngữ được cập nhật thành Tiếng Việt.',
   'account.login': 'Đăng nhập',
   'account.register': 'Đăng ký',
   'account.verify': 'Xác thực',

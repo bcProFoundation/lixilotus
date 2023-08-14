@@ -238,7 +238,7 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
       dispatch(addBurnTransaction(burnCommand));
       dispatch(closeModal());
     } catch (e) {
-      const errorMessage = e.message || intl.get('post.unableToBurn');
+      const errorMessage = intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
           message: intl.get(`toast.error`),
