@@ -355,17 +355,6 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   }, [width]);
 
   useEffect(() => {
-    if (selectedAccount) {
-      dispatch(
-        fetchNotifications({
-          accountId: selectedAccount.id,
-          mnemonichHash: selectedAccount.mnemonicHash
-        })
-      );
-    }
-  }, []);
-
-  useEffect(() => {
     setOtherAccounts(_.filter(savedAccounts, acc => acc && acc.id !== selectedAccount?.id));
   }, [savedAccounts]);
 

@@ -280,17 +280,6 @@ const SidebarRanking = () => {
   );
 
   useEffect(() => {
-    if (selectedAccount) {
-      dispatch(
-        fetchNotifications({
-          accountId: selectedAccount.id,
-          mnemonichHash: selectedAccount.mnemonicHash
-        })
-      );
-    }
-  }, []);
-
-  useEffect(() => {
     setOtherAccounts(_.filter(savedAccounts, acc => acc && acc.id !== selectedAccount?.id));
   }, [savedAccounts]);
 

@@ -25,7 +25,9 @@ export function useInfinitePageMessageSessionByAccountId(
   params: PageMessageSessionListParams,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
-  const baseResult = usePageMessageSessionByAccountIdQuery(params); //dont query when it is not the owner
+  const baseResult = usePageMessageSessionByAccountIdQuery(params, {
+    skip: !params.id
+  }); //dont query when it is not the owner
 
   const [trigger, nextResult] = useLazyPageMessageSessionByAccountIdQuery();
   const [combinedData, setCombinedData] = useState(pageMessageSessionAdapter.getInitialState({}));

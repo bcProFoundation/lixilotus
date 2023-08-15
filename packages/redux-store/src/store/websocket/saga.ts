@@ -1,6 +1,6 @@
 import { eventChannel } from 'redux-saga';
 import { all, call, fork, put, race, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
-import { connectWebSocket } from './websocketUtils'; // Implement this function
+import { NOTIFICATION_TYPES } from '@bcpros/lixi-models/constants';
 import { io, Socket } from 'socket.io-client';
 import { SessionAction, SessionActionEnum } from '@bcpros/lixi-models/lib/sessionAction';
 import { AccountDto, NotificationDto as Notification, SocketUser } from '@bcpros/lixi-models';
@@ -16,13 +16,6 @@ import { downloadExportedLixi, refreshLixiSilent } from '../lixi/actions';
 import { setNewPostAvailable } from '@store/post/actions';
 import { showToast } from '../toast/actions';
 import { callConfig } from '@context/shareContext';
-
-const NOTIFICATION_TYPES = {
-  CREATE_SUB_LIXIES: 1,
-  WITHDRAW_SUB_LIXIES: 2,
-  EXPORT_SUB_LIXIES: 3,
-  NEW_POST: 14
-};
 
 function createMessageSocketChannel(socket: Socket) {
   return eventChannel(emit => {

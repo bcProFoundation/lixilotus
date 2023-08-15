@@ -46,14 +46,16 @@ export const notificationTypeTranslations = [
     notificationTypeId: 4,
     language: 'en',
     isDefault: true,
-    template: 'There is an error happens in creating child codes for lixi the {{name}}. Please withdrawn your fund and try again.'
+    template:
+      'There is an error happens in creating child codes for lixi the {{name}}. Please withdrawn your fund and try again.'
   },
   {
     id: 8,
     notificationTypeId: 4,
     language: 'vi',
     isDefault: false,
-    template: 'Đã có lỗi xảy ra trong quá trình tạo mã con cho Lì xì {{name}}. Xin hãy rút Lotus về tài khoản chính và thử lại.'
+    template:
+      'Đã có lỗi xảy ra trong quá trình tạo mã con cho Lì xì {{name}}. Xin hãy rút Lotus về tài khoản chính và thử lại.'
   },
   // post on page
   {
@@ -113,7 +115,8 @@ export const notificationTypeTranslations = [
     notificationTypeId: 8,
     language: 'vi',
     isDefault: false,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} Dana cho bình luận trong bài viết của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
+    template:
+      '{{senderName}} {{burnType}} {{xpiBurn}} Dana cho bình luận trong bài viết của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
   },
   // burn-account-fee
   {
@@ -128,7 +131,8 @@ export const notificationTypeTranslations = [
     notificationTypeId: 9,
     language: 'vi',
     isDefault: false,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} Dana cho bài viết của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
+    template:
+      '{{senderName}} {{burnType}} {{xpiBurn}} Dana cho bài viết của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
   },
   // burn-page-fee
   {
@@ -136,14 +140,16 @@ export const notificationTypeTranslations = [
     notificationTypeId: 10,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} Dana for {{burnForType}} on your {{pageName}} page. You received {{xpiFee}} XPI fee.'
+    template:
+      '{{senderName}} {{burnType}} {{xpiBurn}} Dana for {{burnForType}} on your {{pageName}} page. You received {{xpiFee}} XPI fee.'
   },
   {
     id: 20,
     notificationTypeId: 10,
     language: 'vi',
     isDefault: false,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} Dana cho {{burnForType}} trong trang {{pageName}} của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
+    template:
+      '{{senderName}} {{burnType}} {{xpiBurn}} Dana cho {{burnForType}} trong trang {{pageName}} của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
   },
   // follow-account
   {
@@ -174,5 +180,51 @@ export const notificationTypeTranslations = [
     language: 'vi',
     isDefault: false,
     template: '{{senderName}} hiện đang theo dõi trang {{pageName}} của bạn.'
+  },
+  // page-message
+  // request to send page-message
+  {
+    id: 27,
+    notificationTypeId: 15,
+    language: 'vi',
+    isDefault: false,
+    template: '{{senderName}} muốn gửi trang {{pageName}} tin nhắn'
+  },
+  {
+    id: 28,
+    notificationTypeId: 15,
+    language: 'en',
+    isDefault: true,
+    template: '{{senderName}} want to send {{pageName}} a message.'
+  },
+  //accept page-message
+  {
+    id: 29,
+    notificationTypeId: 16,
+    language: 'vi',
+    isDefault: false,
+    template: '{{pageName}} chấp nhận tin nhắn của bạn.'
+  },
+  {
+    id: 30,
+    notificationTypeId: 16,
+    language: 'en',
+    isDefault: true,
+    template: '{{pageName}} accept your message.'
+  },
+  //denied page-message
+  {
+    id: 31,
+    notificationTypeId: 17,
+    language: 'vi',
+    isDefault: false,
+    template: '{{pageName}} từ chối tin nhắn của bạn.'
+  },
+  {
+    id: 32,
+    notificationTypeId: 17,
+    language: 'en',
+    isDefault: true,
+    template: '{{pageName}} denied your message.'
   }
 ];

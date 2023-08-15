@@ -190,17 +190,6 @@ const DummySidebar = () => {
     }
   };
 
-  useEffect(() => {
-    if (selectedAccount) {
-      dispatch(
-        fetchNotifications({
-          accountId: selectedAccount.id,
-          mnemonichHash: selectedAccount.mnemonicHash
-        })
-      );
-    }
-  }, []);
-
   const triggerSrollbar = e => {
     const sidebarShortcutNode = refSidebarShortcut.current;
     sidebarShortcutNode.classList.add('show-scroll');

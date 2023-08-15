@@ -291,17 +291,6 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
     }
   }, [graphqlRequestLoading]);
 
-  useEffect(() => {
-    if (selectedAccount) {
-      dispatch(
-        fetchNotifications({
-          accountId: selectedAccount.id,
-          mnemonichHash: selectedAccount.mnemonicHash
-        })
-      );
-    }
-  }, []);
-
   injectStore(currentLocale);
   const isLoading = useAppSelector(getIsGlobalLoading);
 

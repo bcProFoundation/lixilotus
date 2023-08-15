@@ -517,7 +517,7 @@ export class AccountController {
     try {
       if (!account || account?.id !== accountId) {
         const noPermissionMessage = await i18n.t('account.messages.noPermission');
-        throw Error(noPermissionMessage);
+        throw new VError(noPermissionMessage);
       }
 
       const notifications = await this.prisma.notification.findMany({

@@ -11,17 +11,6 @@ const NotificationComponent = () => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const notifications = useAppSelector(getAllNotifications);
 
-  useEffect(() => {
-    if (selectedAccount) {
-      dispatch(
-        fetchNotifications({
-          accountId: selectedAccount.id,
-          mnemonichHash: selectedAccount.mnemonicHash
-        })
-      );
-    }
-  }, []);
-
   return <WrapperPage className="card">{NotificationPopup(notifications, selectedAccount)}</WrapperPage>;
 };
 

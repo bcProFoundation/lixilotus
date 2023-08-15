@@ -772,12 +772,6 @@ function* silentLoginSaga(action: PayloadAction<string>) {
 
 function* silentLoginSuccessSaga(action: PayloadAction) {
   const account = yield select(getSelectedAccount);
-  yield put(
-    fetchNotifications({
-      accountId: account.id,
-      mnemonichHash: account.mnemonicHash
-    })
-  );
 
   // If server login then we also local-login
   const localUser: LocalUser = {
@@ -787,6 +781,12 @@ function* silentLoginSuccessSaga(action: PayloadAction) {
   };
   yield put(activateWallet(account.mnemonic));
   yield put(silentLocalLogin(localUser));
+  yield putResolve(
+    fetchNotifications({
+      accountId: account.id,
+      mnemonichHash: account.mnemonicHash
+    })
+  );
 }
 
 function* watchSilentLogin() {

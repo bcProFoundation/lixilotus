@@ -925,17 +925,6 @@ const SidebarShortcut = () => {
   };
 
   useEffect(() => {
-    if (selectedAccount) {
-      dispatch(
-        fetchNotifications({
-          accountId: selectedAccount.id,
-          mnemonichHash: selectedAccount.mnemonicHash
-        })
-      );
-    }
-  }, []);
-
-  useEffect(() => {
     const newArrFilter = _.uniqBy(PostsData, item => {
       return item?.page?.id || item?.token?.tokenId || item?.postAccount.address;
     });

@@ -31,31 +31,31 @@ const HomePage = ({ isMobile, localUser }: HomePageProps) => {
     await axios.post(url);
   };
 
-  useEffect(() => {
-    if (isHydrated) {
-      console.log('localUser:', localUser);
-      // Only check the user if the redux state is already hydrated
-      if (!selectedAccount && !localUser) {
-        // There's no account, need to create an account for user
-      } else if (selectedAccount && !localUser) {
-        // Local local with nextjs api route
-        const localAccount: LocalUserAccount = {
-          mnemonic: selectedAccount.mnemonic,
-          language: selectedAccount.language,
-          address: selectedAccount.address,
-          name: selectedAccount.name,
-          createdAt: selectedAccount.createdAt,
-          updatedAt: selectedAccount.updatedAt
-        };
-        dispatch(setLocalUserAccount(localAccount)); // and local-login
-        dispatch(silentLogin(selectedAccount.mnemonic));
-      } else if (selectedAccount) {
-        dispatch(silentLogin(selectedAccount.mnemonic));
-      } else if (localUser) {
-        localLogout();
-      }
-    }
-  }, [selectedAccount, localUser, isHydrated]);
+  // useEffect(() => {
+  //   if (isHydrated) {
+  //     console.log('localUser:', localUser);
+  //     // Only check the user if the redux state is already hydrated
+  //     if (!selectedAccount && !localUser) {
+  //       // There's no account, need to create an account for user
+  //     } else if (selectedAccount && !localUser) {
+  //       // Local local with nextjs api route
+  //       const localAccount: LocalUserAccount = {
+  //         mnemonic: selectedAccount.mnemonic,
+  //         language: selectedAccount.language,
+  //         address: selectedAccount.address,
+  //         name: selectedAccount.name,
+  //         createdAt: selectedAccount.createdAt,
+  //         updatedAt: selectedAccount.updatedAt
+  //       };
+  //       dispatch(setLocalUserAccount(localAccount)); // and local-login
+  //       dispatch(silentLogin(selectedAccount.mnemonic));
+  //     } else if (selectedAccount) {
+  //       dispatch(silentLogin(selectedAccount.mnemonic));
+  //     } else if (localUser) {
+  //       localLogout();
+  //     }
+  //   }
+  // }, [selectedAccount, localUser, isHydrated]);
 
   return <PostsListing />;
 };

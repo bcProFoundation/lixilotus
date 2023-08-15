@@ -8,3 +8,4 @@ export * from './category';
 export * from './translation';
 export * from './burn';
 export * from './postListType';
+export * from './notification';

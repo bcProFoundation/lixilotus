@@ -68,5 +68,20 @@ export const notificationTypes = [
     id: 14,
     name: 'new-post',
     description: 'Notification has new post'
+  },
+  {
+    id: 15,
+    name: 'page-message-request',
+    description: 'Notification has new page message requested'
+  },
+  {
+    id: 16,
+    name: 'page-message-accept',
+    description: 'Notification has new page message accepted'
+  },
+  {
+    id: 17,
+    name: 'page-message-denied',
+    description: 'Notification has new page message denied'
   }
 ];
