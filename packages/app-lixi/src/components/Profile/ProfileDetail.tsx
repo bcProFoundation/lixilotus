@@ -22,7 +22,7 @@ import { getFilterPostsProfile } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
-import { Button, Skeleton, Space, Tabs } from 'antd';
+import { Avatar, Button, Skeleton, Space, Tabs } from 'antd';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { useRouter } from 'next/router';
@@ -36,6 +36,7 @@ import { CameraOutlined, EditOutlined } from '@ant-design/icons';
 import { ReactSVG } from 'react-svg';
 import { Account, RenameAccountCommand } from '@bcpros/lixi-models';
 import { RenameAccountModalProps } from '@components/Settings/RenameAccountModal';
+import { transformShortName } from '@components/Common/AvatarUser';
 
 const URL_AVATAR_DEFAULT = '/images/default-avatar.jpg';
 const URL_COVER_DEFAULT = '/images/default-avatar.jpg';
@@ -415,6 +416,14 @@ const StyledMenu = styled(Tabs)`
   }
 `;
 
+const StyledAvatar = styled(Avatar)`
+  width: 150px;
+  height: 150px;
+  font-size: 54px;
+  display: flex;
+  align-items: center;
+`;
+
 const SubAbout = ({
   icon,
   text,
@@ -592,10 +601,10 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   const getAvatarAccount = () => {
     let urlAvatarAccount = '';
     if (selectedAccountId == user.id) {
-      urlAvatarAccount = accountInfoTemp?.avatar || URL_AVATAR_DEFAULT;
+      urlAvatarAccount = accountInfoTemp?.avatar;
     } else {
       const cfUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${user?.avatar?.upload?.cfImageId}/public`;
-      urlAvatarAccount = cfUrl.includes('undefined') ? URL_AVATAR_DEFAULT : cfUrl;
+      urlAvatarAccount = cfUrl.includes('undefined') ? undefined : cfUrl;
     }
     return urlAvatarAccount;
   };
@@ -639,9 +648,13 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
           </div>
           <div className="info-profile">
             <div className="wrapper-avatar">
-              <picture>
+              {getAvatarAccount() ? (
                 <img className="avatar-img" src={getAvatarAccount()} alt="" />
-              </picture>
+              ) : (
+                <StyledAvatar className="avatar-img" icon={user?.avatar}>
+                  {transformShortName(user?.name)}
+                </StyledAvatar>
+              )}
               {selectedAccountId == user.id && (
                 <div className="btn-upload-avatar" onClick={() => uploadModal(true)}>
                   <CameraOutlined />

@@ -9,6 +9,7 @@ const StyledAvatar = styled(Avatar)`
   display: flex !important;
   align-items: center;
   border-radius: 50%;
+  cursor: pointer;
   .ant-avatar-string {
     position: absolute;
     left: 50%;

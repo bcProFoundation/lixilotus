@@ -108,6 +108,7 @@ const CardUser = styled.div`
       border-radius: 8px;
       width: 45px;
       height: 45px;
+      cursor: pointer;
     }
   }
 `;
@@ -232,9 +233,15 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
               normalInfor
             ) : (
               <div className="card-container">
-                <div className="page-bar" onClick={() => history.push(`/page/${page.id}`)}>
-                  <img className="image-page" src={page?.avatar ? page?.avatar : '/images/default-avatar.jpg'} />
-                  <AvatarUser icon={imgUrl} name={name} isMarginRight={true} />
+                <div className="page-bar">
+                  <img
+                    className="image-page"
+                    src={page?.avatar ? page?.avatar : '/images/default-avatar.jpg'}
+                    onClick={() => history.push(`/page/${page.id}`)}
+                  />
+                  <div onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+                    <AvatarUser icon={imgUrl} name={name} isMarginRight={true} />
+                  </div>
                 </div>
                 <div className="card-info">
                   <span className="name" onClick={() => history.push(`/page/${page.id}`)}>
@@ -272,9 +279,15 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
               normalInfor
             ) : (
               <div className="card-container">
-                <div className="page-bar" onClick={() => history.push(`/token/${token?.tokenId}`)}>
-                  <img className="image-page" src={`${currency.tokenIconsUrl}/64/${token.tokenId}.png`} />
-                  <AvatarUser name={name} isMarginRight={true} />
+                <div className="page-bar">
+                  <img
+                    className="image-page"
+                    src={`${currency.tokenIconsUrl}/64/${token.tokenId}.png`}
+                    onClick={() => history.push(`/token/${token?.tokenId}`)}
+                  />
+                  <div onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+                    <AvatarUser name={name} isMarginRight={true} />
+                  </div>
                 </div>
                 <div className="card-info">
                   <span className="name" onClick={() => history.push(`/token/${token?.tokenId}`)}>
