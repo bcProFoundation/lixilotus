@@ -869,6 +869,7 @@ export type PostTranslation = {
 
 export type Query = {
   __typename?: 'Query';
+  allClosedPageMessageSession: PageMessageSessionConnection;
   allCommentsToPostId: CommentConnection;
   allFollowersByFollowing: AccountConnection;
   allFollowingsByFollower: AccountConnection;
@@ -920,6 +921,18 @@ export type Query = {
   userHadMessageToPage: PageMessageSession;
   worship: Worship;
   worshipedPerson: WorshipedPerson;
+};
+
+export type QueryAllClosedPageMessageSessionArgs = {
+  accountId?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PageMessageSessionOrder>;
+  pageId?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryAllCommentsToPostIdArgs = {

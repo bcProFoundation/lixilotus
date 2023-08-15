@@ -1,8 +1,8 @@
 import { all, fork, takeLatest } from '@redux-saga/core/effects';
 import {
-  pageOwnerSubcribeToPageChannel,
   userSubcribeToAddressChannel,
-  userSubcribeToPageMessageSession
+  userSubcribeToPageMessageSession,
+  userSubcribeToMultiPageMessageSession
 } from './actions';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { callConfig } from '@context/shareContext';
@@ -13,10 +13,10 @@ function* userSubcribeToPageMessageSessionSaga(action: PayloadAction<string>) {
   socket.emit('subscribePageMessageSession', payload);
 }
 
-function* pageOwnerSubcribeToPageChannelSaga(action: PayloadAction<string>) {
+function* userSubcribeToMultiPageMessageSessionSaga(action: PayloadAction<string>) {
   const { payload } = action;
   const socket = callConfig.call.socketContext;
-  socket.emit('subscribePageChannel', payload);
+  socket.emit('subscribeMultiPageMessageSession', payload);
 }
 
 function* userSubcribeToAddressChannelSaga(action: PayloadAction<string>) {
@@ -29,8 +29,8 @@ function* watchUserSubcribeToPageMessageSession() {
   yield takeLatest(userSubcribeToPageMessageSession.type, userSubcribeToPageMessageSessionSaga);
 }
 
-function* watchPageOwnerSubcribeToPageChannel() {
-  yield takeLatest(pageOwnerSubcribeToPageChannel.type, pageOwnerSubcribeToPageChannelSaga);
+function* watchUserSubcribeToMultiPageMessageSessionSaga() {
+  yield takeLatest(userSubcribeToMultiPageMessageSession.type, userSubcribeToMultiPageMessageSessionSaga);
 }
 
 function* watchUserSubcribeToAddressChannel() {
@@ -43,7 +43,7 @@ export default function* messageSaga() {
   } else {
     yield all([
       fork(watchUserSubcribeToPageMessageSession),
-      fork(watchPageOwnerSubcribeToPageChannel),
+      fork(watchUserSubcribeToMultiPageMessageSessionSaga),
       fork(watchUserSubcribeToAddressChannel)
     ]);
   }

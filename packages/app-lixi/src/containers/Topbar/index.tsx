@@ -585,7 +585,13 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           active={currentPathName === '/page-message'}
           direction="horizontal"
           key="support"
-          onClickItem={() => handleIconClick('/page-message')}
+          onClickItem={() => {
+            if (authorization.authorized) {
+              handleIconClick('/page-message');
+            } else {
+              askAuthorization();
+            }
+          }}
         />
         <ItemAccess
           icon={'/images/ico-page.svg'}
@@ -724,7 +730,13 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       <SpaceStyled direction="horizontal" size={15}>
         <div className="action-bar-header">
           <ButtonTopbar
-            onClick={() => handleIconClick('/page-message')}
+            onClick={() => {
+              if (authorization.authorized) {
+                handleIconClick('/page-message');
+              } else {
+                askAuthorization();
+              }
+            }}
             className="btn-topbar home-btn animate__animated animate__heartBeat"
             type="text"
             icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-message-heart-circle.svg'} />}

@@ -387,6 +387,72 @@ export class PageMessageSessionResolver {
     return result;
   }
 
+  @Query(() => PageMessageSessionConnection)
+  async allClosedPageMessageSession(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'accountId', type: () => Number, nullable: true }) accountId: number,
+    @Args({ name: 'pageId', type: () => String, nullable: true }) pageId: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PageMessageSessionOrder,
+      nullable: true
+    })
+    orderBy: PageMessageSessionOrder
+  ) {
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.pageMessageSession.findMany({
+          include: {
+            page: true,
+            account: true,
+            lixi: {
+              select: {
+                id: true,
+                name: true,
+                amount: true,
+                expiryAt: true,
+                activationAt: true,
+                status: true
+              }
+            }
+          },
+          where: {
+            AND: [
+              {
+                pageId: pageId
+              },
+              {
+                accountId: accountId
+              },
+              {
+                status: PageMessageSessionStatus.CLOSE
+              }
+            ]
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.pageMessageSession.count({
+          where: {
+            AND: [
+              {
+                pageId: pageId
+              },
+              {
+                accountId: accountId
+              },
+              {
+                status: PageMessageSessionStatus.CLOSE
+              }
+            ]
+          }
+        }),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
   //This is for user only
   @Query(() => PageMessageSession)
   async userHadMessageToPage(
@@ -458,7 +524,14 @@ export class PageMessageSessionResolver {
       }
     });
 
-    if (pendingOrOpenPageMessageSession.length === 0 && lixi !== null) {
+    const page = await this.prisma.page.findUnique({
+      where: {
+        id: pageId
+      }
+    });
+
+    //if there is no pending or open message session && has lixi && not the owner , create new one
+    if (pendingOrOpenPageMessageSession.length === 0 && lixi !== null && page?.pageAccountId !== accountId) {
       let claimCode = '';
       if (accountSecret && !_.isNil(accountSecret)) {
         const claimPart = await aesGcmDecrypt(lixi.encryptedClaimCode, accountSecret);
@@ -493,7 +566,9 @@ export class PageMessageSessionResolver {
         }
       });
 
+      //publish to page account and user account
       this.notificationGateway.publishAddressChannel(result.page.pageAccount.address, result);
+      this.notificationGateway.publishAddressChannel(result.account.address, result);
 
       return result;
     }

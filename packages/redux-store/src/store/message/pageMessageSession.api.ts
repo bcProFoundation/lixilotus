@@ -118,28 +118,25 @@ const enhancedApi = api.enhanceEndpoints({
         return { queryArgs };
       }
     },
+    ClosedPageMessageSession: {
+      providesTags: (result, error, arg) => ['PageMessageSession'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { accountId, pageId, ...otherArgs } = queryArgs;
+          return { accountId, pageId };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allClosedPageMessageSession.edges.push(...responseData.allClosedPageMessageSession.edges);
+        currentCacheData.allClosedPageMessageSession.pageInfo = responseData.allClosedPageMessageSession.pageInfo;
+        currentCacheData.allClosedPageMessageSession.totalCount = responseData.allClosedPageMessageSession.totalCount;
+      }
+    },
 
     ClosePageMessageSession: {},
     OpenPageMessageSession: {},
-    CreatePageMessageSession: {
-      async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          const { account, id } = data.createPageMessageSession;
-          const patchResult = dispatch(
-            api.util.updateQueryData('PageMessageSessionByAccountId', { id: parseInt(account.id) }, draft => {
-              draft.allPageMessageSessionByAccountId.edges.unshift({
-                cursor: id,
-                node: {
-                  ...data.createPageMessageSession
-                }
-              });
-              draft.allPageMessageSessionByAccountId.totalCount = draft.allPageMessageSessionByAccountId.totalCount + 1;
-            })
-          );
-        } catch {}
-      }
-    }
+    CreatePageMessageSession: {}
   }
 });
 
@@ -159,6 +156,8 @@ export const {
   useOpenPageMessageSessionByAccountIdQuery,
   usePendingPageMessageSessionByAccountIdQuery,
   usePageMessageSessionQuery,
+  useLazyClosedPageMessageSessionQuery,
+  useClosedPageMessageSessionQuery,
   useUserHadMessageToPageQuery,
   useClosePageMessageSessionMutation,
   useOpenPageMessageSessionMutation,

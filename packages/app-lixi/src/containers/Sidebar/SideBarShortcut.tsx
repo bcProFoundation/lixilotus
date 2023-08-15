@@ -530,6 +530,7 @@ export const transformCreatedAt = date => {
   } else {
     dateFormated = moment(date).format('DD/MM');
   }
+
   return dateFormated;
 };
 

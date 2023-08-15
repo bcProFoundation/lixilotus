@@ -42,14 +42,16 @@ export const connectWebSocket = (): Promise<Socket> => {
 
       socket.on('disconnect', () => {
         console.log('WebSocket disconnected');
-        if (reconnectAttempts < maxReconnectAttempts) {
-          reconnectAttempts++;
-          console.log('Attempting to reconnect...');
-          setTimeout(setupSocket, reconnectDelay);
-        } else {
-          console.log('WebSocket connection failed after maximum reconnect attempts.');
-          reject('WebSocket connection failed after maximum reconnect attempts.');
-        }
+        /* I dont know if we need to reconnect here?? */
+
+        // if (reconnectAttempts < maxReconnectAttempts) {
+        //   reconnectAttempts++;
+        //   console.log('Attempting to reconnect...');
+        //   setTimeout(setupSocket, reconnectDelay);
+        // } else {
+        //   console.log('WebSocket connection failed after maximum reconnect attempts.');
+        //   reject('WebSocket connection failed after maximum reconnect attempts.');
+        // }
       });
     };
 

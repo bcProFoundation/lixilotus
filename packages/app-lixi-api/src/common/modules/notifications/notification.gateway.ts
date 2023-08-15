@@ -16,6 +16,8 @@ import {
   WsResponse
 } from '@nestjs/websockets';
 import io, { Server, Socket } from 'socket.io';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { PageMessageSessionStatus } from '@bcpros/lixi-prisma';
 
 // https://build.diligent.com/message-queues-in-database-transactions-f830718f4f12
 // https://cloudificationzone.com/2021/08/13/notification-system-design/
@@ -29,7 +31,7 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
   private logger: Logger = new Logger('NotificationGateway');
 
-  constructor(@InjectRedis() private readonly redis: Redis) {}
+  constructor(@InjectRedis() private readonly redis: Redis, private prisma: PrismaService) {}
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
@@ -119,6 +121,55 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
       return {
         event: 'subscribePageMessageSession',
+        data: client.id
+      };
+    } else {
+      return {
+        event: '',
+        data: client.id
+      };
+    }
+  }
+
+  @SubscribeMessage('subscribeMultiPageMessageSession')
+  async handleSubscriptionToMultiPageMessageSession(
+    @MessageBody() accountId: number,
+    @ConnectedSocket() client: Socket
+  ): Promise<WsResponse<string>> {
+    const pageMessageSessionIds = await this.prisma.pageMessageSession.findMany({
+      where: {
+        AND: [
+          {
+            OR: [
+              {
+                page: {
+                  pageAccountId: accountId
+                }
+              },
+              {
+                accountId: accountId
+              }
+            ]
+          },
+          {
+            OR: [
+              {
+                status: PageMessageSessionStatus.OPEN
+              },
+              {
+                status: PageMessageSessionStatus.PENDING
+              }
+            ]
+          }
+        ]
+      }
+    });
+
+    if (pageMessageSessionIds.length > 0) {
+      client.join(pageMessageSessionIds.map(pageMessageSession => pageMessageSession.id));
+
+      return {
+        event: 'subscribeMultiPageMessageSession',
         data: client.id
       };
     } else {

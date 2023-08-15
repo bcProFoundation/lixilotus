@@ -309,6 +309,64 @@ export type PendingPageMessageSessionByAccountIdQuery = {
   };
 };
 
+export type ClosedPageMessageSessionQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  accountId?: Types.InputMaybe<Types.Scalars['Int']>;
+  pageId?: Types.InputMaybe<Types.Scalars['String']>;
+  orderBy?: Types.InputMaybe<Types.PageMessageSessionOrder>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type ClosedPageMessageSessionQuery = {
+  __typename?: 'Query';
+  allClosedPageMessageSession: {
+    __typename?: 'PageMessageSessionConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'PageMessageSessionEdge';
+      cursor: string;
+      node: {
+        __typename?: 'PageMessageSession';
+        id: string;
+        latestMessage?: string | null;
+        lixiClaimCode?: string | null;
+        sessionOpenedAt?: any | null;
+        sessionClosedAt?: any | null;
+        status: Types.PageMessageSessionStatus;
+        createdAt?: any | null;
+        updatedAt?: any | null;
+        page: {
+          __typename?: 'Page';
+          id: string;
+          name: string;
+          avatar?: string | null;
+          pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        };
+        account: { __typename?: 'Account'; id: string; name: string; address: string; avatar?: string | null };
+        lixi?: {
+          __typename?: 'LixiModel';
+          id: string;
+          name: string;
+          amount: string;
+          expiryAt?: any | null;
+          activationAt?: any | null;
+          status: string;
+        } | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
 export type PageMessageSessionByAccountIdQueryVariables = Types.Exact<{
   after?: Types.InputMaybe<Types.Scalars['String']>;
   before?: Types.InputMaybe<Types.Scalars['String']>;
@@ -654,6 +712,32 @@ export const PendingPageMessageSessionByAccountIdDocument = `
 }
     ${PageMessageSessionFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
+export const ClosedPageMessageSessionDocument = `
+    query ClosedPageMessageSession($after: String, $before: String, $first: Int = 20, $last: Int, $accountId: Int, $pageId: String, $orderBy: PageMessageSessionOrder, $skip: Int) {
+  allClosedPageMessageSession(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    accountId: $accountId
+    pageId: $pageId
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PageMessageSessionFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${PageMessageSessionFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
 export const PageMessageSessionByAccountIdDocument = `
     query PageMessageSessionByAccountId($after: String, $before: String, $first: Int = 20, $last: Int, $id: Int, $orderBy: PageMessageSessionOrder, $skip: Int) {
   allPageMessageSessionByAccountId(
@@ -737,6 +821,11 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: variables => ({ document: PendingPageMessageSessionByAccountIdDocument, variables })
     }),
+    ClosedPageMessageSession: build.query<ClosedPageMessageSessionQuery, ClosedPageMessageSessionQueryVariables | void>(
+      {
+        query: variables => ({ document: ClosedPageMessageSessionDocument, variables })
+      }
+    ),
     PageMessageSessionByAccountId: build.query<
       PageMessageSessionByAccountIdQuery,
       PageMessageSessionByAccountIdQueryVariables | void
@@ -773,6 +862,8 @@ export const {
   useLazyOpenPageMessageSessionByAccountIdQuery,
   usePendingPageMessageSessionByAccountIdQuery,
   useLazyPendingPageMessageSessionByAccountIdQuery,
+  useClosedPageMessageSessionQuery,
+  useLazyClosedPageMessageSessionQuery,
   usePageMessageSessionByAccountIdQuery,
   useLazyPageMessageSessionByAccountIdQuery,
   useUserHadMessageToPageQuery,

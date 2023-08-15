@@ -163,6 +163,39 @@ query PendingPageMessageSessionByAccountId(
   }
 }
 
+query ClosedPageMessageSession(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $accountId: Int
+  $pageId: String
+  $orderBy: PageMessageSessionOrder
+  $skip: Int
+) {
+  allClosedPageMessageSession(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    accountId: $accountId
+    pageId: $pageId
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PageMessageSessionFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
 query PageMessageSessionByAccountId(
   $after: String
   $before: String

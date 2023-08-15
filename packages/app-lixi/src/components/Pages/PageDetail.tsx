@@ -60,10 +60,6 @@ import styled from 'styled-components';
 import { PageQuery } from '@store/page/pages.generated';
 import { useRepostMutation } from '@store/post/posts.api';
 import _ from 'lodash';
-import PageMessage from '@components/PageMessage/PageMessageForOwner';
-import { pageOwnerSubcribeToPageChannel, startChannel, stopChannel } from '@store/message/actions';
-import PageMessageForOwner from '@components/PageMessage/PageMessageForOwner';
-import PageMessageForUser from '@components/PageMessage/PageMessageForUser';
 import { getSelectedPostId } from '@store/post/selectors';
 import { setSelectedPost } from '@store/post/actions';
 import {
@@ -504,20 +500,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
       );
     }
   }, [pageAvatarUpload, pageCoverUpload]);
-
-  useEffect(() => {
-    dispatch(startChannel());
-
-    return () => {
-      stopChannel();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (page.pageAccount.address === selectedAccount.address) {
-      dispatch(pageOwnerSubcribeToPageChannel(page.id));
-    }
-  }, []);
 
   useEffect(() => {
     if (router.query.q) {
@@ -1187,13 +1169,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             {/* TODO: implement in the future */}
             {/* <Tabs.TabPane tab="Friend" key="friend"></Tabs.TabPane>
             <Tabs.TabPane tab="Picture" key="picture"></Tabs.TabPane> */}
-            {/* <Tabs.TabPane tab="Message" key="message">
-              {page.pageAccount.address === selectedAccount.address ? (
-                <PageMessageForOwner page={page} />
-              ) : (
-                <PageMessageForUser page={page} account={selectedAccount} />
-              )}
-            </Tabs.TabPane> */}
           </StyledMenu>
         </ProfileContentContainer>
       </StyledContainerProfileDetail>

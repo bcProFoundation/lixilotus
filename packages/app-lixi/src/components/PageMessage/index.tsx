@@ -6,7 +6,6 @@ import { getAllAccounts, getSelectedAccount } from '@store/account';
 import { Account, ClosePageMessageSessionInput, CreateClaimDto } from '@bcpros/lixi-models';
 import _ from 'lodash';
 import { usePagesByUserIdQuery } from '@store/page/pages.api';
-import PageMessageForUser from './PageMessageForUser';
 import {
   startChannel,
   stopChannel,
@@ -266,7 +265,7 @@ const LixiContainer = styled.div`
   }
 `;
 
-const StyledChatHeader = styled.p`
+const StyledChatHeader = styled.div`
   width: 100%;
   margin: 0;
   padding: 1rem;
@@ -376,9 +375,9 @@ export const PageGroupItem = ({
   };
 
   return (
-    <>
+    <React.Fragment>
       {messages &&
-        messages.map((item, index) => {
+        messages.map((item: PageMessageSessionItem, index) => {
           if (index == 0) {
             return (
               <SpaceShorcutItem
@@ -399,7 +398,9 @@ export const PageGroupItem = ({
                         {item?.latestMessage ? (
                           <p className="content">{item?.latestMessage}</p>
                         ) : (
-                          <p className="content">Give you {Math.round(item?.lixi?.amount)} XPI for messaging</p>
+                          <p className="content">
+                            Give you {Math.round(parseFloat(item?.lixi?.amount))} XPI for messaging
+                          </p>
                         )}
                       </div>
                       <div className="time-score" onClick={() => setCollapse(!collapse)}>
@@ -442,7 +443,7 @@ export const PageGroupItem = ({
                         {item?.latestMessage ? (
                           <p className="content">{item?.latestMessage}</p>
                         ) : (
-                          <p className="content">Give {Math.round(item?.lixi?.amount)} XPI for messaging</p>
+                          <p className="content">Give {Math.round(parseFloat(item?.lixi?.amount))} XPI for messaging</p>
                         )}
                       </div>
                       <div className="time-score" onClick={() => onClickIcon(item)}>
@@ -480,7 +481,7 @@ export const PageGroupItem = ({
                   {item?.latestMessage ? (
                     <p className="content">{item?.latestMessage}</p>
                   ) : (
-                    <p className="content">Give you {Math.round(item?.lixi?.amount)} XPI for messaging</p>
+                    <p className="content">Give you {Math.round(parseFloat(item?.lixi?.amount))} XPI for messaging</p>
                   )}
                 </div>
                 <div className="time-score">
@@ -493,21 +494,19 @@ export const PageGroupItem = ({
             </SpaceShorcutItem>
           );
         })}
-    </>
+    </React.Fragment>
   );
 };
 
 const PageMessage = () => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const dispatch = useAppDispatch();
-  const [currentPageMessageSessionId, setCurrentPageMessageSessionId] = useState<string | null>(null);
   const [isPageOwner, setIsPageOwner] = useState<boolean>(false);
   const currentPageMessageSession = useAppSelector(getCurrentPageMessageSession);
   const { control, getValues, resetField, setFocus } = useForm();
   const [open, setOpen] = useState(false);
   const Wallet = React.useContext(WalletContext);
   const { XPI } = Wallet;
-  const socket = useSocket();
   const [isMobile, setIsMobile] = useState(false);
   const { width } = useWindowDimensions();
 
@@ -563,28 +562,11 @@ const PageMessage = () => {
     });
   }, []);
 
-  const items: MenuProps['items'] = [
-    currentPageMessageSession?.status === PageMessageSessionStatus.Pending && {
-      key: 'openSession',
-      label: (
-        <p style={{ margin: '0px' }} onClick={() => openSession()}>
-          Open session
-        </p>
-      )
-    },
-    (currentPageMessageSession?.status === PageMessageSessionStatus.Pending ||
-      currentPageMessageSession?.status === PageMessageSessionStatus.Open) && {
-      key: 'closeSession',
-      label: (
-        <p style={{ margin: '0px' }} onClick={() => closeSession()}>
-          Close session
-        </p>
-      )
-    }
-  ];
-
   useEffect(() => {
-    if (currentPageMessageSession && currentPageMessageSession.page.pageAccount.address === selectedAccount.address) {
+    if (
+      currentPageMessageSession &&
+      currentPageMessageSession?.page?.pageAccount?.address === selectedAccount.address
+    ) {
       setIsPageOwner(true);
     }
   }, [currentPageMessageSession]);
@@ -593,7 +575,7 @@ const PageMessage = () => {
     useInfinitePageMessageSessionByAccountId(
       {
         first: 10,
-        id: selectedAccount.id
+        id: selectedAccount?.id
       },
       false
     );
@@ -605,17 +587,8 @@ const PageMessage = () => {
     }
   };
 
-  // useEffect(() => {
-  //   dispatch(startChannel());
-
-  //   return () => {
-  //     stopChannel();
-  //   };
-  // }, []);
-
   const onClickMessage = (pageMessageSession: PageMessageSessionItem, pageMessageSessionId: string) => {
     dispatch(setPageMessageSession(pageMessageSession));
-    setCurrentPageMessageSessionId(pageMessageSessionId);
   };
 
   const groupPageChat = useMemo(() => {
@@ -623,7 +596,7 @@ const PageMessage = () => {
     cloneChats = _.orderBy(cloneChats, ['updatedAt'], ['desc']);
     let groupPageChats = _.values(_.groupBy(cloneChats, 'page.id'));
     return groupPageChats;
-  }, [data, socket]);
+  }, [data]);
 
   const {
     data: messageData,
@@ -632,7 +605,7 @@ const PageMessage = () => {
     isFetching: messageIsFetching,
     isFetchingNext: messageIsFetchingNext
   } = useInfiniteMessageByPageMessageSessionId({
-    id: currentPageMessageSessionId,
+    id: currentPageMessageSession?.id,
     orderBy: {
       direction: OrderDirection.Desc,
       field: MessageOrderField.UpdatedAt
@@ -655,7 +628,7 @@ const PageMessage = () => {
     const input: CreateMessageInput = {
       authorId: selectedAccount.id,
       body: trimValue,
-      pageMessageSessionId: currentPageMessageSessionId,
+      pageMessageSessionId: currentPageMessageSession?.id,
       isPageOwner: false
     };
 
@@ -693,7 +666,7 @@ const PageMessage = () => {
           );
 
           const input: OpenPageMessageSessionInput = {
-            pageMessageSessionId: currentPageMessageSessionId
+            pageMessageSessionId: currentPageMessageSession?.id
           };
           await openPageMessageSessionTrigger({ input }).unwrap();
         });
@@ -703,7 +676,7 @@ const PageMessage = () => {
 
   const closeSession = async () => {
     const input: ClosePageMessageSessionInput = {
-      pageMessageSessionId: currentPageMessageSessionId
+      pageMessageSessionId: currentPageMessageSession?.id
     };
     await closePageMessageSessionTrigger({ input }).unwrap();
   };
@@ -711,21 +684,7 @@ const PageMessage = () => {
   useEffect(() => {
     resetField('message');
     setFocus('message');
-  }, [currentPageMessageSessionId]);
-
-  useEffect(() => {
-    if (data.length > 0 && socket) {
-      data.map(item => {
-        dispatch(userSubcribeToPageMessageSession(item.id));
-      });
-    }
-  }, [data, socket]);
-
-  useEffect(() => {
-    if (socket) {
-      dispatch(userSubcribeToAddressChannel(selectedAccount.address));
-    }
-  }, [socket]);
+  }, [currentPageMessageSession?.id]);
 
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
@@ -733,7 +692,6 @@ const PageMessage = () => {
 
   const backToChat = () => {
     dispatch(setPageMessageSession(null));
-    setCurrentPageMessageSessionId(null);
   };
 
   return (
@@ -758,12 +716,11 @@ const PageMessage = () => {
               {groupPageChat &&
                 groupPageChat.map((chat, index) => {
                   return (
-                    <div className="page-info">
+                    <div className="page-info" key={index}>
                       <PageGroupItem
-                        key={index}
                         messages={chat}
+                        currentSessionId={currentPageMessageSession?.id}
                         accountAddress={selectedAccount?.address}
-                        currentSessionId={currentPageMessageSessionId}
                         onClickIcon={session => onClickMessage(session, session.id)}
                       />
                     </div>
@@ -868,7 +825,7 @@ const PageMessage = () => {
           }}
         >
           {currentPageMessageSession ? (
-            <>
+            <React.Fragment>
               {currentPageMessageSession?.status !== PageMessageSessionStatus.Pending ? (
                 messageData.length > 0 && (
                   <StyledInfiniteScroll
@@ -910,10 +867,10 @@ const PageMessage = () => {
                       <p className="sender-created-at">{transformCreatedAt(currentPageMessageSession?.createdAt)}</p>
                       <p className="sender-message-amount">{`Give you ${currentPageMessageSession?.lixi.amount} XPI for messaging`}</p>
                       <div className="group-action-session">
-                        <Button type="primary" className="outline-btn" onClick={openSession}>
+                        <Button type="primary" className="outline-btn" onClick={() => openSession()}>
                           Accept
                         </Button>
-                        <Button type="primary" className="outline-btn" onClick={closeSession}>
+                        <Button type="primary" className="outline-btn" onClick={() => closeSession()}>
                           Deny
                         </Button>
                       </div>
@@ -931,11 +888,9 @@ const PageMessage = () => {
                   )}
                 </LixiContainer>
               )}
-            </>
+            </React.Fragment>
           ) : (
-            <>
-              <span className="blank-chat">Select a chat to start messaging</span>
-            </>
+            <span className="blank-chat">Select a chat to start messaging</span>
           )}
         </StyledChatbox>
         {currentPageMessageSession && (

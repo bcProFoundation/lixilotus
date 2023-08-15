@@ -107,6 +107,8 @@ export class MessageResolver {
     });
 
     if (pageMessageSession && pageMessageSession.status === PageMessageSessionStatus.OPEN) {
+      const updatedAt = new Date();
+
       const message = await this.prisma.$transaction(async prisma => {
         const result = await prisma.message.create({
           data: {
@@ -136,7 +138,7 @@ export class MessageResolver {
             id: pageMessageSession.id
           },
           data: {
-            updatedAt: new Date(),
+            updatedAt: updatedAt,
             latestMessage: body
           }
         });
@@ -146,7 +148,8 @@ export class MessageResolver {
 
       const result = {
         ...message,
-        pageMessageSessionId: pageMessageSessionId
+        pageMessageSessionId: pageMessageSessionId,
+        updatedAt: updatedAt
       };
 
       this.notificationGateway.publishMessage(pageMessageSessionId!, result);

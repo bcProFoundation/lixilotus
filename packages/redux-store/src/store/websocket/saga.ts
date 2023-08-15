@@ -97,7 +97,6 @@ function* connectToChannelsSaga() {
     }
 
     if (sessionAction) {
-      console.log('🚀 ~ file: saga.ts:172 ~ function*listenServerSaga ~ sessionAction:', sessionAction);
       yield receiveSessionAction(sessionAction);
     }
 
@@ -109,7 +108,7 @@ function* connectToChannelsSaga() {
 }
 
 function* receiveLiveMessage(payload: any) {
-  const { pageMessageSessionId, body } = payload;
+  const { pageMessageSessionId, body, updatedAt } = payload;
   const account: AccountDto = yield select(getSelectedAccount);
 
   try {
@@ -138,7 +137,8 @@ function* receiveLiveMessage(payload: any) {
             cursor: object.cursor,
             node: {
               ...object.node,
-              latestMessage: body
+              latestMessage: body,
+              updatedAt: updatedAt
             }
           });
         }
@@ -150,9 +150,11 @@ function* receiveLiveMessage(payload: any) {
 }
 
 function* receiveNewMessage(payload: PageMessageSession) {
-  console.log(payload);
   const { id, page } = payload;
   const account: AccountDto = yield select(getSelectedAccount);
+  // subcribe to new message session
+  const socket = callConfig.call.socketContext;
+  socket.emit('subscribePageMessageSession', id);
 
   try {
     yield putAction(
@@ -193,7 +195,7 @@ function* receiveSessionAction(action: SessionAction) {
             draft.allPageMessageSessionByAccountId.edges.unshift({
               cursor: object.cursor,
               node: {
-                ...object.node
+                ...payload
               }
             });
           })

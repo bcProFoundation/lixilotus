@@ -8,5 +8,7 @@ export const serverOn = createAction('message/serverOn');
 export const serverOff = createAction('message/serverOff');
 export const receiveLiveMessage = createAction('message/receiveLiveMessage');
 export const userSubcribeToPageMessageSession = createAction<string>('message/userSubcribeToPageMessageSession');
-export const pageOwnerSubcribeToPageChannel = createAction<string>('message/pageOwnerSubcribeToPageChannel');
+export const userSubcribeToMultiPageMessageSession = createAction<number>(
+  'message/userSubcribeToMultiPageMessageSession'
+);
 export const userSubcribeToAddressChannel = createAction<string>('message/userSubcribeToAddressChannel');
