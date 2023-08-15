@@ -934,19 +934,31 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
               <div>
                 {/* Chat */}
                 {selectedAccountId != pageDetailData?.pageAccountId && _.isNil(pageMessageSessionData) && (
-                  <Button onClick={() => openPageMessageLixiModal()}>Chat with me</Button>
+                  <Button type="primary" className="outline-btn" onClick={() => openPageMessageLixiModal()}>
+                    {intl.get('messenger.chatPage')}
+                  </Button>
                 )}
                 {selectedAccountId != pageDetailData?.pageAccountId && pageMessageSessionData && (
                   <React.Fragment>
                     {
                       {
-                        [PageMessageSessionStatus.Open]: <Button>Open message</Button>,
-                        [PageMessageSessionStatus.Pending]: <Button disabled>Pending Message</Button>
+                        [PageMessageSessionStatus.Open]: (
+                          <Button type="primary" className="outline-btn">
+                            {intl.get('messenger.openMessage')}
+                          </Button>
+                        ),
+                        [PageMessageSessionStatus.Pending]: (
+                          <Button type="primary" className="outline-btn" disabled>
+                            {intl.get('messenger.pendingMessage')}
+                          </Button>
+                        )
                       }[pageMessageSessionData.userHadMessageToPage.status]
                     }
                   </React.Fragment>
                 )}
                 <Button
+                  type="primary"
+                  className="outline-btn"
                   style={{ marginLeft: '0.5rem' }}
                   onClick={checkIsFollowed ? handleUnfollowPage : handleFollowPage}
                 >

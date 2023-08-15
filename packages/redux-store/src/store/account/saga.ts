@@ -397,16 +397,22 @@ function* renameAccountSuccessSaga(action: PayloadAction<Account>) {
   // Handle not show modal when change name auto generator
   yield put(hideLoading(renameAccount.type));
   if (account.address.includes(account.name)) {
-    Modal.success({
-      content: intl.get('account.accountRenamedSuccess', { accountName: account.name })
-    });
+    yield put(
+      showToast('success', {
+        message: intl.get('toast.success'),
+        description: intl.get('account.accountRenamedSuccess')
+      })
+    );
   }
 }
 
 function* renameAccountFailureSaga(action: PayloadAction<string>) {
-  Modal.error({
-    content: intl.get('account.renameFailed')
-  });
+  yield put(
+    showToast('error', {
+      message: intl.get('toast.error'),
+      description: intl.get('account.renameFailed')
+    })
+  );
   yield put(hideLoading(renameAccount.type));
 }
 
@@ -432,15 +438,21 @@ function* changeAccountLocaleSaga(action: PayloadAction<ChangeAccountLocaleComma
 function* changeAccountLocaleSuccessSaga(action: PayloadAction<Account>) {
   const account = action.payload;
   yield put(hideLoading(changeAccountLocale.type));
-  Modal.success({
-    content: intl.get('account.accountChangeLocaleSuccess')
-  });
+  yield put(
+    showToast('success', {
+      message: intl.get('toast.success'),
+      description: intl.get('account.accountChangeLocaleSuccess')
+    })
+  );
 }
 
 function* changeAccountLocaleFailureSaga(action: PayloadAction<string>) {
-  Modal.error({
-    content: intl.get('account.unableToChangeLocaleAccount')
-  });
+  yield put(
+    showToast('error', {
+      message: intl.get('toast.error'),
+      description: intl.get('account.unableToChangeLocaleAccount')
+    })
+  );
   yield put(hideLoading(changeAccountLocale.type));
 }
 
@@ -462,15 +474,21 @@ function* deleteAccountSuccessSaga(action: PayloadAction<number>) {
 
   // unsubscribe webpush subscription
 
-  Modal.success({
-    content: intl.get('account.accountDeleteSuccess')
-  });
+  yield put(
+    showToast('success', {
+      message: intl.get('toast.success'),
+      description: intl.get('account.accountDeleteSuccess')
+    })
+  );
 }
 
 function* deleteAccountFailureSaga(action: PayloadAction<string>) {
-  Modal.error({
-    content: intl.get('account.deleteFailed')
-  });
+  yield put(
+    showToast('error', {
+      message: intl.get('toast.error'),
+      description: intl.get('account.deleteFailed')
+    })
+  );
   yield put(hideLoading(deleteAccount.type));
 }
 

@@ -718,6 +718,14 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       </div>
       <SpaceStyled direction="horizontal" size={15}>
         <div className="action-bar-header">
+          {!isMobile && (
+            <ButtonTopbar
+              onClick={() => handleIconClick('/')}
+              className="btn-topbar"
+              type="text"
+              icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-home-topbar.svg'} />}
+            />
+          )}
           <ButtonTopbar
             onClick={() => {
               if (authorization.authorized) {
@@ -726,9 +734,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
                 askAuthorization();
               }
             }}
-            className="btn-topbar home-btn animate__animated animate__heartBeat"
+            className="btn-topbar home-btn"
             type="text"
-            icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-message-heart-circle.svg'} />}
+            icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-message-heart-circle-topbar.svg'} />}
           />
           <Popover
             overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} filter-btn`}

@@ -679,5 +679,24 @@ export default {
   'guide.descThree': '3. Select',
 
   /* 23. Messenger */
-  'messenger.chat': 'Chat with '
+  'messenger.welcome': 'Welcome to Lixi Chat',
+  'messenger.selectChat': 'Select a chat to start messaging',
+  'messenger.chat': 'Chat with ',
+  'messenger.blankTitle': 'Create a new chat',
+  'messenger.blankBody': 'Give some XPI to page you like',
+  'messenger.accept': 'Accept',
+  'messenger.deny': 'Deny',
+  'messenger.closeSession': 'Close session',
+  'messenger.acceptToChat': 'Accept to chat...',
+  'messenger.sessionClose': 'Session is close',
+  'messenger.youAccepted': 'You accepted lixi from',
+  'messenger.acceptedYourLixi': 'accepted your lixi',
+  'messenger.giveYou': 'Give you',
+  'messenger.forMessaging': 'for messaging.',
+  'messenger.pending': 'Pending',
+  'messenger.open': 'Open',
+  'messenger.total': 'Total:',
+  'messenger.pendingMessage': 'Pending message',
+  'messenger.openMessage': 'Open message',
+  'messenger.chatPage': 'Chat with me'
 };

@@ -28,6 +28,15 @@ const StyledModal = styled(Modal)`
     border-radius: 20px !important;
   }
 
+  .ant-descriptions-row {
+    border-bottom: 0 !important;
+    .ant-descriptions-item-content {
+      input {
+        border-color: var(--border-color-dark-base);
+      }
+    }
+  }
+
   .ant-descriptions-bordered .ant-descriptions-item-label,
   .ant-descriptions-bordered .ant-descriptions-item-content {
     padding: 0px 24px;

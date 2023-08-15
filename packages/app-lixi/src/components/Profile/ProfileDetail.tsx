@@ -705,15 +705,30 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
           </div>
           {selectedAccountId == user.id && (
             <div className="description-profile">
-              <Button onClick={() => openFollowModal(Follow.Followers)}>
+              <Button
+                type="primary"
+                className="outline-btn"
+                style={{ alignItems: 'center' }}
+                onClick={() => openFollowModal(Follow.Followers)}
+              >
                 {user.followersCount}
                 <br />
                 {intl.get('general.followers')}
               </Button>
-              <Button onClick={() => openFollowModal(Follow.Followees)}>
+              <Button
+                type="primary"
+                className="outline-btn"
+                style={{ alignItems: 'center' }}
+                onClick={() => openFollowModal(Follow.Followees)}
+              >
                 {user.followingsCount} <br /> {intl.get('general.followings')}
               </Button>
-              <Button onClick={() => openFollowModal(Follow.FollowingPages)}>
+              <Button
+                type="primary"
+                className="outline-btn"
+                style={{ alignItems: 'center' }}
+                onClick={() => openFollowModal(Follow.FollowingPages)}
+              >
                 {user.followingPagesCount} <br /> {intl.get('general.followingPages')}
               </Button>
             </div>

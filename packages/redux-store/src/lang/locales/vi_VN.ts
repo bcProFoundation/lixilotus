@@ -678,5 +678,24 @@ export default {
   'guide.descThree': '3. Chọn',
 
   /* 23. Messenger */
-  'messenger.chat': 'Nhắn tin với'
+  'messenger.welcome': 'Chào mừng đến Lixi Chat',
+  'messenger.selectChat': 'Chọn một cuộc trò chuyện để bắt đầu nhắn tin',
+  'messenger.chat': 'Nhắn tin với',
+  'messenger.blankTitle': 'Tạo một cuộc trò chuyện mới',
+  'messenger.blankBody': 'Tặng XPI cho trang bạn thích',
+  'messenger.accept': 'Chấp nhận',
+  'messenger.deny': 'Từ chối',
+  'messenger.closeSession': 'Kết thúc cuộc trò chuyện',
+  'messenger.acceptToChat': 'Chấp nhận để bắt đầu chat...',
+  'messenger.sessionClose': 'Cuộc trò chuyện đã kết thúc',
+  'messenger.youAccepted': 'Bạn đã nhận lixi từ',
+  'messenger.acceptedYourLixi': 'đã chấp nhận lixi của bạn',
+  'messenger.giveYou': 'Tặng cho bạn',
+  'messenger.forMessaging': 'cho cuộc trò chuyện.',
+  'messenger.pending': 'Đang chờ',
+  'messenger.open': 'Mở',
+  'messenger.total': 'Tổng:',
+  'messenger.pendingMessage': 'Đang chờ tin nhắn',
+  'messenger.openMessage': 'Mở tin nhắn',
+  'messenger.chatPage': 'Nhắn tin với tôi'
 };
