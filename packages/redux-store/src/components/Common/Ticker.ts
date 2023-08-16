@@ -7,6 +7,7 @@ export const currency = {
   coingeckoId: 'bitcoin-cash-abc-2',
   defaultFee: 2.01,
   dustSats: 550,
+  burnFee: 0.04,
   etokenSats: 546,
   cashDecimals: 6,
   blockExplorerUrl: 'https://explorer.givelotus.org',

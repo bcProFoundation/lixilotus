@@ -5,6 +5,7 @@ import BCHJS from '@bcpros/xpi-js';
 import { WalletPathAddressInfo } from '@store/wallet';
 import {
   encryptOpReturnMsg,
+  fromSatoshisToXpi,
   fromXpiToSatoshis,
   generateOpReturnScript,
   generateTxInput,
@@ -251,9 +252,18 @@ export default function useXPI() {
       );
       txBuilder = txOutputObj; // update the local txBuilder with the generated tx outputs
 
+      //calculate miner fee
+      let feeInput = new BigNumber(0);
+      let feeOutput = new BigNumber(0);
+      feeInput = txInputObj.totalInputUtxoValue;
+      txOutputObj.transaction.tx.outs.forEach(tx => {
+        feeOutput = feeOutput.plus(BigNumber(tx.value));
+      });
+      const minerFee = feeInput.minus(feeOutput);
+
       const rawTxHex: string = signAndBuildTx(XPI, txInputObj.inputUtxos, txBuilder, walletPaths);
 
-      return rawTxHex;
+      return { rawTxHex, minerFee };
     } catch (e) {
       throw new Error(`Insufficient funds`);
     }

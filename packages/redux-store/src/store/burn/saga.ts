@@ -44,6 +44,8 @@ import burnApi from './api';
 import { getBurnQueue, getFailQueue } from './selectors';
 import { api as worshipApi } from '@store/worship/worshipedPerson.api';
 import { api as templeApi } from '@store/temple/temple.api';
+import { currency } from '@components/Common/Ticker';
+import { fromSatoshisToXpi } from '@utils/cashMethods';
 
 function* createTxHexSaga(action: PayloadAction<BurnQueueCommand>) {
   const data = action.payload;
@@ -56,7 +58,7 @@ function* createTxHexSaga(action: PayloadAction<BurnQueueCommand>) {
   const tipToAddresses = data.tipToAddresses ? data.tipToAddresses : null;
 
   try {
-    const txHex = createBurnTransaction(
+    const { rawTxHex, minerFee } = createBurnTransaction(
       XPI,
       walletPaths,
       slpBalancesAndUtxos.nonSlpUtxos,
@@ -68,8 +70,12 @@ function* createTxHexSaga(action: PayloadAction<BurnQueueCommand>) {
       data.burnValue,
       tipToAddresses
     );
+    const payload = {
+      rawTxHex: rawTxHex,
+      minerFee: fromSatoshisToXpi(minerFee)
+    };
 
-    yield put({ type: returnTxHex.type, payload: txHex });
+    yield put({ type: returnTxHex.type, payload });
   } catch {
     yield put(moveAllBurnToFailQueue());
     yield put(clearBurnQueue());
@@ -84,7 +90,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnQueueCommand>) {
   let burnValue = _.toNumber(command.burnValue);
   yield put(createTxHex(command));
   const { payload } = yield take(returnTxHex.type);
-  const latestTxHex = payload;
+  const { rawTxHex: latestTxHex, minerFee } = payload;
 
   try {
     const dataApi: BurnCommand = {
@@ -93,7 +99,6 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnQueueCommand>) {
     };
 
     const data: Burn = yield call(burnApi.post, dataApi);
-
     switch (command.burnForType) {
       case BurnForType.Token:
         patches = yield updateTokenBurnValue(action);
@@ -150,7 +155,16 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnQueueCommand>) {
     }
 
     yield put(removeBurnQueue());
-    yield put(burnForUpDownVoteSuccess(data));
+    yield put(
+      burnForUpDownVoteSuccess(data) &&
+        showToast('success', {
+          message: intl.get(`toast.success`),
+          description: intl.get('burn.totalBurn', {
+            burnValue: burnValue,
+            totalAmount: burnValue + burnValue * currency.burnFee + Number(minerFee)
+          })
+        })
+    );
   } catch (err) {
     let message;
     yield put(removeBurnQueue());

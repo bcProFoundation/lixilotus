@@ -46,6 +46,7 @@ export default {
   'burn.owner': ' to {name} owner',
   'burn.feeMiner': "Miners' fees excluded",
   'burn.trans': 'Translation is enabled with {amount} Dana or more.',
+  'burn.totalBurn': 'You have given {burnValue} Dana for {totalAmount} XPI',
 
   /* 01.General */
   'general.newsfeed': 'Newsfeed',

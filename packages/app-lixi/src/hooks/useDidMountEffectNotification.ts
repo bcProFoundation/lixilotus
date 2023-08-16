@@ -35,13 +35,6 @@ const useDidMountEffectNotification = (func?) => {
           })
         })
       );
-    } else {
-      dispatch(
-        showToast('success', {
-          message: intl.get(`toast.success`),
-          description: intl.get('burn.doneBurning')
-        })
-      );
     }
 
     if (failQueue.length > 0) {

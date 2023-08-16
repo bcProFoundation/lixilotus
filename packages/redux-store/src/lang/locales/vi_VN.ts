@@ -45,6 +45,7 @@ export default {
   'burn.owner': ' tới chủ {name} ',
   'burn.feeMiner': 'Chưa tính phí thợ đào',
   'burn.trans': 'Bài viết với {amount} Dana trở lên sẽ được dịch.',
+  'burn.totalBurn': 'Bạn đã ủng hộ {burnValue} Dana với {totalAmount} XPI',
 
   /* 01.General */
   'general.newsfeed': 'Bảng tin',
