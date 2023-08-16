@@ -1,42 +1,30 @@
 import {
   ClosePageMessageSessionInput,
+  NotificationDto,
+  NOTIFICATION_TYPES,
   OpenPageMessageSessionInput,
-  MessageSessionConnection,
-  MessageSessionOrder,
   PageMessageSessionConnection,
   PageMessageSessionOrder,
   SessionAction,
   SessionActionEnum
 } from '@bcpros/lixi-models';
-import {
-  Account,
-  CreatePageMessageInput,
-  Message,
-  MessageConnection,
-  MessageOrder,
-  MessageSession,
-  PageMessageSession,
-  PaginationArgs
-} from '@bcpros/lixi-models';
-import { PageMessageSessionStatus } from '@bcpros/lixi-prisma';
+import { Account, CreatePageMessageInput, PageMessageSession, PaginationArgs } from '@bcpros/lixi-models';
+import { Notification, NotificationLevel, PageMessageSessionStatus } from '@bcpros/lixi-prisma';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { SkipThrottle } from '@nestjs/throttler';
 import { PubSub } from 'graphql-subscriptions';
 import * as _ from 'lodash';
-import moment from 'moment';
 import { I18n, I18nService } from 'nestjs-i18n';
-import { connectionFromArraySlice } from 'src/common/custom-graphql-relay/arrayConnection';
 import { NotificationGateway } from 'src/common/modules/notifications/notification.gateway';
 import { AccountEntity } from 'src/decorators/account.decorator';
 import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
-import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
-import { PERSON } from '../page/constants/meili.constants';
 import { MeiliService } from '../page/meili.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
 
 const pubSub = new PubSub();
 
@@ -49,7 +37,8 @@ export class PageMessageSessionResolver {
     private prisma: PrismaService,
     private meiliService: MeiliService,
     @I18n() private i18n: I18nService,
-    private notificationGateway: NotificationGateway
+    private notificationGateway: NotificationGateway,
+    private readonly notificationService: NotificationService
   ) {}
 
   @Subscription(() => PageMessageSession)
@@ -566,6 +555,21 @@ export class PageMessageSessionResolver {
         }
       });
 
+      const notification: NotificationDto = {
+        senderId: account.id,
+        recipientId: page?.pageAccountId,
+        notificationTypeId: NOTIFICATION_TYPES.PAGE_MESSAGE_REQUEST,
+        level: NotificationLevel.INFO,
+        url: `/page-message`,
+        additionalData: {
+          senderName: account.name,
+          lixiAmount: lixi?.amount.toFixed(0),
+          pageName: page?.name
+        }
+      };
+
+      await this.notificationService.saveAndDispatchNotification(notification);
+
       //publish to page account and user account
       this.notificationGateway.publishAddressChannel(result.page.pageAccount.address, result);
       this.notificationGateway.publishAddressChannel(result.account.address, result);
@@ -591,6 +595,7 @@ export class PageMessageSessionResolver {
       include: {
         page: {
           select: {
+            name: true,
             pageAccountId: true
           }
         }
@@ -623,7 +628,12 @@ export class PageMessageSessionResolver {
             amount: true,
             expiryAt: true,
             activationAt: true,
-            status: true
+            status: true,
+            claims: {
+              select: {
+                id: true
+              }
+            }
           }
         }
       }
@@ -633,6 +643,22 @@ export class PageMessageSessionResolver {
       type: SessionActionEnum.CLOSE,
       payload: result
     };
+
+    if (result.lixi?.claims.length === 0) {
+      const notification: NotificationDto = {
+        senderId: pageMessageSession.page.pageAccountId,
+        recipientId: pageMessageSession.accountId,
+        notificationTypeId: NOTIFICATION_TYPES.PAGE_MESSAGE_DENIED,
+        level: NotificationLevel.INFO,
+        url: `/lixi/${result.lixi.id}`,
+        additionalData: {
+          pageName: pageMessageSession.page.name,
+          lixiAmount: result.lixi.amount.toFixed(0)
+        }
+      };
+
+      await this.notificationService.saveAndDispatchNotification(notification);
+    }
 
     this.notificationGateway.publishSessionAction(pageMessageSessionId, sessionAction);
 
@@ -656,7 +682,8 @@ export class PageMessageSessionResolver {
       include: {
         page: {
           select: {
-            pageAccountId: true
+            pageAccountId: true,
+            name: true
           }
         }
       }
@@ -698,6 +725,19 @@ export class PageMessageSessionResolver {
       type: SessionActionEnum.OPEN,
       payload: result
     };
+
+    const notification: NotificationDto = {
+      senderId: pageMessageSession.page.pageAccountId,
+      recipientId: pageMessageSession.accountId,
+      notificationTypeId: NOTIFICATION_TYPES.PAGE_MESSAGE_ACCEPT,
+      level: NotificationLevel.INFO,
+      url: `/page-message`,
+      additionalData: {
+        pageName: pageMessageSession.page.name
+      }
+    };
+
+    await this.notificationService.saveAndDispatchNotification(notification);
 
     this.notificationGateway.publishSessionAction(pageMessageSessionId, sessionAction);
 

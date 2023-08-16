@@ -16,6 +16,7 @@ import { downloadExportedLixi, refreshLixiSilent } from '../lixi/actions';
 import { setNewPostAvailable } from '@store/post/actions';
 import { showToast } from '../toast/actions';
 import { callConfig } from '@context/shareContext';
+import { receiveNotification } from '../notification/actions';
 
 function createMessageSocketChannel(socket: Socket) {
   return eventChannel(emit => {
@@ -94,8 +95,7 @@ function* connectToChannelsSaga() {
     }
 
     if (notification) {
-      console.log('🚀 ~ file: saga.ts:172 ~ function*listenServerSaga ~ sessionAction:', notification);
-      yield receiveNotification(notification);
+      yield receiveNewNotification(notification);
     }
   }
 }
@@ -215,17 +215,21 @@ function* receiveSessionAction(action: SessionAction) {
   }
 }
 
-function* receiveNotification(action: PayloadAction<Notification>) {
+function* receiveNewNotification(payload: Notification) {
   try {
-    const { message, notificationTypeId, additionalData } = action.payload;
-    if (notificationTypeId == NOTIFICATION_TYPES.CREATE_SUB_LIXIES) {
-      const { id } = additionalData as any;
-      yield put(refreshLixiSilent(id));
-    } else if (notificationTypeId == NOTIFICATION_TYPES.EXPORT_SUB_LIXIES) {
-      const { parentId, mnemonicHash, fileName } = additionalData as any;
-      yield put(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
-    } else if (notificationTypeId === NOTIFICATION_TYPES.NEW_POST) {
-      yield put(setNewPostAvailable(true));
+    const { message, notificationTypeId, additionalData } = payload;
+    const { parentId, mnemonicHash, fileName, id } = additionalData as any;
+
+    switch (notificationTypeId) {
+      case NOTIFICATION_TYPES.NEW_POST:
+        yield put(setNewPostAvailable(true));
+        break;
+      case NOTIFICATION_TYPES.CREATE_SUB_LIXIES:
+        yield put(refreshLixiSilent(id));
+        break;
+      case NOTIFICATION_TYPES.EXPORT_SUB_LIXIES:
+        yield put(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
+        break;
     }
 
     if (message) {
@@ -236,6 +240,8 @@ function* receiveNotification(action: PayloadAction<Notification>) {
           duration: 5
         })
       );
+
+      yield put(receiveNotification(payload));
     }
   } catch (error) {
     console.log('error', error.message);

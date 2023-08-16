@@ -56,7 +56,7 @@ import LixiClaimedList from './LixiClaimedList';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { QRCodeModal } from '@components/Common/QRCodeModal';
 import { QRCodeModalType } from '@bcpros/lixi-models/constants';
-import { PageMessageSessionStatus } from '../../../../redux-store/src/generated/types.generated';
+import { PageMessageSessionStatus } from '@generated/types.generated';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -699,6 +699,8 @@ const Lixi = props => {
       </>
     );
   };
+
+  console.log(selectedLixi.pageMessageSession.status);
 
   const DetailLixi = () => {
     switch (selectedLixi.claimType) {

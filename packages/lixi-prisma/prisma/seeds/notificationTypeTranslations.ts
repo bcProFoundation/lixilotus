@@ -188,14 +188,14 @@ export const notificationTypeTranslations = [
     notificationTypeId: 15,
     language: 'vi',
     isDefault: false,
-    template: '{{senderName}} muốn gửi trang {{pageName}} tin nhắn'
+    template: '{{senderName}} đã gửi {{lixiAmount}} với mong muốn trò chuyện với trang {{pageName}} của bạn'
   },
   {
     id: 28,
     notificationTypeId: 15,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} want to send {{pageName}} a message.'
+    template: '{{senderName}} sent you {{lixiAmount}} to request for a chat with your page {{pageName}}.'
   },
   //accept page-message
   {
@@ -203,14 +203,14 @@ export const notificationTypeTranslations = [
     notificationTypeId: 16,
     language: 'vi',
     isDefault: false,
-    template: '{{pageName}} chấp nhận tin nhắn của bạn.'
+    template: '{{pageName}} đồng ý yêu cầu trò chuyện của bạn. Nhấp vào để bắt đầu.'
   },
   {
     id: 30,
     notificationTypeId: 16,
     language: 'en',
     isDefault: true,
-    template: '{{pageName}} accept your message.'
+    template: 'Your request to chat with page {{pageName}} has been accepted. Click to start chatting.'
   },
   //denied page-message
   {
@@ -218,13 +218,14 @@ export const notificationTypeTranslations = [
     notificationTypeId: 17,
     language: 'vi',
     isDefault: false,
-    template: '{{pageName}} từ chối tin nhắn của bạn.'
+    template: 'Yêu cầu trò chuyện với trang {{pageName}} đã không được đồng ý. Bạn đã được hoàn lại {{lixiAmount}} XPI.'
   },
   {
     id: 32,
     notificationTypeId: 17,
     language: 'en',
     isDefault: true,
-    template: '{{pageName}} denied your message.'
+    template:
+      'Your request to chat with page {{pageName}} has been declined. Your Lixi of {{lixiAmount}} XPI has been returned.'
   }
 ];
