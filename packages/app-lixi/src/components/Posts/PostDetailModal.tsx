@@ -738,17 +738,9 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
   return (
     <React.Fragment>
       <Modal
-        transitionName=""
+        transitionName='none'
         width={'50vw'}
-        className={`${classStyle} post-detail-custom-modal ${
-          isMobile
-            ? openPost
-              ? 'animate__animated animate__faster animate__slideInRight'
-              : 'animate__animated animate__faster animate__slideOutRight'
-            : openPost
-            ? 'animate__animated animate__faster animate__zoomIn'
-            : 'animate__animated animate__faster animate__zoomOut'
-        }`}
+        className={`${classStyle} post-detail-custom-modal`}
         style={{ top: 30 }}
         open={true}
         onCancel={handleOnCancel}
