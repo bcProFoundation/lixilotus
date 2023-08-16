@@ -18,6 +18,7 @@ import { usePageQuery } from '@store/page/pages.generated';
 import { useCreateFollowAccountMutation, useDeleteFollowAccountMutation } from '@store/follow/follows.api';
 import { CreateFollowAccountInput, DeleteFollowAccountInput } from '@generated/types.generated';
 import { getWalletStatus } from '@store/wallet';
+import { useSwipeable } from 'react-swipeable';
 
 interface PostActionSheetProps {
   id?: string;
@@ -208,6 +209,10 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     dispatch(openModal('PageMessageLixiModal', { account: selectedAccount, page: page, wallet: walletStatus }));
   };
 
+  const handlersSwipe = useSwipeable({
+    onSwipedDown: eventData => onClose()
+  });
+
   return (
     <>
       <Drawer
@@ -218,7 +223,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
         open={open}
         height={'auto'}
       >
-        <ContainerActionSheet>
+        <ContainerActionSheet {...handlersSwipe}>
           <div className="bar-close" onClick={onClose}></div>
           {isEditPost && <ItemActionSheetBottom text="Edit post" icon="/images/ico-edit.svg" onClickItem={editPost} />}
           {/* <ItemActionSheetBottom type="danger" text="Remove" /> */}

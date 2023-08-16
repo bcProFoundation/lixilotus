@@ -4,7 +4,7 @@ import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib
 import { AvatarUser } from '@components/Common/AvatarUser';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
-import { NavBarHeader } from '@components/Layout/MainLayout';
+import { LoadingIcon, NavBarHeader } from '@components/Layout/MainLayout';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
@@ -17,7 +17,7 @@ import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { fromSmallestDenomination, fromXpiToSatoshis, getUtxoWif } from '@utils/cashMethods';
-import { Image, Input, Skeleton, AutoComplete, Modal, Space, Button } from 'antd';
+import { Image, Input, Skeleton, AutoComplete, Modal, Space, Button, Spin } from 'antd';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
@@ -44,6 +44,8 @@ import ReactDomServer from 'react-dom/server';
 import ActionPostBar from '@components/Common/ActionPostBar';
 import PostTranslate from './PostTranslate';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import { useSwipeable } from 'react-swipeable';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -735,12 +737,24 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
     }
   };
 
+  const handlersSwipe = useSwipeable({
+    onSwipedRight: eventData => handleOnCancel()
+  });
+
   return (
     <React.Fragment>
       <Modal
-        transitionName='none'
+        transitionName={isMobile ? '' : 'none'}
         width={'50vw'}
-        className={`${classStyle} post-detail-custom-modal`}
+        className={`${classStyle} post-detail-custom-modal ${
+          isMobile
+            ? openPost
+              ? 'animate__animated animate__faster animate__slideInRight'
+              : 'animate__animated animate__faster animate__slideOutRight'
+            : openPost
+            ? 'animate__animated animate__faster animate__zoomIn'
+            : 'animate__animated animate__faster animate__zoomOut'
+        }`}
         style={{ top: 30 }}
         open={true}
         onCancel={handleOnCancel}
@@ -748,6 +762,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
         footer={null}
       >
         <StyledContainerPostDetail
+          {...handlersSwipe}
           className={`${!borderColorHeader ? 'no-border-color' : ''} post-detail-modal`}
           onScroll={e => handleSrcolling(e)}
         >
@@ -788,21 +803,25 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
               <>
                 {post.uploads.length > 1 && (
                   <div className="images-post images-post-mobile">
-                    <Image.PreviewGroup>
-                      {imagesList.map((img, index) => {
-                        return <Image key={index} src={img.src} />;
-                      })}
-                    </Image.PreviewGroup>
+                    <PhotoProvider loop={true} loadingElement={<Spin indicator={LoadingIcon} />}>
+                      {imagesList.map((img, index) => (
+                        <PhotoView key={index} src={img.src}>
+                          <img src={img.src} alt="" />
+                        </PhotoView>
+                      ))}
+                    </PhotoProvider>
                   </div>
                 )}
                 {post.uploads.length === 1 && (
                   <>
                     <div className="images-post images-post-mobile only-one-image">
-                      <Image.PreviewGroup>
-                        {imagesList.map((img, index) => {
-                          return <Image key={index} src={img.src} />;
-                        })}
-                      </Image.PreviewGroup>
+                      <PhotoProvider loop={true} loadingElement={<Spin indicator={LoadingIcon} />}>
+                        {imagesList.map((img, index) => (
+                          <PhotoView key={index} src={img.src}>
+                            <img src={img.src} alt="" />
+                          </PhotoView>
+                        ))}
+                      </PhotoProvider>
                     </div>
                   </>
                 )}

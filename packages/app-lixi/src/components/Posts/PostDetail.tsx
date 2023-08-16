@@ -6,7 +6,7 @@ import { AvatarUser } from '@components/Common/AvatarUser';
 import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
-import { NavBarHeader, PathDirection } from '@components/Layout/MainLayout';
+import { LoadingIcon, NavBarHeader, PathDirection } from '@components/Layout/MainLayout';
 import { TokenItem } from '@components/Token/TokensFeed';
 import { WalletContext } from '@context/walletProvider';
 import { CommentOrderField, CreateCommentInput, OrderDirection, RepostInput } from '@generated/types.generated';
@@ -26,7 +26,7 @@ import { getFilterPostsHome } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { fromSmallestDenomination, fromXpiToSatoshis, getUtxoWif } from '@utils/cashMethods';
-import { AutoComplete, Image, Input, Skeleton, Space } from 'antd';
+import { AutoComplete, Image, Input, Skeleton, Space, Spin } from 'antd';
 import BigNumber from 'bignumber.js';
 import parse from 'html-react-parser';
 import _ from 'lodash';
@@ -45,6 +45,7 @@ import { EditPostModalProps } from './EditPostModalPopup';
 import { OPTION_BURN_VALUE } from '@bcpros/lixi-models/constants';
 import PostTranslate from './PostTranslate';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -780,21 +781,25 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             <>
               {post.uploads.length > 1 && (
                 <div className="images-post images-post-mobile">
-                  <Image.PreviewGroup>
-                    {imagesList.map((img, index) => {
-                      return <Image key={index} src={img.src} />;
-                    })}
-                  </Image.PreviewGroup>
+                  <PhotoProvider loop={true} loadingElement={<Spin indicator={LoadingIcon} />}>
+                    {imagesList.map((img, index) => (
+                      <PhotoView key={index} src={img.src}>
+                        <img src={img.src} alt="" />
+                      </PhotoView>
+                    ))}
+                  </PhotoProvider>
                 </div>
               )}
               {post.uploads.length === 1 && (
                 <>
                   <div className="images-post images-post-mobile only-one-image">
-                    <Image.PreviewGroup>
-                      {imagesList.map((img, index) => {
-                        return <Image key={index} src={img.src} />;
-                      })}
-                    </Image.PreviewGroup>
+                    <PhotoProvider loop={true} loadingElement={<Spin indicator={LoadingIcon} />}>
+                      {imagesList.map((img, index) => (
+                        <PhotoView key={index} src={img.src}>
+                          <img src={img.src} alt="" />
+                        </PhotoView>
+                      ))}
+                    </PhotoProvider>
                   </div>
                 </>
               )}

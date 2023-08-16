@@ -24008,6 +24008,11 @@ react-photo-gallery@^8.0.0:
     prop-types "~15.7.2"
     resize-observer-polyfill "^1.5.0"
 
+react-photo-view@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/react-photo-view/-/react-photo-view-1.2.3.tgz#436f81ad0a611dfaa43bbc72a4fef26a057b5aef"
+  integrity sha512-dtaFjU8nAB/rD8mxBaaJcvESlDOweAd1tmvXujS/d3oh1QyGew3xD4C02l46E6Dhn3Tshzl2+IM1h0MWV9nG7g==
+
 react-property@2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/react-property/-/react-property-2.0.0.tgz#2156ba9d85fa4741faf1918b38efc1eae3c6a136"
@@ -24121,6 +24126,11 @@ react-swipe-to-delete-ios@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/react-swipe-to-delete-ios/-/react-swipe-to-delete-ios-2.1.0.tgz#fa5f0b05efd877e9cbc0aa2c53dc1ded083f6b93"
   integrity sha512-9ajSa393m7curNF6qURWT7EwTJ9rv/Zb7nBaqdCr5tO9qM1Y4symkmIvYk3MFJKUoYGTuynQJNHGhh5OnOI6Yw==
+
+react-swipeable@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/react-swipeable/-/react-swipeable-7.0.1.tgz#cd299f5986c5e4a7ee979839658c228f660e1e0c"
+  integrity sha512-RKB17JdQzvECfnVj9yDZsiYn3vH0eyva/ZbrCZXZR0qp66PBRhtg4F9yJcJTWYT5Adadi+x4NoG53BxKHwIYLQ==
 
 react-transition-group@^4.3.0:
   version "4.4.5"

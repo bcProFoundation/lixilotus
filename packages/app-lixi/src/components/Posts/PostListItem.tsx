@@ -7,7 +7,7 @@ import { useAppDispatch } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { PostsQuery } from '@store/post/posts.generated';
 import { formatRelativeTime } from '@utils/formatting';
-import { Button, List } from 'antd';
+import { Button, List, Spin } from 'antd';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
@@ -18,6 +18,8 @@ import { EditPostModalProps } from './EditPostModalPopup';
 import PostContent from './PostContent';
 import PostTranslate from './PostTranslate';
 import { PostListType } from '@bcpros/lixi-models/constants';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
+import { LoadingIcon } from '@components/Layout/MainLayout';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List
@@ -141,6 +143,7 @@ const Content = styled.div`
       display: flex;
       align-items: center;
       color: #fff;
+      background: var(--bg-color-disable);
       position: absolute;
       top: 50%;
       left: 50%;
@@ -383,8 +386,8 @@ const PostListItem = ({
             postListType={postListType}
           />
         </CardHeader>
-        <Content onClick={e => handlePostClick(e)}>
-          <div className="description-post">
+        <Content>
+          <div onClick={e => handlePostClick(e)} className="description-post">
             <PostContent post={post} />
           </div>
 
@@ -406,7 +409,7 @@ const PostListItem = ({
           )}
           {item.uploads.length != 0 && !showMoreImage && (
             <div className={`images-post ${imagesList.length > 1 ? 'images-post-desktop' : ''}`}>
-              <Gallery photos={imagesList.length > 3 ? imagesList.slice(0, 4) : imagesList} />
+              <Gallery targetRowHeight={200} photos={imagesList.length > 3 ? imagesList.slice(0, 4) : imagesList} />
               {item.uploads.length > 3 && (
                 <Button type="link" className="show-more-desktop show-more-image no-border-btn">
                   {item.uploads.length - 1 + ' +'}
@@ -418,17 +421,25 @@ const PostListItem = ({
             <>
               {item.uploads.length > 1 && (
                 <div className="images-post images-post-mobile">
-                  {imagesList.map((img, index) => {
-                    return <img key={index} src={img.src} />;
-                  })}
+                  <PhotoProvider loop={true} loadingElement={<Spin indicator={LoadingIcon} />}>
+                    {imagesList.map((img, index) => (
+                      <PhotoView key={index} src={img.src}>
+                        <img src={img.src} alt="" />
+                      </PhotoView>
+                    ))}
+                  </PhotoProvider>
                 </div>
               )}
               {item.uploads.length === 1 && (
                 <>
                   <div className="images-post images-post-mobile only-one-image">
-                    {imagesList.map((img, index) => {
-                      return <img key={index} src={img.src} />;
-                    })}
+                    <PhotoProvider loop={true} loadingElement={<Spin indicator={LoadingIcon} />}>
+                      {imagesList.map((img, index) => (
+                        <PhotoView key={index} src={img.src}>
+                          <img src={img.src} alt="" />
+                        </PhotoView>
+                      ))}
+                    </PhotoProvider>
                   </div>
                 </>
               )}

@@ -24,6 +24,7 @@ import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPag
 import { useInfiniteHashtagByPageQuery } from '@store/hashtag/useInfiniteHashtagByPageQuery';
 import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtPage';
 import { addRecentHashtagAtPages } from '@store/account';
+import { useSwipeable } from 'react-swipeable';
 
 type SidebarContentProps = {
   className?: string;
@@ -401,9 +402,13 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
     }
   };
 
+  const handlersSwipe = useSwipeable({
+    onSwipedLeft: eventData => dispatch(toggleCollapsedSideNav(!navCollapsed))
+  });
+
   return (
     <>
-      <ContainerSideBarContent className="side-bar-content">
+      <ContainerSideBarContent {...handlersSwipe} className="side-bar-content">
         <div className="wrapper">
           <div className="header-bar">
             <h3>Digest</h3>
