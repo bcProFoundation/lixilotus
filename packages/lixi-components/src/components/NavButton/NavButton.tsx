@@ -27,6 +27,10 @@ export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProp
   .ico-img {
     width: 30px;
     height: 30px;
+    &.ico-messenger {
+      width: 32px;
+      height: 32px;
+    }
   }
   ${({ active, ...props }) =>
     active &&

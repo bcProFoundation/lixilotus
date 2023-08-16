@@ -2,7 +2,7 @@ import { getGraphqlRequestStatus, getSelectedAccount, getSelectedAccountId } fro
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Button, ConfigProvider, Layout, Spin } from 'antd';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 import { useGetAccountByAddressQuery } from '@store/account/accounts.api';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -36,6 +36,7 @@ import lightTheme from 'src/styles/themes/lightTheme';
 import darkTheme from 'src/styles/themes/darkTheme';
 import { useSocket } from '@context/index';
 import { userSubcribeToAddressChannel, userSubcribeToMultiPageMessageSession } from '@store/message/actions';
+import { getCurrentPageMessageSession } from '@store/page/selectors';
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -242,6 +243,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const { width } = useWindowDimensions();
   const currentDeviceTheme = useThemeDetector();
   const isSystemThemes = useAppSelector(getIsSystemThemes);
+  const currentPageMessageSession = useAppSelector(getCurrentPageMessageSession);
 
   let userInfo;
   const { currentData: currentDataGetAccount, isSuccess: isSuccessGetAccount } = useGetAccountByAddressQuery(
@@ -320,6 +322,14 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
     }
   };
 
+  const hideStatusBar = useMemo(() => {
+    let isHide = false;
+    if (selectedKey === '/page-message' && currentPageMessageSession) {
+      isHide = true;
+    }
+    return isHide;
+  }, [selectedKey, currentPageMessageSession]);
+
   return (
     <ConfigProvider theme={currentTheme === 'dark' ? darkTheme : lightTheme}>
       <ThemeProvider theme={theme as DefaultTheme}>
@@ -337,7 +347,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                     <Topbar
                       className={`animate__animated ${
                         isMobile ? (visible ? 'animate__fadeInDown' : 'animate__fadeOutUp') : ''
-                      }`}
+                      } ${hideStatusBar ? 'hide-header' : ''}`}
                     />
                     {/* @ts-ignore */}
                     <div
@@ -350,7 +360,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                       <SidebarShortcut />
                       <div
                         className="content-child animate__animated animate__fadeIn"
-                        style={{ paddingTop: isMobile ? 64 : 0 }}
+                        style={{ paddingTop: isMobile && !hideStatusBar ? 64 : 0 }}
                       >
                         {children}
                       </div>
@@ -359,7 +369,9 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                       {(selectedKey === '/wallet' || selectedKey === '/') && <SidebarRanking></SidebarRanking>}
                       <DummySidebar />
                       <Footer
-                        classList={`animate__animated ${visible ? 'animate__fadeInUp' : 'animate__fadeOutDown'}`}
+                        classList={`animate__animated ${visible ? 'animate__fadeInUp' : 'animate__fadeOutDown'} ${
+                          hideStatusBar ? 'hide-footer' : ''
+                        }`}
                         notifications={notifications}
                       />
                     </div>

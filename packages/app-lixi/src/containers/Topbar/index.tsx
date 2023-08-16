@@ -308,6 +308,11 @@ const StyledHeader = styled(Header)`
     width: 100%;
     height: 64px;
   }
+  @media (max-width: 526px) {
+    &.hide-header {
+      display: none;
+    }
+  }
 `;
 
 const ButtonTopbar = styled(Button)`
@@ -745,7 +750,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             placement="bottom"
           >
             <ButtonTopbar
-              className="btn-topbar animate__animated animate__heartBeat"
+              className="btn-topbar"
               type="text"
               icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-filter.svg'} />}
             />
@@ -778,7 +783,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             open={openMoreOption}
           >
             <ButtonTopbar
-              className="btn-topbar animate__animated animate__heartBeat"
+              className="btn-topbar"
               type="text"
               icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-category.svg'} />}
             />

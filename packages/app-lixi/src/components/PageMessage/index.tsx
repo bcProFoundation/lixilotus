@@ -58,6 +58,9 @@ const StyledContainer = styled.div`
     margin: 0;
     border-radius: 0;
     height: calc(100% - 60px);
+    &.detail-chat {
+      height: 100%;
+    }
   }
 `;
 
@@ -209,12 +212,15 @@ const StyledChatbox = styled.div`
 `;
 
 const InputContainer = styled.div`
+  position: sticky;
+  z-index: 999;
+  bottom: 0;
   display: flex;
   align-items: center;
   border-radius: 12px;
   border: 2px solid #e2e8f0;
   background: #fff;
-  margin: 1rem;
+  margin: 0.5rem 1rem 1rem 1rem;
   height: fit-content;
   .ant-input {
     height: 100%;
@@ -284,6 +290,9 @@ const LixiContainer = styled.div`
 `;
 
 const StyledChatHeader = styled.div`
+  position: sticky;
+  z-index: 999;
+  top: 0;
   width: 100%;
   margin: 0;
   padding: 1rem;
@@ -718,7 +727,7 @@ const PageMessage = () => {
   console.log('AHI', currentPageMessageSession);
 
   return (
-    <StyledContainer className="card page-message">
+    <StyledContainer className={`card page-message ${currentPageMessageSession ? 'detail-chat' : ''}`}>
       <StyledSideContainer
         className={`${currentPageMessageSession ? 'hide-side-message' : 'show-side-message'} ${
           isMobile ? 'animate__faster animate__animated animate__slideInRight' : ''

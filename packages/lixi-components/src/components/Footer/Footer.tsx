@@ -22,6 +22,11 @@ const StyledFooter = styled.div`
     display: flex;
     left: 0;
   }
+  @media (max-width: 526px) {
+    &.hide-footer {
+      display: none;
+    }
+  }
 `;
 
 const Footer = ({ notifications, classList }: { notifications?: any; classList?: any }) => {
@@ -43,7 +48,7 @@ const Footer = ({ notifications, classList }: { notifications?: any; classList?:
         <Link href="/page-message" passHref>
           <NavButton active={currentPathName.includes('/page-message')}>
             <img
-              className="ico-img"
+              className="ico-img ico-messenger"
               src={
                 currentPathName.includes('/page-message')
                   ? '/images/ico-message-heart-circle-active.svg'
