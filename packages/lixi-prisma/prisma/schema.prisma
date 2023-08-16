@@ -800,6 +800,7 @@ model Message {
   updatedAt            DateTime            @default(now()) @map("updated_at") @db.Timestamptz
   pageMessageSession   PageMessageSession? @relation(fields: [pageMessageSessionId], references: [id])
   pageMessageSessionId String?             @map("page_message_session_id")
+  giveTipMessage       GiveTipMessage?
 
   @@map("message")
 }
@@ -829,4 +830,20 @@ enum PageMessageSessionStatus {
   PENDING
   OPEN
   CLOSE
+}
+
+model GiveTipMessage {
+  id            String   @id @default(cuid())
+  txid          String
+  fromAddress   String   @map("from_address")
+  fromAccountId Int      @map("from_account_id")
+  toAddress     String   @map("to_address")
+  toAccountId   Int      @map("to_account_id")
+  message       Message  @relation(fields: [messageId], references: [id])
+  messageId     String   @unique @map("message_id")
+  tipValue      Float    @map("tip_value")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@map("give_tip_messsage")
 }

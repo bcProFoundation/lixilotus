@@ -8,7 +8,7 @@ import {
 } from '@bcpros/lixi-models';
 import { PageMessageSessionStatus } from '@bcpros/lixi-prisma';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { Logger, UseFilters, UseGuards } from '@nestjs/common';
+import { Inject, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { SkipThrottle } from '@nestjs/throttler';
 import { PubSub } from 'graphql-subscriptions';
@@ -24,6 +24,9 @@ import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PERSON } from '../page/constants/meili.constants';
 import { MeiliService } from '../page/meili.service';
 import { PrismaService } from '../prisma/prisma.service';
+import BCHJS from '@bcpros/xpi-js';
+import { ChronikClient } from 'chronik-client';
+import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
 
 const pubSub = new PubSub();
 
@@ -36,7 +39,9 @@ export class MessageResolver {
     private prisma: PrismaService,
     private meiliService: MeiliService,
     @I18n() private i18n: I18nService,
-    private notificationGateway: NotificationGateway
+    private notificationGateway: NotificationGateway,
+    @Inject('xpijs') private XPI: BCHJS,
+    @InjectChronikClient('xpi') private chronik: ChronikClient
   ) {}
 
   @Subscription(() => Message)
@@ -93,7 +98,7 @@ export class MessageResolver {
       throw new Error(couldNotFindAccount);
     }
 
-    const { authorId, body, isPageOwner, pageMessageSessionId } = data;
+    const { authorId, body, isPageOwner, pageMessageSessionId, tipHex } = data;
 
     if (account.id !== authorId) {
       return null;
@@ -103,6 +108,26 @@ export class MessageResolver {
     const pageMessageSession = await this.prisma.pageMessageSession.findUnique({
       where: {
         id: pageMessageSessionId
+      },
+      select: {
+        status: true,
+        id: true,
+        account: {
+          select: {
+            id: true,
+            address: true
+          }
+        },
+        page: {
+          select: {
+            pageAccount: {
+              select: {
+                id: true,
+                address: true
+              }
+            }
+          }
+        }
       }
     });
 
@@ -142,6 +167,51 @@ export class MessageResolver {
             latestMessage: body
           }
         });
+
+        //Give Tip
+        if (tipHex) {
+          const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
+          const tipValue = txData['vout'][0].value;
+          if (Number(tipValue) < 0) {
+            throw new Error('Syntax error. Number cannot be less than or equal to 0');
+          }
+
+          const broadcastResponse = await this.chronik.broadcastTx(tipHex);
+          if (!broadcastResponse) {
+            throw new Error('Empty chronik broadcast response');
+          }
+
+          const { txid } = broadcastResponse;
+          const determineAddress = isPageOwner
+            ? {
+                fromAddress: pageMessageSession.page.pageAccount.address,
+                fromAccountId: pageMessageSession.page.pageAccount.id,
+                toAddress: pageMessageSession.account.address,
+                toAccountId: pageMessageSession.account.id
+              }
+            : {
+                fromAddress: pageMessageSession.account.address,
+                fromAccountId: pageMessageSession.account.id,
+                toAddress: pageMessageSession.page.pageAccount.address,
+                toAccountId: pageMessageSession.page.pageAccount.id
+              };
+
+          const transactionTip = {
+            txid,
+            ...determineAddress,
+            tipValue: tipValue
+          };
+          await prisma.giveTipMessage.create({
+            data: {
+              ...transactionTip,
+              message: {
+                connect: {
+                  id: result.id
+                }
+              }
+            }
+          });
+        }
 
         return result;
       });

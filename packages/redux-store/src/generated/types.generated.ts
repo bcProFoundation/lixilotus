@@ -181,6 +181,7 @@ export type CreateMessageInput = {
   body: Scalars['String'];
   isPageOwner?: InputMaybe<Scalars['Boolean']>;
   pageMessageSessionId?: InputMaybe<Scalars['String']>;
+  tipHex?: InputMaybe<Scalars['String']>;
 };
 
 export type CreatePageInput = {

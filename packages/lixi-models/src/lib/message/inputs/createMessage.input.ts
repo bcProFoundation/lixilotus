@@ -12,10 +12,13 @@ export class CreateMessageInput {
   authorId: number;
 
   @Field(() => Boolean, { nullable: true })
-  @IsNotEmpty()
   @IsOptional()
   isPageOwner?: boolean;
 
   @Field(() => String, { nullable: true })
   pageMessageSessionId?: string;
+
+  @IsOptional()
+  @Field(() => String, { nullable: true })
+  tipHex?: string;
 }

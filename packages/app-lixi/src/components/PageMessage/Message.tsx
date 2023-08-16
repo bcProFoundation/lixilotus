@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MessageQuery } from '@store/message/message.generated';
 import styled from 'styled-components';
 import { transformCreatedAt } from '@containers/Sidebar/SideBarShortcut';
+import reactStringReplace from 'react-string-replace';
 
 type MessageItem = {
   message: MessageQuery['message']; //MessageItem
@@ -45,11 +46,27 @@ const StyledMessageContainer = styled.div`
 const Message = ({ message, authorAddress, senderAvatar, receiverAvatar }: MessageItem) => {
   const [isShowDate, setIsShowDate] = useState(false);
 
+  const transformMessage = (message: string) => {
+    let replacedText;
+
+    // match any url
+    replacedText = reactStringReplace(message, /(https?:\/\/\S+)/g, (match, i) => (
+      <a key={match + i} href={match} style={{ color: 'white', textDecoration: 'underline' }}>
+        {match}
+      </a>
+    ));
+
+    //match any /give command
+    replacedText = reactStringReplace(replacedText, /\/give (\d+)/g, (match, i) => <u key={i}>/give {match}</u>);
+
+    return replacedText;
+  };
+
   return (
     <React.Fragment>
       <StyledMessageContainer className={message.author.address === authorAddress ? 'author-address' : ''}>
         <p className="message-txt" onClick={() => setIsShowDate(!isShowDate)}>
-          {message.body}
+          {transformMessage(message.body)}
         </p>
         {isShowDate && <p className="date-message">{transformCreatedAt(message.createdAt)}</p>}
       </StyledMessageContainer>

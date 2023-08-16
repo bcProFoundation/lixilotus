@@ -6,11 +6,11 @@ import { all, fork, put, takeLatest } from 'redux-saga/effects';
 import { sendXPIFailure, sendXPISuccess } from './actions';
 
 function* sendXPISuccessSaga(action: PayloadAction<number>) {
-  const selectedAccountId: number = action.payload;
+  const amount: number = action.payload;
   yield put(
     showToast('success', {
       message: 'Success',
-      description: 'Send XPI success',
+      description: `Send ${amount} XPI successfully`,
       duration: 5
     })
   );
@@ -36,6 +36,5 @@ function* watchSendXPIFailureSaga() {
 }
 
 export default function* sendSaga() {
-  yield all([fork(watchSendXPISuccessSaga)]);
-  yield all([fork(watchSendXPIFailureSaga)]);
+  yield all([fork(watchSendXPISuccessSaga), fork(watchSendXPIFailureSaga)]);
 }

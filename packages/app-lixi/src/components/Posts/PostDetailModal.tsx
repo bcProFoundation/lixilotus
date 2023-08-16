@@ -624,6 +624,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
           duration: 3
         })
       );
+      setIsSendingXPI(false);
     }
 
     resetField('comment');

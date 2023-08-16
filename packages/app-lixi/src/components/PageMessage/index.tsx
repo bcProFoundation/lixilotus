@@ -1,17 +1,10 @@
-import { Avatar, Button, Dropdown, Input, MenuProps, Popover, Skeleton } from 'antd';
-import React, { useEffect, useMemo, useState } from 'react';
+import { Avatar, Button, Input, Popover, Skeleton } from 'antd';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getAllAccounts, getSelectedAccount } from '@store/account';
-import { Account, ClosePageMessageSessionInput, CreateClaimDto } from '@bcpros/lixi-models';
+import { getSelectedAccount } from '@store/account';
+import { ClosePageMessageSessionInput, CreateClaimDto } from '@bcpros/lixi-models';
 import _ from 'lodash';
-import { usePagesByUserIdQuery } from '@store/page/pages.api';
-import {
-  startChannel,
-  stopChannel,
-  userSubcribeToAddressChannel,
-  userSubcribeToPageMessageSession
-} from '@store/message/actions';
 import { useInfinitePageMessageSessionByAccountId } from '@store/message/useInfinitePageMessageSessionByAccountId';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getCurrentPageMessageSession } from '@store/page/selectors';
@@ -21,7 +14,6 @@ import {
   useClosePageMessageSessionMutation,
   useOpenPageMessageSessionMutation
 } from '@store/message/pageMessageSession.generated';
-import { DownOutlined, LeftOutlined, RightOutlined, SendOutlined, SettingOutlined } from '@ant-design/icons';
 import Message from './Message';
 import {
   CreateMessageInput,
@@ -35,13 +27,18 @@ import { useForm, Controller } from 'react-hook-form';
 import { useCreateMessageMutation } from '@store/message/message.generated';
 import { postClaim } from '@store/claim/actions';
 import { WalletContext } from '@context/walletProvider';
-import { useSocket } from '@context/index';
 import { SpaceShorcutItem, transformCreatedAt } from '@containers/Sidebar/SideBarShortcut';
 import { transformShortName } from '@components/Common/AvatarUser';
 import { ReactSVG } from 'react-svg';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { getUtxoWif } from '@utils/cashMethods';
+import useXPI from '@hooks/useXPI';
+import { currency } from '@components/Common/Ticker';
+import { sendXPIFailure, sendXPISuccess } from '@store/send/actions';
+import { fromSmallestDenomination } from '@utils/cashMethods';
 import { useSwipeable } from 'react-swipeable';
 
 type PageMessageSessionItem = PageMessageSessionQuery['pageMessageSession'];
@@ -536,15 +533,27 @@ const PageMessage = () => {
   const { control, getValues, resetField, setFocus } = useForm();
   const [open, setOpen] = useState(false);
   const Wallet = React.useContext(WalletContext);
-  const { XPI } = Wallet;
+  const { XPI, chronik } = Wallet;
   const [isMobile, setIsMobile] = useState(false);
   const { width } = useWindowDimensions();
   const router = useRouter();
+  const [isSendingXPI, setIsSendingXPI] = useState<boolean>(false);
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+  const { sendXpi } = useXPI();
+  const walletStatus = useAppSelector(getWalletStatus);
+  const txFee = Math.ceil(Wallet.XPI.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 }) * 2.01); //satoshi
 
   useEffect(() => {
     const isMobile = width < 526 ? true : false;
     setIsMobile(isMobile);
   }, [width]);
+
+  useEffect(() => {
+    if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
+    setIsSendingXPI(false);
+  }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
   const [
     createMessageTrigger,
@@ -652,20 +661,100 @@ const PageMessage = () => {
   };
 
   const sendMessage = async () => {
-    if (_.isNil(getValues('message')) || getValues('message') === '') {
+    const trimMessage = getValues('message').trim();
+
+    if (_.isNil(getValues('message')) || trimMessage === '') {
       return;
     }
-    const trimValue = getValues('message').trim();
-    const input: CreateMessageInput = {
-      authorId: selectedAccount.id,
-      body: trimValue,
-      pageMessageSessionId: currentPageMessageSession?.id,
-      isPageOwner: false
-    };
 
-    await createMessageTrigger({ input }).unwrap();
-    resetField('message');
+    //Check if message is tip
+    if (trimMessage.toLowerCase().split(' ')[0] === '/give') {
+      const amount: string = trimMessage.toLowerCase().split(' ')[1];
+      let tipHex = undefined;
+
+      //check if amount is valid
+      if (validateXPIAmount(amount)) {
+        tipHex = await giveXPI(trimMessage, amount).then(result => {
+          return result;
+        });
+        const input: CreateMessageInput = {
+          authorId: selectedAccount.id,
+          body: trimMessage,
+          pageMessageSessionId: currentPageMessageSession?.id,
+          isPageOwner: isPageOwner,
+          tipHex: tipHex
+        };
+
+        await createMessageTrigger({ input }).unwrap();
+        dispatch(sendXPISuccess(parseFloat(amount).toFixed(2)));
+        resetField('message');
+      } else {
+        dispatch(sendXPIFailure(intl.get('send.syntaxError')));
+      }
+    } else {
+      const input: CreateMessageInput = {
+        authorId: selectedAccount.id,
+        body: trimMessage,
+        pageMessageSessionId: currentPageMessageSession?.id,
+        isPageOwner: isPageOwner
+      };
+
+      await createMessageTrigger({ input }).unwrap();
+      resetField('message');
+    }
+
     setFocus('message');
+  };
+
+  //return promise of tipHex and createFeeHex
+  const giveXPI = async (text: string, amount: string): Promise<string> => {
+    setIsSendingXPI(true);
+    try {
+      const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+      const tipHex = await sendXpi(
+        XPI,
+        chronik,
+        walletPaths,
+        slpBalancesAndUtxos.nonSlpUtxos,
+        currency.defaultFee,
+        text,
+        false, // indicate send mode is one to one
+        null,
+        isPageOwner
+          ? currentPageMessageSession?.account?.address
+          : currentPageMessageSession?.page?.pageAccount?.address,
+        amount,
+        true,
+        fundingWif,
+        true
+      );
+
+      return tipHex;
+    } catch (e) {
+      const message = e.message || e.error || JSON.stringify(e);
+      setIsSendingXPI(false);
+
+      dispatch(sendXPIFailure(message));
+    }
+  };
+
+  const validateXPIAmount = (value: string): boolean => {
+    if (!value) return false;
+
+    //check if value is number;
+    if (isNaN(parseFloat(value))) return false;
+
+    //check if value is positive number
+    if (parseFloat(value) <= 0) return false;
+
+    //check if balance is smaller than value + txFee
+    if (
+      fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) <=
+      parseFloat(value) + fromSmallestDenomination(txFee)
+    )
+      return false;
+
+    return true;
   };
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -980,7 +1069,9 @@ const PageMessage = () => {
                       : `${intl.get('messenger.sessionClose')}`
                   }
                   disabled={
-                    isLoadingCreateMessage || currentPageMessageSession.status !== PageMessageSessionStatus.Open
+                    isLoadingCreateMessage ||
+                    currentPageMessageSession.status !== PageMessageSessionStatus.Open ||
+                    isSendingXPI
                   }
                   autoSize
                   onKeyDown={handleKeyDown}
@@ -990,7 +1081,11 @@ const PageMessage = () => {
             <IconContainer>
               <Button
                 type="text"
-                disabled={isLoadingCreateMessage || currentPageMessageSession.status !== PageMessageSessionStatus.Open}
+                disabled={
+                  isLoadingCreateMessage ||
+                  currentPageMessageSession.status !== PageMessageSessionStatus.Open ||
+                  isSendingXPI
+                }
                 icon={<ReactSVG className="anticon" src="/images/ico-send-message.svg" wrapper="span" />}
                 onClick={sendMessage}
               />

@@ -163,6 +163,7 @@ input CreateMessageInput {
   body: String!
   isPageOwner: Boolean
   pageMessageSessionId: String
+  tipHex: String
 }
 
 input CreatePageInput {

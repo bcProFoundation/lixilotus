@@ -24112,6 +24112,11 @@ react-share@^4.4.1:
     classnames "^2.3.2"
     jsonp "^0.2.1"
 
+react-string-replace@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-string-replace/-/react-string-replace-1.1.1.tgz#8413a598c60e397fe77df3464f2889f00ba25989"
+  integrity sha512-26TUbLzLfHQ5jO5N7y3Mx88eeKo0Ml0UjCQuX4BMfOd/JX+enQqlKpL1CZnmjeBRvQE8TR+ds9j1rqx9CxhKHQ==
+
 react-svg@^16.1.19:
   version "16.1.19"
   resolved "https://registry.yarnpkg.com/react-svg/-/react-svg-16.1.19.tgz#758a95c865ea3c3263ab0017a7664d33285f8383"

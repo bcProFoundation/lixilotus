@@ -1,19 +1,7 @@
 // import { CashReceivedNotificationIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import {
-  NotificationDto as Notification,
-  SocketUser,
-} from '@bcpros/lixi-models';
+import { NotificationDto as Notification, SocketUser } from '@bcpros/lixi-models';
 import { currency } from '@components/Common/Ticker';
-import {
-  all,
-  call,
-  cancelled,
-  fork,
-  put,
-  select,
-  take,
-  takeLatest,
-} from '@redux-saga/core/effects';
+import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
 import { ArgsProps } from 'antd/lib/notification/interface';
@@ -50,7 +38,7 @@ import {
   stopChannel,
   userOffline,
   userOnline,
-  xpiReceivedNotificationWebSocket,
+  xpiReceivedNotificationWebSocket
 } from './actions';
 import notificationApi from './api';
 import { setNewPostAvailable } from '@store/post/actions';
@@ -60,13 +48,13 @@ const getDeviceNotificationStyle = () => {
   if (isMobile) {
     const notificationStyle = {
       width: '100%',
-      marginTop: '10%',
+      marginTop: '10%'
     };
     return notificationStyle;
   }
   if (!isMobile) {
     const notificationStyle = {
-      width: '100%',
+      width: '100%'
     };
     return notificationStyle;
   }
@@ -76,11 +64,7 @@ function* fetchNotificationsSaga(action: PayloadAction<{ accountId: number; mnem
   try {
     yield put(showLoading(fetchNotifications.type));
     const { accountId, mnemonichHash } = action.payload;
-    const notifications: Notification[] = yield call(
-      notificationApi.getByAccountId,
-      accountId,
-      mnemonichHash
-    );
+    const notifications: Notification[] = yield call(notificationApi.getByAccountId, accountId, mnemonichHash);
     yield put(fetchNotificationsSuccess(notifications));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('claim.unableClaim');
@@ -88,21 +72,14 @@ function* fetchNotificationsSaga(action: PayloadAction<{ accountId: number; mnem
   }
 }
 
-function* deleteNotificationSaga(
-  action: PayloadAction<{ mnemonichHash; notificationId }>
-) {
+function* deleteNotificationSaga(action: PayloadAction<{ mnemonichHash; notificationId }>) {
   try {
     yield put(showLoading(deleteNotification.type));
     const { mnemonichHash, notificationId } = action.payload;
-    yield call(
-      notificationApi.deleteNofificationById,
-      mnemonichHash,
-      notificationId
-    );
+    yield call(notificationApi.deleteNofificationById, mnemonichHash, notificationId);
     yield put(deleteNotificationSuccess(notificationId));
   } catch (err) {
-    const message =
-      (err as Error).message ?? intl.get('notification.unableToDelete');
+    const message = (err as Error).message ?? intl.get('notification.unableToDelete');
     yield put(deleteNotificationFailure(message));
   }
 }
@@ -117,28 +94,21 @@ function* deleteNotificationFailureSaga(action: PayloadAction<any>) {
     showToast('error', {
       message: 'Error',
       description: message,
-      duration: 5,
+      duration: 5
     })
   );
   yield put(hideLoading(deleteNotification.type));
 }
 
-function* readNotificationSaga(
-  action: PayloadAction<{ mnemonichHash; notificationId }>
-) {
+function* readNotificationSaga(action: PayloadAction<{ mnemonichHash; notificationId }>) {
   try {
     yield put(showLoading(readNotification.type));
     const { mnemonichHash, notificationId } = action.payload;
-    const data = yield call(
-      notificationApi.readByNotificationId,
-      mnemonichHash,
-      notificationId
-    );
+    const data = yield call(notificationApi.readByNotificationId, mnemonichHash, notificationId);
     const notification = data as Notification;
     yield put(readNotificationSuccess(notification));
   } catch (err) {
-    const message =
-      (err as Error).message ?? intl.get('notification.unableToRead');
+    const message = (err as Error).message ?? intl.get('notification.unableToRead');
     yield put(readNotificationFailure(message));
   }
 }
@@ -153,15 +123,13 @@ function* readNotificationFailureSaga(action: PayloadAction<Notification>) {
     showToast('error', {
       message: 'Error',
       description: message,
-      duration: 5,
+      duration: 5
     })
   );
   yield put(hideLoading(readNotification.type));
 }
 
-function* readAllNotificationsSaga(
-  action: PayloadAction<{ accountId; mnemonichHash }>
-) {
+function* readAllNotificationsSaga(action: PayloadAction<{ accountId; mnemonichHash }>) {
   try {
     yield put(showLoading(readAllNotifications.type));
     const data = yield call(notificationApi.readAllNotifications);
@@ -170,23 +138,20 @@ function* readAllNotificationsSaga(
       readAllNotificationsSuccess({
         accountId: action.payload.accountId,
         mnemonichHash: action.payload.mnemonichHash,
-        notifications: notifications,
+        notifications: notifications
       })
     );
   } catch (err) {
-    const message =
-      (err as Error).message ?? intl.get('notification.unableToRead');
+    const message = (err as Error).message ?? intl.get('notification.unableToRead');
     yield put(readAllNotificationsFailure(message));
   }
 }
 
-function* readAllNotificationsSuccessSaga(
-  action: PayloadAction<{ accountId; mnemonichHash; notifications }>
-) {
+function* readAllNotificationsSuccessSaga(action: PayloadAction<{ accountId; mnemonichHash; notifications }>) {
   yield put(
     fetchNotifications({
       accountId: action.payload.accountId,
-      mnemonichHash: action.payload.mnemonichHash,
+      mnemonichHash: action.payload.mnemonichHash
     })
   );
   yield put(hideLoading(readAllNotifications.type));
@@ -198,7 +163,7 @@ function* readAllNotificationsFailureSaga(action: PayloadAction<Notification>) {
     showToast('error', {
       message: 'Error',
       description: message,
-      duration: 5,
+      duration: 5
     })
   );
   yield put(hideLoading(readAllNotifications.type));
@@ -214,24 +179,18 @@ function* sendXpiNotificationSaga(action: PayloadAction<string>) {
   yield put(
     showToast('success', {
       message: intl.get('toast.info'),
-      description: description,
+      description: description
     })
   );
 }
 
 function* xpiReceivedNotificationWebSocketSaga(action: PayloadAction<string>) {
   const xpiAmount = new BigNumber(action.payload);
-  let description = (
-    <>
-      <p>
-        {'Lotus received'} {xpiAmount.toLocaleString()} {currency.ticker}{' '}
-      </p>
-    </>
-  );
+  let description = `${'Lotus received'} ${xpiAmount.toLocaleString()} ${currency.ticker}`;
   yield put(
     showToast('info', {
       message: intl.get('toast.info'),
-      description: description,
+      description: description
     })
   );
 }
@@ -261,10 +220,7 @@ function* watchFetchNotifications() {
 }
 
 function* watchFetchNotificationsSuccess() {
-  yield takeLatest(
-    fetchNotificationsSuccess.type,
-    fetchNotificationsSuccessSaga
-  );
+  yield takeLatest(fetchNotificationsSuccess.type, fetchNotificationsSuccessSaga);
 }
 
 function* watchFetchNotificationsFailure() {
@@ -276,17 +232,11 @@ function* watchDeleteNotification() {
 }
 
 function* watchDeleteNotificationSuccess() {
-  yield takeLatest(
-    deleteNotificationSuccess.type,
-    deleteNotificationSuccessSaga
-  );
+  yield takeLatest(deleteNotificationSuccess.type, deleteNotificationSuccessSaga);
 }
 
 function* watchDeleteNotificationFailure() {
-  yield takeLatest(
-    deleteNotificationFailure.type,
-    deleteNotificationFailureSaga
-  );
+  yield takeLatest(deleteNotificationFailure.type, deleteNotificationFailureSaga);
 }
 
 function* watchReadNotification() {
@@ -306,10 +256,7 @@ function* watchReadAllNotifications() {
 }
 
 function* watchReadAllNotificationsSuccess() {
-  yield takeLatest(
-    readAllNotificationsSuccess.type,
-    readAllNotificationsSuccessSaga
-  );
+  yield takeLatest(readAllNotificationsSuccess.type, readAllNotificationsSuccessSaga);
 }
 
 function* watchReadAllNotificationsFailure() {
@@ -321,10 +268,7 @@ function* watchSendXpiNotificationSaga() {
 }
 
 function* watchXpiReceivedNotificationWebSocketSaga() {
-  yield takeLatest(
-    xpiReceivedNotificationWebSocket.type,
-    xpiReceivedNotificationWebSocketSaga
-  );
+  yield takeLatest(xpiReceivedNotificationWebSocket.type, xpiReceivedNotificationWebSocketSaga);
 }
 
 function* watchUserOnline() {
@@ -349,7 +293,7 @@ export default function* notificationSaga() {
       fork(watchReadNotificationFailure),
       fork(watchReadAllNotifications),
       fork(watchReadAllNotificationsSuccess),
-      fork(watchReadAllNotificationsFailure),
+      fork(watchReadAllNotificationsFailure)
     ]);
   } else {
     yield all([
@@ -368,7 +312,7 @@ export default function* notificationSaga() {
       fork(watchSendXpiNotificationSaga),
       fork(watchXpiReceivedNotificationWebSocketSaga),
       fork(watchUserOnline),
-      fork(watchUserOffline),
+      fork(watchUserOffline)
     ]);
   }
 }
