@@ -147,6 +147,11 @@ export const AppContainer = styled.div`
         margin-bottom: 0;
         height: 100vh;
       }
+      @media (max-width: 526px) {
+        > div:not(.page-message) {
+          padding-bottom: 3rem;
+        }
+      }
     }
   }
   .ant-drawer {
@@ -225,7 +230,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
   const [height, setHeight] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [navBarTitle, setNavBarTitle] = useState('');
   const router = useRouter();
   const selectedKey = router.pathname ?? '';
@@ -346,7 +351,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                     {/* <Topbar ref={ref}/> */}
                     <Topbar
                       className={`animate__animated ${
-                        isMobile ? (visible ? 'animate__fadeInDown' : 'animate__fadeOutUp') : ''
+                        isMobile && selectedKey === '/' ? (visible ? 'animate__fadeInDown' : 'animate__fadeOutUp') : ''
                       } ${hideStatusBar ? 'hide-header' : ''}`}
                     />
                     {/* @ts-ignore */}
@@ -358,10 +363,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                       onScroll={e => handleScroll(e)}
                     >
                       <SidebarShortcut />
-                      <div
-                        className="content-child animate__animated animate__fadeIn"
-                        style={{ paddingTop: isMobile && !hideStatusBar ? 64 : 0 }}
-                      >
+                      <div className="content-child" style={{ paddingTop: isMobile && !hideStatusBar ? 64 : 0 }}>
                         {children}
                       </div>
                       {/* This below is just a dummy sidebar */}
@@ -369,9 +371,13 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                       {(selectedKey === '/wallet' || selectedKey === '/') && <SidebarRanking></SidebarRanking>}
                       <DummySidebar />
                       <Footer
-                        classList={`animate__animated ${visible ? 'animate__fadeInUp' : 'animate__fadeOutDown'} ${
-                          hideStatusBar ? 'hide-footer' : ''
-                        }`}
+                        classList={`animate__animated ${
+                          isMobile && selectedKey === '/'
+                            ? visible
+                              ? 'animate__fadeInUp'
+                              : 'animate__fadeOutDown'
+                            : ''
+                        } ${hideStatusBar ? 'hide-footer' : ''}`}
                         notifications={notifications}
                       />
                     </div>

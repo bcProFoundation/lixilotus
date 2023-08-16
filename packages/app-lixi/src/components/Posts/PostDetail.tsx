@@ -192,6 +192,9 @@ const PostContentDetail = styled.div`
         height: 35vh;
       }
     }
+    .hashtag-link {
+      color: var(--color-primary);
+    }
   }
   .description-translate {
     font-weight: 400;

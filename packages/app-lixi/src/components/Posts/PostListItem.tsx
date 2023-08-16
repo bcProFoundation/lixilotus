@@ -101,6 +101,9 @@ const Content = styled.div`
     .read-more-more-module_btn__33IaH {
       font-size: 14px;
     }
+    .hashtag-link {
+      color: var(--color-primary);
+    }
   }
   .description-translate {
     font-weight: 400;
@@ -408,7 +411,10 @@ const PostListItem = ({
             </div>
           )}
           {item.uploads.length != 0 && !showMoreImage && (
-            <div className={`images-post ${imagesList.length > 1 ? 'images-post-desktop' : ''}`}>
+            <div
+              onClick={e => handlePostClick(e)}
+              className={`images-post ${imagesList.length > 1 ? 'images-post-desktop' : ''}`}
+            >
               <Gallery targetRowHeight={200} photos={imagesList.length > 3 ? imagesList.slice(0, 4) : imagesList} />
               {item.uploads.length > 3 && (
                 <Button type="link" className="show-more-desktop show-more-image no-border-btn">
