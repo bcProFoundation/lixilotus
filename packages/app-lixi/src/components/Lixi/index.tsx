@@ -398,29 +398,41 @@ const Lixi = props => {
   };
 
   const rulesLixi = () => {
-    switch (selectedLixi?.lixiType) {
-      case LixiType.Fixed:
-        return (
-          <>
-            {' '}
-            {selectedLixi.fixedValue} {currency.ticker}{' '}
-          </>
-        );
-      case LixiType.Divided:
-        return <> {selectedLixi.dividedValue} </>;
-      case LixiType.Equal:
-        return (
-          <>
-            {' '}
-            {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}{' '}
-          </>
-        );
-      default:
-        return (
-          <>
-            {selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}
-          </>
-        );
+    switch (selectedLixi?.claimType) {
+      case ClaimType.Single:
+        switch (selectedLixi?.lixiType) {
+          case LixiType.Fixed:
+            return (
+              <React.Fragment>
+                {selectedLixi.fixedValue} {currency.ticker}
+              </React.Fragment>
+            );
+          case LixiType.Divided:
+            return <React.Fragment> {selectedLixi.dividedValue} </React.Fragment>;
+          case LixiType.Random:
+            return (
+              <React.Fragment>
+                {selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}
+              </React.Fragment>
+            );
+        }
+        break;
+      case ClaimType.OneTime:
+        switch (selectedLixi?.lixiType) {
+          case LixiType.Equal:
+            return (
+              <React.Fragment>
+                {selectedLixi.subLixiBalance / selectedLixi.numberOfSubLixi} {currency.ticker}
+              </React.Fragment>
+            );
+          case LixiType.Random:
+            return (
+              <React.Fragment>
+                {selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}
+              </React.Fragment>
+            );
+        }
+        break;
     }
   };
 
@@ -700,8 +712,6 @@ const Lixi = props => {
     );
   };
 
-  console.log(selectedLixi.pageMessageSession.status);
-
   const DetailLixi = () => {
     switch (selectedLixi.claimType) {
       case ClaimType.Single:
@@ -779,10 +789,7 @@ const Lixi = props => {
                     {GroupActionBtn()}
                   </div>
                   <div style={{ margin: '2rem 0' }} className="card-lixi">
-                    <InfoSubCard
-                      typeName={intl.get('account.budget')}
-                      content={selectedLixi.amount + ' ' + currency.ticker}
-                    />
+                    <InfoSubCard typeName={intl.get('account.budget')} content={selectedLixi.subLixiBalance} />
                     <InfoSubCard typeName={intl.get('lixi.type')} content={intl.get('account.oneTimeCode')} />
                     <InfoSubCard typeName={intl.get('lixi.rules')} content={typeLixi()} />
                     <InfoSubCard typeName={intl.get('lixi.valuePerClaim')} content={rulesLixi()} />

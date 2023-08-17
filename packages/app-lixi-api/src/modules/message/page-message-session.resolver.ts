@@ -693,32 +693,47 @@ export class PageMessageSessionResolver {
       return null;
     }
 
-    const result = await this.prisma.pageMessageSession.update({
-      where: {
-        id: pageMessageSessionId
-      },
-      data: {
-        status: PageMessageSessionStatus.OPEN,
-        sessionOpenedAt: new Date()
-      },
-      include: {
-        page: {
-          include: {
-            pageAccount: true
-          }
+    const result = await this.prisma.$transaction(async prisma => {
+      const result = await prisma.pageMessageSession.update({
+        where: {
+          id: pageMessageSessionId
         },
-        account: true,
-        lixi: {
-          select: {
-            id: true,
-            name: true,
-            amount: true,
-            expiryAt: true,
-            activationAt: true,
-            status: true
+        data: {
+          status: PageMessageSessionStatus.OPEN,
+          sessionOpenedAt: new Date()
+        },
+        include: {
+          page: {
+            include: {
+              pageAccount: true
+            }
+          },
+          account: true,
+          lixi: {
+            select: {
+              id: true,
+              name: true,
+              amount: true,
+              expiryAt: true,
+              activationAt: true,
+              status: true
+            }
           }
         }
-      }
+      });
+
+      await prisma.lixi.update({
+        where: {
+          id: result.lixi!.id
+        },
+        data: {
+          status: 'locked',
+          previousStatus: result.lixi!.status,
+          updatedAt: new Date()
+        }
+      });
+
+      return result;
     });
 
     const sessionAction: SessionAction = {

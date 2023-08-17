@@ -190,27 +190,41 @@ const LixiList = ({ lixies }: LixiListProps) => {
   };
 
   const mapDataListItem = () => {
-    let newListLixiType = [];
-    lixies.forEach(lixi => {
-      let objLixiType: LixiType = {
+    const lixiList = lixies.map((lixi: Lixi) => {
+      let lixiClaimType = '';
+      let lixiRedeemed = '0';
+      let lixiRemaining = '0';
+      let lixiBudget = '0';
+
+      switch (lixi.claimType) {
+        case ClaimType.Single:
+          lixiClaimType = intl.get('account.singleCode');
+          lixiBudget = lixi.amount.toFixed(2);
+          lixiRedeemed = fromSmallestDenomination(lixi.totalClaim).toFixed(2);
+          lixiRemaining = (lixi.amount - fromSmallestDenomination(lixi.totalClaim)).toFixed(2);
+          break;
+        case ClaimType.OneTime:
+          lixiClaimType = intl.get('account.oneTimeCode');
+          lixiBudget = lixi.subLixiBalance?.toFixed(2);
+          lixiRedeemed = lixi.subLixiTotalClaim?.toFixed(2);
+          lixiRemaining = (lixi.subLixiBalance - lixi.subLixiTotalClaim).toFixed(2);
+          break;
+      }
+
+      return {
         id: lixi.id,
         name: lixi.name,
-        type: lixi.claimType == ClaimType.Single ? intl.get('account.singleCode') : intl.get('account.oneTimeCode'),
+        type: lixiClaimType,
         value: typeLixi(lixi),
-        redeemed: _.isNil(lixi.subLixiTotalClaim)
-          ? fromSmallestDenomination(lixi.totalClaim)
-          : lixi.subLixiTotalClaim.toFixed(2),
-        remaining: _.isNil(lixi?.subLixiBalance)
-          ? fromSmallestDenomination(lixi.balance)
-          : (lixi.subLixiBalance - lixi.subLixiTotalClaim).toFixed(2),
-        budget: lixi.claimType == ClaimType.Single ? lixi.amount.toFixed(3) : lixi?.subLixiBalance?.toFixed(3) || 0.0,
+        redeemed: lixiRedeemed,
+        remaining: lixiRemaining,
+        budget: lixiBudget,
         status: lixi.status,
         claimType: lixi.claimType,
         pageMessageSession: lixi.pageMessageSession
       };
-      newListLixiType.push(objLixiType);
     });
-    setListMapData(newListLixiType);
+    setListMapData(lixiList);
   };
 
   const mapActionLixi = (lixi: Lixi) => {
