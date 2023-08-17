@@ -228,8 +228,14 @@ model Account {
   pageMessageSessions PageMessageSession[]
 
   //profile 
-  avatar UploadDetail? @relation("avatar")
-  cover  UploadDetail? @relation("cover")
+  avatar           UploadDetail? @relation("avatar")
+  cover            UploadDetail? @relation("cover")
+  description      String        @default("") @map("description") @db.VarChar(1000)
+  dayOfBirth       Int?          @map("day_of_birth")
+  monthOfBirth     Int?          @map("month_of_birth")
+  yearOfBirth      Int?          @map("year_of_birth")
+  website          String        @default("") @map("website")
+  createCommentFee String        @default("0.00055") @map("create_comment_fee")
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")

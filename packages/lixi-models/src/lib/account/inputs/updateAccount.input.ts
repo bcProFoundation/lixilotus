@@ -1,4 +1,6 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
+import { IsOptional } from 'class-validator';
+import { GraphQLDateTime } from 'graphql-scalars';
 
 @InputType()
 export class UpdateAccountInput {
@@ -6,6 +8,7 @@ export class UpdateAccountInput {
   id: number;
 
   @Field(() => String, { nullable: true })
+  @IsOptional()
   name: string;
 
   @Field(() => String, { nullable: true })
@@ -16,4 +19,17 @@ export class UpdateAccountInput {
 
   @Field(() => String, { nullable: true })
   cover?: string;
+
+  @Field(() => String, { nullable: true })
+  description?: string;
+
+  @Field(() => String, { nullable: true })
+  website?: string;
+
+  @Field(() => GraphQLDateTime, { nullable: true })
+  @IsOptional()
+  birthday?: Date;
+
+  @Field(() => String)
+  createCommentFee: string;
 }

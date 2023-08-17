@@ -32,7 +32,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { WithAuthorizeAction } from '../Common/Authorization/WithAuthorizeAction';
-import { CameraOutlined, EditOutlined } from '@ant-design/icons';
+import { CameraOutlined, CompassOutlined, EditOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { ReactSVG } from 'react-svg';
 import { Account, RenameAccountCommand } from '@bcpros/lixi-models';
 import { RenameAccountModalProps } from '@components/Settings/RenameAccountModal';
@@ -200,6 +200,19 @@ const ProfileCardHeader = styled.div`
   .description-profile {
     width: 100%;
     background: #fff;
+    padding: 0 calc(0px + 48px);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    @media (max-width: 768px) {
+      margin-left: 0;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+  }
+  .follow-profile {
+    width: 100%;
     padding-left: calc(0px + 48px);
     padding-bottom: 15px;
     text-align: left;
@@ -456,7 +469,6 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   const [listsPicture, setListsPicture] = useState<any>([]);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const accountInfoTemp = useAppSelector(getAccountInfoTemp);
-  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const [
     createFollowAccountTrigger,
@@ -620,17 +632,8 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     return urlCoverAccount;
   };
 
-  const showPopulatedRenameAccountModal = (account: Account) => {
-    const command: RenameAccountCommand = {
-      id: account.id,
-      mnemonic: account.mnemonic,
-      name: account.name
-    };
-    const renameAcountModalProps: RenameAccountModalProps = {
-      account: account,
-      onOkAction: renameAccount(command)
-    };
-    dispatch(openModal('RenameAccountModal', renameAcountModalProps));
+  const showEditProfileModal = (account: Account) => {
+    dispatch(openModal('EditProfileModal', { profile: account }));
   };
 
   return (
@@ -663,7 +666,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
             </div>
             <div className="title-profile">
               <div>
-                <h2>{selectedAccount?.name}</h2>
+                <h2>{user?.name}</h2>
                 <p className="add">{user?.address.slice(6, 11) + '...' + user?.address.slice(-5)}</p>
               </div>
             </div>
@@ -692,7 +695,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                     <ReactSVG wrapper="span" className="anticon anticon-custom" src="/images/ico-edit-square.svg" />
                   }
                   className="outline-btn"
-                  onClick={() => showPopulatedRenameAccountModal(selectedAccount as Account)}
+                  onClick={() => showEditProfileModal(user)}
                 >
                   {intl.get('account.edit')}
                 </Button>
@@ -703,8 +706,24 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
               </div>
             )}
           </div>
+
+          <div className="description-profile">
+            {user.description && (
+              <p>
+                <InfoCircleOutlined /> {user.description}
+              </p>
+            )}
+
+            {user.website && (
+              <p>
+                <CompassOutlined />
+                {<a href={user.website}> {user.website}</a>}
+              </p>
+            )}
+          </div>
+
           {selectedAccountId == user.id && (
-            <div className="description-profile">
+            <div className="follow-profile">
               <Button
                 type="primary"
                 className="outline-btn"

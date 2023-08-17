@@ -212,6 +212,10 @@ export default {
   'account.burning': 'Đang đốt',
   'account.burningList': 'Đang đốt {burnForType} với {burnValue} XPI',
   'account.edit': 'Chỉnh sửa trang cá nhân',
+  'account.birthday': 'Sinh nhật',
+  'account.updateProfileSuccessful': 'Hồ sơ đã được cập nhật thành công',
+  'account.unableUpdateProfile': 'Không thể cập nhật hồ sơ.',
+
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',
   'lixi.sectionCreateLixi': 'Tạo lixi mới',
@@ -598,8 +602,8 @@ export default {
   'comment.unableCreateComment': 'Không thể tạo bình luận',
   'comment.unableToBurn': 'Không thể đốt cho bình luận',
   'comment.writeComment': 'Viết bình luận...',
-  'comment.writeCommentFree': 'Viết bình luận miễn phí trên trang này...',
-  'comment.writeCommentXpi': '{commentFee} để bình luận trên trang này...',
+  'comment.writeCommentFree': 'Viết bình luận miễn phí trên bài viết này...',
+  'comment.writeCommentXpi': '{commentFee} để bình luận trên bài viết này...',
 
   /* 18. Category */
   'category.art': 'Mỹ thuật',

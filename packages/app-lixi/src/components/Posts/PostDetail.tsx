@@ -668,6 +668,10 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       return post.page.createCommentFee != '0'
         ? intl.get('comment.writeCommentXpi', { commentFee: `${post.page.createCommentFee} ${currency.ticker}` })
         : intl.get('comment.writeCommentFree');
+    } else if (post.postAccount.createCommentFee && _.isNil(post.page)) {
+      return post.postAccount.createCommentFee != '0'
+        ? intl.get('comment.writeCommentXpi', { commentFee: `${post.postAccount.createCommentFee} ${currency.ticker}` })
+        : intl.get('comment.writeCommentFree');
     } else {
       return intl.get('comment.writeComment');
     }

@@ -545,7 +545,33 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
       }
     }
 
-    if (post.page) {
+    if (_.isNil(post.page)) {
+      if (selectedAccount.id != parseInt(post.postAccount.id) && post.postAccount.createCommentFee != '0') {
+        setIsSendingXPI(true);
+
+        try {
+          const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+          createFeeHex = await sendXpi(
+            XPI,
+            chronik,
+            walletPaths,
+            slpBalancesAndUtxos.nonSlpUtxos,
+            currency.defaultFee,
+            '',
+            false, // indicate send mode is one to one
+            null,
+            post.postAccount.address,
+            post.postAccount.createCommentFee,
+            isEncryptedOptionalOpReturnMsg,
+            fundingWif,
+            true
+          );
+        } catch (e) {
+          const message = e.message || e.error || JSON.stringify(e);
+          dispatch(sendXPIFailure(message));
+        }
+      }
+    } else {
       if (selectedAccount.id != parseInt(post.page.pageAccount.id) && post.page.createCommentFee != '0') {
         setIsSendingXPI(true);
 
@@ -648,6 +674,10 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
     if (post.page) {
       return post.page.createCommentFee != '0'
         ? intl.get('comment.writeCommentXpi', { commentFee: `${post.page.createCommentFee} ${currency.ticker}` })
+        : intl.get('comment.writeCommentFree');
+    } else if (post.postAccount.createCommentFee && _.isNil(post.page)) {
+      return post.postAccount.createCommentFee != '0'
+        ? intl.get('comment.writeCommentXpi', { commentFee: `${post.postAccount.createCommentFee} ${currency.ticker}` })
         : intl.get('comment.writeCommentFree');
     } else {
       return intl.get('comment.writeComment');

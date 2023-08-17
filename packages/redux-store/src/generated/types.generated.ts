@@ -22,8 +22,11 @@ export type Account = {
   avatar?: Maybe<Scalars['String']>;
   balance: Scalars['Int'];
   cover?: Maybe<Scalars['String']>;
+  createCommentFee: Scalars['String'];
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
+  dayOfBirth?: Maybe<Scalars['Int']>;
+  description?: Maybe<Scalars['String']>;
   encryptedMnemonic?: Maybe<Scalars['String']>;
   encryptedSecret?: Maybe<Scalars['String']>;
   followersCount?: Maybe<Scalars['Int']>;
@@ -34,6 +37,7 @@ export type Account = {
   messages?: Maybe<Array<Message>>;
   mnemonic?: Maybe<Scalars['String']>;
   mnemonicHash?: Maybe<Scalars['String']>;
+  monthOfBirth?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
   pageMessageSessions?: Maybe<Array<PageMessageSession>>;
   pages?: Maybe<Array<Page>>;
@@ -41,6 +45,8 @@ export type Account = {
   secret?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
+  website?: Maybe<Scalars['String']>;
+  yearOfBirth?: Maybe<Scalars['Int']>;
 };
 
 export type AccountConnection = {
@@ -1521,10 +1527,14 @@ export enum TokenOrderField {
 
 export type UpdateAccountInput = {
   avatar?: InputMaybe<Scalars['String']>;
+  birthday?: InputMaybe<Scalars['DateTime']>;
   cover?: InputMaybe<Scalars['String']>;
+  createCommentFee: Scalars['String'];
+  description?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   language?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
+  website?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdatePageInput = {

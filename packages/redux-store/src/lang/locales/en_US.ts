@@ -214,6 +214,9 @@ export default {
   'account.burning': 'Burning',
   'account.burningList': 'Burning {burnForType} for {burnValue} XPI',
   'account.edit': 'Edit Profile',
+  'account.birthday': 'Birthday',
+  'account.updateProfileSuccessful': 'Update the profile successful',
+  'account.unableUpdateProfile': 'Unable to update the profile.',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Create new lixi',
@@ -600,8 +603,8 @@ export default {
   'comment.unableCreateComment': 'Unable to create comment',
   'comment.unableToBurn': 'Unable to burn for the comment',
   'comment.writeComment': 'Write a comment...',
-  'comment.writeCommentFree': 'Write a free comment on this page...',
-  'comment.writeCommentXpi': '{commentFee} to comment on this page...',
+  'comment.writeCommentFree': 'Write a free comment on this post...',
+  'comment.writeCommentXpi': '{commentFee} to comment on this post...',
 
   /* 18. Category */
   'category.art': 'Art',

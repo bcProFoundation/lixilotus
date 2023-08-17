@@ -20,6 +20,7 @@ import { AuthorizationModal } from './Authorization/AuthorizationModal';
 import PageMessageLixiModal from '@components/PageMessage/PageMessageLixiModal';
 import { getCurrentThemes } from '@store/settings';
 import darkTheme from 'src/styles/themes/darkTheme';
+import { EditProfileModal } from './EditProfileModal';
 
 const modalComponentLookupTable = {
   CreateLixiConfirmationModal,
@@ -36,7 +37,8 @@ const modalComponentLookupTable = {
   FollowModal,
   PostDetailModal,
   AuthorizationModal,
-  PageMessageLixiModal
+  PageMessageLixiModal,
+  EditProfileModal
 };
 
 const ModalManager = () => {
