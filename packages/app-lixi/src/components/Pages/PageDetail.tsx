@@ -554,10 +554,10 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
 
   const { data: pageMessageSessionData, refetch: pageMessageSessionRefetch } = useUserHadMessageToPageQuery(
     {
-      accountId: selectedAccount.id,
+      accountId: selectedAccount?.id,
       pageId: page.id
     },
-    { skip: selectedAccount.id === page.pageAccountId }
+    { skip: selectedAccount?.id === page.pageAccountId || !selectedAccount?.id }
   );
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
