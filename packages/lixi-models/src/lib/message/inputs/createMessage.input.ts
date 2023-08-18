@@ -3,9 +3,9 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 
 @InputType()
 export class CreateMessageInput {
-  @Field(() => String)
-  @IsNotEmpty()
-  body: string;
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  body?: string;
 
   @Field(() => Number)
   @IsNotEmpty()
@@ -21,4 +21,8 @@ export class CreateMessageInput {
   @IsOptional()
   @Field(() => String, { nullable: true })
   tipHex?: string;
+
+  @IsOptional()
+  @Field(() => [String], { nullable: true })
+  uploadIds?: [string];
 }

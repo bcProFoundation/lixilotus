@@ -19,12 +19,29 @@ import { api } from 'src/api/baseApi';
 export type MessageFieldsFragment = {
   __typename?: 'Message';
   id: string;
-  body: string;
+  body?: string | null;
   isPageOwner?: boolean | null;
   createdAt?: any | null;
   updatedAt?: any | null;
   author: { __typename?: 'Account'; id: number; name: string; address: string };
   pageMessageSession?: { __typename?: 'PageMessageSession'; id: string } | null;
+  uploads?: Array<{
+    __typename?: 'UploadDetail';
+    id: string;
+    upload: {
+      __typename?: 'Upload';
+      id: string;
+      sha: string;
+      bucket?: string | null;
+      width?: string | null;
+      height?: string | null;
+      sha800?: string | null;
+      sha320?: string | null;
+      sha40?: string | null;
+      cfImageId?: string | null;
+      cfImageFilename?: string | null;
+    };
+  }> | null;
 };
 
 export type MessageQueryVariables = Types.Exact<{
@@ -36,12 +53,29 @@ export type MessageQuery = {
   message: {
     __typename?: 'Message';
     id: string;
-    body: string;
+    body?: string | null;
     isPageOwner?: boolean | null;
     createdAt?: any | null;
     updatedAt?: any | null;
     author: { __typename?: 'Account'; id: number; name: string; address: string };
     pageMessageSession?: { __typename?: 'PageMessageSession'; id: string } | null;
+    uploads?: Array<{
+      __typename?: 'UploadDetail';
+      id: string;
+      upload: {
+        __typename?: 'Upload';
+        id: string;
+        sha: string;
+        bucket?: string | null;
+        width?: string | null;
+        height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
+        cfImageId?: string | null;
+        cfImageFilename?: string | null;
+      };
+    }> | null;
   };
 };
 
@@ -66,12 +100,29 @@ export type MessageByPageMessageSessionIdQuery = {
       node: {
         __typename?: 'Message';
         id: string;
-        body: string;
+        body?: string | null;
         isPageOwner?: boolean | null;
         createdAt?: any | null;
         updatedAt?: any | null;
         author: { __typename?: 'Account'; id: number; name: string; address: string };
         pageMessageSession?: { __typename?: 'PageMessageSession'; id: string } | null;
+        uploads?: Array<{
+          __typename?: 'UploadDetail';
+          id: string;
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+            cfImageId?: string | null;
+            cfImageFilename?: string | null;
+          };
+        }> | null;
       };
     }> | null;
     pageInfo: {
@@ -93,12 +144,29 @@ export type CreateMessageMutation = {
   createMessage: {
     __typename?: 'Message';
     id: string;
-    body: string;
+    body?: string | null;
     isPageOwner?: boolean | null;
     createdAt?: any | null;
     updatedAt?: any | null;
     author: { __typename?: 'Account'; id: number; name: string; address: string };
     pageMessageSession?: { __typename?: 'PageMessageSession'; id: string } | null;
+    uploads?: Array<{
+      __typename?: 'UploadDetail';
+      id: string;
+      upload: {
+        __typename?: 'Upload';
+        id: string;
+        sha: string;
+        bucket?: string | null;
+        width?: string | null;
+        height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
+        cfImageId?: string | null;
+        cfImageFilename?: string | null;
+      };
+    }> | null;
   };
 };
 
@@ -113,6 +181,21 @@ export const MessageFieldsFragmentDoc = `
   }
   pageMessageSession {
     id
+  }
+  uploads {
+    id
+    upload {
+      id
+      sha
+      bucket
+      width
+      height
+      sha800
+      sha320
+      sha40
+      cfImageId
+      cfImageFilename
+    }
   }
   isPageOwner
   createdAt

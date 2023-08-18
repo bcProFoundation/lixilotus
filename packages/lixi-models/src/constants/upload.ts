@@ -4,7 +4,8 @@ export const UPLOAD_TYPES = {
   PAGE_AVATAR: 'page_avatar',
   POST: 'post',
   ACCOUNT_COVER: 'account_cover',
-  ACCOUNT_AVATAR: 'account_avatar'
+  ACCOUNT_AVATAR: 'account_avatar',
+  MESSAGE: 'message'
 };
 
 export const UPLOAD_BUTTON_TYPE = {

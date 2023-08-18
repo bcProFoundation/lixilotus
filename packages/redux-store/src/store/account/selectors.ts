@@ -58,6 +58,11 @@ export const getPostCoverUploads = createSelector(
   (accounts: AccountsState) => accounts.postCoverUploads
 );
 
+export const getMessageUploads = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.messageUploads
+);
+
 export const getEditorCache = createSelector(
   (state: RootState) => state.accounts,
   (accounts: AccountsState) => accounts.editorCache

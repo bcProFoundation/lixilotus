@@ -9,6 +9,21 @@ fragment MessageFields on Message {
   pageMessageSession {
     id
   }
+  uploads {
+    id
+    upload {
+      id
+      sha
+      bucket
+      width
+      height
+      sha800
+      sha320
+      sha40
+      cfImageId
+      cfImageFilename
+    }
+  }
   isPageOwner
   createdAt
   updatedAt

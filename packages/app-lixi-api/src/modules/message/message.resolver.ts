@@ -6,7 +6,7 @@ import {
   MessageOrder,
   PaginationArgs
 } from '@bcpros/lixi-models';
-import { PageMessageSessionStatus } from '@bcpros/lixi-prisma';
+import { MessageType, PageMessageSessionStatus } from '@bcpros/lixi-prisma';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { Inject, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
@@ -98,7 +98,7 @@ export class MessageResolver {
       throw new Error(couldNotFindAccount);
     }
 
-    const { authorId, body, isPageOwner, pageMessageSessionId, tipHex } = data;
+    const { authorId, body, isPageOwner, pageMessageSessionId, tipHex, uploadIds } = data;
 
     if (account.id !== authorId) {
       return null;
@@ -133,6 +133,22 @@ export class MessageResolver {
 
     if (pageMessageSession && pageMessageSession.status === PageMessageSessionStatus.OPEN) {
       const updatedAt = new Date();
+      let uploadDetailIds: any[] = [];
+
+      //check if there is upload
+      if (uploadIds && uploadIds.length > 0) {
+        const promises = uploadIds.map(async (id: string) => {
+          const uploadDetails = await this.prisma.uploadDetail.findFirst({
+            where: {
+              uploadId: id
+            }
+          });
+
+          return uploadDetails && uploadDetails.id;
+        });
+
+        uploadDetailIds = await Promise.all(promises);
+      }
 
       const message = await this.prisma.$transaction(async prisma => {
         const result = await prisma.message.create({
@@ -140,7 +156,18 @@ export class MessageResolver {
             body: body,
             isPageOwner: isPageOwner ?? false,
             author: { connect: { id: authorId } },
-            pageMessageSession: { connect: { id: pageMessageSessionId } }
+            pageMessageSession: { connect: { id: pageMessageSessionId } },
+            uploads: {
+              connect:
+                uploadDetailIds.length > 0
+                  ? uploadDetailIds.map((uploadDetail: any) => {
+                      return {
+                        id: uploadDetail
+                      };
+                    })
+                  : undefined
+            },
+            messageType: uploadDetailIds.length > 0 ? MessageType.IMAGE : MessageType.TEXT
           },
           include: {
             author: {
@@ -153,6 +180,12 @@ export class MessageResolver {
             pageMessageSession: {
               select: {
                 pageId: true
+              }
+            },
+            uploads: {
+              select: {
+                id: true,
+                upload: true
               }
             }
           }
@@ -240,5 +273,31 @@ export class MessageResolver {
       }
     });
     return pageMessageSession;
+  }
+
+  @ResolveField()
+  async uploads(@Parent() message: Message) {
+    const uploads = await this.prisma.uploadDetail.findMany({
+      where: {
+        messageId: message.id
+      },
+      include: {
+        upload: {
+          select: {
+            id: true,
+            sha: true,
+            bucket: true,
+            width: true,
+            height: true,
+            sha800: true,
+            sha320: true,
+            sha40: true,
+            cfImageId: true,
+            cfImageFilename: true
+          }
+        }
+      }
+    });
+    return uploads;
   }
 }

@@ -14,6 +14,7 @@ export interface AccountsState extends EntityState<Account> {
   pageCoverUpload: Upload;
   pageAvatarUpload: Upload;
   postCoverUploads: Upload[];
+  messageUploads: Upload[];
   editorCache: Nullable<string> | undefined;
   leaderBoard: Array<Account & { totalBurned: number }>;
   transactionReady: boolean;

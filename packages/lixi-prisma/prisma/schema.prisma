@@ -585,6 +585,8 @@ model UploadDetail {
   avatarAccountId         Int?             @unique
   coverAccount            Account?         @relation("cover", fields: [coverAccountId], references: [id])
   coverAccountId          Int?             @unique
+  message                 Message?         @relation(fields: [messageId], references: [id])
+  messageId               String?
 
   @@map("upload_detail")
 }
@@ -798,7 +800,7 @@ model PostTranslation {
 
 model Message {
   id                   String              @id @default(cuid())
-  body                 String
+  body                 String?
   author               Account             @relation(fields: [authorId], references: [id])
   authorId             Int                 @map("author_id")
   isPageOwner          Boolean?            @map("is_page_owner")
@@ -807,8 +809,16 @@ model Message {
   pageMessageSession   PageMessageSession? @relation(fields: [pageMessageSessionId], references: [id])
   pageMessageSessionId String?             @map("page_message_session_id")
   giveTipMessage       GiveTipMessage?
+  uploads              UploadDetail[]
+  messageType          MessageType?        @default(TEXT)
 
   @@map("message")
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
 }
 
 model PageMessageSession {

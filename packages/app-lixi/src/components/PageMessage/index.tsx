@@ -2,7 +2,7 @@ import { Avatar, Button, Input, Popover, Skeleton } from 'antd';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getSelectedAccount } from '@store/account';
+import { getMessageUploads, getSelectedAccount, removeAllMessageUpload } from '@store/account';
 import { ClosePageMessageSessionInput, CreateClaimDto } from '@bcpros/lixi-models';
 import _ from 'lodash';
 import { useInfinitePageMessageSessionByAccountId } from '@store/message/useInfinitePageMessageSessionByAccountId';
@@ -40,6 +40,8 @@ import { currency } from '@components/Common/Ticker';
 import { sendXPIFailure, sendXPISuccess } from '@store/send/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { useSwipeable } from 'react-swipeable';
+import { MultiUploader } from '@components/Common/Uploader/MultiUploader';
+import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 
 type PageMessageSessionItem = PageMessageSessionQuery['pageMessageSession'];
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
@@ -544,6 +546,8 @@ const PageMessage = () => {
   const { sendXpi } = useXPI();
   const walletStatus = useAppSelector(getWalletStatus);
   const txFee = Math.ceil(Wallet.XPI.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 }) * 2.01); //satoshi
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const messageUploads = useAppSelector(getMessageUploads);
 
   useEffect(() => {
     const isMobile = width < 526 ? true : false;
@@ -611,6 +615,12 @@ const PageMessage = () => {
     }
   }, [currentPageMessageSession]);
 
+  useEffect(() => {
+    if (messageUploads.length > 0) {
+      dispatch(removeAllMessageUpload());
+    }
+  }, [currentPageMessageSession]);
+
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } =
     useInfinitePageMessageSessionByAccountId(
       {
@@ -661,49 +671,67 @@ const PageMessage = () => {
   };
 
   const sendMessage = async () => {
-    const trimMessage = getValues('message').trim();
+    //Check if the message is not empty
+    if (getValues('message')) {
+      const trimMessage = getValues('message').trim();
 
-    if (_.isNil(getValues('message')) || trimMessage === '') {
-      return;
-    }
+      if (_.isNil(getValues('message')) || trimMessage === '') {
+        return;
+      }
 
-    //Check if message is tip
-    if (trimMessage.toLowerCase().split(' ')[0] === '/give') {
-      const amount: string = trimMessage.toLowerCase().split(' ')[1];
-      let tipHex = undefined;
+      //Check if message is tip
+      if (trimMessage.toLowerCase().split(' ')[0] === '/give') {
+        const amount: string = trimMessage.toLowerCase().split(' ')[1];
+        let tipHex = undefined;
 
-      //check if amount is valid
-      if (validateXPIAmount(amount)) {
-        tipHex = await giveXPI(trimMessage, amount).then(result => {
-          return result;
-        });
+        //check if amount is valid
+        if (validateXPIAmount(amount)) {
+          tipHex = await giveXPI(trimMessage, amount).then(result => {
+            return result;
+          });
+          const input: CreateMessageInput = {
+            authorId: selectedAccount.id,
+            body: trimMessage,
+            pageMessageSessionId: currentPageMessageSession?.id,
+            isPageOwner: isPageOwner,
+            uploadIds: messageUploads.map(upload => upload.id),
+            tipHex: tipHex
+          };
+
+          await createMessageTrigger({ input }).unwrap();
+          dispatch(sendXPISuccess(parseFloat(amount).toFixed(2)));
+          resetField('message');
+        } else {
+          dispatch(sendXPIFailure(intl.get('send.syntaxError')));
+        }
+      } else {
         const input: CreateMessageInput = {
           authorId: selectedAccount.id,
           body: trimMessage,
           pageMessageSessionId: currentPageMessageSession?.id,
-          isPageOwner: isPageOwner,
-          tipHex: tipHex
+          uploadIds: messageUploads.map(upload => upload.id),
+          isPageOwner: isPageOwner
         };
 
         await createMessageTrigger({ input }).unwrap();
-        dispatch(sendXPISuccess(parseFloat(amount).toFixed(2)));
         resetField('message');
-      } else {
-        dispatch(sendXPIFailure(intl.get('send.syntaxError')));
       }
-    } else {
+      //no message but there is picture
+    } else if (!getValues('message') && messageUploads.length > 0) {
       const input: CreateMessageInput = {
         authorId: selectedAccount.id,
-        body: trimMessage,
         pageMessageSessionId: currentPageMessageSession?.id,
+        uploadIds: messageUploads.map(upload => upload.id),
         isPageOwner: isPageOwner
       };
 
       await createMessageTrigger({ input }).unwrap();
-      resetField('message');
     }
 
     setFocus('message');
+    if (messageUploads.length > 0) {
+      dispatch(removeAllMessageUpload());
+    }
   };
 
   //return promise of tipHex and createFeeHex
@@ -817,6 +845,10 @@ const PageMessage = () => {
   const handlersSwip = useSwipeable({
     onSwipedRight: eventData => backToChat()
   });
+
+  const setUploadingImage = (value: boolean) => {
+    setIsUploadingImage(value);
+  };
 
   return (
     <StyledContainer className={`card page-message ${currentPageMessageSession ? 'detail-chat' : ''}`}>
@@ -1082,7 +1114,8 @@ const PageMessage = () => {
                   disabled={
                     isLoadingCreateMessage ||
                     currentPageMessageSession.status !== PageMessageSessionStatus.Open ||
-                    isSendingXPI
+                    isSendingXPI ||
+                    isUploadingImage
                   }
                   autoSize
                   onKeyDown={handleKeyDown}
@@ -1090,12 +1123,23 @@ const PageMessage = () => {
               )}
             />
             <IconContainer>
+              <MultiUploader
+                type={UPLOAD_TYPES.MESSAGE}
+                isIcon={true}
+                icon={'/images/ico-picture.svg'}
+                buttonName=" "
+                buttonType="text"
+                showUploadList={false}
+                loading={isUploadingImage}
+                setUploadingImage={setUploadingImage}
+              />
               <Button
                 type="text"
                 disabled={
                   isLoadingCreateMessage ||
                   currentPageMessageSession.status !== PageMessageSessionStatus.Open ||
-                  isSendingXPI
+                  isSendingXPI ||
+                  isUploadingImage
                 }
                 icon={<ReactSVG className="anticon" src="/images/ico-send-message.svg" wrapper="span" />}
                 onClick={sendMessage}

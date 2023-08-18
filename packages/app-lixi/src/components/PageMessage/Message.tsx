@@ -93,6 +93,21 @@ const Message = ({ previousMessage, message, authorAddress, senderAvatar, receiv
           {transformMessage(message.body)}
         </p>
         {isShowDate && <p className="date-message">{transformCreatedAt(message.createdAt)}</p>}
+        {message.uploads.length > 0 && (
+          <div className="message-attachments">
+            {message.uploads.map(img => {
+              return (
+                <picture key={img.id}>
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.upload.cfImageId}/public`}
+                    alt="upload"
+                    style={{ width: '50px' }}
+                  />
+                </picture>
+              );
+            })}
+          </div>
+        )}
       </StyledMessageContainer>
     </React.Fragment>
   );

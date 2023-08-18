@@ -95,6 +95,7 @@ const accountPersistConfig: PersistConfig<AccountsState> = {
     'pageCoverUpload',
     'pageAvatarUpload',
     'postCoverUploads',
+    'messageUploads',
     'leaderBoard',
     'graphqlRequestLoading',
     'productImageUploads'
