@@ -5,8 +5,11 @@ import intl from 'react-intl-universal';
 import { ReadMoreMore } from 'read-more-more';
 import ReactHtmlParser from 'react-html-parser';
 
-const PostContent = ({ post }) => {
-  const postContent = post?.content;
+const PostContent = ({ post, showTranslation }) => {
+  const postContent =
+    post?.translations && post?.translations.length > 0 && showTranslation
+      ? post.translations[0].translateContent
+      : post.content;
   let iFrameEmbed = null;
 
   const calculateLineShow = () => {

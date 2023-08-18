@@ -213,7 +213,6 @@ const StyledTranslate = styled.div`
   text-align: left;
   margin-bottom: 5px;
   font-size: 12px;
-  pointer-events: none;
 `;
 
 const PostListItemContainer = styled(List.Item)`
@@ -260,7 +259,7 @@ const PostListItem = ({
   const post: PostItem = item;
   const [showMoreImage, setShowMoreImage] = useState(true);
   const [imagesList, setImagesList] = useState([]);
-  const [showTranslation, setShowTranslation] = useState(false);
+  const [showTranslation, setShowTranslation] = useState(true);
   const ref = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowDimensions();
 
@@ -366,6 +365,8 @@ const PostListItem = ({
     setShowTranslation(!showTranslation);
   };
 
+  const handleCodeToLanguage = intl.get(`code.${post.originalLanguage}`);
+
   return (
     <PostListItemContainer className="post-list-item" key={post.id} ref={ref}>
       <CardContainer className="card-container-post">
@@ -391,25 +392,23 @@ const PostListItem = ({
         </CardHeader>
         <Content>
           <div onClick={e => handlePostClick(e)} className="description-post">
-            <PostContent post={post} />
+            <PostContent post={post} showTranslation={showTranslation} />
           </div>
 
           {post.translations &&
             post.translations.length > 0 &&
             (showTranslation ? (
               <StyledTranslate onClick={translatePost} className="post-translation">
-                {intl.get('post.hideTranslate')}
+                {intl.get('post.originTranslate', {
+                  language: handleCodeToLanguage
+                })}
               </StyledTranslate>
             ) : (
               <StyledTranslate onClick={translatePost} className="post-translation">
                 {intl.get('post.showTranslate')}
               </StyledTranslate>
             ))}
-          {showTranslation && post.translations && post.translations.length > 0 && (
-            <div className="description-translate">
-              <PostTranslate postTranslate={post.translations[0].translateContent} />
-            </div>
-          )}
+
           {item.uploads.length != 0 && !showMoreImage && (
             <div
               onClick={e => handlePostClick(e)}
