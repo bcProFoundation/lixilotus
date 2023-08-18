@@ -175,7 +175,7 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
                     return (
                       <React.Fragment key={index}>
                         <ShortcutItemAccess
-                          icon={item?.avatar ? item.avatar : ""}
+                          icon={item?.avatar ? item.avatar : ''}
                           name={item.name}
                           href={`/profile/${item.address}`}
                           onClickItem={handleCloseModal}
@@ -205,7 +205,7 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
                     return (
                       <React.Fragment key={index}>
                         <ShortcutItemAccess
-                          icon={item?.avatar ? item.avatar : ""}
+                          icon={item?.avatar ? item.avatar : ''}
                           name={item.name}
                           href={`/profile/${item.address}`}
                           onClickItem={handleCloseModal}

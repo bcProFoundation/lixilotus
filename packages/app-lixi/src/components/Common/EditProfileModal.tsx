@@ -49,7 +49,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({ profile, cla
     control
   } = useForm({
     defaultValues: {
-      id: String(profile.id),
+      id: profile.id,
       name: profile.name,
       description: profile.description,
       website: profile.website,

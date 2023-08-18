@@ -31,7 +31,9 @@ import {
   addRecentHashtagAtToken,
   removeRecentHashtagAtToken,
   clearRecentHashtagAtToken,
-  setAccountInfoTemp
+  setAccountInfoTemp,
+  setAccountAvatar,
+  setAccountCover
 } from './actions';
 import { AccountsState } from './state';
 
@@ -66,6 +68,24 @@ export const accountReducer = createReducer(initialState, builder => {
       const account = action.payload;
       accountsAdapter.upsertOne(state, account);
       state.selectedId = _.toSafeInteger(account.id) ?? null;
+    })
+    .addCase(setAccountAvatar, (state, action) => {
+      const avatar = action.payload;
+      accountsAdapter.updateOne(state, {
+        id: state.selectedId,
+        changes: {
+          avatar: avatar
+        }
+      });
+    })
+    .addCase(setAccountCover, (state, action) => {
+      const cover = action.payload;
+      accountsAdapter.updateOne(state, {
+        id: state.selectedId,
+        changes: {
+          cover: cover
+        }
+      });
     })
     .addCase(selectAccountSuccess, (state, action) => {
       const { account, lixies } = action.payload;

@@ -13,7 +13,7 @@ function* userSubcribeToPageMessageSessionSaga(action: PayloadAction<string>) {
   socket.emit('subscribePageMessageSession', payload);
 }
 
-function* userSubcribeToMultiPageMessageSessionSaga(action: PayloadAction<string>) {
+function* userSubcribeToMultiPageMessageSessionSaga(action: PayloadAction<number>) {
   const { payload } = action;
   const socket = callConfig.call.socketContext;
   socket.emit('subscribeMultiPageMessageSession', payload);

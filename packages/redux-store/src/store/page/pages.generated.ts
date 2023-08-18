@@ -51,7 +51,7 @@ export type PageQuery = {
     totalPostsBurnUp: number;
     totalPostsBurnDown: number;
     totalPostsBurnScore: number;
-    pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+    pageAccount: { __typename?: 'Account'; id: number; name: string; address: string };
     category: { __typename?: 'Category'; id: string; name: string };
   };
 };
@@ -103,7 +103,7 @@ export type PagesQuery = {
         totalPostsBurnUp: number;
         totalPostsBurnDown: number;
         totalPostsBurnScore: number;
-        pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        pageAccount: { __typename?: 'Account'; id: number; name: string; address: string };
         category: { __typename?: 'Category'; id: string; name: string };
       };
     }> | null;
@@ -164,7 +164,7 @@ export type PagesByUserIdQuery = {
         totalPostsBurnUp: number;
         totalPostsBurnDown: number;
         totalPostsBurnScore: number;
-        pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        pageAccount: { __typename?: 'Account'; id: number; name: string; address: string };
         category: { __typename?: 'Category'; id: string; name: string };
       };
     }> | null;
@@ -207,7 +207,7 @@ export type PageFieldsFragment = {
   totalPostsBurnUp: number;
   totalPostsBurnDown: number;
   totalPostsBurnScore: number;
-  pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+  pageAccount: { __typename?: 'Account'; id: number; name: string; address: string };
   category: { __typename?: 'Category'; id: string; name: string };
 };
 
@@ -246,7 +246,7 @@ export type CreatePageMutation = {
     totalPostsBurnUp: number;
     totalPostsBurnDown: number;
     totalPostsBurnScore: number;
-    pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+    pageAccount: { __typename?: 'Account'; id: number; name: string; address: string };
     category: { __typename?: 'Category'; id: string; name: string };
   };
 };
@@ -286,7 +286,7 @@ export type UpdatePageMutation = {
     totalPostsBurnUp: number;
     totalPostsBurnDown: number;
     totalPostsBurnScore: number;
-    pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+    pageAccount: { __typename?: 'Account'; id: number; name: string; address: string };
     category: { __typename?: 'Category'; id: string; name: string };
   };
 };

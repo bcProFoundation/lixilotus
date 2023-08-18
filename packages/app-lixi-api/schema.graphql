@@ -18,7 +18,7 @@ type Account {
   followersCount: Int
   followingPagesCount: Int
   followingsCount: Int
-  id: ID!
+  id: Int!
   language: String!
   messages: [Message!]
   mnemonic: String
@@ -1054,7 +1054,7 @@ input UpdateAccountInput {
   cover: String
   createCommentFee: String
   description: String
-  id: ID!
+  id: Int!
   language: String
   name: String
   website: String

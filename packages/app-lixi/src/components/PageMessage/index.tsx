@@ -991,11 +991,22 @@ const PageMessage = () => {
                     inverse
                     scrollableTarget="scrollableChatbox"
                   >
-                    {messageData.map(item => {
+                    {messageData.map((item, index) => {
+                      const checkIfPreviousMessageIsSameAuthor =
+                        index > 0 && item.author.id === messageData[index - 1].author.id;
                       return (
                         <Message
-                          senderAvatar={currentPageMessageSession?.page?.avatar}
-                          receiverAvatar={currentPageMessageSession?.account?.avatar}
+                          previousMessage={checkIfPreviousMessageIsSameAuthor}
+                          senderAvatar={
+                            isPageOwner
+                              ? currentPageMessageSession?.page?.avatar
+                              : currentPageMessageSession?.account?.avatar
+                          }
+                          receiverAvatar={
+                            isPageOwner
+                              ? currentPageMessageSession?.account?.avatar
+                              : currentPageMessageSession?.page?.avatar
+                          }
                           message={item}
                           key={item.id}
                           authorAddress={selectedAccount.address}

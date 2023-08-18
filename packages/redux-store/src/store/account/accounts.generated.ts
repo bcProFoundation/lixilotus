@@ -20,7 +20,7 @@ export type GetAccountByAddressQuery = {
   __typename?: 'Query';
   getAccountByAddress: {
     __typename?: 'Account';
-    id: string;
+    id: number;
     name: string;
     address: string;
     mnemonicHash?: string | null;
@@ -41,7 +41,7 @@ export type GetAccountByAddressQuery = {
 
 export type AccountFieldsFragment = {
   __typename?: 'Account';
-  id: string;
+  id: number;
   name: string;
   address: string;
   mnemonicHash?: string | null;
@@ -67,7 +67,7 @@ export type CreateAccountMutation = {
   __typename?: 'Mutation';
   createAccount: {
     __typename?: 'Account';
-    id: string;
+    id: number;
     name: string;
     address: string;
     mnemonicHash?: string | null;
@@ -94,7 +94,7 @@ export type ImportAccountMutation = {
   __typename?: 'Mutation';
   importAccount: {
     __typename?: 'Account';
-    id: string;
+    id: number;
     name: string;
     address: string;
     mnemonicHash?: string | null;
@@ -121,7 +121,7 @@ export type UpdateAccountMutation = {
   __typename?: 'Mutation';
   updateAccount: {
     __typename?: 'Account';
-    id: string;
+    id: number;
     name: string;
     address: string;
     mnemonicHash?: string | null;

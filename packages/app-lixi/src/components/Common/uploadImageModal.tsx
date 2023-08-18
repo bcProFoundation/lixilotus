@@ -16,7 +16,7 @@ import { showToast } from '@store/toast/actions';
 import intl from 'react-intl-universal';
 import { closeModal } from '@store/modal/actions';
 import { useState } from 'react';
-import { setAccount } from '@store/account';
+import { setAccount, setAccountAvatar, setAccountCover } from '@store/account';
 import { useUpdateAccountMutation } from '@store/account/accounts.generated';
 
 export interface UploadAvatarCoverProps {
@@ -123,7 +123,11 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
           duration: 5
         })
       );
-      dispatch(setAccount({ ...accountUpdated.updateAccount }));
+      if (isAvatar) {
+        dispatch(setAccountAvatar(accountUpdated.updateAccount.avatar));
+      } else {
+        dispatch(setAccountCover(accountUpdated.updateAccount.cover));
+      }
       dispatch(closeModal());
     } catch (error) {
       const message = errorOnUpdateAccount?.message ?? intl.get('page.unableUpdateAccount');

@@ -573,7 +573,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       }
 
       if (post.page) {
-        if (selectedAccount.id != parseInt(post.page.pageAccount.id) && post.page.createCommentFee != '0') {
+        if (selectedAccount.id != post.page.pageAccount.id && post.page.createCommentFee != '0') {
           try {
             const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
             createFeeHex = await sendXpi(

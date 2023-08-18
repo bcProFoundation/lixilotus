@@ -1,10 +1,10 @@
-import { Field, ID, InputType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
 import { GraphQLDateTime } from 'graphql-scalars';
 
 @InputType()
 export class UpdateAccountInput {
-  @Field(() => ID)
+  @Field(() => Number)
   id: number;
 
   @Field(() => String, { nullable: true })

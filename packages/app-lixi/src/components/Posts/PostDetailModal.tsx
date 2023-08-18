@@ -546,7 +546,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
     }
 
     if (_.isNil(post.page)) {
-      if (selectedAccount.id != parseInt(post.postAccount.id) && post.postAccount.createCommentFee != '0') {
+      if (selectedAccount.id != post.postAccount.id && post.postAccount.createCommentFee != '0') {
         setIsSendingXPI(true);
 
         try {
@@ -572,7 +572,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
         }
       }
     } else {
-      if (selectedAccount.id != parseInt(post.page.pageAccount.id) && post.page.createCommentFee != '0') {
+      if (selectedAccount.id != post.page.pageAccount.id && post.page.createCommentFee != '0') {
         setIsSendingXPI(true);
 
         try {

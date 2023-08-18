@@ -23,7 +23,7 @@ export type MessageFieldsFragment = {
   isPageOwner?: boolean | null;
   createdAt?: any | null;
   updatedAt?: any | null;
-  author: { __typename?: 'Account'; id: string; name: string; address: string };
+  author: { __typename?: 'Account'; id: number; name: string; address: string };
   pageMessageSession?: { __typename?: 'PageMessageSession'; id: string } | null;
 };
 
@@ -40,7 +40,7 @@ export type MessageQuery = {
     isPageOwner?: boolean | null;
     createdAt?: any | null;
     updatedAt?: any | null;
-    author: { __typename?: 'Account'; id: string; name: string; address: string };
+    author: { __typename?: 'Account'; id: number; name: string; address: string };
     pageMessageSession?: { __typename?: 'PageMessageSession'; id: string } | null;
   };
 };
@@ -70,7 +70,7 @@ export type MessageByPageMessageSessionIdQuery = {
         isPageOwner?: boolean | null;
         createdAt?: any | null;
         updatedAt?: any | null;
-        author: { __typename?: 'Account'; id: string; name: string; address: string };
+        author: { __typename?: 'Account'; id: number; name: string; address: string };
         pageMessageSession?: { __typename?: 'PageMessageSession'; id: string } | null;
       };
     }> | null;
@@ -97,7 +97,7 @@ export type CreateMessageMutation = {
     isPageOwner?: boolean | null;
     createdAt?: any | null;
     updatedAt?: any | null;
-    author: { __typename?: 'Account'; id: string; name: string; address: string };
+    author: { __typename?: 'Account'; id: number; name: string; address: string };
     pageMessageSession?: { __typename?: 'PageMessageSession'; id: string } | null;
   };
 };

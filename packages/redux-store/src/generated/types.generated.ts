@@ -32,7 +32,7 @@ export type Account = {
   followersCount?: Maybe<Scalars['Int']>;
   followingPagesCount?: Maybe<Scalars['Int']>;
   followingsCount?: Maybe<Scalars['Int']>;
-  id: Scalars['ID'];
+  id: Scalars['Int'];
   language: Scalars['String'];
   messages?: Maybe<Array<Message>>;
   mnemonic?: Maybe<Scalars['String']>;
@@ -1531,7 +1531,7 @@ export type UpdateAccountInput = {
   cover?: InputMaybe<Scalars['String']>;
   createCommentFee?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
+  id: Scalars['Int'];
   language?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   website?: InputMaybe<Scalars['String']>;

@@ -33,17 +33,17 @@ export type CommentQuery = {
     danaBurnScore: number;
     createdAt: any;
     updatedAt: any;
-    commentAccount: { __typename?: 'Account'; address: string; id: string; name: string; avatar?: string | null };
+    commentAccount: { __typename?: 'Account'; address: string; id: number; name: string; avatar?: string | null };
     commentTo: {
       __typename?: 'Post';
       id: string;
-      postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+      postAccount: { __typename?: 'Account'; address: string; id: number; name: string };
       page?: {
         __typename?: 'Page';
         avatar?: string | null;
         name: string;
         id: string;
-        pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        pageAccount: { __typename?: 'Account'; id: number; name: string; address: string };
       } | null;
     };
   };
@@ -78,17 +78,17 @@ export type CommentsToPostIdQuery = {
         danaBurnScore: number;
         createdAt: any;
         updatedAt: any;
-        commentAccount: { __typename?: 'Account'; address: string; id: string; name: string; avatar?: string | null };
+        commentAccount: { __typename?: 'Account'; address: string; id: number; name: string; avatar?: string | null };
         commentTo: {
           __typename?: 'Post';
           id: string;
-          postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+          postAccount: { __typename?: 'Account'; address: string; id: number; name: string };
           page?: {
             __typename?: 'Page';
             avatar?: string | null;
             name: string;
             id: string;
-            pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+            pageAccount: { __typename?: 'Account'; id: number; name: string; address: string };
           } | null;
         };
       };
@@ -114,17 +114,17 @@ export type CommentFieldsFragment = {
   danaBurnScore: number;
   createdAt: any;
   updatedAt: any;
-  commentAccount: { __typename?: 'Account'; address: string; id: string; name: string; avatar?: string | null };
+  commentAccount: { __typename?: 'Account'; address: string; id: number; name: string; avatar?: string | null };
   commentTo: {
     __typename?: 'Post';
     id: string;
-    postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    postAccount: { __typename?: 'Account'; address: string; id: number; name: string };
     page?: {
       __typename?: 'Page';
       avatar?: string | null;
       name: string;
       id: string;
-      pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+      pageAccount: { __typename?: 'Account'; id: number; name: string; address: string };
     } | null;
   };
 };
@@ -146,17 +146,17 @@ export type CreateCommentMutation = {
     danaBurnScore: number;
     createdAt: any;
     updatedAt: any;
-    commentAccount: { __typename?: 'Account'; address: string; id: string; name: string; avatar?: string | null };
+    commentAccount: { __typename?: 'Account'; address: string; id: number; name: string; avatar?: string | null };
     commentTo: {
       __typename?: 'Post';
       id: string;
-      postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+      postAccount: { __typename?: 'Account'; address: string; id: number; name: string };
       page?: {
         __typename?: 'Page';
         avatar?: string | null;
         name: string;
         id: string;
-        pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        pageAccount: { __typename?: 'Account'; id: number; name: string; address: string };
       } | null;
     };
   };

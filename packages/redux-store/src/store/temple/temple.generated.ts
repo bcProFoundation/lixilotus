@@ -32,7 +32,7 @@ export type TempleFieldsFragment = {
   dateOfCompleted?: any | null;
   createdAt?: any | null;
   updatedAt?: any | null;
-  account: { __typename?: 'Account'; address: string; id: string; name: string };
+  account: { __typename?: 'Account'; address: string; id: number; name: string };
   avatar?: {
     __typename?: 'UploadDetail';
     id: string;
@@ -90,7 +90,7 @@ export type TempleQuery = {
     dateOfCompleted?: any | null;
     createdAt?: any | null;
     updatedAt?: any | null;
-    account: { __typename?: 'Account'; address: string; id: string; name: string };
+    account: { __typename?: 'Account'; address: string; id: number; name: string };
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;
@@ -160,7 +160,7 @@ export type TemplesQuery = {
         dateOfCompleted?: any | null;
         createdAt?: any | null;
         updatedAt?: any | null;
-        account: { __typename?: 'Account'; address: string; id: string; name: string };
+        account: { __typename?: 'Account'; address: string; id: number; name: string };
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
@@ -237,7 +237,7 @@ export type TempleBySearchQuery = {
         dateOfCompleted?: any | null;
         createdAt?: any | null;
         updatedAt?: any | null;
-        account: { __typename?: 'Account'; address: string; id: string; name: string };
+        account: { __typename?: 'Account'; address: string; id: number; name: string };
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
@@ -305,7 +305,7 @@ export type CreateTempleMutation = {
     dateOfCompleted?: any | null;
     createdAt?: any | null;
     updatedAt?: any | null;
-    account: { __typename?: 'Account'; address: string; id: string; name: string };
+    account: { __typename?: 'Account'; address: string; id: number; name: string };
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;

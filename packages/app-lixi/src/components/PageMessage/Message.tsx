@@ -5,6 +5,7 @@ import { transformCreatedAt } from '@containers/Sidebar/SideBarShortcut';
 import reactStringReplace from 'react-string-replace';
 
 type MessageItem = {
+  previousMessage?: boolean; //MessageItem
   message: MessageQuery['message']; //MessageItem
   authorAddress: string; //Need address here to check own message
   senderAvatar?: string;
@@ -43,7 +44,7 @@ const StyledMessageContainer = styled.div`
   }
 `;
 
-const Message = ({ message, authorAddress, senderAvatar, receiverAvatar }: MessageItem) => {
+const Message = ({ previousMessage, message, authorAddress, senderAvatar, receiverAvatar }: MessageItem) => {
   const [isShowDate, setIsShowDate] = useState(false);
 
   const transformMessage = (message: string) => {
@@ -62,9 +63,32 @@ const Message = ({ message, authorAddress, senderAvatar, receiverAvatar }: Messa
     return replacedText;
   };
 
+  const senderHasAvatar = (senderAvatar: string) => {
+    if (senderAvatar) return senderAvatar;
+    return '';
+  };
+
+  const receiverHasAvatar = (receiverAvatar: string) => {
+    if (receiverAvatar) return receiverAvatar;
+    return '';
+  };
+
   return (
     <React.Fragment>
       <StyledMessageContainer className={message.author.address === authorAddress ? 'author-address' : ''}>
+        {!previousMessage && (
+          <picture>
+            <img
+              alt="avatar"
+              src={
+                message.author.address === authorAddress
+                  ? senderHasAvatar(senderAvatar)
+                  : receiverHasAvatar(receiverAvatar)
+              }
+              style={{ width: 20 }}
+            />
+          </picture>
+        )}
         <p className="message-txt" onClick={() => setIsShowDate(!isShowDate)}>
           {transformMessage(message.body)}
         </p>
