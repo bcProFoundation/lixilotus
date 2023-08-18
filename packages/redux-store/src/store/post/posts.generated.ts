@@ -59,7 +59,7 @@ export type PostQuery = {
       id: string;
       name: string;
       avatar?: string | null;
-      createCommentFee: string;
+      createCommentFee?: string | null;
     };
     page?: {
       __typename?: 'Page';
@@ -142,7 +142,7 @@ export type PostsQuery = {
           id: string;
           name: string;
           avatar?: string | null;
-          createCommentFee: string;
+          createCommentFee?: string | null;
         };
         page?: {
           __typename?: 'Page';
@@ -233,7 +233,7 @@ export type OrphanPostsQuery = {
           id: string;
           name: string;
           avatar?: string | null;
-          createCommentFee: string;
+          createCommentFee?: string | null;
         };
         page?: {
           __typename?: 'Page';
@@ -324,7 +324,7 @@ export type PostsByPageIdQuery = {
           id: string;
           name: string;
           avatar?: string | null;
-          createCommentFee: string;
+          createCommentFee?: string | null;
         };
         page?: {
           __typename?: 'Page';
@@ -415,7 +415,7 @@ export type PostsByUserIdQuery = {
           id: string;
           name: string;
           avatar?: string | null;
-          createCommentFee: string;
+          createCommentFee?: string | null;
         };
         page?: {
           __typename?: 'Page';
@@ -506,7 +506,7 @@ export type PostsByHashtagIdQuery = {
           id: string;
           name: string;
           avatar?: string | null;
-          createCommentFee: string;
+          createCommentFee?: string | null;
         };
         page?: {
           __typename?: 'Page';
@@ -597,7 +597,7 @@ export type PostsByTokenIdQuery = {
           id: string;
           name: string;
           avatar?: string | null;
-          createCommentFee: string;
+          createCommentFee?: string | null;
         };
         page?: {
           __typename?: 'Page';
@@ -682,7 +682,7 @@ export type PostsBySearchQuery = {
           id: string;
           name: string;
           avatar?: string | null;
-          createCommentFee: string;
+          createCommentFee?: string | null;
         };
         page?: {
           __typename?: 'Page';
@@ -769,7 +769,7 @@ export type PostsBySearchWithHashtagQuery = {
           id: string;
           name: string;
           avatar?: string | null;
-          createCommentFee: string;
+          createCommentFee?: string | null;
         };
         page?: {
           __typename?: 'Page';
@@ -857,7 +857,7 @@ export type PostsBySearchWithHashtagAtPageQuery = {
           id: string;
           name: string;
           avatar?: string | null;
-          createCommentFee: string;
+          createCommentFee?: string | null;
         };
         page?: {
           __typename?: 'Page';
@@ -945,7 +945,7 @@ export type PostsBySearchWithHashtagAtTokenQuery = {
           id: string;
           name: string;
           avatar?: string | null;
-          createCommentFee: string;
+          createCommentFee?: string | null;
         };
         page?: {
           __typename?: 'Page';
@@ -1017,7 +1017,7 @@ export type PostFieldsFragment = {
     id: string;
     name: string;
     avatar?: string | null;
-    createCommentFee: string;
+    createCommentFee?: string | null;
   };
   page?: {
     __typename?: 'Page';
@@ -1076,7 +1076,7 @@ export type PostMeiliFieldsFragment = {
     id: string;
     name: string;
     avatar?: string | null;
-    createCommentFee: string;
+    createCommentFee?: string | null;
   };
   page?: {
     __typename?: 'Page';
@@ -1144,7 +1144,7 @@ export type CreatePostMutation = {
       id: string;
       name: string;
       avatar?: string | null;
-      createCommentFee: string;
+      createCommentFee?: string | null;
     };
     page?: {
       __typename?: 'Page';
@@ -1213,7 +1213,7 @@ export type UpdatePostMutation = {
       id: string;
       name: string;
       avatar?: string | null;
-      createCommentFee: string;
+      createCommentFee?: string | null;
     };
     page?: {
       __typename?: 'Page';

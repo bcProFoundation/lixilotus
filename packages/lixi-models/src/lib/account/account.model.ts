@@ -92,6 +92,6 @@ export class Account {
   @IsOptional()
   yearOfBirth?: number;
 
-  @Field(() => String)
-  createCommentFee: string;
+  @Field(() => String, { nullable: true })
+  createCommentFee?: string;
 }

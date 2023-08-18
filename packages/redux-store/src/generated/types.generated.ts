@@ -22,7 +22,7 @@ export type Account = {
   avatar?: Maybe<Scalars['String']>;
   balance: Scalars['Int'];
   cover?: Maybe<Scalars['String']>;
-  createCommentFee: Scalars['String'];
+  createCommentFee?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   dayOfBirth?: Maybe<Scalars['Int']>;
@@ -1529,7 +1529,7 @@ export type UpdateAccountInput = {
   avatar?: InputMaybe<Scalars['String']>;
   birthday?: InputMaybe<Scalars['DateTime']>;
   cover?: InputMaybe<Scalars['String']>;
-  createCommentFee: Scalars['String'];
+  createCommentFee?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   language?: InputMaybe<Scalars['String']>;

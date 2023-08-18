@@ -30,6 +30,6 @@ export class UpdateAccountInput {
   @IsOptional()
   birthday?: Date;
 
-  @Field(() => String)
-  createCommentFee: string;
+  @Field(() => String, { nullable: true })
+  createCommentFee?: string;
 }

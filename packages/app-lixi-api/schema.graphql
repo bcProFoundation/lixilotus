@@ -7,7 +7,7 @@ type Account {
   avatar: String
   balance: Int!
   cover: String
-  createCommentFee: String!
+  createCommentFee: String
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -1052,7 +1052,7 @@ input UpdateAccountInput {
   avatar: String
   birthday: DateTime
   cover: String
-  createCommentFee: String!
+  createCommentFee: String
   description: String
   id: ID!
   language: String
