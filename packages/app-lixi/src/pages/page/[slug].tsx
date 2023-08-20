@@ -36,7 +36,7 @@ const PageDetailPage = props => {
             openGraph={{
               url: canonicalUrl,
               title: 'Lixi',
-              description: currentDataPageQuery.page.description || 'Save your attention save the world!',
+              description: currentDataPageQuery.page.description || 'Your Attention Your Money!',
               images: [{ url: '' }],
               site_name: 'Lixi'
             }}

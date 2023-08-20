@@ -33,7 +33,7 @@ const PostDetailPage = props => {
           title: 'Lixi',
           description: post.content
             ? `${post.postAccount.name} at Lixi: "${stripHtml(post.content).result}"`
-            : 'Save your attention save the world!',
+            : 'Your Attention Your Money!',
           images: [
             {
               url: `${process.env.NEXT_PUBLIC_LIXI_URL}images/lixilotus-logo.svg`,

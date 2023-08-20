@@ -28,7 +28,7 @@ const ClaimPage = props => {
         openGraph={{
           url: canonicalUrl,
           title: 'Lixi',
-          description: claim.message ?? 'Save your attention save the world!',
+          description: claim.message ?? 'Your Attention Your Money!',
           images: [{ url: imageUrl }],
           site_name: 'Lixi'
         }}
