@@ -27,7 +27,7 @@ const ProfileDetailPage = props => {
         <>
           <NextSeo
             title={account.name}
-            description="The lixi program send you a small gift ."
+            description="A place where you have complete control on what you want to see and what you want others to see collectively. No platform influence. No platform ads."
             canonical={canonicalUrl}
             openGraph={{
               url: canonicalUrl,
