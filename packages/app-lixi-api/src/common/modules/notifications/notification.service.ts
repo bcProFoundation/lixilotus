@@ -1,5 +1,11 @@
 // import { NotificationDto as Notification, NotificationTypeDto as NotificationType } from '@bcpros/lixi-models';
-import { BurnCommand, BurnType, NotificationDto, SendNotificationJobData } from '@bcpros/lixi-models';
+import {
+  BurnCommand,
+  BurnType,
+  NotificationDto,
+  SendNotificationJobData,
+  WebpushNotification
+} from '@bcpros/lixi-models';
 import { Account } from '@bcpros/lixi-prisma';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -129,6 +135,63 @@ export class NotificationService {
         notification: { ...notif } as NotificationDto
       };
       await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
+    });
+  }
+
+  async dispatchMessagePushNotification(webpushNotification: WebpushNotification) {
+    if (!webpushNotification.recipientId) {
+      const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+      this.logger.error(accountNotExistMessage);
+      return;
+    }
+
+    // get recipient account
+    const recipientAccount = await this.prisma.account.findUnique({
+      where: {
+        id: webpushNotification.recipientId
+      }
+    });
+    if (!recipientAccount) {
+      const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+      this.logger.error(new VError(accountNotExistMessage));
+      return;
+    }
+
+    // Find all the devices which are currently only
+    // and associated to that paticular address
+    const deviceIds = await this.redis.smembers(`online:user:${recipientAccount.address}`);
+
+    // The rooms are the list of devices
+    // Each room is a device
+    const rooms = deviceIds.map(deviceId => {
+      return `device:${deviceId}`;
+    });
+
+    // We send both webpush and webocket notification
+    // If the window is focused then we not show the webpush notification
+    // Find the associated addresses
+    const subscribers = await this.prisma.webpushSubscriber.findMany({
+      where: {
+        address: recipientAccount.address
+      }
+    });
+
+    _.map(subscribers, async subscriber => {
+      const pushSubscription: PushSubscription = {
+        endpoint: subscriber.endpoint,
+        keys: {
+          p256dh: subscriber.p256dh,
+          auth: subscriber.auth
+        }
+      };
+
+      const webpushJobData: WebpushNotificationJobData = {
+        pushSubObj: pushSubscription,
+        address: subscriber.address,
+        notification: { ...webpushNotification }
+      };
+
+      await this.webpushQueue.add('send-webpush-notification', webpushJobData);
     });
   }
 

@@ -1,4 +1,6 @@
+import { WebpushNotification } from '@bcpros/lixi-models';
 import { Notification } from '@bcpros/lixi-prisma';
+
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
@@ -12,7 +14,7 @@ const TTL = 86400;
 export interface WebpushNotificationJobData {
   pushSubObj: webPush.PushSubscription;
   address: string;
-  notification: Notification;
+  notification: Notification | WebpushNotification;
 }
 
 @Injectable()

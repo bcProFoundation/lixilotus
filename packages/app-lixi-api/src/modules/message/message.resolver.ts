@@ -4,9 +4,11 @@ import {
   Message,
   MessageConnection,
   MessageOrder,
-  PaginationArgs
+  PaginationArgs,
+  NotificationDto,
+  WebpushNotification
 } from '@bcpros/lixi-models';
-import { MessageType, PageMessageSessionStatus } from '@bcpros/lixi-prisma';
+import { MessageType, NotificationLevel, PageMessageSessionStatus } from '@bcpros/lixi-prisma';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { Inject, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
@@ -27,6 +29,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import BCHJS from '@bcpros/xpi-js';
 import { ChronikClient } from 'chronik-client';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
 
 const pubSub = new PubSub();
 
@@ -41,7 +44,8 @@ export class MessageResolver {
     @I18n() private i18n: I18nService,
     private notificationGateway: NotificationGateway,
     @Inject('xpijs') private XPI: BCHJS,
-    @InjectChronikClient('xpi') private chronik: ChronikClient
+    @InjectChronikClient('xpi') private chronik: ChronikClient,
+    private readonly notificationService: NotificationService
   ) {}
 
   @Subscription(() => Message)
@@ -120,6 +124,7 @@ export class MessageResolver {
         },
         page: {
           select: {
+            name: true,
             pageAccount: {
               select: {
                 id: true,
@@ -254,6 +259,17 @@ export class MessageResolver {
         pageMessageSessionId: pageMessageSessionId,
         updatedAt: updatedAt
       };
+
+      const webpushNotification: WebpushNotification = {
+        senderId: authorId,
+        recipientId: isPageOwner ? pageMessageSession.account.id : pageMessageSession.page.pageAccount.id,
+        message: body,
+        senderName: account.name,
+        url: `/page-message`,
+        title: isPageOwner ? `${pageMessageSession.page.name} sent you a message` : `${account.name} sent you a message`
+      };
+
+      await this.notificationService.dispatchMessagePushNotification(webpushNotification);
 
       this.notificationGateway.publishMessage(pageMessageSessionId!, result);
 
