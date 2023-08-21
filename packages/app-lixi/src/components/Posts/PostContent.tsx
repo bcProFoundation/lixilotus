@@ -25,8 +25,8 @@ const PostContent = ({ post, showTranslation }) => {
 
   const content: any = parse(postContent, {
     replace: (domNode: any) => {
-      if (domNode.attribs && domNode.attribs.class === 'EditorLexical_hashtag') {
-        const hashtag: string = domNode.children[0].data;
+      if (domNode?.attribs && domNode?.attribs?.class === 'EditorLexical_hashtag') {
+        const hashtag: string = domNode?.children[0]?.data;
         return (
           <span
             rel="noopener noreferrer"

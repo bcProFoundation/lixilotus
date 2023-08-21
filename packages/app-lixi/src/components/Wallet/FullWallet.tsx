@@ -56,7 +56,7 @@ const TransactionHistory = styled.div`
   }
   .content-transaction {
     margin-top: 1rem;
-    height: 400px;
+    height: 42vh;
     overflow: scroll;
     .tx-history-header {
       text-align: left;
@@ -74,6 +74,8 @@ const TransactionHistory = styled.div`
       border-radius: 1rem;
       background: #fff;
       margin-bottom: 8px;
+      padding: 0.5rem;
+      min-height: 80px;
       .ant-list-item-meta-content {
         display: flex;
         flex-direction: column;
@@ -94,10 +96,14 @@ const TransactionHistory = styled.div`
           p {
             margin: 0;
             text-align: left;
+            font-size: 12px;
           }
           .tx-action {
             letter-spacing: 0.25px;
             color: #001e2e;
+            button {
+              padding: 0;
+            }
           }
           .tx-memo {
             letter-spacing: 0.25px;
@@ -107,7 +113,6 @@ const TransactionHistory = styled.div`
         }
       }
       .tx-info {
-        margin-top: 24px;
         .tx-status {
           background: linear-gradient(0deg, rgba(0, 101, 141, 0.08), rgba(0, 101, 141, 0.08)), #fafafb;
           border-radius: 4px;
@@ -119,6 +124,7 @@ const TransactionHistory = styled.div`
           font-size: 12px;
           color: rgba(0, 30, 46, 0.6);
           letter-spacing: 0.25px;
+          margin: 0;
         }
       }
       .icon-reply {
@@ -126,8 +132,8 @@ const TransactionHistory = styled.div`
       }
     }
   }
-  @media (max-width: 768px) {
-    padding: 0;
+  @media (max-width: 968px) {
+    padding: 0.5rem;
   }
 `;
 
@@ -139,6 +145,11 @@ const FullWalletWrapper = styled.div`
   border-radius: var(--border-radius-primary);
   @media (max-width: 968px) {
     border: none;
+  }
+  @media (max-width: 526px) {
+    .redeem-box {
+      padding: 0.5rem;
+    }
   }
 `;
 

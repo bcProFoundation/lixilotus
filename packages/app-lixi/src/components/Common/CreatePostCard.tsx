@@ -418,6 +418,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           title="Create Post"
           open={enableEditor}
           footer={null}
+          maskClosable={false}
           onCancel={() => setEnableEditor(false)}
         >
           <UserCreate>

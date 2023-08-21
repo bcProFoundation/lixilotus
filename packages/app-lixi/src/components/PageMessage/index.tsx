@@ -1,8 +1,8 @@
-import { Avatar, Button, Input, Popover, Skeleton } from 'antd';
+import { Avatar, Button, Input, Popover, Skeleton, Spin } from 'antd';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getMessageUploads, getSelectedAccount, removeAllMessageUpload } from '@store/account';
+import { getMessageUploads, getSelectedAccount, removeAllMessageUpload, removeUpload } from '@store/account';
 import { ClosePageMessageSessionInput, CreateClaimDto } from '@bcpros/lixi-models';
 import _ from 'lodash';
 import { useInfinitePageMessageSessionByAccountId } from '@store/message/useInfinitePageMessageSessionByAccountId';
@@ -42,6 +42,10 @@ import { fromSmallestDenomination } from '@utils/cashMethods';
 import { useSwipeable } from 'react-swipeable';
 import { MultiUploader } from '@components/Common/Uploader/MultiUploader';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
+import { URL_AVATAR_DEFAULT } from '@components/Profile/ProfileDetail';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
+import { LoadingIcon } from '@components/Layout/MainLayout';
+import { CloseOutlined } from '@ant-design/icons';
 
 type PageMessageSessionItem = PageMessageSessionQuery['pageMessageSession'];
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
@@ -220,13 +224,23 @@ const InputContainer = styled.div`
   border-radius: 12px;
   border: 2px solid #e2e8f0;
   background: #fff;
-  margin: 0.5rem 1rem 1rem 1rem;
+  margin: 0;
   height: fit-content;
   .ant-input {
     height: 100%;
     max-height: 25vh;
     &[disabled] {
       background: transparent;
+    }
+  }
+  .send-btn {
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    display: flex;
+    background: transparent !important;
+    &:hover {
+      background: transparent !important;
     }
   }
 `;
@@ -242,6 +256,39 @@ const IconContainer = styled.div`
 const StyledInfiniteScroll = styled(InfiniteScroll)`
   display: flex;
   flex-direction: column-reverse;
+  gap: 4px;
+`;
+
+const StyledFooterChat = styled.div`
+  display: grid;
+  align-items: center;
+  grid-template-columns: max-content 1fr;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
+`;
+
+const StyledUploadImage = styled.div`
+  display: flex;
+  gap: 8px;
+  max-width: 100%;
+  overflow: auto;
+  text-align: left;
+  padding: 1rem;
+  .child-photo {
+    position: relative;
+    img {
+      max-width: 20vw;
+      max-height: 30vh;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    button {
+      position: absolute;
+      margin: 0.5rem;
+      z-index: 999;
+      top: 0;
+      right: 0;
+    }
+  }
 `;
 
 const LixiContainer = styled.div`
@@ -612,6 +659,8 @@ const PageMessage = () => {
       currentPageMessageSession?.page?.pageAccount?.address === selectedAccount.address
     ) {
       setIsPageOwner(true);
+    } else {
+      setIsPageOwner(false);
     }
   }, [currentPageMessageSession]);
 
@@ -655,6 +704,7 @@ const PageMessage = () => {
     isFetching: messageIsFetching,
     isFetchingNext: messageIsFetchingNext
   } = useInfiniteMessageByPageMessageSessionId({
+    first: 20,
     id: currentPageMessageSession?.id,
     orderBy: {
       direction: OrderDirection.Desc,
@@ -850,6 +900,12 @@ const PageMessage = () => {
     setIsUploadingImage(value);
   };
 
+  const handleRemove = imgId => {
+    if (imgId) {
+      dispatch(removeUpload({ type: 'message', id: imgId }));
+    }
+  };
+
   return (
     <StyledContainer className={`card page-message ${currentPageMessageSession ? 'detail-chat' : ''}`}>
       <StyledSideContainer
@@ -1022,6 +1078,7 @@ const PageMessage = () => {
                     }
                     inverse
                     scrollableTarget="scrollableChatbox"
+                    scrollThreshold={0.7}
                   >
                     {messageData.map((item, index) => {
                       const checkIfPreviousMessageIsSameAuthor =
@@ -1031,13 +1088,13 @@ const PageMessage = () => {
                           previousMessage={checkIfPreviousMessageIsSameAuthor}
                           senderAvatar={
                             isPageOwner
-                              ? currentPageMessageSession?.page?.avatar
+                              ? currentPageMessageSession?.page?.avatar || URL_AVATAR_DEFAULT
                               : currentPageMessageSession?.account?.avatar
                           }
                           receiverAvatar={
                             isPageOwner
                               ? currentPageMessageSession?.account?.avatar
-                              : currentPageMessageSession?.page?.avatar
+                              : currentPageMessageSession?.page?.avatar || URL_AVATAR_DEFAULT
                           }
                           message={item}
                           key={item.id}
@@ -1087,65 +1144,97 @@ const PageMessage = () => {
           )}
         </StyledChatbox>
         {currentPageMessageSession && (
-          <InputContainer className="input-page-message">
-            <Controller
-              name="message"
-              control={control}
-              rules={{
-                required: true,
-                validate: value => {
-                  return !!value.trim();
-                }
-              }}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <TextArea
-                  ref={ref}
-                  style={{ border: '0', borderRadius: '12px' }}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  value={value}
-                  placeholder={
-                    currentPageMessageSession.status === PageMessageSessionStatus.Open
-                      ? 'Aa'
-                      : currentPageMessageSession.status === PageMessageSessionStatus.Pending
-                      ? `${intl.get('messenger.acceptToChat')}`
-                      : `${intl.get('messenger.sessionClose')}`
-                  }
+          <>
+            {messageUploads.length > 0 && (
+              <StyledUploadImage>
+                <PhotoProvider loadingElement={<Spin indicator={LoadingIcon} />}>
+                  {messageUploads.map((img, index) => (
+                    <>
+                      <PhotoView
+                        key={index}
+                        src={`${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img?.cfImageId}/public`}
+                      >
+                        <div className="child-photo">
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img?.cfImageId}/public`}
+                            alt=""
+                          />
+                          <Button
+                            type="text"
+                            className="no-border-btn"
+                            icon={<CloseOutlined />}
+                            onClick={() => handleRemove(img?.id)}
+                          />
+                        </div>
+                      </PhotoView>
+                    </>
+                  ))}
+                </PhotoProvider>
+              </StyledUploadImage>
+            )}
+            <StyledFooterChat>
+              <IconContainer>
+                <MultiUploader
+                  type={UPLOAD_TYPES.MESSAGE}
+                  isIcon={true}
+                  icon={'/images/ico-picture.svg'}
+                  buttonName=" "
+                  buttonType="text"
+                  showUploadList={false}
+                  loading={isUploadingImage}
+                  setUploadingImage={setUploadingImage}
+                />
+              </IconContainer>
+              <InputContainer className="input-page-message">
+                <Controller
+                  name="message"
+                  control={control}
+                  rules={{
+                    required: true,
+                    validate: value => {
+                      return !!value.trim();
+                    }
+                  }}
+                  render={({ field: { onChange, onBlur, value, ref } }) => (
+                    <TextArea
+                      ref={ref}
+                      style={{ border: '0', borderRadius: '12px' }}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      value={value}
+                      placeholder={
+                        currentPageMessageSession.status === PageMessageSessionStatus.Open
+                          ? 'Aa'
+                          : currentPageMessageSession.status === PageMessageSessionStatus.Pending
+                          ? `${intl.get('messenger.acceptToChat')}`
+                          : `${intl.get('messenger.sessionClose')}`
+                      }
+                      disabled={
+                        isLoadingCreateMessage ||
+                        currentPageMessageSession.status !== PageMessageSessionStatus.Open ||
+                        isSendingXPI ||
+                        isUploadingImage
+                      }
+                      autoSize
+                      onKeyDown={handleKeyDown}
+                    />
+                  )}
+                />
+                <Button
+                  className="send-btn"
+                  type="text"
                   disabled={
                     isLoadingCreateMessage ||
                     currentPageMessageSession.status !== PageMessageSessionStatus.Open ||
                     isSendingXPI ||
                     isUploadingImage
                   }
-                  autoSize
-                  onKeyDown={handleKeyDown}
+                  icon={<ReactSVG className="anticon" src="/images/ico-send-message.svg" wrapper="span" />}
+                  onClick={sendMessage}
                 />
-              )}
-            />
-            <IconContainer>
-              <MultiUploader
-                type={UPLOAD_TYPES.MESSAGE}
-                isIcon={true}
-                icon={'/images/ico-picture.svg'}
-                buttonName=" "
-                buttonType="text"
-                showUploadList={false}
-                loading={isUploadingImage}
-                setUploadingImage={setUploadingImage}
-              />
-              <Button
-                type="text"
-                disabled={
-                  isLoadingCreateMessage ||
-                  currentPageMessageSession.status !== PageMessageSessionStatus.Open ||
-                  isSendingXPI ||
-                  isUploadingImage
-                }
-                icon={<ReactSVG className="anticon" src="/images/ico-send-message.svg" wrapper="span" />}
-                onClick={sendMessage}
-              />
-            </IconContainer>
-          </InputContainer>
+              </InputContainer>
+            </StyledFooterChat>
+          </>
         )}
       </StyledChatContainer>
     </StyledContainer>

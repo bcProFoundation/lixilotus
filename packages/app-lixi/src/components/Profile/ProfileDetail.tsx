@@ -38,8 +38,8 @@ import { Account, RenameAccountCommand } from '@bcpros/lixi-models';
 import { RenameAccountModalProps } from '@components/Settings/RenameAccountModal';
 import { transformShortName } from '@components/Common/AvatarUser';
 
-const URL_AVATAR_DEFAULT = '/images/default-avatar.jpg';
-const URL_COVER_DEFAULT = '/images/default-avatar.jpg';
+export const URL_AVATAR_DEFAULT = '/images/default-avatar.jpg';
+export const URL_COVER_DEFAULT = '/images/default-avatar.jpg';
 
 const AuthorizedButton = WithAuthorizeAction(Button);
 

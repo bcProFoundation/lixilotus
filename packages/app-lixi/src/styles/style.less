@@ -214,9 +214,12 @@ code {
     border-radius: 50%;
   }
   .ant-avatar-string {
-    transform: scale(1) translateX(-50%);
     position: absolute;
     left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%) !important;
+    -ms-transform: translate(-50%, -50%) !important;
+    transform: translate(-50%, -50%) !important;
   }
 }
 
@@ -950,8 +953,7 @@ code {
       .ant-input-affix-wrapper,
       .ant-picker {
         width: 100%;
-        padding-left: 0px;
-        
+        // padding-left: 0px;
         input {
           border: none;
         }
@@ -2749,6 +2751,14 @@ code {
     .badge-total-message {
       background: var(--border-color) !important;
       color: #000 !important;
+    }
+    .ant-upload-wrapper {
+      img {
+        filter: var(--filter-svg-gray-color);
+      }
+      button {
+        background: var(--bg-color-dark-item) !important;
+      }
     }
   }
 

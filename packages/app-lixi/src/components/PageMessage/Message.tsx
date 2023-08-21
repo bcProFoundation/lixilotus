@@ -3,6 +3,10 @@ import { MessageQuery } from '@store/message/message.generated';
 import styled from 'styled-components';
 import { transformCreatedAt } from '@containers/Sidebar/SideBarShortcut';
 import reactStringReplace from 'react-string-replace';
+import { Avatar, Spin } from 'antd';
+import { transformShortName } from '@components/Common/AvatarUser';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
+import { LoadingIcon } from '@components/Layout/MainLayout';
 
 type MessageItem = {
   previousMessage?: boolean; //MessageItem
@@ -18,22 +22,26 @@ const StyledMessageContainer = styled.div`
   .message-txt {
     cursor: default;
     width: fit-content;
-    max-width: 80%;
     padding: 8px 12px;
     border-radius: 12px;
-    margin-bottom: 0.5rem;
+    line-height: 18px;
+    margin-bottom: 0;
     word-wrap: break-word;
     white-space-collapse: preserve;
     text-align: left;
     background: #f1f1f1;
     color: #000;
   }
-  &.author-address {
-    flex-direction: row-reverse;
-    p {
-      background: #615ef0 !important;
-      color: #fff;
+  .avatar-user {
+    width: 35px;
+    height: 35px;
+    img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
     }
+    margin-left: 0;
+    margin-right: 8px;
   }
   .date-message {
     font-size: 10px;
@@ -41,6 +49,42 @@ const StyledMessageContainer = styled.div`
     background: #fff !important;
     color: gray !important;
     align-self: center;
+  }
+  .content-message {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    max-width: 80%;
+    margin: 2px 0;
+    .message-attachments {
+      text-align: left;
+      img {
+        width: auto;
+        height: auto;
+        max-width: 90%;
+        max-height: 30vh;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+    }
+  }
+  &.author-address {
+    flex-direction: row-reverse;
+    .content-message {
+      align-items: flex-end;
+    }
+    p {
+      background: #615ef0 !important;
+      color: #fff;
+    }
+    .avatar-user {
+      margin-right: 0;
+      margin-left: 8px;
+    }
+    .message-attachments {
+      text-align: right;
+    }
   }
 `;
 
@@ -65,49 +109,55 @@ const Message = ({ previousMessage, message, authorAddress, senderAvatar, receiv
 
   const senderHasAvatar = (senderAvatar: string) => {
     if (senderAvatar) return senderAvatar;
-    return '';
+    return null;
   };
 
   const receiverHasAvatar = (receiverAvatar: string) => {
     if (receiverAvatar) return receiverAvatar;
-    return '';
+    return null;
   };
 
   return (
     <React.Fragment>
       <StyledMessageContainer className={message.author.address === authorAddress ? 'author-address' : ''}>
         {!previousMessage && (
-          <picture>
-            <img
-              alt="avatar"
-              src={
-                message.author.address === authorAddress
-                  ? senderHasAvatar(senderAvatar)
-                  : receiverHasAvatar(receiverAvatar)
-              }
-              style={{ width: 20 }}
-            />
-          </picture>
+          <Avatar
+            className="avatar-user"
+            src={
+              message.author.address === authorAddress
+                ? senderHasAvatar(senderAvatar)
+                : receiverHasAvatar(receiverAvatar)
+            }
+          >
+            {transformShortName(message?.author?.name)}
+          </Avatar>
         )}
-        <p className="message-txt" onClick={() => setIsShowDate(!isShowDate)}>
-          {transformMessage(message.body)}
-        </p>
-        {isShowDate && <p className="date-message">{transformCreatedAt(message.createdAt)}</p>}
-        {message.uploads.length > 0 && (
-          <div className="message-attachments">
-            {message.uploads.map(img => {
-              return (
-                <picture key={img.id}>
-                  <img
+        {previousMessage && <span className="avatar-user"></span>}
+        <div className="content-message">
+          {message.body && (
+            <p className="message-txt" onClick={() => setIsShowDate(!isShowDate)}>
+              {transformMessage(message.body)}
+            </p>
+          )}
+          {isShowDate && <p className="date-message">{transformCreatedAt(message.createdAt)}</p>}
+          {message.uploads.length > 0 && (
+            <div className="message-attachments">
+              <PhotoProvider loop={true} loadingElement={<Spin indicator={LoadingIcon} />}>
+                {message.uploads.map((img, index) => (
+                  <PhotoView
+                    key={index}
                     src={`${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.upload.cfImageId}/public`}
-                    alt="upload"
-                    style={{ width: '50px' }}
-                  />
-                </picture>
-              );
-            })}
-          </div>
-        )}
+                  >
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.upload.cfImageId}/public`}
+                      alt=""
+                    />
+                  </PhotoView>
+                ))}
+              </PhotoProvider>
+            </div>
+          )}
+        </div>
       </StyledMessageContainer>
     </React.Fragment>
   );

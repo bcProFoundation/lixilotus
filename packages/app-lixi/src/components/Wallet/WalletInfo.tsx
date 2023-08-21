@@ -36,7 +36,7 @@ const CardContainer = styled.div`
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   @media (max-width: 768px) {
-    padding: 2rem;
+    padding: 1.5rem 1rem;
   }
 `;
 
@@ -62,7 +62,7 @@ const StyledBalanceHeader = styled.div`
     text-align: left;
     font-size: 28px;
     color: #edeff0;
-    margin-top: 8px;
+    margin: 8px 0;
     display: flex;
     align-items: center;
     gap: 5px;
@@ -86,6 +86,7 @@ const StyledQRCode = styled.div`
   opacity: 0.7;
   #borderedQRCode {
     border-radius: var(--boder-radius-primay);
+    border-radius: 8px;
     @media (max-width: 768px) {
       width: 60px;
       height: 60px;
