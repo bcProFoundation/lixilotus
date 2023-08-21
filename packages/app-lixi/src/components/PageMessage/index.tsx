@@ -276,7 +276,7 @@ const StyledUploadImage = styled.div`
   .child-photo {
     position: relative;
     img {
-      max-width: 20vw;
+      max-width: 50vw;
       max-height: 30vh;
       object-fit: cover;
       border-radius: 12px;
@@ -287,6 +287,7 @@ const StyledUploadImage = styled.div`
       z-index: 999;
       top: 0;
       right: 0;
+      background: var(--dark-error-background) !important;
     }
   }
 `;

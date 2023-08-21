@@ -17,6 +17,13 @@ const StyledFooter = styled.div`
   justify-content: space-around;
   display: none;
   max-height: 60px;
+  .ant-badge {
+    .ant-badge-count {
+      margin-top: 4px !important;
+      right: 0 !important;
+      box-shadow: none;
+    }
+  }
   @media (max-width: 968px) {
     max-height: fit-content;
     display: flex;

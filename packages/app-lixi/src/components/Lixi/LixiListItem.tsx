@@ -33,6 +33,7 @@ import {
 } from '@store/lixi/actions';
 import styled, { DefaultTheme } from 'styled-components';
 import { RenameLixiModalProps } from './RenameLixiModal';
+import { useRouter } from 'next/router';
 
 const { Text } = Typography;
 
@@ -74,7 +75,7 @@ const BalanceAndTicker = styled.div`
   font-size: 1rem;
 `;
 
-const Wrapper = styled.div`
+const WrapperLixiItem = styled.div`
   display: block;
   justify-content: space-between;
   align-items: center;
@@ -157,11 +158,12 @@ type LixiListItemProps = {
 
 const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => {
   const { lixi } = props;
-
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const handleSelectLixi = (lixiId: number) => {
     dispatch(selectLixi(lixiId));
+    router.push(`lixi/${lixiId}`);
   };
 
   const selectedAccount = useAppSelector(getSelectedAccount);
@@ -232,7 +234,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
 
   return (
     <>
-      <Wrapper onClick={e => handleSelectLixi(lixi.id)}>
+      <WrapperLixiItem className="lixi-item" onClick={e => handleSelectLixi(lixi.id)}>
         <Row>
           <LixiNameStyled span={24}>
             <strong>{lixi.name}</strong>
@@ -293,7 +295,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
             <StyledTag color={lixi.status === 'active' ? '#108ee9' : '#74546f'}>{lixi.status.toUpperCase()}</StyledTag>
           </Col>
         </StyledRow>
-      </Wrapper>
+      </WrapperLixiItem>
     </>
   );
 };

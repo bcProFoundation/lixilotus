@@ -77,12 +77,16 @@ export const StyledPopover = styled(Popover)`
 `;
 
 const StyledComment = styled(Comment)`
-  border-radius: var(--border-radius-primary);
+  border-radius: 8px;
   border: 1px solid var(--border-item-primary);
   padding: 8px;
 
   &:hover {
     background-color: #eceff5 !important;
+  }
+
+  .ant-comment-avatar {
+    margin-right: 8px;
   }
 
   .ant-comment-inner {
@@ -147,9 +151,22 @@ const StyledTextRight = styled.span`
   color: var(--color-primary);
 `;
 
+const StyledItemNotification = styled.div`
+  margin-bottom: 0.5rem;
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
 const StyledSwipeToDelete = styled(SwipeToDelete)`
   --rstdiHeight: 100% !important;
   --rstdiDeleteColor: var(--bg-color-dark-item) !important;
+  .delete button {
+    border: 1px solid var(--border-color-dark-base) !important;
+    background: var(--dark-error-background) !important;
+    border-radius: 8px !important;
+    height: 98% !important;
+  }
 `;
 
 const StyledHeader = styled.div`
@@ -256,7 +273,7 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
             _.compact(notifications).map(notification => (
               <>
                 {isMobile ? (
-                  <div onClick={() => handleRead(account, notification)}>
+                  <StyledItemNotification onClick={() => handleRead(account, notification)}>
                     <StyledSwipeToDelete
                       key={notification.id}
                       onDelete={() => handleDelete(account, notification.id)}
@@ -265,7 +282,6 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
                       <StyledComment
                         key={notification.id}
                         className={`${notification.readAt !== null ? 'readed' : 'un-read'} className`}
-                        style={{ borderRadius: '0px' }}
                         avatar={
                           <div
                             style={{ cursor: 'pointer' }}
@@ -295,7 +311,7 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
                         }
                       />
                     </StyledSwipeToDelete>
-                  </div>
+                  </StyledItemNotification>
                 ) : (
                   <StyledComment
                     key={notification.id}
@@ -321,7 +337,7 @@ const NotificationPopup = (notifications: Notification[], account: Account, isPo
                           name={
                             !!notification && !!notification.additionalData && notification.additionalData.senderName
                           }
-                          isMarginRight={true}
+                          isMarginRight={false}
                         />
                       </div>
                     }

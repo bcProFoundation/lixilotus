@@ -31,6 +31,7 @@ const StyledMessageContainer = styled.div`
     text-align: left;
     background: #f1f1f1;
     color: #000;
+    word-break: break-all;
   }
   .avatar-user {
     width: 35px;

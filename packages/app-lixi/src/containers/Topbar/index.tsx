@@ -54,10 +54,9 @@ export type TopbarProps = {
 
 const PathDirection = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 0;
   align-items: center;
   @media (max-width: 960px) {
-    gap: 0;
     .logo-app {
       width: 60px;
       height: 60px;
@@ -86,11 +85,15 @@ const PathDirection = styled.div`
     max-height: 22px;
   }
 
+  .navigate-back-btn {
+    cursor: pointer;
+    width: 32px;
+    height: 30px;
+    margin-left: 4px;
+    margin-right: 8px;
+  }
+
   .path-direction-text {
-    margin-left: 0.5rem;
-    @media (max-width: 960px) {
-      margin-left: 0;
-    }
   }
 
   .checkbox {
@@ -505,6 +508,10 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     );
   };
 
+  const handleNavigateBack = () => {
+    router.back();
+  };
+
   const contentSelectAccount = (
     <AccountBox>
       {selectedAccount && (
@@ -690,7 +697,16 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   return (
     <StyledHeader style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={className}>
       <PathDirection>
-        <img className="menu-mobile" src="/images/ico-list-bullet_2.svg" alt="" onClick={handleMenuClick} />
+        {currentPathName === '/' || currentPathName === '/page/[slug]' ? (
+          <img className="menu-mobile" src="/images/ico-list-bullet_2.svg" alt="" onClick={handleMenuClick} />
+        ) : (
+          <img
+            className="navigate-back-btn animate__animated animate__heartBeat"
+            src="/images/ico-arrow-left.svg"
+            alt=""
+            onClick={handleNavigateBack}
+          />
+        )}
         {(currentPathName == '/' || currentPathName == '/page-message') && (
           <picture>
             <img

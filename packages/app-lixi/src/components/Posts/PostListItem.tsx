@@ -95,7 +95,6 @@ const Content = styled.div`
     }
     p {
       margin: 0;
-      font-size: 14px;
       line-height: 22px;
     }
     .read-more-more-module_btn__33IaH {

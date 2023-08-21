@@ -192,7 +192,7 @@ const PostContentDetail = styled.div`
       }
       img {
         width: auto;
-        height: 100% !important;
+        height: auto !important;
         max-width: 50vw;
         max-height: 60vh;
         object-fit: cover !important;

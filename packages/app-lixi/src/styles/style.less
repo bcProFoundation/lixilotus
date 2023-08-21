@@ -525,6 +525,10 @@ code {
     }
     .ant-notification-notice-description {
       color: var(--dark-toast-message) !important;
+      a,
+      p {
+        color: var(--dark-toast-message) !important;
+      }
     }
     .ant-notification-notice-close {
       color: #fff !important;
@@ -1918,7 +1922,7 @@ code {
     }
 
     &.un-read {
-      background: var(--border-color-dark-base) !important;
+      background: #303031 !important;
     }
 
     &.readed {
@@ -2786,7 +2790,8 @@ code {
   }
 
   //Topbar
-  .menu-mobile {
+  .menu-mobile,
+  .navigate-back-btn {
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
   }
 
@@ -2827,6 +2832,19 @@ code {
       .content {
         color: var(--text-color-on-dark);
       }
+    }
+  }
+
+  // Lixi Item
+  .lixi-item {
+    background: var(--bg-color-dark-item);
+    strong {
+      color: var(--text-color-primary-dark);
+    }
+    p,
+    span,
+    div {
+      color: var(--text-color-on-dark);
     }
   }
 

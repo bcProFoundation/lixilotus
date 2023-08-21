@@ -980,7 +980,7 @@ const SidebarShortcut = () => {
     } else {
       className = 'minimize-short-cut';
     }
-    if (currentPathName == '/page-message') {
+    if (currentPathName !== '/' && currentPathName !== '/page/[slug]') {
       className = className + ' hide-side-bar-shortcut';
     }
     return className;
