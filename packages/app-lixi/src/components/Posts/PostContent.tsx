@@ -4,12 +4,23 @@ import ReactDomServer from 'react-dom/server';
 import intl from 'react-intl-universal';
 import { ReadMoreMore } from 'read-more-more';
 import ReactHtmlParser from 'react-html-parser';
+import { Language } from '@bcpros/lixi-models/constants/translation';
 
-const PostContent = ({ post, showTranslation }) => {
-  const postContent =
-    post?.translations && post?.translations.length > 0 && showTranslation
-      ? post.translations[0].translateContent
-      : post.content;
+const PostContent = ({ post, showTranslation, currentLocale }) => {
+  let postContent;
+  if (post?.originalLanguage === 'en' || post?.originalLanguage === 'vi') {
+    postContent =
+      post?.translations && post?.translations.length > 0 && showTranslation
+        ? post.translations[0].translateContent
+        : post.content;
+  } else {
+    postContent =
+      post?.translations && post?.translations.length > 1 && showTranslation
+        ? currentLocale === 'en'
+          ? post.translations[Language.en].translateContent
+          : post.translations[Language.vi].translateContent
+        : post.content;
+  }
   let iFrameEmbed = null;
 
   const calculateLineShow = () => {

@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { stripHtml } from 'string-strip-html';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { MeiliService } from 'src/modules/page/meili.service';
-
+import { Language } from '@bcpros/lixi-models';
 @Injectable()
 export class TranslateService {
   private logger: Logger = new Logger(TranslateService.name);
@@ -49,7 +49,7 @@ export class TranslateService {
           });
         if (translationResult) {
           const { detectedLanguage, translations } = translationResult;
-          let translateData;
+          let translateData: any;
 
           await this.prisma.$transaction(async prisma => {
             await prisma.post.update({
@@ -85,27 +85,58 @@ export class TranslateService {
                 }
               });
             } else {
-              // fallback if lang other than en or vi, then translate to en
-              const translateLanguage = translations.find((lang: any) => lang.to === 'en');
-              translateData = await prisma.postTranslation.create({
+              // fallback if lang other than en or vi, then translate to en and vi
+
+              translateData = await prisma.post.update({
+                where: { id: postId },
                 data: {
-                  post: { connect: { id: postId } },
-                  translateLanguage: translateLanguage.to,
-                  translateContent: translateLanguage.text
-                }
+                  translations: {
+                    create: [
+                      {
+                        translateLanguage: translations[Language.en].to,
+                        translateContent: translations[Language.en].text
+                      },
+                      {
+                        translateLanguage: translations[Language.vi].to,
+                        translateContent: translations[Language.vi].text
+                      }
+                    ]
+                  }
+                },
+                include: { translations: true }
               });
             }
 
-            const languageToUpdate = {
-              originalLanguage: detectedLanguage.language,
-              translations: [
-                {
-                  id: translateData.id,
-                  translateLanguage: translateData.translateLanguage,
-                  translateContent: translateData.translateContent
-                }
-              ]
-            };
+            let languageToUpdate;
+            if (detectedLanguage.language === 'vi' || detectedLanguage.language === 'en') {
+              languageToUpdate = {
+                originalLanguage: detectedLanguage.language,
+                translations: [
+                  {
+                    id: translateData.id,
+                    translateLanguage: translateData.translateLanguage,
+                    translateContent: translateData.translateContent
+                  }
+                ]
+              };
+            } else {
+              const { translations } = translateData;
+              languageToUpdate = {
+                originalLanguage: detectedLanguage.language,
+                translations: [
+                  {
+                    id: translations[Language.en].id,
+                    translateLanguage: translations[Language.en].translateLanguage,
+                    translateContent: translations[Language.en].translateContent
+                  },
+                  {
+                    id: translations[Language.vi].id,
+                    translateLanguage: translations[Language.vi].translateLanguage,
+                    translateContent: translations[Language.vi].translateContent
+                  }
+                ]
+              };
+            }
 
             this.meiliService.update(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, languageToUpdate, postId);
           });

@@ -165,7 +165,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true, comments: true },
+            include: { postAccount: true, comments: true, translations: true },
             where: {
               danaBurnScore: {
                 gte: minBurnFilter ?? 0
@@ -211,7 +211,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true, comments: true },
+          include: { postAccount: true, comments: true, translations: true },
           where: {
             OR: [
               { postAccountId: accountId },
@@ -820,7 +820,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true, page: false, token: false },
+            include: { postAccount: true, page: false, token: false, translations: true },
             where: {
               AND: [
                 {
