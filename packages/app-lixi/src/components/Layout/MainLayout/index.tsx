@@ -250,17 +250,6 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const isSystemThemes = useAppSelector(getIsSystemThemes);
   const currentPageMessageSession = useAppSelector(getCurrentPageMessageSession);
 
-  let userInfo;
-  const { currentData: currentDataGetAccount, isSuccess: isSuccessGetAccount } = useGetAccountByAddressQuery(
-    {
-      address: selectedAccount?.address
-    },
-    { skip: !selectedAccount?.address }
-  );
-
-  if (isSuccessGetAccount) userInfo = currentDataGetAccount?.getAccountByAddress;
-  dispatch(setAccountInfoTemp(userInfo));
-
   useEffect(() => {
     if (isSystemThemes) {
       dispatch(setCurrentThemes(currentDeviceTheme ? 'dark' : 'light'));

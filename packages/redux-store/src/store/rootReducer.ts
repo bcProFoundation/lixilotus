@@ -98,7 +98,8 @@ const accountPersistConfig: PersistConfig<AccountsState> = {
     'messageUploads',
     'leaderBoard',
     'graphqlRequestLoading',
-    'productImageUploads'
+    'productImageUploads',
+    'accountInfoTemp'
   ],
   timeout: 0
 };

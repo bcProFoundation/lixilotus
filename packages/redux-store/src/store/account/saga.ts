@@ -30,7 +30,7 @@ import accountApi from '../account/api';
 import lixiApi from '../lixi/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
-
+import { api as accountGraphApi } from '@store/account/accounts.api';
 import {
   changeAccountLocale,
   changeAccountLocaleFailure,
@@ -69,6 +69,7 @@ import {
   selectAccountFailure,
   selectAccountSuccess,
   setAccount,
+  setAccountInfoTemp,
   setAccountSuccess,
   silentLogin,
   silentLoginFailure,
@@ -799,6 +800,10 @@ function* silentLoginSuccessSaga(action: PayloadAction) {
   };
   yield put(activateWallet(account.mnemonic));
   yield put(silentLocalLogin(localUser));
+  const promise = yield put(accountGraphApi.endpoints.getAccountByAddress.initiate({ address: account.address }));
+  yield promise;
+  const data = yield promise.unwrap();
+  yield put(setAccountInfoTemp(data.getAccountByAddress));
   yield putResolve(
     fetchNotifications({
       accountId: account.id,
