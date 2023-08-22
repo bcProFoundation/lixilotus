@@ -251,6 +251,12 @@ const IconContainer = styled.div`
   button {
     border-radius: 12px;
   }
+  &.enable-upload {
+    cursor: pointer;
+  }
+  &.disable-upload {
+    pointer-events: none;
+  }
 `;
 
 const StyledInfiniteScroll = styled(InfiniteScroll)`
@@ -264,6 +270,7 @@ const StyledFooterChat = styled.div`
   align-items: center;
   grid-template-columns: max-content 1fr;
   padding: 0.5rem 1rem 0.5rem 0.5rem;
+  backdrop-filter: blur(12px);
 `;
 
 const StyledUploadImage = styled.div`
@@ -349,6 +356,7 @@ const StyledChatHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--border-color-base);
+  backdrop-filter: blur(12px);
   h2 {
     margin: 0;
   }
@@ -1174,7 +1182,13 @@ const PageMessage = () => {
               </StyledUploadImage>
             )}
             <StyledFooterChat>
-              <IconContainer>
+              <IconContainer
+                className={`${
+                  currentPageMessageSession?.status !== PageMessageSessionStatus.Pending
+                    ? 'enable-upload'
+                    : 'disable-upload'
+                }`}
+              >
                 <MultiUploader
                   type={UPLOAD_TYPES.MESSAGE}
                   isIcon={true}

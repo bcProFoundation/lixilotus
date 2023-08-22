@@ -174,7 +174,7 @@ const CommentInputContainer = styled.div`
 const PostContentDetail = styled.div`
   text-align: left;
   .description-post {
-    font-size: 16px;
+    font-size: 17px;
     line-height: 24px;
     margin: 1rem 0;
     text-align: left;

@@ -13,7 +13,8 @@ const StyledFooter = styled.div`
   bottom: -1px;
   width: 100%;
   padding: 0;
-  background: #fff;
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
   justify-content: space-around;
   display: none;
   max-height: 60px;

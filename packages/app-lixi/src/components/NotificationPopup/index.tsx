@@ -160,7 +160,7 @@ const StyledItemNotification = styled.div`
 
 const StyledSwipeToDelete = styled(SwipeToDelete)`
   --rstdiHeight: 100% !important;
-  --rstdiDeleteColor: var(--bg-color-dark-item) !important;
+  --rstdiDeleteColor: transparent !important;
   .delete button {
     border: 1px solid var(--border-color-dark-base) !important;
     background: var(--dark-error-background) !important;

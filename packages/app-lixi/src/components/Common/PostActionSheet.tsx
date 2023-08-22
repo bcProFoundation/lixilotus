@@ -19,6 +19,7 @@ import { useCreateFollowAccountMutation, useDeleteFollowAccountMutation } from '
 import { CreateFollowAccountInput, DeleteFollowAccountInput } from '@generated/types.generated';
 import { getWalletStatus } from '@store/wallet';
 import { useSwipeable } from 'react-swipeable';
+import { useUserHadMessageToPageQuery } from '@store/message/pageMessageSession.generated';
 
 interface PostActionSheetProps {
   id?: string;
@@ -152,6 +153,14 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     setIsFollowedAccount(followPostOwner);
   }, [followedPage, followPostOwner]);
 
+  const { data: pageMessageSessionData, refetch: pageMessageSessionRefetch } = useUserHadMessageToPageQuery(
+    {
+      accountId: selectedAccount?.id,
+      pageId: page.id
+    },
+    { skip: selectedAccount?.id === page.pageAccountId || !selectedAccount?.id }
+  );
+
   const onClose = () => {
     setOpen(false);
     setTimeout(() => {
@@ -227,7 +236,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
           <div className="bar-close" onClick={onClose}></div>
           {isEditPost && <ItemActionSheetBottom text="Edit post" icon="/images/ico-edit.svg" onClickItem={editPost} />}
           {/* <ItemActionSheetBottom type="danger" text="Remove" /> */}
-          {post.page && post.postAccount.id != selectedAccountId && (
+          {post.page && post.postAccount.id != selectedAccountId && !pageMessageSessionData && (
             <ItemActionSheetBottom
               text={`${intl.get('messenger.chat')} ${page?.name}`}
               icon="/images/ico-message-heart-circle.svg"

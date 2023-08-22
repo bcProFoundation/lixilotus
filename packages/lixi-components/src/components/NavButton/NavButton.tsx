@@ -18,7 +18,7 @@ export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProp
   justify-content: center;
   align-items: center;
   color: ${props => props.theme.footer.color};
-  background: #fff;
+  background: transparent !important;
   border: none;
   font-size: 12px;
   font-weight: bold;

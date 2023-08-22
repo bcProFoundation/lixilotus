@@ -220,6 +220,7 @@ const ProfileCardHeader = styled.div`
     flex-wrap: wrap;
     justify-content: flex-start;
     gap: 8px;
+    background: #fff;
     button {
       height: fit-content;
       @media (min-width: 768px) {

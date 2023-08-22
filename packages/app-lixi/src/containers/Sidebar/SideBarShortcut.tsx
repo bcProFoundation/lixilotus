@@ -400,6 +400,12 @@ export const SpaceShorcutItem = styled(Space)`
       height: 46px;
     }
   }
+  .avatar-account-page {
+    border-radius: var(--border-radius-primary);
+    img {
+      border-radius: var(--border-radius-primary);
+    }
+  }
   .content-account {
     display: flex;
     .info-account {
@@ -550,7 +556,7 @@ export const ShortCutItem = ({
     onClick={() => onClickIcon(item?.page?.id || item?.token?.tokenId || item?.postAccount?.address)}
     size={5}
   >
-    <div className="avatar-account">
+    <div className={`avatar-account ${item?.page ? 'avatar-account-page' : ''}`}>
       {item?.page && <img src={item?.page?.avatar || '/images/default-avatar.jpg'} />}
       {item?.token && <img src={`${currency.tokenIconsUrl}/64/${item?.token?.tokenId}.png`} />}
       {!item?.page && !item?.token && (

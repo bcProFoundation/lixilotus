@@ -151,13 +151,13 @@ const ProfileCardHeader = styled.div`
       left: 2rem;
       top: -90px;
       position: absolute;
-      padding: 5px;
+      padding: 2px;
       background: #fff;
-      border-radius: 50%;
+      border-radius: var(--border-radius-primary);
       .avatar-img {
         width: 150px;
         height: 150px;
-        border-radius: 50%;
+        border-radius: var(--border-radius-primary);
         object-fit: cover;
       }
       @media (max-width: 768px) {
