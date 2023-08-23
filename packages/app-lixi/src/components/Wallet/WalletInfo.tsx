@@ -1,4 +1,4 @@
-import LockOutlined, { EditOutlined, SendOutlined } from '@ant-design/icons';
+import LockOutlined, { EditOutlined, SendOutlined, SyncOutlined } from '@ant-design/icons';
 import intl from 'react-intl-universal';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -20,7 +20,7 @@ import { Account, RenameAccountCommand } from '@bcpros/lixi-models';
 import { RenameAccountModalProps } from '@components/Settings/RenameAccountModal';
 import { openModal } from '@store/modal/actions';
 import { useRouter } from 'next/router';
-import { getSelectedWalletPath, getWalletStatus } from '@store/wallet';
+import { getSelectedWalletPath, getWalletHasUpdated, getWalletStatus } from '@store/wallet';
 import { QRCodeModal } from '@components/Common/QRCodeModal';
 import { QRCodeModalType } from '@bcpros/lixi-models/constants';
 import { showToast } from '@store/toast/actions';
@@ -144,6 +144,7 @@ const WalletInfoComponent: React.FC = () => {
   const walletStatus = useAppSelector(getWalletStatus);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedWalletPath = useAppSelector(getSelectedWalletPath);
+  const walletHasUpdated = useAppSelector(getWalletHasUpdated);
 
   const showPopulatedRenameAccountModal = (account: Account) => {
     const command: RenameAccountCommand = {
@@ -202,10 +203,16 @@ const WalletInfoComponent: React.FC = () => {
             />
           </div>
           <StyledBalanceHeader>
-            <BalanceHeader
-              balance={fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0)}
-              ticker={currency.ticker}
-            />
+            {walletHasUpdated ? (
+              <BalanceHeader
+                balance={fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0)}
+                ticker={currency.ticker}
+              />
+            ) : (
+              <React.Fragment>
+                <SyncOutlined spin />
+              </React.Fragment>
+            )}
           </StyledBalanceHeader>
         </WalletCard>
         {!isServer() && selectedWalletPath && selectedWalletPath?.xAddress && (

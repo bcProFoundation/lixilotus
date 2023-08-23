@@ -2,7 +2,7 @@ import { callConfig } from '@context/index';
 import { all, call, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 
-import { activateWallet, activateWalletFailure, activateWalletSuccess } from './actions';
+import { activateWallet, activateWalletFailure, activateWalletSuccess, setWalletHasUpdated } from './actions';
 import { WalletPathAddressInfo } from './models';
 
 function* activateWalletSaga(action: PayloadAction<string>) {
@@ -12,6 +12,7 @@ function* activateWalletSaga(action: PayloadAction<string>) {
     const defaultPath = "m/44'/10605'/0'/0/0";
     const walletPaths: WalletPathAddressInfo[] = yield call(Wallet.getWalletPathDetails, mnemonic, [defaultPath]);
 
+    yield put(setWalletHasUpdated(false));
     yield put(
       activateWalletSuccess({
         walletPaths,

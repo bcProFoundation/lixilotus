@@ -1,14 +1,4 @@
-import Icon, {
-  AppstoreOutlined,
-  BellOutlined,
-  CheckCircleOutlined,
-  FilterOutlined,
-  HomeOutlined,
-  SwapOutlined,
-  UserSwitchOutlined,
-  SendOutlined,
-  CopyOutlined
-} from '@ant-design/icons';
+import Icon, { UserSwitchOutlined, SendOutlined, CopyOutlined, SyncOutlined } from '@ant-design/icons';
 import { Account } from '@bcpros/lixi-models';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { AvatarUser } from '@components/Common/AvatarUser';
@@ -26,7 +16,7 @@ import { api as postApi } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { saveTopPostsFilter, toggleCollapsedSideNav } from '@store/settings/actions';
 import { getCurrentThemes, getFilterPostsHome, getIsTopPosts, getNavCollapsed } from '@store/settings/selectors';
-import { Badge, Button, Popover, Space, Switch, message } from 'antd';
+import { Badge, Button, Popover, Space, Switch, message, Spin } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import { push } from 'connected-next-router';
 import * as _ from 'lodash';
@@ -43,7 +33,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Link from 'next/link';
 import { getModals } from '@store/modal/selectors';
 import { showToast } from '@store/toast/actions';
-import { getSelectedWalletPath, getWalletStatus } from '@store/wallet';
+import { getSelectedWalletPath, getWalletHasUpdated, getWalletStatus } from '@store/wallet';
 import { ReactSVG } from 'react-svg';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { openActionSheet } from '@store/action-sheet/actions';
@@ -367,6 +357,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const askAuthorization = useAuthorization();
   const currentModal = useAppSelector(getModals);
   const walletStatus = useAppSelector(getWalletStatus);
+  const walletHasUpdated = useAppSelector(getWalletHasUpdated);
 
   const slug: string = _.isArray(router?.query?.slug) ? router?.query?.slug[0] : router?.query?.slug;
   const { currentData: currentDataPageQuery } = usePageQuery({ id: slug });
@@ -561,9 +552,16 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             </div>
 
             <div className="profile-feature">
-              <span>
-                {balanceAccount(selectedAccount)} {currency.ticker}
-              </span>
+              {walletHasUpdated ? (
+                <span>
+                  {balanceAccount(selectedAccount)} {currency.ticker}
+                </span>
+              ) : (
+                <React.Fragment>
+                  <SyncOutlined spin /> {currency.ticker}
+                </React.Fragment>
+              )}
+
               <Link href="/send">
                 <span>
                   <SendOutlined style={{ fontSize: '16px' }} />
@@ -838,9 +836,15 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
               <AvatarUser name={selectedAccount?.name || null} icon={accountInfoTemp?.avatar} isMarginRight={false} />
               <p className="account-info">
                 <span className="account-name">{selectedAccount?.name}</span>
-                <span className="account-balance">
-                  {balanceAccount(selectedAccount)} <span className="unit">{currency.ticker}</span>
-                </span>
+                {walletHasUpdated ? (
+                  <span className="account-balance">
+                    {balanceAccount(selectedAccount)} <span className="unit">{currency.ticker}</span>
+                  </span>
+                ) : (
+                  <React.Fragment>
+                    <SyncOutlined spin /> <span className="unit">{currency.ticker}</span>
+                  </React.Fragment>
+                )}
               </p>
             </div>
           </Popover>

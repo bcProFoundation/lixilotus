@@ -798,7 +798,7 @@ function* silentLoginSuccessSaga(action: PayloadAction) {
     address: account.address,
     name: account.name
   };
-  yield put(activateWallet(account.mnemonic));
+  // yield put(activateWallet(account.mnemonic));
   yield put(silentLocalLogin(localUser));
   const promise = yield put(accountGraphApi.endpoints.getAccountByAddress.initiate({ address: account.address }));
   yield promise;

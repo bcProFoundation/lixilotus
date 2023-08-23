@@ -389,7 +389,7 @@ const useWallet = () => {
   useEffect(() => {
     (async () => {
       await initializeWebsocket(walletState);
-      dispatch(activateWallet(walletState.mnemonic));
+      // dispatch(activateWallet(walletState.mnemonic));
     })();
   }, [walletState.mnemonic]);
 
