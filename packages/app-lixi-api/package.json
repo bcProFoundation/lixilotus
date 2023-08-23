@@ -104,7 +104,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.1.2",
     "rxjs": "^7.8.0",
-    "sharp": "^0.31.3",
+    "sharp": "^0.32.5",
     "socket.io": "^4.5.4",
     "string-strip-html": "^8.4.0",
     "ts-node": "^10.9.1",
