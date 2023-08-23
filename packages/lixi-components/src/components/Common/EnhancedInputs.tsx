@@ -14,7 +14,7 @@ export const AntdFormCss = css`
     background-color: ${props => props.theme.forms.addonBackground} !important;
     border: 1px solid ${props => props.theme.forms.border};
     color: ${props => props.theme.forms.addonForeground} !important;
-    width: 99px;
+    width: 100px;
   }
   input.ant-input,
   textarea.ant-input,
@@ -26,15 +26,17 @@ export const AntdFormCss = css`
     font-weight: bold;
     color: ${props => props.theme.forms.text};
     opacity: 1;
-    height: 50px;
+    padding: 8px;
+  }
+  .ant-input-prefix {
+    margin-inline-end: 0;
   }
   .ant-input-affix-wrapper {
-    padding: 4px 11px;
+    padding: 8px 1rem;
     background-color: ${props => props.theme.forms.selectionBackground};
     border: 1px solid ${props => props.theme.wallet.borders.color} !important;
   }
   .ant-select-selector {
-    height: 60px !important;
     border: 1px solid ${props => props.theme.wallet.borders.color} !important;
     align-items: center;
   }
@@ -48,16 +50,13 @@ export const AntdFormCss = css`
   .ant-form-item-has-error .ant-input:hover,
   .ant-form-item-has-error .ant-input-affix-wrapper:hover {
     background-color: ${props => props.theme.forms.selectionBackground};
-    border-color: ${props => props.theme.forms.error} !important;
   }
 
   .ant-form-item-has-error .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
     background-color: ${props => props.theme.forms.selectionBackground};
-    border-color: ${props => props.theme.forms.error} !important;
   }
   .ant-select-single .ant-select-selector .ant-select-selection-item,
   .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
-    line-height: 60px;
     text-align: left;
     color: ${props => props.theme.forms.text};
     font-weight: bold;
@@ -67,8 +66,15 @@ export const AntdFormCss = css`
     color: ${props => props.theme.forms.error} !important;
     border-color: ${props => props.theme.forms.error} !important;
   }
-  .ant-form-item-explain.ant-form-item-explain-error {
+  .ant-form-item-explain,
+  .ant-form-item-explain-error {
     color: ${props => props.theme.forms.error} !important;
+    text-align: left;
+    font-size: 12px;
+    margin-left: 8px;
+  }
+  .ant-input-group {
+    display: flex;
   }
 `;
 
@@ -97,8 +103,6 @@ export const InputNumberAddonText = styled.span<InputNumberAddonTextProps>`
   background-color: ${props => props.theme.forms.addonBackground} !important;
   border: 1px solid ${props => props.theme.forms.border};
   color: ${props => props.theme.forms.addonForeground} !important;
-  height: 50px;
-  line-height: 47px;
 
   * {
     color: ${props => props.theme.forms.addonForeground} !important;
@@ -164,29 +168,32 @@ export const SendXpiInput = ({ onMax, inputProps, selectProps, activeFiatCode, .
       <Form.Item {...otherProps}>
         <Input.Group compact>
           <Input
-            style={{ width: '58%', textAlign: 'left', padding: '4px' }}
+            style={{ width: '58%', textAlign: 'left' }}
             type="number"
             step={inputProps.dollar === 1 ? 0.01 : 1 / 10 ** currency.cashDecimals}
             prefix={
               inputProps.dollar === 1 ? (
-                <ThemedDollarOutlined />
+                <ThemedDollarOutlined width={20} height={20} />
               ) : (
-                <img src={currency.logo} alt="" width={16} height={16} />
+                <img src={currency.logo} alt="" width={20} height={20} />
               )
             }
             {...inputProps}
           />
           {CurrencySelect}
           <InputNumberAddonText
+            className="input-number-addon"
             style={{
               width: '17%',
-              height: '60px',
-              lineHeight: '60px'
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderLeft: '0'
             }}
             disabled={!!(inputProps || {}).disabled}
             onClick={() => onMax()}
           >
-            max
+            Max
           </InputNumberAddonText>
         </Input.Group>
       </Form.Item>
@@ -291,7 +298,7 @@ export const FormItemStaffAddressInput = (props: FormItemStaffAddressInputProps)
     <AntdFormWrapper {...otherProps}>
       <Form.Item {...otherProps}>
         <Input
-          prefix={<TeamOutlined />}
+          prefix={<TeamOutlined width={20} height={20} />}
           placeholder={intl.get('lixi.staffAddress')}
           name="staffAddress"
           autoComplete="off"
@@ -462,7 +469,7 @@ export const OpReturnMessageInput = ({ value, onChange, maxByteLength, labelTop,
           }}
         >
           <div style={{ flexGrow: 1 }}>{labelTop}</div>
-          <div>
+          <div className="hint">
             {contextHolder}
             {Buffer.from(value).length} / {maxByteLength} bytes {helpInfoIcon}
           </div>

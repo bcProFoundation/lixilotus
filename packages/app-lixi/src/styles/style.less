@@ -931,25 +931,25 @@ code {
     .ant-form-item-control-input-content {
       input,
       textarea {
-        padding: 9px 1rem;
+        padding: 8px 1rem;
         font-weight: 400;
         font-size: 14px;
         line-height: 24px;
         letter-spacing: 0.5px;
         color: #4e444b;
         background: #fff;
-        border: 2px solid var(--border-color-base);
+        border: 1px solid var(--border-color-base);
         border-radius: 8px;
 
         &:hover {
           background: #fff;
-          border: 2px solid var(--color-primary);
+          border: 1px solid var(--color-primary);
           box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
         }
 
         &:focus {
           background: #fff;
-          border: 2px solid var(--color-primary);
+          border: 1px solid var(--color-primary);
           box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
         }
       }
@@ -963,7 +963,7 @@ code {
         }
       }
       .ant-select {
-        border: 2px solid var(--border-color-base);
+        border: 1px solid var(--border-color-base);
         background: #fff;
         margin: 0;
         border-radius: 8px;
@@ -993,13 +993,13 @@ code {
 
         &:hover {
           background: #fff;
-          border: 2px solid var(--color-primary);
+          border: 1px solid var(--color-primary);
           box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
         }
 
         &:focus {
           background: #fff;
-          border: 2px solid var(--color-primary);
+          border: 1px solid var(--color-primary);
           box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
         }
 
@@ -2141,10 +2141,10 @@ code {
     }
   }
 
-  .card-container-page,
-  .card-container-post {
-    // background: var(--bg-color-dark-item) !important;
-  }
+  // .card-container-page,
+  // .card-container-post {
+  //   // background: var(--bg-color-dark-item) !important;
+  // }
 
   .card {
     background: var(--bg-color-dark-item) !important;
@@ -2854,6 +2854,44 @@ code {
   .react-svg-custom {
     svg {
       filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%) !important;
+    }
+  }
+
+  .send-component {
+    .ant-form-item-control {
+      .ant-input-affix-wrapper {
+        background: #303031 !important;
+        border-color: var(--border-color-dark-base) !important;
+      }
+      input,
+      textarea {
+        background-color: #303031 !important;
+        border-color: var(--border-color-dark-base) !important;
+        color: var(--text-color-on-dark) !important;
+        &::placeholder {
+          color: gray !important;
+        }
+      }
+      .ant-input-group-addon {
+        background: #303031 !important;
+        border-color: var(--border-color-dark-base) !important;
+        span {
+          background: transparent !important;
+          border-color: var(--border-color-dark-base);
+        }
+      }
+      .ant-select {
+        .ant-select-selector {
+          background-color: #303031 !important;
+        }
+      }
+      .input-number-addon {
+        background: #303031 !important;
+        border-color: var(--border-color-dark-base);
+      }
+    }
+    .hint {
+      color: var(--text-color-on-dark) !important;
     }
   }
 }

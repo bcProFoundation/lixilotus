@@ -52,7 +52,7 @@ export const theme: DefaultTheme = {
     hoverBorder: '#231F20'
   },
   forms: {
-    error: '#FF21D0',
+    error: '#ba1a1a',
     border: '#e7edf3',
     text: 'var(--color-primary)',
     addonBackground: '#f4f4f4',

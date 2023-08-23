@@ -289,8 +289,8 @@ const SendComponent: React.FC = () => {
 
   // Only Send Mesage Checkbox
   const sendOnlyMessageCheckbox = (
-    <div style={{ textAlign: 'right' }}>
-      {intl.get('send.onlyMessage')} &nbsp;
+    <div className="hint" style={{ textAlign: 'right' }}>
+      <span>{intl.get('send.onlyMessage')} &nbsp;</span>
       <StyledCheckbox
         defaultChecked={false}
         onChange={() =>
@@ -322,7 +322,7 @@ const SendComponent: React.FC = () => {
           })}
         </p>
       </Modal>
-      <WrapperPage className="card">
+      <WrapperPage className="card send-component">
         {!walletBalances ? (
           <ZeroBalanceHeader>
             {intl.get('zeroBalanceHeader.noBalance', { ticker: currency.ticker })}
@@ -337,7 +337,7 @@ const SendComponent: React.FC = () => {
         )}
 
         {/* <Row type="flex"> */}
-        <Row>
+        <Row style={{ marginTop: '2rem' }}>
           <Col span={24}>
             <Form
               style={{
