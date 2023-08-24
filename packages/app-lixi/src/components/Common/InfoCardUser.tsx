@@ -186,7 +186,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     // if (isEditPost) {
     dispatch(
       openActionSheet('PostActionSheet', {
-        isEditPost: selectedAccount.address === postAccountAddress ? true : false,
+        isEditPost: selectedAccount.address === postAccountAddress && post.danaBurnScore === 0,
         post: postContent,
         page: page,
         followPostOwner: followPostOwner,
@@ -322,12 +322,14 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
         {isDropdown && (
           <>
             <Action>
-              <img
-                onClick={() => postActionSheet(post, page)}
-                className="action-post"
-                src="/images/ico-more-vertical.svg"
-                alt=""
-              />
+              <picture>
+                <img
+                  onClick={() => postActionSheet(post, page)}
+                  className="action-post"
+                  src="/images/ico-more-vertical.svg"
+                  alt=""
+                />
+              </picture>
             </Action>
           </>
         )}

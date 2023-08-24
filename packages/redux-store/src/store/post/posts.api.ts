@@ -300,7 +300,7 @@ const enhancedApi = api.enhanceEndpoints({
           dispatch(
             api.util.updateQueryData('Posts', { minBurnFilter: minBurnFilter, isTop: isTop }, draft => {
               const index = draft.allPosts.edges.findIndex(x => x.cursor === result.updatePost.id);
-              draft.allPosts.edges[index].node.content = result.updatePost.content;
+              draft.allPosts.edges[index].node = result.updatePost;
             })
           );
         } catch {}
