@@ -42,7 +42,7 @@ export default {
   'burn.page': 'page',
   'burn.account': 'account',
   'burn.doneBurning': 'Burning completed!',
-  'burn.sendDana': "You will pay {cost} XPI (Excluding miner's fees).",
+  'burn.sendDana': "You will pay {cost} {coin} (Excluding miner's fees).",
   'burn.owner': ' to {name} owner',
   'burn.feeMiner': "Miners' fees excluded",
   'burn.trans': 'Translation is enabled with {amount} Dana or more.',

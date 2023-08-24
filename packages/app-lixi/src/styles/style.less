@@ -765,9 +765,20 @@ code {
         }
       }
     }
+    .current-wallet-burn {
+      margin: 8px 0 0 0;
+      width: 100%;
+      .wallet-card-header {
+        padding-bottom: 0;
+      }
+      .wallet-card-content {
+        padding-bottom: 1rem;
+      }
+    }
   }
 
   .question-txt {
+    display: flex;
     color: rgba(30, 26, 29, 0.6);
     letter-spacing: 0.25px;
   }
@@ -785,6 +796,86 @@ code {
     letter-spacing: 0.25px;
     text-align: center;
     margin-bottom: 1rem;
+  }
+  @media (max-width: 526px) {
+    .ant-modal-header,
+    .ant-modal-body {
+      padding: 1rem 1rem 0 1rem;
+    }
+    .ant-modal-footer {
+      padding: 1rem;
+    }
+  }
+}
+
+.custom-select-currencies-burn-modal {
+  h3 {
+    text-align: left;
+  }
+  .switch-coin-to-burn {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-column-gap: 1rem;
+    .wallet-card-content {
+      padding-bottom: 1rem;
+    }
+  }
+  .current-selected {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color-dark-base);
+    .wallet-item {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .wallet-card-footer {
+      border-radius: 8px 0px 0px 16px;
+    }
+    .wallet-card-content {
+      padding-bottom: 1rem;
+    }
+    .selected-status {
+      background: var(--color-warning);
+      color: #fff;
+      margin-bottom: 1rem;
+      border-top-right-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 65px;
+      svg {
+        filter: var(--filter-svg-white-color);
+      }
+    }
+  }
+  .default-selected {
+    .wallet-item {
+      border-radius: 1rem;
+    }
+  }
+  .ant-modal-footer {
+    padding-top: 0;
+  }
+  @media (max-width: 526px) {
+    h3 {
+      font-size: 22px;
+    }
+    .ant-modal-header {
+      padding: 1rem 1rem 0 1rem;
+    }
+    .ant-modal-body {
+      padding: 0.5rem;
+    }
+    .switch-coin-to-burn {
+      padding: 0.5rem;
+      grid-template-columns: auto;
+      grid-column-gap: 0.5rem;
+    }
+    .selected-status {
+      min-width: 45px !important;
+    }
   }
 }
 

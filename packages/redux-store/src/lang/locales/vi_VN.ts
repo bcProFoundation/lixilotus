@@ -41,7 +41,7 @@ export default {
   'burn.page': 'trang',
   'burn.account': 'tài khoản',
   'burn.doneBurning': 'Đốt thành công!',
-  'burn.sendDana': 'Bạn sẽ trả {cost} XPI (Chưa tính phí của thợ đào).',
+  'burn.sendDana': 'Bạn sẽ trả {cost} {coin} (Chưa tính phí của thợ đào).',
   'burn.owner': ' tới chủ {name} ',
   'burn.feeMiner': 'Chưa tính phí thợ đào',
   'burn.trans': 'Bài viết với {amount} Dana trở lên sẽ được dịch.',

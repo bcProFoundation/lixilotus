@@ -22,37 +22,58 @@ import { selectTokens } from '@store/token';
 import { useCommentQuery } from '@store/comment/comments.generated';
 import { QRCodeModal } from '@components/Common/QRCodeModal';
 import { useRouter } from 'next/router';
+import { showToast } from '@store/toast/actions';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { fromSmallestDenomination } from '@utils/cashMethods';
 
-const CURRENCIES = [
+export const CURRENCIES = [
   {
     name: 'Lotus',
     symbol: 'xpi',
     icon: '/images/currencies/xpi.svg',
-    bg: '/images/currencies/bg-xpi.svg'
+    bg: '/images/currencies/bg-xpi.svg',
+    balance: 28735,
+    address: 'lotus_16PSJPYxmBxaJYAd1GGRcVn2nD1vooHJCozd5Dw91'
   },
   {
     name: 'eCash',
     symbol: 'xec',
     icon: '/images/currencies/xec.svg',
-    bg: '/images/currencies/bg-xec.svg'
+    bg: '/images/currencies/bg-xec.svg',
+    balance: 48120.24,
+    address: 'ecash:qp8ks7622cklc7c9pm2d3ktwzctack6njq6q83ed9x'
   },
   {
     name: 'Ethereum',
     symbol: 'eth',
     icon: '/images/currencies/eth.svg',
-    bg: '/images/currencies/bg-ltc.svg'
+    bg: '/images/currencies/bg-ltc.svg',
+    balance: 57.7,
+    address: '0x406f46a756c42e1f0e2cf5fc6d4c65f8cfae569d'
   },
   {
     name: 'Near',
     symbol: 'near',
     icon: '/images/currencies/near.svg',
-    bg: '/images/currencies/bg-doge.svg'
+    bg: '/images/currencies/bg-near.svg',
+    balance: 248.412,
+    address: 'a9386360b06f9a8961f4e80e69f15d9416c1b558c379be00cb29c459c60f332e'
   },
   {
     name: 'Polkadot',
     symbol: 'dot',
     icon: '/images/currencies/dot.svg',
-    bg: '/images/currencies/bg-bch.svg'
+    bg: '/images/currencies/bg-dot.svg',
+    balance: 42.412,
+    address: '12hxiaYpZaA1t2GznEmYdsUYPgij5eZQVkCk92bcPPicMy35'
+  },
+  {
+    name: 'Solana',
+    symbol: 'SOL',
+    icon: '/images/currencies/sol.svg',
+    bg: '/images/currencies/bg-sol.svg',
+    balance: 48.424,
+    address: '12hxiaYpZaA1t2GznEmYdsUYPgij5eZQVkCk92bcPPicMy35'
   }
 ];
 
@@ -67,10 +88,13 @@ const ListWalletContainer = styled.div`
   }
 `;
 
-const WalletItem = styled.div`
-  background-size: cover;
-  background-position: center;
+export const WalletItem = styled.div`
+  border: 1px solid var(--light-toast-title);
+  box-shadow: 1rem 1rem 2.5rem 0 rgb(0 0 0 / 5%);
+  background-size: cover !important;
+  background-position: center !important;
   border-radius: 1rem;
+  margin-bottom: 1rem;
   cursor: pointer;
   .wallet-card-header {
     padding: 1rem 1rem 0.5rem 1rem;
@@ -97,7 +121,7 @@ const WalletItem = styled.div`
   }
   .wallet-card-content {
     text-align: left;
-    padding: 0rem 1rem 1rem 1rem;
+    padding: 0rem 1rem 3rem 1rem;
     .balance {
       display: flex;
       align-items: center;
@@ -118,14 +142,35 @@ const WalletItem = styled.div`
     border-radius: 8px 8px 16px 16px;
     button {
       font-size: 10px;
-      color: var(--text-color-on-dark);
+      color: var(--text-color-on-dark) !important;
       &:hover {
-        background: none;
+        background: transparent !important;
         color: var(--text-color-on-dark);
       }
     }
   }
 `;
+
+export const decimalFormatBalance = (balanceWallet: any, coin?: string) => {
+  let balance: any = balanceWallet;
+  if (coin === 'xpi') {
+    balance = fromSmallestDenomination(balanceWallet) || 0;
+  }
+  if (typeof balance === 'string') balance = balance.replace(/,/g, '');
+  if (isNaN(Number(balance)) || Number(balance) <= 0) {
+    return '0.00';
+  } else {
+    if (Number(balance) < 10) {
+      return Number(Number(balance).toFixed(Math.round(1 / Number(balance)).toString().length + 2)).toLocaleString(
+        'en-GB'
+      );
+    } else {
+      return Number(Number(balance).toFixed(Math.round(1 / Number(balance)).toString().length + 1)).toLocaleString(
+        'en-GB'
+      );
+    }
+  }
+};
 
 const ListWallet = () => {
   const trimLength = 8;
@@ -146,39 +191,54 @@ const ListWallet = () => {
     return month + ' ' + dateTime.getFullYear();
   });
 
+  const defaultSelected = {
+    name: 'Lotus',
+    symbol: 'xpi',
+    icon: '/images/currencies/xpi.svg',
+    bg: '/images/currencies/bg-xpi.svg',
+    balance: selectedAccount?.balance,
+    address: selectedAccount?.address
+  };
+
+  const handleOnCopy = (id: string) => {
+    dispatch(
+      showToast('info', {
+        message: intl.get('token.copyId'),
+        description: id
+      })
+    );
+  };
+
   return (
     <>
       <ListWalletContainer>
-        {/* <h2 className="title">Currencies</h2> */}
+        {/* <h2 className="title">List Wallets</h2> */}
         {CURRENCIES.map(coin => {
+          if (coin.symbol === 'xpi') {
+            coin = defaultSelected;
+          }
           return (
-            <WalletItem
-              onClick={() => router.push(`/wallet/${coin.symbol}`)}
-              className="card"
-              style={{ backgroundImage: `url(${coin.bg})` }}
-            >
+            <WalletItem style={{ backgroundImage: `url(${coin.bg})` }}>
               <div className="wallet-card-header">
-                <div className="wallet-info">
+                <div className="wallet-info" onClick={() => router.push(`/wallet/${coin.symbol}`)}>
                   <img className="ico-currency" src={coin.icon} alt="" />
                   <span className="wallet-name">{coin.name}</span>
                 </div>
                 <div className="address-code">
-                  <QRCodeModal
-                    logoImage={coin.icon}
-                    address={'lotus_16PSJPYxmBxaJYAd1GGRcVn2nD1vooHJCozd5Dw91'}
-                    type={'address'}
-                  />
+                  <QRCodeModal logoImage={coin.icon} address={coin.address} type={'address'} />
                 </div>
               </div>
               <div className="wallet-card-content">
                 <span className="balance">
-                  10 <span className="wallet-symbol">{coin.symbol}</span>
+                  {decimalFormatBalance(coin.balance, coin.symbol)} <span className="wallet-symbol">{coin.symbol}</span>
                 </span>
               </div>
               <div className="wallet-card-footer">
-                <Button type="primary" className="no-border-btn" icon={<CopyOutlined />}>
-                  ooHJCozd5Dw91{' '}
-                </Button>
+                <CopyToClipboard text={coin.address} onCopy={() => handleOnCopy(coin.address)}>
+                  <Button type="primary" className="no-border-btn" icon={<CopyOutlined />}>
+                    {coin.address.slice(-10) + ' '}
+                  </Button>
+                </CopyToClipboard>
               </div>
             </WalletItem>
           );
