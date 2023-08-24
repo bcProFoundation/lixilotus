@@ -555,9 +555,9 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const { data: pageMessageSessionData, refetch: pageMessageSessionRefetch } = useUserHadMessageToPageQuery(
     {
       accountId: selectedAccount?.id,
-      pageId: page.id
+      pageId: page?.id
     },
-    { skip: selectedAccount?.id === page.pageAccountId || !selectedAccount?.id }
+    { skip: selectedAccount?.id === page?.pageAccountId || !selectedAccount?.id }
   );
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
@@ -943,13 +943,13 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                     {
                       {
                         [PageMessageSessionStatus.Open]: (
-                          <Button type="primary" className="outline-btn">
+                          <Button type="primary" className="outline-btn" onClick={() => router.push('/page-message')}>
                             {intl.get('messenger.openMessage')}
                           </Button>
                         ),
                         [PageMessageSessionStatus.Pending]: (
-                          <Button type="primary" className="outline-btn" disabled>
-                            {intl.get('messenger.pendingMessage')}
+                          <Button type="primary" className="outline-btn" onClick={() => router.push('/page-message')}>
+                            {intl.get('messenger.openMessage')}
                           </Button>
                         )
                       }[pageMessageSessionData.userHadMessageToPage.status]

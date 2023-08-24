@@ -156,9 +156,9 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
   const { data: pageMessageSessionData, refetch: pageMessageSessionRefetch } = useUserHadMessageToPageQuery(
     {
       accountId: selectedAccount?.id,
-      pageId: page.id
+      pageId: page?.id
     },
-    { skip: selectedAccount?.id === page.pageAccountId || !selectedAccount?.id }
+    { skip: selectedAccount?.id === page?.pageAccountId || !selectedAccount?.id }
   );
 
   const onClose = () => {
