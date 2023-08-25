@@ -40,7 +40,7 @@ export class TimelineResolver {
     private readonly timelineService: TimelineService,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private readonly i18n: I18nService
-  ) {}
+  ) { }
 
   @SkipThrottle()
   @Query(returns => TimelineItem)
@@ -109,7 +109,8 @@ export class TimelineResolver {
     @Args() { after, first }: PaginationArgs,
     @Args({ name: 'level', type: () => Number, nullable: true }) level: number
   ) {
-    const timelineIds = await this.timelineService.getTimelineIdsByLevel(level, account.id, first, after);
+    const accountId = account ? account.id : undefined;
+    const timelineIds = await this.timelineService.getTimelineIdsByLevel(level, accountId, first, after);
 
     const ids = timelineIds.edges.map(item => {
       return item.cursor;

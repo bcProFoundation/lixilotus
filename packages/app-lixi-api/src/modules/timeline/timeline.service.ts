@@ -23,7 +23,7 @@ export class TimelineService {
     private readonly followCacheService: FollowCacheService,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   async cacheInNetworkByTime(accountId: number) {
     const key = `${TimelineService.inNetworkSourceKey}:${accountId}`;
@@ -231,7 +231,7 @@ export class TimelineService {
 
   async getTimelineIdsByLevel(
     level: number,
-    accountId: number,
+    accountId?: number,
     first: number = 20,
     after?: string
   ): Promise<IPaginatedType<string>> {
@@ -242,7 +242,7 @@ export class TimelineService {
     const ratio = TimelineService.ratioSteps[level - 1];
 
     const timelineSortedSet = new SortedSet();
-    const inNetwork = await this.getInNetwork(accountId);
+    const inNetwork = accountId ? await this.getInNetwork(accountId) : [];
     const outNetwork = await this.getOutNetwork();
     const timeline = this.mergeByRatio(inNetwork, outNetwork, ratio);
     let index = 0;
