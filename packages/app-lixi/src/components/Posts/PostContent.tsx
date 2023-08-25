@@ -15,10 +15,10 @@ const PostContent = ({ post, showTranslation, currentLocale }) => {
         : post.content;
   } else {
     postContent =
-      post?.translations && post?.translations.length > 1 && showTranslation
+      post?.translations && post?.translations.length > 0 && showTranslation
         ? currentLocale === 'en'
           ? post.translations[Language.en].translateContent
-          : post.translations[Language.vi].translateContent
+          : post.translations[Language.vi]?.translateContent || post.translations[Language.en].translateContent //old post dont have vi trans will translate => en
         : post.content;
   }
   let iFrameEmbed = null;
