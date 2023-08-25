@@ -519,11 +519,11 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const loadMoreComments = () => {
     if (hasNext && !isFetching) {
       fetchNext().finally(() => {
-        setFocus('comment', { shouldSelect: true });
+        // setFocus('comment', { shouldSelect: true });
       });
     } else if (hasNext) {
       fetchNext().finally(() => {
-        setFocus('comment', { shouldSelect: true });
+        // setFocus('comment', { shouldSelect: true });
       });
     }
   };
