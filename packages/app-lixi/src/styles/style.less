@@ -55,12 +55,15 @@ body {
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
   @media (prefers-color-scheme: light) {
     background: #fff;
   }
+
   @media (prefers-color-scheme: dark) {
     background: var(--bg-color-dark-theme);
   }
+
   @media (max-width: 968px) {
     width: auto !important;
     height: auto !important;
@@ -70,6 +73,7 @@ body {
 code {
   // font-family: var(--font-family-primary);
 }
+
 .PhotoView-Slider__BannerWrap {
   background-color: rgba(30, 30, 30, 0.5) !important;
 }
@@ -79,6 +83,7 @@ code {
 }
 
 .ant-layout {
+
   // font-family: var(--font-family-primary);
   & * {
     // font-family: var(--font-family-primary);
@@ -170,6 +175,7 @@ code {
       }
     }
   }
+
   .avatar-account {
     .ant-avatar {
       background: rgba(0, 0, 0, 0.25);
@@ -207,12 +213,14 @@ code {
   position: relative;
   display: inline-block;
   border-radius: 50%;
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
   }
+
   .ant-avatar-string {
     position: absolute;
     left: 50%;
@@ -451,32 +459,40 @@ code {
   width: fit-content;
   margin: 0 auto !important;
   margin-bottom: 1rem !important;
+
   .ant-notification-notice-message {
     font-size: 14px !important;
   }
+
   .ant-notification-notice-description {
     font-size: 12px !important;
   }
+
   &.custom-toast-notification-light {
     &.ant-notification-notice-success {
       background: var(--light-sucess-background);
       border: 1px solid var(--light-sucess-border);
     }
+
     &.ant-notification-notice-info {
       background: var(--light-informative-background);
       border: 1px solid var(--light-informative-border);
     }
+
     &.ant-notification-notice-warning {
       background: var(--light-warning-background);
       border: 1px solid var(--light-warning-border);
     }
+
     &.ant-notification-notice-error {
       background: var(--light-error-background);
       border: 1px solid var(--light-error-border);
     }
+
     &.burn-toast-notification {
       background: var(--light-warning-background);
       border: 1px solid var(--light-warning-border);
+
       .ant-notification-notice-icon {
         svg {
           width: 24px;
@@ -485,33 +501,41 @@ code {
         }
       }
     }
+
     .ant-notification-notice-message {
       color: var(--light-toast-title);
     }
+
     .ant-notification-notice-description {
       color: var(--light-toast-message);
     }
   }
+
   &.custom-toast-notification-dark {
     &.ant-notification-notice-success {
       background: var(--dark-sucess-background);
       border: 1px solid var(--dark-sucess-border);
     }
+
     &.ant-notification-notice-info {
       background: var(--dark-informative-background);
       border: 1px solid var(--dark-informative-border);
     }
+
     &.ant-notification-notice-warning {
       background: var(--dark-warning-background);
       border: 1px solid var(--dark-warning-border);
     }
+
     &.ant-notification-notice-error {
       background: var(--dark-error-background);
       border: 1px solid var(--dark-error-border);
     }
+
     &.burn-toast-notification {
       background: var(--dark-warning-background);
       border: 1px solid var(--dark-warning-border);
+
       .ant-notification-notice-icon {
         svg {
           width: 24px;
@@ -520,16 +544,20 @@ code {
         }
       }
     }
+
     .ant-notification-notice-message {
       color: var(--dark-toast-title) !important;
     }
+
     .ant-notification-notice-description {
       color: var(--dark-toast-message) !important;
+
       a,
       p {
         color: var(--dark-toast-message) !important;
       }
     }
+
     .ant-notification-notice-close {
       color: #fff !important;
     }
@@ -584,6 +612,7 @@ code {
   @media (prefers-color-scheme: light) {
     background: #000;
   }
+
   @media (prefers-color-scheme: dark) {
     background: var(--bg-color-dark-theme);
   }
@@ -593,6 +622,7 @@ code {
   @media (prefers-color-scheme: light) {
     background: #000;
   }
+
   @media (prefers-color-scheme: dark) {
     background: var(--bg-color-dark-theme);
   }
@@ -600,36 +630,44 @@ code {
 
 #typeahead-menu {
   z-index: 9999;
+
   .auto-embed-menu {
     .typeahead-popover {
       @media (prefers-color-scheme: light) {
         background: var(--bg-color-light-theme);
       }
+
       @media (prefers-color-scheme: dark) {
         background: #303031;
       }
+
       padding: 0.5rem;
       border-radius: 4px;
       box-shadow: var(--box-shadow-toast-light);
+
       ul {
         list-style: none;
         padding: 0;
         margin: 0;
+
         li {
           @media (prefers-color-scheme: light) {
             background: #fff;
             color: var(--color-primary);
           }
+
           @media (prefers-color-scheme: dark) {
             background: var(--border-color-dark-base);
             color: var(--text-color-primary-dark);
           }
+
           cursor: pointer;
           font-size: 13px;
           border-radius: 4px;
           padding: 4px;
           font-weight: 400;
           margin-bottom: 0.5rem;
+
           &:last-child {
             margin-bottom: 0;
           }
@@ -650,10 +688,12 @@ code {
     left: 0;
     padding: 5px;
     margin-left: 0.5rem;
+
     .ant-modal-close-x {
       font-size: 22px;
       display: initial;
     }
+
     @media (min-width: 968px) {
       top: 0.5rem;
       right: 1rem !important;
@@ -798,40 +838,52 @@ code {
   width: 100vw !important;
   border-top-right-radius: var(--border-radius-item);
   border-top-left-radius: var(--border-radius-item);
+
   .ant-drawer-body {
     padding: 0 !important;
   }
+
   .bar-close {
     background: gray;
   }
+
   .ant-drawer-body {
     background: #fff;
+
     .text-action-sheet {
       color: var(--color-primary);
     }
   }
+
   &.action-sheet-dark {
     background: var(--bg-color-dark-item);
+
     .bar-close {
       background: var(--border-color);
     }
+
     .ant-drawer-body {
       background: var(--bg-color-dark-item);
+
       .text-action-sheet {
         color: var(--text-color-on-dark);
       }
     }
+
     .item-action-sheet {
       background: #303031;
     }
+
     // Install Pwa Guide Dark
     &.action-sheet-install-pwa-guide {
       h3 {
         color: var(--text-color-primary-dark);
       }
+
       p {
         color: var(--text-color-on-dark);
       }
+
       .close-btn {
         background: var(--bg-color-dark-item);
       }
@@ -930,6 +982,7 @@ code {
 
   .ant-form-item-control {
     .ant-form-item-control-input-content {
+
       input,
       textarea {
         padding: 8px 1rem;
@@ -958,11 +1011,13 @@ code {
       .ant-input-affix-wrapper,
       .ant-picker {
         width: 100%;
+
         // padding-left: 0px;
         input {
           border: none;
         }
       }
+
       .ant-select {
         border: 1px solid var(--border-color-base);
         background: #fff;
@@ -1240,7 +1295,7 @@ code {
     }
   }
 
-  .ant-popover-arrow > .ant-popover-arrow-content::before {
+  .ant-popover-arrow>.ant-popover-arrow-content::before {
     background: var(--color-primary);
   }
 
@@ -1405,6 +1460,7 @@ code {
 }
 
 .ant-modal-dark {
+
   h1,
   h2,
   h3,
@@ -1421,9 +1477,11 @@ code {
   .ant-avatar {
     background: #303031 !important;
     color: gray !important;
+
     span {
       color: gray !important;
     }
+
     &.ant-avatar-image {
       background: transparent !important;
     }
@@ -1440,6 +1498,7 @@ code {
     border-color: var(--border-color-dark-base) !important;
     color: var(--text-color-on-dark) !important;
     border-radius: var(--border-radius-primary);
+
     &::placeholder {
       color: gray !important;
     }
@@ -1514,6 +1573,7 @@ code {
         &.ant-radio-button-wrapper-checked {
           color: #1e1a1d !important;
           background: #ffd7f6;
+
           span {
             color: var(--color-primary) !important;
           }
@@ -1595,6 +1655,7 @@ code {
     .comment-input-container {
       background: var(--bg-color-dark-item) !important;
       border-color: var(--border-color-dark-base) !important;
+
       .ant-input {
         &:focus {
           box-shadow: none !important;
@@ -1632,34 +1693,41 @@ code {
     }
 
     .images-post {
-      .react-photo-gallery--gallery > div {
+      .react-photo-gallery--gallery>div {
         background: var(--bg-color-dark-item) !important;
       }
+
       .ant-image {
         width: 100%;
         height: 100%;
+
         img {
           height: 100%;
           object-fit: contain;
         }
       }
+
       &.images-post-mobile {
         img {
           border-color: var(--border-color-dark-base) !important;
         }
       }
+
       &.images-post-desktop {
         img {
           object-fit: cover;
         }
       }
     }
+
     .comment-container {
       background: #303031;
     }
+
     .hashtag-link {
       color: var(--color-primary) !important;
     }
+
     .description-post {
       color: var(--text-color-on-dark) !important;
     }
@@ -1676,8 +1744,10 @@ code {
         border-color: transparent !important;
       }
     }
+
     a {
       color: var(--color-primary) !important;
+
       span {
         color: var(--color-primary) !important;
       }
@@ -1686,6 +1756,7 @@ code {
 }
 
 .popover-dark {
+
   h1,
   h2,
   h3,
@@ -1699,6 +1770,7 @@ code {
         filter: var(--filter-svg-white-color) !important;
       }
     }
+
     &:disabled {
       background-color: rgba(30, 26, 29, 0.12);
       color: var(--text-color-on-dark);
@@ -1810,10 +1882,12 @@ code {
       background: var(--bg-color-dark-item) !important;
     }
   }
+
   .ant-avatar {
     background: #303031 !important;
     color: gray !important;
   }
+
   &.account-popover {
     .ant-avatar {
       background: rgba(0, 0, 0, 0.25) !important;
@@ -1829,20 +1903,24 @@ code {
   border-radius: 8px;
   padding: 4px 8px;
   font-size: 15px;
+
   button {
     span {
       font-size: 22px;
     }
+
     &:hover {
       span {
         color: var(--color-primary);
       }
     }
   }
+
   input {
     flex-grow: 1;
   }
 }
+
 .StyledFloatingDark {
   position: absolute;
   top: 0;
@@ -1887,15 +1965,14 @@ code {
   }
 
   .ant-skeleton.ant-skeleton-active {
+
     .ant-skeleton-avatar,
     .ant-skeleton-title,
     li {
-      background: linear-gradient(
-        90deg,
-        rgba(48, 48, 49, 0.7819721638655462) 25%,
-        rgba(48, 48, 49, 0.8239889705882353) 46%,
-        rgba(48, 48, 49, 1) 68%
-      );
+      background: linear-gradient(90deg,
+          rgba(48, 48, 49, 0.7819721638655462) 25%,
+          rgba(48, 48, 49, 0.8239889705882353) 46%,
+          rgba(48, 48, 49, 1) 68%);
       background-size: 400% 100% !important;
     }
   }
@@ -1947,6 +2024,7 @@ code {
     color: var(--text-color-on-dark);
 
     .ant-table-thead {
+
       th,
       td {
         background: #1e1e1e;
@@ -1969,7 +2047,7 @@ code {
     }
 
     tr.ant-table-row:hover {
-      > td {
+      >td {
         background: #303031;
       }
     }
@@ -1978,7 +2056,7 @@ code {
       background: var(--bg-color-dark-item);
     }
 
-    .ant-table-tbody > tr.ant-table-placeholder:hover > td {
+    .ant-table-tbody>tr.ant-table-placeholder:hover>td {
       background: var(--bg-color-dark-item) !important;
     }
 
@@ -2101,6 +2179,7 @@ code {
         filter: var(--filter-svg-white-color) !important;
       }
     }
+
     &:disabled {
       background-color: rgba(30, 26, 29, 0.12);
       color: var(--text-color-on-dark);
@@ -2421,22 +2500,27 @@ code {
 
     .images-post {
       background: var(--bg-color-dark-item);
-      .react-photo-gallery--gallery > div {
+
+      .react-photo-gallery--gallery>div {
         background: var(--bg-color-dark-item) !important;
       }
+
       .ant-image {
         width: 100%;
         height: 100%;
+
         img {
           height: 100%;
           object-fit: contain;
         }
       }
+
       &.images-post-mobile {
         img {
           border-color: var(--border-color-dark-base) !important;
         }
       }
+
       &.images-post-desktop {
         img {
           object-fit: cover;
@@ -2447,6 +2531,7 @@ code {
     textarea {
       background: var(--bg-color-dark-item);
       color: #fff;
+
       &::placeholder {
         color: var(--text-color-on-dark);
       }
@@ -2527,7 +2612,7 @@ code {
 
       .distance {
         .ant-space-item {
-          > div {
+          >div {
             color: var(--text-color-primary-dark) !important;
           }
 
@@ -2565,11 +2650,13 @@ code {
       }
     }
   }
+
   .btn-topbar {
     svg {
       filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%) !important;
     }
   }
+
   // .header-component {
   //   background-color: rgba(30, 30, 30, 0.85) !important;
   // }
@@ -2666,6 +2753,7 @@ code {
         }
       }
     }
+
     .header-bar {
       background: var(--bg-color-dark-item) !important;
     }
@@ -2673,11 +2761,13 @@ code {
 
   //Page Message
   .page-message {
+
     div,
     p {
       border-color: var(--border-color-dark-base);
       color: var(--text-color-primary-dark) !important;
     }
+
     .page-name,
     .user-name {
       color: var(--text-color-primary-dark) !important;
@@ -2689,12 +2779,15 @@ code {
 
     .content-score {
       background: var(--border-color-dark-base) !important;
+
       &.pending {
         background: var(--dark-error-background) !important;
       }
+
       &.open {
         background: var(--dark-sucess-background) !important;
       }
+
       &.close {
         background: var(--color-danger-dark) !important;
       }
@@ -2716,9 +2809,11 @@ code {
 
     .input-page-message {
       background: #303031;
+
       .ant-input {
         background: #303031;
         color: #fff;
+
         &::placeholder {
           color: var(--text-color-on-dark);
         }
@@ -2762,10 +2857,12 @@ code {
       background: var(--border-color) !important;
       color: #000 !important;
     }
+
     .ant-upload-wrapper {
       img {
         filter: var(--filter-svg-gray-color);
       }
+
       button {
         background: var(--bg-color-dark-item) !important;
       }
@@ -2803,12 +2900,14 @@ code {
 
   .description-post {
     color: var(--text-color-on-dark);
+
     p {
       color: var(--text-color-on-dark) !important;
     }
   }
 
   .description-translate {
+
     p,
     span,
     div {
@@ -2817,7 +2916,7 @@ code {
   }
 
   .images-post {
-    .react-photo-gallery--gallery > div {
+    .react-photo-gallery--gallery>div {
       background: var(--bg-color-dark-item) !important;
     }
   }
@@ -2844,9 +2943,11 @@ code {
   // Lixi Item
   .lixi-item {
     background: var(--bg-color-dark-item);
+
     strong {
       color: var(--text-color-primary-dark);
     }
+
     p,
     span,
     div {
@@ -2867,35 +2968,55 @@ code {
         background: #303031 !important;
         border-color: var(--border-color-dark-base) !important;
       }
+
       input,
       textarea {
         background-color: #303031 !important;
         border-color: var(--border-color-dark-base) !important;
         color: var(--text-color-on-dark) !important;
+
         &::placeholder {
           color: gray !important;
         }
       }
+
       .ant-input-group-addon {
         background: #303031 !important;
         border-color: var(--border-color-dark-base) !important;
+
         span {
           background: transparent !important;
           border-color: var(--border-color-dark-base);
         }
       }
+
       .ant-select {
         .ant-select-selector {
           background-color: #303031 !important;
         }
       }
+
       .input-number-addon {
         background: #303031 !important;
         border-color: var(--border-color-dark-base);
       }
     }
+
     .hint {
       color: var(--text-color-on-dark) !important;
     }
+
+    fix-send-screen-layout .ant-checkbox {
+      .ant-checkbox-input {
+        background: var(--bg-color-dark-item) !important;
+        border-color: var(--border-color-dark-base) !important;
+      }
+
+      .ant-checkbox-inner {
+        background: var(--bg-color-dark-item) !important;
+        border-color: var(--border-color-dark-base) !important;
+      }
+    }
+
   }
 }
