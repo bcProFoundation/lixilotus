@@ -21,6 +21,8 @@ export interface ClaimDto {
 
 export interface Claim extends ClaimDto {
   id: number;
+  message: string;
+  image: string;
 }
 
 export interface ViewClaimDto {

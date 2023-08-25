@@ -5,13 +5,18 @@ import { SagaStore, wrapper } from '@store/store';
 import _ from 'lodash';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import { END } from 'redux-saga';
+import InApp from '@utils/inapp';
+import CheckBrowser from '@components/InApp/check-browser';
 
 const ClaimPage = props => {
-  const { userAddress } = props;
+  const inapp = new InApp(navigator.userAgent || navigator.vendor);
+
+  const { userAddress, isMobile } = props;
 
   return (
     <>
-      <FullWalletComponent claimCode={userAddress} />
+      <CheckBrowser />
+      {!inapp?.isInApp && <FullWalletComponent claimCode={userAddress}/>}
     </>
   );
 };

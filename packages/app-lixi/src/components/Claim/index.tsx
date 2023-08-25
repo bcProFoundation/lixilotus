@@ -21,6 +21,8 @@ import styled from 'styled-components';
 import { WalletContext } from '@context/index';
 import { openModal } from '@store/modal/actions';
 import useAuthorization from '@components/Common/Authorization/use-authorization.hooks';
+import InApp from '@utils/inapp';
+import { generateAccount } from '@store/account';
 
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
 
@@ -90,6 +92,7 @@ const ClaimComponent = ({ isClaimFromAccount, claimCodeFromURL }: ClaimProps) =>
   const askAuthorization = useAuthorization();
 
   const [claimXpiAddressError, setClaimXpiAddressError] = useState<string | boolean>(false);
+  const inapp = new InApp(navigator.userAgent || navigator.vendor);
 
   useEffect(() => {
     const loadScriptByURL = (id: string, url: string, callback: { (): void; (): void }) => {
@@ -141,9 +144,15 @@ const ClaimComponent = ({ isClaimFromAccount, claimCodeFromURL }: ClaimProps) =>
   async function submit(token) {
     let claimCode = currentClaimCode;
     if (!currentAddress || !currentClaimCode) {
-      askAuthorization();
-      return;
-    } else if (currentClaimCode.includes('lixi_')) {
+      if (inapp?.isInApp) {
+        askAuthorization();
+        return;
+      } else {
+        await dispatch(generateAccount());
+      }
+    }
+    
+    if (currentClaimCode.includes('lixi_')) {
       claimCode = claimCode.match('(?<=lixi_).*')[0];
     }
 
