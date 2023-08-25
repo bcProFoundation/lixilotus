@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Select } from 'antd';
 import styled, { css } from 'styled-components';
 import intl from 'react-intl-universal';
-import AppLocale from '@lang/index';
+import AppLocale, { AppLanguageNotAutoTrans } from '@lang/index';
 import _ from 'lodash';
 
 export const AntdFormCss = css`
@@ -58,6 +58,10 @@ export const AntdFormCss = css`
   .ant-form-item-explain.ant-form-item-explain-error {
     color: ${props => props.theme.forms.error} !important;
   }
+  .ant-select-selection-search {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 export const AntdFormWrapper = styled.div`
@@ -92,6 +96,48 @@ export const LanguageSelectDropdown = selectProps => {
         width: '100%'
       }}
       getPopupContainer={trigger => trigger.parentNode}
+      {...selectProps}
+    >
+      {languageOptions}
+    </Select>
+  );
+};
+
+export const LanguageNotAutoTransDropdown = selectProps => {
+  const { Option } = Select;
+
+  const languageMenuOptions: LanguageMenuOption[] = [{ value: null, label: ' ' }];
+
+  for (var key in AppLanguageNotAutoTrans) {
+    const languageMenuOption: LanguageMenuOption = {
+      value: key,
+      label: intl.get('code.' + key)
+    };
+    languageMenuOptions.push(languageMenuOption);
+  }
+
+  const languageOptions = languageMenuOptions.map(languageMenuOption => {
+    return (
+      <Option key={languageMenuOption.value} value={languageMenuOption.value}>
+        {languageMenuOption.label}
+      </Option>
+    );
+  });
+  return (
+    <Select
+      className=""
+      style={{
+        width: '100%'
+      }}
+      showSearch
+      filterSort={(optionA, optionB) =>
+        (optionA!.children as unknown as string)
+          .toLowerCase()
+          .localeCompare((optionB!.children as unknown as string).toLowerCase())
+      }
+      filterOption={(input, option) =>
+        (option!.children as unknown as string).toLocaleLowerCase().includes(input.toLowerCase())
+      }
       {...selectProps}
     >
       {languageOptions}

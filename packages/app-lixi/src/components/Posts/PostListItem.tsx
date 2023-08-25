@@ -20,7 +20,7 @@ import PostTranslate from './PostTranslate';
 import { PostListType } from '@bcpros/lixi-models/constants';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { LoadingIcon } from '@components/Layout/MainLayout';
-import { getCurrentLocale } from '@store/settings/selectors';
+import { getCurrentLocale, getLanguageNotAutoTrans } from '@store/settings/selectors';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List
@@ -263,6 +263,8 @@ const PostListItem = ({
   const ref = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowDimensions();
   const currentLocale = useAppSelector(getCurrentLocale);
+  const languageNotAutoTrans = useAppSelector(getLanguageNotAutoTrans);
+  const [showFeatureTrans, setShowFeatureTrans] = useState(true);
 
   useEffect(() => {
     const mapImages = item.uploads.map(img => {
@@ -366,11 +368,21 @@ const PostListItem = ({
     setShowTranslation(!showTranslation);
   };
 
-  const handleCodeToLanguage = intl.get(`code.${post?.originalLanguage}`);
+  const handleCodeToLanguage = () => {
+    if (post?.originalLanguage.includes('zh')) {
+      return intl.get(`code.zh`);
+    } else {
+      return intl.get(`code.${post?.originalLanguage}`);
+    }
+  };
 
   const toggleAutoTranslate = () => {
-    if (post?.originalLanguage !== currentLocale) {
-      translatePost();
+    if (!_.isNil(post.originalLanguage)) {
+      if (!post.originalLanguage.includes(languageNotAutoTrans) && post.originalLanguage !== currentLocale) {
+        translatePost();
+      } else if (post.originalLanguage === currentLocale || post.content.trim() === '') {
+        setShowFeatureTrans(false);
+      }
     }
   };
 
@@ -408,10 +420,11 @@ const PostListItem = ({
 
           {post.translations &&
             post.translations.length > 0 &&
+            showFeatureTrans &&
             (showTranslation ? (
               <StyledTranslate onClick={translatePost} className="post-translation">
                 {intl.get('post.originTranslate', {
-                  language: handleCodeToLanguage
+                  language: handleCodeToLanguage()
                 })}
               </StyledTranslate>
             ) : (

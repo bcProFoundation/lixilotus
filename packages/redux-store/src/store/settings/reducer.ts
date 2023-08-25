@@ -11,7 +11,8 @@ import {
   setInitIntlStatus,
   setIsSystemThemes,
   toggleCollapsedSideNav,
-  updateLocale
+  updateLocale,
+  setLanguageNotAutoTrans
 } from './actions';
 import { SettingsState } from './state';
 // import { SearchBoxType } from '@bcpros/lixi-models/src/lib/search';
@@ -31,7 +32,8 @@ const initialState: SettingsState = {
   filterPostsProfile: 1,
   isTopPosts: false,
   currentThemes: 'system',
-  isSystemThemes: true
+  isSystemThemes: true,
+  languageNotAutoTrans: null
 };
 
 export const settingsReducer = createReducer(initialState, builder => {
@@ -79,5 +81,8 @@ export const settingsReducer = createReducer(initialState, builder => {
     })
     .addCase(setIsSystemThemes, (state, action) => {
       state.isSystemThemes = action.payload;
+    })
+    .addCase(setLanguageNotAutoTrans, (state, action) => {
+      state.languageNotAutoTrans = action.payload;
     });
 });
