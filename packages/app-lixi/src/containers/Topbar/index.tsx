@@ -39,6 +39,7 @@ import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { openActionSheet } from '@store/action-sheet/actions';
 import { usePageQuery } from '@store/page/pages.generated';
 import { useGetAccountByAddressQuery } from '@store/account/accounts.generated';
+import { FilterLevel } from '../../components/Common/FilterLevel';
 
 export type TopbarProps = {
   className?: string;
@@ -450,19 +451,6 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     }
   };
 
-  const SearchBoxType = () => {
-    switch (pathDirection[1]) {
-      case '':
-        return 'posts';
-      case 'page':
-        return 'page';
-      case 'token':
-        return 'token';
-      default:
-        return 'posts';
-    }
-  };
-
   const handleIconClick = (newPath?: string) => {
     if (currentPathName === '/' && newPath === '/') {
       dispatch(postApi.util.resetApiState());
@@ -479,7 +467,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     dispatch(openActionSheet('InstallPwaGuide', {}));
   };
 
-  const HandleMenuPosts = (checked: boolean) => {
+  const handleMenuPosts = (checked: boolean) => {
     dispatch(saveTopPostsFilter(checked));
   };
 
@@ -487,7 +475,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
 
   const contentFilterBurn = (
     <>
-      {router?.pathname == '/' && (
+      {router?.pathname && router?.pathname != '/' ? (
         <PopoverStyled>
           <TitleFilterStyled>
             <p className="follow-title">
@@ -497,14 +485,16 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
               checkedChildren={intl.get('general.on')}
               unCheckedChildren={intl.get('general.off')}
               defaultChecked={true}
-              onChange={HandleMenuPosts}
+              onChange={handleMenuPosts}
             />
           </TitleFilterStyled>
+          <FilterBurnt filterForType={filterType()} />
+        </PopoverStyled>
+      ) : (
+        <PopoverStyled>
+          <FilterLevel />
         </PopoverStyled>
       )}
-      <PopoverStyled>
-        <FilterBurnt filterForType={filterType()} />
-      </PopoverStyled>
     </>
   );
 

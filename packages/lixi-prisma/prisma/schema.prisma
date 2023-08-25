@@ -160,7 +160,7 @@ model Post {
   content          String            @default("")
   createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime          @default(now()) @map("updated_at") @db.Timestamptz
-  uploadedCovers   UploadDetail[]    @relation("PostCover")
+  uploads          UploadDetail[]    @relation("PostCover")
   danaBurnUp       Float             @default(0.0) @map("dana_burn_up")
   danaBurnDown     Float             @default(0.0) @map("dana_burn_down")
   danaBurnScore    Float             @default(0.0) @map("dana_burn_score")
@@ -426,9 +426,6 @@ model Upload {
   thumbnailHeight  Int?          @map("thumbnail_height")
   type             String?       @db.VarChar(15)
   uploadDetail     UploadDetail?
-  sha800           String?
-  sha320           String?
-  sha40            String?
   bucket           String?
   cfImageId        String?       @map("cf_image_id")
   cfImageFilename  String?       @map("cf_image_filename")

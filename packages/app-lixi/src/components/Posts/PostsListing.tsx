@@ -177,9 +177,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   useEffect(() => dispatch(getLeaderboard()), []);
   const refs = useRef([]);
-  const onClickMenu: MenuProps['onClick'] = e => {
-    setTab(e.key);
-  };
   useEffect(() => {
     // when refresh page , or first time go in => no show new post for account
     if (!!newPostAvailable) {

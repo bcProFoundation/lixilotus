@@ -16,7 +16,7 @@ const ClaimPage = props => {
   return (
     <>
       <CheckBrowser />
-      {!inapp?.isInApp && <FullWalletComponent claimCode={userAddress}/>}
+      {!inapp?.isInApp && <FullWalletComponent claimCode={userAddress} />}
     </>
   );
 };

@@ -33,6 +33,7 @@ import { WorshipModule } from './modules/worship/worship.module';
 import { MessageModule } from './modules/message/message.module';
 import { CloudflareModule } from './common/modules/cloudflare/cloudflare.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TimelineModule } from './modules/timeline/timeline.module';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -155,6 +156,7 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     TempleModule,
     HashtagModule,
     MessageModule,
+    TimelineModule,
     S3Module.forRootAsync({
       useFactory: () => ({
         config: {

@@ -17,9 +17,6 @@ fragment MessageFields on Message {
       bucket
       width
       height
-      sha800
-      sha320
-      sha40
       cfImageId
       cfImageFilename
     }

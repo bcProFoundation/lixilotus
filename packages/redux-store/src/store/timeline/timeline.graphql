@@ -1,0 +1,42 @@
+# import PageInfoFields from '../../graphql/fragments/page-info-fields.fragment.graphql'
+# import PostFields from '../post/posts.graphql
+
+query Timeline($id: String!) {
+  timeline(id: $id) {
+    id
+    data {
+      ... on Post {
+        ...PostFields
+      }
+    }
+  }
+}
+
+query HomeTimeline(
+  $after: String
+  $first: Int = 20
+  $level: Int
+) {
+  homeTimeline(
+    after: $after
+    first: $first
+    level: $level
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        id
+        data {
+          ... on Post {
+            ...PostFields
+          }
+        }
+        
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}

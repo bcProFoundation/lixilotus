@@ -271,8 +271,8 @@ const PostListItem = ({
       let imgSha = img.upload.sha;
 
       const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.upload.cfImageId}/public`;
-      let imgWidth = parseInt(img?.upload?.width) || 4;
-      let height = parseInt(img?.upload?.height) || 3;
+      let imgWidth = img?.upload?.width || 4;
+      let height = img?.upload?.height || 3;
       let objImg = {
         src: imgUrl,
         width: imgWidth,
@@ -357,7 +357,7 @@ const PostListItem = ({
       return (
         <p className="retweet">
           <RetweetOutlined />{' '}
-          {intl.get('post.singleReposted', { repostName: post.reposts[post.reposts.length - 1].account.name })}
+          {intl.get('post.singleReposted', { repostName: post.reposts[post.reposts.length - 1]?.account?.name })}
         </p>
       );
     }

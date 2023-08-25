@@ -9,6 +9,6 @@ import { FollowResolver } from './follow.resolver';
   imports: [AuthModule, NotificationModule],
   controllers: [],
   providers: [AccountResolver, FollowResolver, Logger, FollowCacheService],
-  exports: []
+  exports: [FollowCacheService]
 })
 export class AccountModule {}

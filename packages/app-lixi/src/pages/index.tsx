@@ -1,19 +1,16 @@
-import { LocalUserAccount } from '@bcpros/lixi-models';
 import PostsListing from '@components/Posts/PostsListing';
-import { generateAccount, silentLogin } from '@store/account/actions';
 import { getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { setLocalUserAccount } from '@store/localAccount';
 import { getIsBootstrapped } from '@store/persistor/selectors';
 import { SagaStore, wrapper } from '@store/store';
 import axios from 'axios';
 import { withIronSessionSsr } from 'iron-session/next';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import { END } from 'redux-saga';
 import { LocalUser } from 'src/shared/models/localUser';
 import { sessionOptions } from 'src/shared/models/session';
+import TimelineListing from '../components/Timeline/TimelineListing';
 
 type HomePageProps = {
   isMobile: boolean;
@@ -31,33 +28,7 @@ const HomePage = ({ isMobile, localUser }: HomePageProps) => {
     await axios.post(url);
   };
 
-  // useEffect(() => {
-  //   if (isHydrated) {
-  //     console.log('localUser:', localUser);
-  //     // Only check the user if the redux state is already hydrated
-  //     if (!selectedAccount && !localUser) {
-  //       // There's no account, need to create an account for user
-  //     } else if (selectedAccount && !localUser) {
-  //       // Local local with nextjs api route
-  //       const localAccount: LocalUserAccount = {
-  //         mnemonic: selectedAccount.mnemonic,
-  //         language: selectedAccount.language,
-  //         address: selectedAccount.address,
-  //         name: selectedAccount.name,
-  //         createdAt: selectedAccount.createdAt,
-  //         updatedAt: selectedAccount.updatedAt
-  //       };
-  //       dispatch(setLocalUserAccount(localAccount)); // and local-login
-  //       dispatch(silentLogin(selectedAccount.mnemonic));
-  //     } else if (selectedAccount) {
-  //       dispatch(silentLogin(selectedAccount.mnemonic));
-  //     } else if (localUser) {
-  //       localLogout();
-  //     }
-  //   }
-  // }, [selectedAccount, localUser, isHydrated]);
-
-  return <PostsListing />;
+  return <TimelineListing />;
 };
 
 export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) =>

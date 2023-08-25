@@ -20,13 +20,13 @@ export class Token {
   tokenType: string;
 
   @Field(() => String, { nullable: true })
-  tokenDocumentUrl: string;
+  tokenDocumentUrl: Nullable<string>;
 
   @Field(() => String, { nullable: true })
-  totalBurned: string;
+  totalBurned: Nullable<string>;
 
   @Field(() => String, { nullable: true })
-  totalMinted: string;
+  totalMinted: Nullable<string>;
 
   @Field(() => Number)
   decimals: number;
@@ -44,7 +44,7 @@ export class Token {
   danaBurnScore: number;
 
   @Field(() => String, { nullable: true })
-  initialTokenQuantity: string;
+  initialTokenQuantity: Nullable<string>;
 
   @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was created.'
@@ -55,11 +55,15 @@ export class Token {
     description: 'Identifies the date and time when the object was last comments.',
     nullable: true
   })
-  comments?: Date;
+  comments?: Nullable<Date>;
 
   @Field(() => Number, { nullable: true })
-  rank?: number;
+  rank?: Nullable<number>;
 
   @Field(() => Boolean, { nullable: true })
-  isFollowed: boolean;
+  isFollowed?: Nullable<boolean>;
+
+  constructor(partial: Partial<Token>) {
+    Object.assign(this, partial);
+  }
 }

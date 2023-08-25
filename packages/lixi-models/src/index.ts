@@ -25,3 +25,4 @@ export * from './lib/category';
 export * from './lib/follow';
 export * from './lib/pageCategory';
 export * from './lib/message';
+export * from './lib/timeline';

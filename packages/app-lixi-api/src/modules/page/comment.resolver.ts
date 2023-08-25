@@ -80,31 +80,49 @@ export class CommentResolver {
           ]
         },
         ...(account && account.id
-          ? [{ AND: [{ commentToId: id }, {
-              commentAccount: {
-                id: account.id
+          ? [
+              {
+                AND: [
+                  { commentToId: id },
+                  {
+                    commentAccount: {
+                      id: account.id
+                    }
+                  }
+                ]
               }
-            }
-          ] }]
+            ]
           : []),
         ...(account && account.id
-          ? [{ AND: [{ commentToId: id }, {
-            commentTo: {
-              postAccountId: account.id
-            }
-            }
-          ] }]
+          ? [
+              {
+                AND: [
+                  { commentToId: id },
+                  {
+                    commentTo: {
+                      postAccountId: account.id
+                    }
+                  }
+                ]
+              }
+            ]
           : []),
         ...(account && account.id
-          ? [{ AND: [{ commentToId: id }, {
-            commentTo: {
-              page: {
-                pageAccountId: account.id
+          ? [
+              {
+                AND: [
+                  { commentToId: id },
+                  {
+                    commentTo: {
+                      page: {
+                        pageAccountId: account.id
+                      }
+                    }
+                  }
+                ]
               }
-            }
-            }
-          ] }]
-          : []),
+            ]
+          : [])
       ]
     };
 

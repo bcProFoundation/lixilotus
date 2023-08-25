@@ -407,8 +407,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   useEffect(() => {
     const mapImages = post.uploads.map(img => {
       const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.upload.cfImageId}/public`;
-      let width = parseInt(img?.upload?.width) || 4;
-      let height = parseInt(img?.upload?.height) || 3;
+      let width = img?.upload?.width || 4;
+      let height = img?.upload?.height || 3;
       let objImg = {
         src: imgUrl,
         width: width,

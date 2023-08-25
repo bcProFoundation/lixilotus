@@ -17,6 +17,7 @@ import {
   EXPORT_SUB_LIXIES_QUEUE,
   WITHDRAW_SUB_LIXIES_QUEUE
 } from 'src/modules/core/lixi/constants/lixi.constants';
+import { BURN_FANOUT_QUEUE } from '../../../modules/core/burn/burn.constants';
 
 @Module({
   imports: [
@@ -92,6 +93,22 @@ import {
           return {
             prefix: 'lixilotus:lixi',
             name: WITHDRAW_SUB_LIXIES_QUEUE,
+            connection: new IORedis({
+              maxRetriesPerRequest: null,
+              enableReadyCheck: false,
+              host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
+              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
+            })
+          };
+        }
+      },
+      {
+        name: BURN_FANOUT_QUEUE,
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => {
+          return {
+            prefix: 'lixilotus:lixi',
+            name: BURN_FANOUT_QUEUE,
             connection: new IORedis({
               maxRetriesPerRequest: null,
               enableReadyCheck: false,

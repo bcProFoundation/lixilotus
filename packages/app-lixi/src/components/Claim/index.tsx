@@ -151,7 +151,7 @@ const ClaimComponent = ({ isClaimFromAccount, claimCodeFromURL }: ClaimProps) =>
         await dispatch(generateAccount());
       }
     }
-    
+
     if (currentClaimCode.includes('lixi_')) {
       claimCode = claimCode.match('(?<=lixi_).*')[0];
     }

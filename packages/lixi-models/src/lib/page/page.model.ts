@@ -1,4 +1,4 @@
-import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ID, Int, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
 import { GraphQLDateTime } from 'graphql-scalars';
 
@@ -20,11 +20,11 @@ export class Page {
   @Field(() => String)
   name: string;
 
-  @Field(() => String)
-  categoryId: string;
+  @Field(() => Int, { nullable: true })
+  categoryId: Nullable<number>;
 
-  @Field(() => Category)
-  category: Category;
+  @Field(() => Category, { nullable: true })
+  category: Nullable<Category>;
 
   @Field(() => String, { nullable: true })
   title: string;
@@ -73,26 +73,26 @@ export class Page {
   })
   updatedAt: Date;
 
-  @Field(() => String, { nullable: true })
-  countryId?: string;
+  @Field(() => Number, { nullable: true })
+  countryId?: Nullable<number>;
 
   @Field(() => String, { nullable: true })
-  countryName?: string;
-
-  @Field(() => String, { nullable: true })
-  stateId?: string;
-
-  @Field(() => String, { nullable: true })
-  stateName?: string;
+  countryName?: Nullable<string>;
 
   @Field(() => Number, { nullable: true })
-  followersCount?: number;
+  stateId?: Nullable<number>;
 
   @Field(() => String, { nullable: true })
-  encryptedMnemonic?: string;
+  stateName?: Nullable<string>;
+
+  @Field(() => Number, { nullable: true })
+  followersCount?: Nullable<number>;
 
   @Field(() => String, { nullable: true })
-  salt?: string;
+  encryptedMnemonic?: Nullable<string>;
+
+  @Field(() => String, { nullable: true })
+  salt?: Nullable<string>;
 
   @Field(() => String)
   createPostFee: string;
@@ -110,14 +110,18 @@ export class Page {
   totalPostsBurnScore: number;
 
   @Field(() => [PageMessageSession], { nullable: true })
-  pageMessageSessions?: [PageMessageSession];
+  pageMessageSessions?: Nullable<PageMessageSession[]>;
 
   @Field(() => Float, { nullable: true })
-  accessMessageFee?: number;
+  accessMessageFee?: Nullable<number>;
 
   @Field(() => Float, { nullable: true })
-  minDanaForMessage?: number;
+  minDanaForMessage?: Nullable<number>;
 
   @Field(() => Boolean, { nullable: true })
-  followerFreeMessage?: boolean;
+  followerFreeMessage?: Nullable<boolean>;
+
+  constructor(partial: Partial<Page>) {
+    Object.assign(this, partial);
+  }
 }
