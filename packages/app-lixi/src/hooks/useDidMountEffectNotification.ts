@@ -30,7 +30,8 @@ const useDidMountEffectNotification = (func?) => {
           description: burnQueue.map(burn => {
             return intl.get('account.burningList', {
               burnForType: getType(burn.burnForType),
-              burnValue: burn.burnValue
+              burnValue: burn?.extraArguments?.coin === 'xpi' ? burn.burnValue : burn?.extraArguments?.fakeAmountMulti,
+              coin: burn?.extraArguments?.coin.toUpperCase()
             });
           })
         })

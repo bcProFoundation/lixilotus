@@ -146,6 +146,16 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
     address: selectedAccount?.address
   };
 
+  const handleBurnValueMultiCoin = () => {
+    let burnValue = _.isNil(control._formValues.burnedValue)
+      ? DefaultXpiBurnValues[0]
+      : control._formValues.burnedValue;
+    if (selectCurrencies?.symbol !== 'xpi') {
+      burnValue = 1;
+    }
+    return burnValue;
+  };
+
   const handleBurn = async (isUpVote: boolean) => {
     try {
       let queryParams;
@@ -155,9 +165,7 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
       let tokenId;
       let userId;
       let id: string;
-      const burnValue = _.isNil(control._formValues.burnedValue)
-        ? DefaultXpiBurnValues[0]
-        : control._formValues.burnedValue;
+      let burnValue = handleBurnValueMultiCoin();
       if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
@@ -244,7 +252,10 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
           tokenId: tokenId,
           orderBy: queryParams,
           pageId: pageId,
-          minBurnFilter: filterValue
+          minBurnFilter: filterValue,
+          coin: selectCurrencies?.symbol,
+          fakeAmountMulti: calcAmountBurn(currency.burnFee * selectedAmount + selectedAmount, selectCurrencies?.symbol),
+          selectAmountDanaMultiCoin: selectedAmount
         }
       };
 

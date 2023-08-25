@@ -46,7 +46,7 @@ export default {
   'burn.owner': ' to {name} owner',
   'burn.feeMiner': "Miners' fees excluded",
   'burn.trans': 'Translation is enabled with {amount} Dana or more.',
-  'burn.totalBurn': 'You have given {burnValue} Dana for {totalAmount} XPI',
+  'burn.totalBurn': 'You have given {burnValue} Dana for {totalAmount} {coin}',
 
   /* 01.General */
   'general.newsfeed': 'Newsfeed',
@@ -212,7 +212,7 @@ export default {
   'account.insufficientFunds': 'Insufficient funds',
   'account.insufficientBurningFunds': 'Insufficient funds to continue burning',
   'account.burning': 'Burning',
-  'account.burningList': 'Burning {burnForType} for {burnValue} XPI',
+  'account.burningList': 'Burning {burnForType} for {burnValue} {coin}',
   'account.edit': 'Edit Profile',
   'account.birthday': 'Birthday',
   'account.updateProfileSuccessful': 'Update the profile successful',

@@ -45,7 +45,7 @@ export default {
   'burn.owner': ' tới chủ {name} ',
   'burn.feeMiner': 'Chưa tính phí thợ đào',
   'burn.trans': 'Bài viết với {amount} Dana trở lên sẽ được dịch.',
-  'burn.totalBurn': 'Bạn đã ủng hộ {burnValue} Dana với {totalAmount} XPI',
+  'burn.totalBurn': 'Bạn đã ủng hộ {burnValue} Dana với {totalAmount} {coin}',
 
   /* 01.General */
   'general.newsfeed': 'Bảng tin',
@@ -210,7 +210,7 @@ export default {
   'account.insufficientFunds': 'Không đủ số dư trong ví',
   'account.insufficientBurningFunds': 'Ví không còn đủ số dư để đốt tiếp',
   'account.burning': 'Đang đốt',
-  'account.burningList': 'Đang đốt {burnForType} với {burnValue} XPI',
+  'account.burningList': 'Đang đốt {burnForType} với {burnValue} {coin}',
   'account.edit': 'Chỉnh sửa trang cá nhân',
   'account.birthday': 'Sinh nhật',
   'account.updateProfileSuccessful': 'Hồ sơ đã được cập nhật thành công',

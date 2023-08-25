@@ -69,7 +69,7 @@ export const CURRENCIES = [
   },
   {
     name: 'Solana',
-    symbol: 'SOL',
+    symbol: 'sol',
     icon: '/images/currencies/sol.svg',
     bg: '/images/currencies/bg-sol.svg',
     balance: 48.424,

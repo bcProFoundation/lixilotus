@@ -21,6 +21,10 @@ const StyledAvatar = styled(Avatar)`
     object-fit: cover;
     border-radius: 50%;
   }
+  .avatar-anonymous {
+    width: 46px !important;
+    height: 46px !important;
+  }
 `;
 
 type AvatarUserProps = {
@@ -51,7 +55,7 @@ export const AvatarUser = (props: AvatarUserProps) => {
           {transformShortName(name)}
         </StyledAvatar>
       )}
-      {!name && <img width={50} height={50} src="/images/anonymous-ava.svg" alt="" />}
+      {!name && <img className="avatar-anonymous" src="/images/anonymous-ava.svg" alt="" />}
     </>
   );
 };
