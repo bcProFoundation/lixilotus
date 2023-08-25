@@ -24,12 +24,27 @@ const PostContent = ({ post, showTranslation, currentLocale }) => {
   let iFrameEmbed = null;
 
   const calculateLineShow = () => {
-    let lineNum = 5.5;
+    let lineNum = 3;
     const postScore = post?.danaBurnScore;
-    if (postScore >= 50 && postScore < 200) {
-      lineNum = 11;
-    } else if (postScore >= 200) {
-      lineNum = 16.5;
+    if (postScore < 10) {
+      if (postScore >= 1 && postScore < 2) {
+        lineNum = 4;
+      } else if (postScore >= 2 && postScore < 5) {
+        lineNum = 5;
+      } else if (postScore >= 5 && postScore < 10) {
+        lineNum = 6;
+      }
+    } else if (postScore > 10) {
+      let n1 = 0,
+        n2 = 10,
+        next = 0;
+
+      while (postScore > n2 || lineNum === 20) {
+        lineNum++;
+        next = n1 + n2;
+        n1 = n2;
+        n2 = next;
+      }
     }
     return lineNum;
   };
