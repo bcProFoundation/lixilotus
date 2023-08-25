@@ -52,7 +52,6 @@ const StyledTokensFeed = styled.div`
     display: flex;
     justify-content: space-between;
     position: relative;
-    margin-top: 1rem;
     .ant-tabs {
       flex: 1;
       .ant-tabs-nav {
@@ -85,6 +84,7 @@ const BannerTicker = styled.div`
       img {
         width: 120px;
         height: 120px;
+        border-radius: var(--border-radius-primary);
       }
     }
     // css reponsive Show more info in token page
@@ -100,7 +100,7 @@ const BannerTicker = styled.div`
         align-items: flex-start;
       }
       .info-ticker__right {
-        margin-right: 150px;
+        // margin-right: 150px;
         display: flex;
         flex-direction: column;
         justify-content: end;
@@ -110,7 +110,7 @@ const BannerTicker = styled.div`
         width: 100%;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
 
         .title-ticker {
           margin: 0;
@@ -124,11 +124,15 @@ const BannerTicker = styled.div`
         justify-content: center;
         align-items: baseline;
         .type-name {
+          font-size: 12px;
+          font-weight: 600;
           min-width: 100px;
           text-align: left;
           color: #edeff099;
         }
         .content {
+          font-size: 14px;
+          text-align: left;
           margin-top: 4px;
           color: #fff;
           .anticon {
@@ -141,7 +145,11 @@ const BannerTicker = styled.div`
       }
     }
     @media (max-width: 960px) {
+      gap: 1rem;
       flex-direction: column;
+      .token-name-follow {
+        justify-content: center !important;
+      }
     }
   }
   .score-ticker {
@@ -186,7 +194,7 @@ const SearchBar = styled.div`
 
 const TagContainer = styled.div`
   display: flex;
-  margin-bottom: 11px;
+  margin-bottom: 8px;
   @media (max-width: 576px) {
     display: none;
   }
@@ -510,6 +518,8 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
     );
   };
 
+  console.log('aon', tokenDetailData);
+
   return (
     <StyledTokensFeed>
       <BannerTicker>
@@ -528,21 +538,20 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
             <div className="info-ticker__left">
               <div className="token-name-follow">
                 <h4 className="title-ticker">{tokenDetailData['ticker']}</h4>
-                <Button onClick={isFollowed ? handleUnfollowToken : handleFollowToken}>
-                  {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
-                </Button>
               </div>
               <InfoSubCard typeName={intl.get('token.ticker')} content={tokenDetailData.ticker} />
               <InfoSubCard typeName={intl.get('token.name')} content={tokenDetailData.name} />
               <InfoSubCard typeName={intl.get('general.dana')} content={tokenDetailData.danaBurnUp} />
             </div>
             <div className="info-ticker__right">
-              <CopyToClipboard text={tokenDetailData.tokenId} onCopy={() => handleOnCopy(tokenDetailData.tokenId)}>
+              <CopyToClipboard text={tokenDetailData.tokenId}>
                 <InfoSubCard
                   typeName={intl.get('token.id')}
                   content={tokenDetailData.tokenId.slice(0, 7) + '...' + tokenDetailData.tokenId.slice(-7)}
                   icon={CopyOutlined}
-                  onClickIcon={() => {}}
+                  onClickIcon={() => {
+                    handleOnCopy(tokenDetailData.tokenId);
+                  }}
                 />
               </CopyToClipboard>
               <InfoSubCard
@@ -556,7 +565,8 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
             </div>
           </div>
         </div>
-        <div className="score-ticker">
+        {/* TODO: Temp remove func not working */}
+        {/* <div className="score-ticker">
           <LikeOutlined style={{ marginRight: '10px', fontSize: '1.2rem' }} />
           <IconBurn
             imgUrl="/images/ico-burn-up.svg"
@@ -565,6 +575,14 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
             dataItem={tokenDetailData}
             onClickIcon={() => {}}
           />
+        </div> */}
+        <div style={{ marginTop: '1rem', textAlign: 'right' }}>
+          <Button
+            style={{ background: 'transparent !important', fontWeight: '700' }}
+            onClick={isFollowed ? handleUnfollowToken : handleFollowToken}
+          >
+            {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
+          </Button>
         </div>
       </BannerTicker>
 
@@ -572,14 +590,16 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
         <SearchBox />
       </SearchBar>
       <CreatePostCard hashtags={hashtags} tokenPrimaryId={tokenDetailData.id} query={query} />
-      <TagContainer>
-        {hashtagData &&
-          hashtagData.map(tag => (
-            <StyledTag key={tag.id} color="green" onClick={onTopHashtagClick}>
-              {`#${tag.normalizedContent}`}
-            </StyledTag>
-          ))}
-      </TagContainer>
+      {hashtagData.length > 0 && (
+        <TagContainer>
+          {hashtagData &&
+            hashtagData.map(tag => (
+              <StyledTag key={tag.id} color="green" onClick={onTopHashtagClick}>
+                {`#${tag.normalizedContent}`}
+              </StyledTag>
+            ))}
+        </TagContainer>
+      )}
       <div className="content">
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Top discussions" key="1">

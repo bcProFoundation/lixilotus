@@ -303,8 +303,6 @@ const BadgeStyled = styled(Badge)`
 `;
 
 const StyledHeader = styled(Header)`
-  background-color: rgba(255, 255, 255, 0.65) !important;
-  backdrop-filter: blur(12px);
   @media (max-width: 960px) {
     position: fixed;
     top: 0;
@@ -715,10 +713,11 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   return (
     <StyledHeader style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={`${className} header-component`}>
       <PathDirection>
-        {currentPathName === '/' || currentPathName === '/page/[slug]' ? (
-          <img className="menu-mobile" src="/images/ico-list-bullet_2.svg" alt="" onClick={handleMenuClick} />
-        ) : (
+        {currentPathName !== '/' && (
           <img className="navigate-back-btn" src="/images/ico-back-topbar.svg" alt="" onClick={handleNavigateBack} />
+        )}
+        {(currentPathName === '/' || currentPathName === '/page/[slug]') && (
+          <img className="menu-mobile" src="/images/ico-list-bullet_2.svg" alt="" onClick={handleMenuClick} />
         )}
         {(currentPathName == '/' || currentPathName == '/page-message') && (
           <picture>

@@ -323,13 +323,13 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
       }
       footer={
         <Button.Group style={{ width: '100%' }}>
-          <UpDownButton className="upVote" onClick={() => handleBurn(true)}>
-            <UpVoteSvg />
-            &nbsp; {intl.get('general.voteUp')}
-          </UpDownButton>
           <UpDownButton className="downVote" onClick={() => handleBurn(false)}>
             <DownVoteSvg />
             &nbsp; {intl.get('general.voteDown')}
+          </UpDownButton>
+          <UpDownButton className="upVote" onClick={() => handleBurn(true)}>
+            <UpVoteSvg />
+            &nbsp; {intl.get('general.voteUp')}
           </UpDownButton>
         </Button.Group>
       }

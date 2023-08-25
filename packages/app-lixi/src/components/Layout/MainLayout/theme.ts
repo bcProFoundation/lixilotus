@@ -98,7 +98,7 @@ export const theme: DefaultTheme = {
   collapses: {
     background: '#fbfcfd',
     border: '#eaedf3',
-    color: '#3e3f42'
+    color: '#9e2a9c'
   },
   radio: {
     primary: 'var(--color-primary)',
