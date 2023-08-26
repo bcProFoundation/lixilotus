@@ -19,7 +19,7 @@ import BigNumber from 'bignumber.js';
 import intl from 'react-intl-universal';
 import { currency } from '@components/Common/Ticker';
 import _ from 'lodash';
-import { getFilterPostsHome } from '@store/settings';
+import { getFilterPostsHome, getLevelFilter } from '@store/settings';
 import CreatePostCard from '@components/Common/CreatePostCard';
 
 type HashtagItem = HashtagQuery['hashtag'];
@@ -52,6 +52,7 @@ const Hashtag = ({ hashtag, isMobile }: HashtagProps) => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const filterValue = useAppSelector(getFilterPostsHome);
   const hashtags: string[] = [`#${hashtag.content}`];
+  const level = useAppSelector(getLevelFilter);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } =
     useInfinitePostsByHashtagIdQuery(
@@ -132,7 +133,8 @@ const Hashtag = ({ hashtag, isMobile }: HashtagProps) => {
           tokenId: post.token?.id,
           hashtagId: hashtag.id,
           minBurnFilter: filterValue,
-          postQueryTag: tag
+          postQueryTag: tag,
+          level: level
         }
       };
 

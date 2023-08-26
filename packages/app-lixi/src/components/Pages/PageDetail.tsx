@@ -483,6 +483,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const refs = useRef([]);
   const pageAvatarUpload = useAppSelector(getPageAvatarUpload);
   const pageCoverUpload = useAppSelector(getPageCoverUpload);
+  const level = useAppSelector(getLevelFilter);
   const [urlPageAvatarUpload, setUrlPageAvatarUpload] = useState('');
   const [urlPageCoverUpload, setUrlPageCoverUpload] = useState('');
   const authorization = useContext(AuthorizationContext);
@@ -684,7 +685,8 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
           pageId: post.page?.id,
           minBurnFilter: filterValue,
           query: query,
-          hashtags: hashtags
+          hashtags: hashtags,
+          level: level
         }
       };
 

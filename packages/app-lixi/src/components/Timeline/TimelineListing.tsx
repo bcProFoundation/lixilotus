@@ -428,7 +428,8 @@ const TimelineListing: React.FC<TimelineListingProps> = ({ className }: Timeline
           tokenId: post.token?.id,
           minBurnFilter: filterValue,
           query: query,
-          hashtags: hashtags
+          hashtags: hashtags,
+          level: level
         }
       };
 

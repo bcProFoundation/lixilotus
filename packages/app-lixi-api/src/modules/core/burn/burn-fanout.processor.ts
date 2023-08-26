@@ -52,6 +52,10 @@ export class BurnFanoutProcessor extends WorkerHost {
 
       const pipeline = this.redis.pipeline();
 
+      // Clear the post from cache
+      const hashPrefix = `posts:item-data`;
+      pipeline.hdel(hashPrefix, id);
+
       // Update score for outnetwork
       const keyOutnetwork = BurnFanoutProcessor.outNetworkSourceKey;
       pipeline.zincrby(keyOutnetwork, score, id);

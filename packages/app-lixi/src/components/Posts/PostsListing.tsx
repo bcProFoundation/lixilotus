@@ -25,7 +25,7 @@ import { setNewPostAvailable, setSelectedPost } from '@store/post/actions';
 import { getNewPostAvailable, getSelectedPostId } from '@store/post/selectors';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { getFilterPostsHome, getIsTopPosts } from '@store/settings/selectors';
+import { getFilterPostsHome, getIsTopPosts, getLevelFilter } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
@@ -158,6 +158,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   let isTop = useAppSelector(getIsTopPosts);
   const [query, setQuery] = useState<string | null>(null);
   const [hashtags, setHashtags] = useState<string[]>([]);
+  const level = useAppSelector(getLevelFilter);
 
   useEffect(() => {
     if (router.query.hashtags) {
@@ -451,7 +452,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           tokenId: post.token?.id,
           minBurnFilter: filterValue,
           query: query,
-          hashtags: hashtags
+          hashtags: hashtags,
+          level: level
         }
       };
 

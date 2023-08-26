@@ -75,6 +75,8 @@ export class BurnExtraArguments {
 
   minBurnFilter?: number;
 
+  level?: number;
+
   pageId?: string;
 
   tokenId?: string;

@@ -18,7 +18,7 @@ import { useCommentQuery } from '@store/comment/comments.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { closeModal } from '@store/modal/actions';
 import { usePostQuery } from '@store/post/posts.generated';
-import { getFilterPostsHome, getIsTopPosts } from '@store/settings/selectors';
+import { getFilterPostsHome, getIsTopPosts, getLevelFilter } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { useTokenQuery } from '@store/token/tokens.generated';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
@@ -130,6 +130,7 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
   const postQuery = usePostQuery({ id: id }, { skip: burnForType !== BurnForType.Post }).currentData;
   const commentQuery = useCommentQuery({ id: id }, { skip: burnForType !== BurnForType.Comment }).currentData;
   const filterValue = useAppSelector(getFilterPostsHome);
+  const level = useAppSelector(getLevelFilter);
   let isTop = useAppSelector(getIsTopPosts);
 
   const handleBurn = async (isUpVote: boolean) => {
@@ -230,7 +231,8 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
           tokenId: tokenId,
           orderBy: queryParams,
           pageId: pageId,
-          minBurnFilter: filterValue
+          minBurnFilter: filterValue,
+          level: level
         }
       };
 
