@@ -175,7 +175,7 @@ const TimelineListing: React.FC<TimelineListingProps> = ({ className }: Timeline
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfiniteHomeTimelineQuery(
     {
       first: 20,
-      level: level
+      level: level ?? 3
     },
     false
   );

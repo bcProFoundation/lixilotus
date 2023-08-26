@@ -112,19 +112,23 @@ export class TimelineResolver {
     const accountId = account ? account.id : undefined;
     const timelineIds = await this.timelineService.getTimelineIdsByLevel(level, accountId, first, after);
 
-    const ids = timelineIds.edges.map(item => {
+    const ids = timelineIds ? timelineIds.edges.map(item => {
       return item.cursor;
-    });
+    }) : [];
 
-    this.logger.log(ids, 'timeline ids');
+    if (_.isEmpty(ids)) {
+      return {
+        totalCount: 0,
+        pageInfo: timelineIds.pageInfo,
+        edges: []
+      };
+    }
 
     const hashPrefix = `posts:item-data`;
-
     let buffers;
     try {
       buffers = await this.redis.hmgetBuffer(hashPrefix, ...ids);
     } catch (err) {
-      console.log(err);
       this.logger.error(err);
       throw err;
     }
@@ -210,7 +214,6 @@ export class TimelineResolver {
         };
       })
     };
-    this.logger.log(result, 'result');
     return result;
   }
 }
