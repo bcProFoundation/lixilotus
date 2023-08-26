@@ -188,8 +188,9 @@ export class TimelineService {
       throw new Error('Ratio should be between 0 and 1');
     }
 
-    const totalLength = Math.max(Math.min(arr1.length + arr2.length, arr1.length / ratio), 500);
-    const countFromArr1 = Math.round(totalLength * ratio);
+    const totalMinLength = Math.min(arr1.length + arr2.length, arr1.length / ratio)
+    const totalLength = Math.max(totalMinLength, arr1.length + arr2.length);
+    const countFromArr1 = Math.round(totalMinLength * ratio);
     const countFromArr2 = totalLength - countFromArr1;
 
     const result: string[] = [];
@@ -245,7 +246,7 @@ export class TimelineService {
     const inNetwork = accountId ? await this.getInNetwork(accountId) || [] : [];
     const outNetwork = await this.getOutNetwork();
 
-    const timeline = this.mergeByRatio(inNetwork, outNetwork, ratio);
+    const timeline = this.mergeByRatio(_.compact(inNetwork), _.compact(outNetwork), ratio);
 
     let index = 0;
     for (const id of timeline) {
