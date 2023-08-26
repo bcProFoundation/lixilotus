@@ -244,7 +244,12 @@ export class TimelineService {
     const timelineSortedSet = new SortedSet();
     const inNetwork = accountId ? await this.getInNetwork(accountId) : [];
     const outNetwork = await this.getOutNetwork();
+
+    this.logger.log(inNetwork, `inNetwork:${accountId}`);
+    this.logger.log(outNetwork, 'outNetwork');
     const timeline = this.mergeByRatio(inNetwork, outNetwork, ratio);
+
+    this.logger.log(timeline, 'timeline');
     let index = 0;
     for (const id of timeline) {
       timelineSortedSet.add(id, index);

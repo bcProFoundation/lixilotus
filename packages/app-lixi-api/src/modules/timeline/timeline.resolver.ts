@@ -116,8 +116,18 @@ export class TimelineResolver {
       return item.cursor;
     });
 
+    this.logger.log(ids, 'timeline ids');
+
     const hashPrefix = `posts:item-data`;
-    const buffers = await this.redis.hmgetBuffer(hashPrefix, ...ids);
+
+    let buffers;
+    try {
+      buffers = await this.redis.hmgetBuffer(hashPrefix, ...ids);
+    } catch (err) {
+      console.log(err);
+      this.logger.error(err);
+      throw err;
+    }
 
     const uncachedPostIds = [];
     for (let i = 0; i < ids.length; i++) {
@@ -200,6 +210,7 @@ export class TimelineResolver {
         };
       })
     };
+    this.logger.log(result, 'result');
     return result;
   }
 }
