@@ -10,6 +10,7 @@ import { setTransactionNotReady, setTransactionReady } from '@store/account/acti
 import { getTransactionStatus } from '@store/account/selectors';
 import { api as commentApi } from '@store/comment/comments.api';
 import { api as postApi } from '@store/post/posts.api';
+import { api as timelineApi } from '@store/timeline/timeline.api';
 import { showToast } from '@store/toast/actions';
 import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/token';
 import { api as tokenApi } from '@store/token/tokens.api';
@@ -157,19 +158,19 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnQueueCommand>) {
     yield put(removeBurnQueue());
     yield put(
       burnForUpDownVoteSuccess(data) &&
-        showToast('success', {
-          message: intl.get(`toast.success`),
-          description: intl.get('burn.totalBurn', {
-            burnValue: extraArguments?.selectAmountDanaMultiCoin,
-            totalAmount:
-              extraArguments?.coin === 'xpi'
-                ? burnValue + burnValue * currency.burnFee + Number(minerFee)
-                : extraArguments?.fakeAmountMulti +
-                  extraArguments?.fakeAmountMulti * currency.burnFee +
-                  Number(minerFee),
-            coin: extraArguments?.coin.toUpperCase()
-          })
+      showToast('success', {
+        message: intl.get(`toast.success`),
+        description: intl.get('burn.totalBurn', {
+          burnValue: extraArguments?.selectAmountDanaMultiCoin,
+          totalAmount:
+            extraArguments?.coin === 'xpi'
+              ? burnValue + burnValue * currency.burnFee + Number(minerFee)
+              : extraArguments?.fakeAmountMulti +
+              extraArguments?.fakeAmountMulti * currency.burnFee +
+              Number(minerFee),
+          coin: extraArguments?.coin.toUpperCase()
         })
+      })
     );
   } catch (err) {
     let message;
@@ -229,7 +230,7 @@ function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
 
 function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
   const { extraArguments, burnValue: burnValueAsString, burnType, burnForId } = action.payload;
-  const { isTop, hashtagId, hashtags, minBurnFilter, pageId, query, tokenId, userId, postQueryTag } = extraArguments;
+  const { isTop, hashtagId, hashtags, minBurnFilter, pageId, query, tokenId, userId, postQueryTag, level } = extraArguments;
   // @todo: better control the params for search/others
   const params = {
     orderBy: {
@@ -243,6 +244,32 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
   //BUG: All token and page post show up on home page will not optimistic update becuz of PostQueryTag
   // The algo will check for PostQueryTag then updateQueryData according to it. It only update normal post not page's post and token's post at homepage.
   // That's why we need to update the all Posts here first then updateQueryData later. Not the best way to handle. Maybe come back later.
+
+  yield put(
+    //THis is hardcoded, it wont work if isTop other than false, need to find better way to handle this
+    timelineApi.util.updateQueryData('HomeTimeline', { level: level }, draft => {
+      const timelineItemToUpdateIndex = draft.homeTimeline.edges.findIndex(item => item.node.id === burnForId);
+      const timelineItemToUpdate = draft.homeTimeline.edges[timelineItemToUpdateIndex];
+      if (timelineItemToUpdateIndex >= 0) {
+        let danaBurnUp = timelineItemToUpdate?.node?.data?.danaBurnUp ?? 0;
+        let danaBurnDown = timelineItemToUpdate?.node?.data?.danaBurnDown ?? 0;
+        if (burnType == BurnType.Up) {
+          danaBurnUp = danaBurnUp + burnValue;
+        } else {
+          danaBurnDown = danaBurnDown + burnValue;
+        }
+        const danaBurnScore = danaBurnUp - danaBurnDown;
+        draft.homeTimeline.edges[timelineItemToUpdateIndex].node.data.danaBurnUp = danaBurnUp;
+        draft.homeTimeline.edges[timelineItemToUpdateIndex].node.data.danaBurnDown = danaBurnDown;
+        draft.homeTimeline.edges[timelineItemToUpdateIndex].node.data.danaBurnScore = danaBurnScore;
+        if (danaBurnScore < 0) {
+          draft.homeTimeline.edges.splice(timelineItemToUpdateIndex, 1);
+          draft.homeTimeline.totalCount = draft.homeTimeline.totalCount - 1;
+        }
+      }
+    })
+  );
+
   yield put(
     //THis is hardcoded, it wont work if isTop other than false, need to find better way to handle this
     postApi.util.updateQueryData('Posts', { minBurnFilter: minBurnFilter, isTop: String(isTop) }, draft => {

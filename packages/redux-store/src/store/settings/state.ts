@@ -13,4 +13,6 @@ export interface SettingsState {
   isTopPosts: boolean;
   currentThemes: string;
   isSystemThemes: boolean;
+  levelFilter: number;
+  languageNotAutoTrans: string;
 }

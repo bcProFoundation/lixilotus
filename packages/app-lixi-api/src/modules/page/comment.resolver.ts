@@ -21,7 +21,7 @@ import { NotificationService } from 'src/common/modules/notifications/notificati
 import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
 import VError from 'verror';
 import { NOTIFICATION_TYPES } from '../../common/modules/notifications/notification.constants';
-import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
+import { GqlJwtAuthGuard, GqlJwtAuthGuardByPass } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 
 const pubSub = new PubSub();
@@ -52,6 +52,7 @@ export class CommentResolver {
   }
 
   @Query(() => CommentConnection)
+  @UseGuards(GqlJwtAuthGuardByPass)
   async allCommentsToPostId(
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last }: PaginationArgs,
@@ -64,67 +65,78 @@ export class CommentResolver {
     })
     orderBy: CommentOrder
   ) {
-    const result = await findManyCursorConnection(
-      args =>
-        this.prisma.comment.findMany({
-          include: { commentAccount: true, commentTo: true },
-          where: {
-            OR: [
-              {
-                AND: [
-                  {
-                    commentToId: id
-                  },
-                  {
-                    danaBurnScore: {
-                      gte: 0
-                    }
-                  }
-                ]
-              },
+    const queryComments: any = {
+      OR: [
+        {
+          AND: [
+            {
+              commentToId: id
+            },
+            {
+              danaBurnScore: {
+                gte: 0
+              }
+            }
+          ]
+        },
+        ...(account && account.id
+          ? [
               {
                 AND: [
                   { commentToId: id },
                   {
                     commentAccount: {
-                      id: account?.id ?? undefined
+                      id: account.id
                     }
                   }
                 ]
               }
             ]
-          },
+          : []),
+        ...(account && account.id
+          ? [
+              {
+                AND: [
+                  { commentToId: id },
+                  {
+                    commentTo: {
+                      postAccountId: account.id
+                    }
+                  }
+                ]
+              }
+            ]
+          : []),
+        ...(account && account.id
+          ? [
+              {
+                AND: [
+                  { commentToId: id },
+                  {
+                    commentTo: {
+                      page: {
+                        pageAccountId: account.id
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          : [])
+      ]
+    };
+
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.comment.findMany({
+          include: { commentAccount: true, commentTo: true },
+          where: queryComments,
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
         }),
       () =>
         this.prisma.comment.count({
-          where: {
-            OR: [
-              {
-                AND: [
-                  {
-                    commentToId: id
-                  },
-                  {
-                    danaBurnScore: {
-                      gte: 0
-                    }
-                  }
-                ]
-              },
-              {
-                AND: [
-                  { commentToId: id },
-                  {
-                    commentAccount: {
-                      id: account?.id ?? undefined
-                    }
-                  }
-                ]
-              }
-            ]
-          }
+          where: queryComments
         }),
       { first, last, before, after }
     );

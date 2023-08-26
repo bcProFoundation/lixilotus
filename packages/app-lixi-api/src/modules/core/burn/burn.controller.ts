@@ -1,12 +1,11 @@
-import { TRANSLATION_REQUIRE_AMOUNT } from '@bcpros/lixi-models';
-import { Burn, BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models';
+import { Burn, BurnCommand, BurnForType, BurnType, TRANSLATION_REQUIRE_AMOUNT } from '@bcpros/lixi-models';
 import { NotificationLevel, Token } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { InjectQueue } from '@nestjs/bullmq';
 import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { SkipThrottle } from '@nestjs/throttler';
-import axios from 'axios';
+import { Queue } from 'bullmq';
 import { ChronikClient } from 'chronik-client';
 import { Redis } from 'ioredis';
 import _ from 'lodash';
@@ -15,14 +14,12 @@ import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorato
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import SortedItemRepository from 'src/common/redis/sorted-repository';
-import { POSTS } from 'src/modules/page/constants/meili.constants';
-import { MeiliService } from 'src/modules/page/meili.service';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { parseBurnOutput } from 'src/utils/opReturnBurn';
-import { stripHtml } from 'string-strip-html';
 import { VError } from 'verror';
 import { TranslateProvider } from '../translate/translate.constant';
 import { TranslateService } from '../translate/translate.service';
+import { BURN_FANOUT_QUEUE } from './burn.constants';
 
 @SkipThrottle()
 @Controller('burn')
@@ -35,6 +32,7 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS,
+    @InjectQueue(BURN_FANOUT_QUEUE) private burnFanoutQueue: Queue,
     private translateService: TranslateService
   ) {}
 
@@ -208,6 +206,12 @@ export class BurnController {
               })
             );
           }
+
+          // Put burn result to fanout
+          await this.burnFanoutQueue.add(BURN_FANOUT_QUEUE, {
+            burn: savedBurn,
+            post: post
+          });
         } else if (command.burnForType === BurnForType.Token) {
           const token = await this.prisma.token.findFirst({
             where: {

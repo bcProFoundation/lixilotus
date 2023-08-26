@@ -22,7 +22,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { PostsQuery, useRepostMutation } from '@store/post/posts.generated';
 import { sendXPIFailure } from '@store/send/actions';
-import { getFilterPostsHome } from '@store/settings/selectors';
+import { getFilterPostsHome, getLevelFilter } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { fromSmallestDenomination, fromXpiToSatoshis, getUtxoWif } from '@utils/cashMethods';
@@ -376,6 +376,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const accountInfoTemp = useAppSelector(getAccountInfoTemp);
   const [isMobileView, setIsMobileView] = useState(false);
   const { width } = useWindowDimensions();
+  const level = useAppSelector(getLevelFilter);
 
   useEffect(() => {
     const isMobile = width < 960 ? true : false;
@@ -407,8 +408,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   useEffect(() => {
     const mapImages = post.uploads.map(img => {
       const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.upload.cfImageId}/public`;
-      let width = parseInt(img?.upload?.width) || 4;
-      let height = parseInt(img?.upload?.height) || 3;
+      let width = img?.upload?.width || 4;
+      let height = img?.upload?.height || 3;
       let objImg = {
         src: imgUrl,
         width: width,
@@ -494,7 +495,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           postQueryTag: PostsQueryTag.Post,
           orderBy: queryParams,
           postId: postId,
-          minBurnFilter: filterValue
+          minBurnFilter: filterValue,
+          level: level
         }
       };
 
@@ -519,11 +521,11 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const loadMoreComments = () => {
     if (hasNext && !isFetching) {
       fetchNext().finally(() => {
-        setFocus('comment', { shouldSelect: true });
+        // setFocus('comment', { shouldSelect: true });
       });
     } else if (hasNext) {
       fetchNext().finally(() => {
-        setFocus('comment', { shouldSelect: true });
+        // setFocus('comment', { shouldSelect: true });
       });
     }
   };

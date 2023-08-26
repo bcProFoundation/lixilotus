@@ -137,14 +137,13 @@ const PushNotificationSetting = () => {
   return (
     <GeneralSettingsItem>
       <div className="title">
-        <BellFilled /> {intl.get('settings.notifications')}
+        <BellFilled width={18} height={18} /> {intl.get('settings.notificationsDesc')}
       </div>
       {webPushNotifConfig ? (
         permission !== 'denied' ? (
           <Switch
-            size="small"
-            checkedChildren={<CheckOutlined />}
-            unCheckedChildren={<CloseOutlined />}
+            checkedChildren={<>ON</>}
+            unCheckedChildren={<>OFF</>}
             checked={webPushNotifConfig?.allowPushNotification ?? false}
             onChange={handleNotificationToggle}
           />

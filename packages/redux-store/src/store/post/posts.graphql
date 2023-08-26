@@ -347,9 +347,6 @@ fragment PostFields on Post {
       bucket
       width
       height
-      sha800
-      sha320
-      sha40
       cfImageId
       cfImageFilename
     }
@@ -414,9 +411,6 @@ fragment PostMeiliFields on Post {
       bucket
       width
       height
-      sha800
-      sha320
-      sha40
       cfImageId
       cfImageFilename
     }

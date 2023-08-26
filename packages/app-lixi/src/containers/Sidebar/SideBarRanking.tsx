@@ -27,18 +27,20 @@ export const ShortcutItemAccess = ({
   href,
   burnValue,
   icoRanking,
+  isPage,
   onClickItem
 }: {
   icon: string;
   text: string;
   burnValue?: number;
   icoRanking?: string;
+  isPage?: boolean;
   href?: string;
   onClickItem?: () => void;
 }) => (
   <Link onClick={onClickItem} href={href}>
     <a>
-      <Space className={'item-access'}>
+      <Space className={`${isPage ? 'avatar-page' : ''} item-access`}>
         <AvatarUser icon={icon} name={text} isMarginRight={false} />
         <div>
           {text}
@@ -134,6 +136,14 @@ const RankingSideBar = styled(Sider)`
           &:last-child {
             padding-bottom: 1rem;
           }
+        }
+      }
+    }
+    .avatar-page {
+      .ant-avatar {
+        border-radius: var(--border-radius-primary);
+        img {
+          border-radius: var(--border-radius-primary);
         }
       }
     }
@@ -361,6 +371,7 @@ const SidebarRanking = () => {
                             icon={item.avatar ? item.avatar : item.name}
                             text={item.name}
                             href={`/page/${item.id}`}
+                            isPage={true}
                             icoRanking="/images/ico-circled-1-ranking.png"
                           />
                         </h4>
@@ -372,6 +383,7 @@ const SidebarRanking = () => {
                             icon={item.avatar ? item.avatar : item.name}
                             text={item.name}
                             href={`/page/${item.id}`}
+                            isPage={true}
                             icoRanking="/images/ico-circled-2-ranking.png"
                           />
                         </h4>
@@ -383,6 +395,7 @@ const SidebarRanking = () => {
                             icon={item.avatar ? item.avatar : item.name}
                             text={item.name}
                             href={`/page/${item.id}`}
+                            isPage={true}
                             icoRanking="/images/ico-circled-3-ranking.png"
                           />
                         </h4>
@@ -393,6 +406,7 @@ const SidebarRanking = () => {
                             burnValue={item.totalBurnForPage}
                             icon={item.avatar ? item.avatar : item.name}
                             text={item.name}
+                            isPage={true}
                             href={`/page/${item.id}`}
                           />
                         </h4>

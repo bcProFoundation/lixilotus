@@ -10,6 +10,10 @@ export const GeneralSettingsItem = styled.div`
   }
   .anticon {
     color: ${props => props.theme.generalSettings.item.icon};
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
   .ant-switch {
     background-color: ${props => props.theme.generalSettings.item.icon};

@@ -25,6 +25,8 @@ import { MeiliService } from '../page/meili.service';
 import { TranslateService } from './translate/translate.service';
 import { CloudflareModule } from '../../common/modules/cloudflare/cloudflare.module';
 import { MessageModule } from '../message/message.module';
+import { BurnFanoutProcessor } from './burn/burn-fanout.processor';
+import { AccountModule } from '../account/account.module';
 const baseCorsConfig = cors({
   origin: process.env.BASE_URL ?? ''
 });
@@ -44,6 +46,7 @@ const baseCorsConfig = cors({
     AuthModule,
     NotificationModule,
     CloudflareModule,
+    AccountModule,
     MessageModule
   ],
   controllers: [
@@ -67,7 +70,8 @@ const baseCorsConfig = cors({
     WithdrawSubLixiesProcessor,
     ExportSubLixiesProcessor,
     ExportSubLixiesEventsListener,
-    WithdrawSubLixiesEventsListener
+    WithdrawSubLixiesEventsListener,
+    BurnFanoutProcessor
   ],
   exports: [
     LixiService,

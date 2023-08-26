@@ -20,7 +20,7 @@ import PostTranslate from './PostTranslate';
 import { PostListType } from '@bcpros/lixi-models/constants';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { LoadingIcon } from '@components/Layout/MainLayout';
-import { getCurrentLocale } from '@store/settings/selectors';
+import { getCurrentLocale, getLanguageNotAutoTrans } from '@store/settings/selectors';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List
@@ -263,14 +263,16 @@ const PostListItem = ({
   const ref = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowDimensions();
   const currentLocale = useAppSelector(getCurrentLocale);
+  const languageNotAutoTrans = useAppSelector(getLanguageNotAutoTrans);
+  const [showFeatureTrans, setShowFeatureTrans] = useState(true);
 
   useEffect(() => {
     const mapImages = item.uploads.map(img => {
       let imgSha = img.upload.sha;
 
       const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.upload.cfImageId}/public`;
-      let imgWidth = parseInt(img?.upload?.width) || 4;
-      let height = parseInt(img?.upload?.height) || 3;
+      let imgWidth = img?.upload?.width || 4;
+      let height = img?.upload?.height || 3;
       let objImg = {
         src: imgUrl,
         width: imgWidth,
@@ -355,7 +357,7 @@ const PostListItem = ({
       return (
         <p className="retweet">
           <RetweetOutlined />{' '}
-          {intl.get('post.singleReposted', { repostName: post.reposts[post.reposts.length - 1].account.name })}
+          {intl.get('post.singleReposted', { repostName: post.reposts[post.reposts.length - 1]?.account?.name })}
         </p>
       );
     }
@@ -366,11 +368,21 @@ const PostListItem = ({
     setShowTranslation(!showTranslation);
   };
 
-  const handleCodeToLanguage = intl.get(`code.${post?.originalLanguage}`);
+  const handleCodeToLanguage = () => {
+    if (post?.originalLanguage.includes('zh')) {
+      return intl.get(`code.zh`);
+    } else {
+      return intl.get(`code.${post?.originalLanguage}`);
+    }
+  };
 
   const toggleAutoTranslate = () => {
-    if (post?.originalLanguage !== currentLocale) {
-      translatePost();
+    if (!_.isNil(post.originalLanguage)) {
+      if (!post.originalLanguage.includes(languageNotAutoTrans) && post.originalLanguage !== currentLocale) {
+        translatePost();
+      } else if (post.originalLanguage === currentLocale || post.content.trim() === '') {
+        setShowFeatureTrans(false);
+      }
     }
   };
 
@@ -408,10 +420,11 @@ const PostListItem = ({
 
           {post.translations &&
             post.translations.length > 0 &&
+            showFeatureTrans &&
             (showTranslation ? (
               <StyledTranslate onClick={translatePost} className="post-translation">
                 {intl.get('post.originTranslate', {
-                  language: handleCodeToLanguage
+                  language: handleCodeToLanguage()
                 })}
               </StyledTranslate>
             ) : (

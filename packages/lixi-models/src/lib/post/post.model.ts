@@ -25,16 +25,16 @@ export class Post {
   postAccount: Account;
 
   @Field(() => String, { nullable: true })
-  tokenId?: string;
+  tokenId?: Nullable<string>;
 
   @Field(() => Token, { nullable: true })
-  token?: Token;
+  token?: Nullable<Token>;
 
   @Field(() => [UploadDetail], { nullable: true })
-  uploads: [UploadDetail];
+  uploads: Nullable<UploadDetail[]>;
 
   @Field(() => Page, { nullable: true })
-  page?: Page;
+  page?: Nullable<Page>;
 
   @IsOptional()
   @Field(() => String, { nullable: true })
@@ -60,28 +60,32 @@ export class Post {
   updatedAt: Date;
 
   @Field(() => Number, { nullable: true })
-  totalComments?: number;
+  totalComments?: Nullable<number>;
 
   @Field(() => [PostHashtag], { nullable: true })
-  postHashtags?: [PostHashtag];
+  postHashtags?: Nullable<PostHashtag[]>;
 
   @Field(() => Boolean, { nullable: true })
-  followPostOwner?: boolean;
+  followPostOwner?: Nullable<boolean>;
 
   @Field(() => Boolean, { nullable: true })
-  followedPage?: boolean;
+  followedPage?: Nullable<boolean>;
 
   @Field(() => Number, { nullable: true })
-  repostCount?: number;
+  repostCount?: Nullable<number>;
 
   @Field(() => [Repost], { nullable: true })
-  reposts?: [Repost];
+  reposts?: Nullable<Repost[]>;
 
   @Field(() => String, { nullable: true })
-  originalLanguage?: string;
+  originalLanguage?: Nullable<string>;
 
   @Field(() => [PostTranslation], { nullable: true })
-  translations?: [PostTranslation];
+  translations?: Nullable<PostTranslation[]>;
+
+  constructor(partial: Partial<Post>) {
+    Object.assign(this, partial);
+  }
 }
 
 @ObjectType()
@@ -89,11 +93,11 @@ export class PostTranslation {
   @Field(() => ID)
   id: string;
 
-  @Field(() => String)
-  translateContent: string;
+  @Field(() => String, { nullable: true })
+  translateContent?: Nullable<string>;
 
-  @Field(() => String)
-  translateLanguage: string;
+  @Field(() => String, { nullable: true })
+  translateLanguage?: Nullable<string>;
 
   @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was created.'
@@ -104,4 +108,8 @@ export class PostTranslation {
     description: 'Identifies the date and time when the object was last updated.'
   })
   updatedAt: Date;
+
+  constructor(partial: Partial<PostTranslation>) {
+    Object.assign(this, partial);
+  }
 }

@@ -36,4 +36,8 @@ export class Repost {
     description: 'Identifies the date and time when the object was last updated.'
   })
   updatedAt: Date;
+
+  constructor(partial: Partial<Repost>) {
+    Object.assign(this, partial);
+  }
 }

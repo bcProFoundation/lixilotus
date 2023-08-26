@@ -7,7 +7,11 @@ import {
   ThemedSettingOutlined
 } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
-import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/EnhancedInputs';
+import {
+  AntdFormWrapper,
+  LanguageNotAutoTransDropdown,
+  LanguageSelectDropdown
+} from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
 import { WalletContext } from '@context/index';
@@ -16,9 +20,20 @@ import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getIsGlobalLoading } from '@store/loading/selectors';
 import { openModal } from '@store/modal/actions';
-import { setCurrentThemes, setInitIntlStatus, setIsSystemThemes, updateLocale } from '@store/settings/actions';
-import { getCurrentLocale, getCurrentThemes, getIsSystemThemes } from '@store/settings/selectors';
-import { Alert, Collapse, Form, Input, Modal, Select, Spin } from 'antd';
+import {
+  setCurrentThemes,
+  setInitIntlStatus,
+  setIsSystemThemes,
+  setLanguageNotAutoTrans,
+  updateLocale
+} from '@store/settings/actions';
+import {
+  getCurrentLocale,
+  getCurrentThemes,
+  getIsSystemThemes,
+  getLanguageNotAutoTrans
+} from '@store/settings/selectors';
+import { Alert, Button, Collapse, Form, Input, Modal, Select, Spin } from 'antd';
 import axios from 'axios';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -29,6 +44,7 @@ import LockAppSetting from './LockAppSetting';
 import PushNotificationSetting from './PushNotificationSetting';
 import { RenameAccountModalProps } from './RenameAccountModal';
 import useThemeDetector from '@local-hooks/useThemeDetector';
+import { showToast } from '@store/toast/actions';
 
 const { Panel } = Collapse;
 
@@ -83,6 +99,9 @@ const SWButtonCtn = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  button {
+    min-width: 100px;
+  }
   @media (max-width: 500px) {
     width: 100%;
     justify-content: center;
@@ -203,6 +222,9 @@ const SettingBar = styled.div`
       color: var(--color-primary) !important;
     }
   }
+  .second-language {
+    margin-top: 1rem;
+  }
 `;
 
 const helpInfoIcon = (
@@ -255,6 +277,8 @@ const Settings: React.FC = () => {
   const currentThemes = useAppSelector(getCurrentThemes);
   const currentDeviceTheme = useThemeDetector();
   const isSystemThemes = useAppSelector(getIsSystemThemes);
+  const currentLocale = useAppSelector(getCurrentLocale);
+  const languageNotAutoTrans = useAppSelector(getLanguageNotAutoTrans);
 
   useEffect(() => {
     if (isSystemThemes) {
@@ -276,8 +300,6 @@ const Settings: React.FC = () => {
     const url = '/_api/local-logout';
     await axios.post(url);
   };
-
-  const currentLocale = useAppSelector(getCurrentLocale);
 
   const showPopulatedRenameAccountModal = (account: Account) => {
     const command: RenameAccountCommand = {
@@ -349,6 +371,7 @@ const Settings: React.FC = () => {
     });
   }
 
+  const handleCodeToLanguage = locale => intl.get(`code.${locale}`);
   return (
     <>
       <WrapperPage className="card setting-page">
@@ -420,7 +443,9 @@ const Settings: React.FC = () => {
                           <span onClick={() => showPopulatedDeleteAccountModal(selectedAccount as Account)}>
                             <Trashcan />
                           </span>
-                          <h4>{intl.get('settings.activated')}</h4>
+                          <Button disabled={true} type="primary" className="no-border-btn">
+                            {intl.get('settings.activated')}
+                          </Button>
                         </SWButtonCtn>
                       </AWRow>
                     }
@@ -439,7 +464,13 @@ const Settings: React.FC = () => {
                               <span onClick={() => showPopulatedDeleteAccountModal(acc)}>
                                 <Trashcan />
                               </span>
-                              <button onClick={() => dispatch(selectAccount(acc.id))}>Activate</button>
+                              <Button
+                                type="primary"
+                                className="outline-btn"
+                                onClick={() => dispatch(selectAccount(acc.id))}
+                              >
+                                Activate
+                              </Button>
                             </SWButtonCtn>
                           </SWRow>
                         ))}
@@ -452,7 +483,7 @@ const Settings: React.FC = () => {
             )}
           </SettingBar>
           <SettingBar className="language-bar">
-            <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.languages')}</h2>
+            <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.primaryLanguage')}</h2>
             <AntdFormWrapper>
               <LanguageSelectDropdown
                 defaultValue={currentLocale}
@@ -461,6 +492,36 @@ const Settings: React.FC = () => {
                 }}
               />
             </AntdFormWrapper>
+
+            <div className="second-language">
+              <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.secondLanguage')}</h2>
+
+              <AntdFormWrapper>
+                <LanguageNotAutoTransDropdown
+                  defaultValue={languageNotAutoTrans}
+                  onChange={(locale: any) => {
+                    dispatch(setLanguageNotAutoTrans(locale));
+                    locale != null
+                      ? dispatch(
+                          showToast('success', {
+                            message: intl.get('toast.success'),
+                            description: intl.get('settings.selectLanguageNotTransSuccess', {
+                              language: handleCodeToLanguage(locale)
+                            }),
+                            duration: 5
+                          })
+                        )
+                      : dispatch(
+                          showToast('success', {
+                            message: intl.get('toast.success'),
+                            description: intl.get('settings.removeLanguageNotTrans'),
+                            duration: 5
+                          })
+                        );
+                  }}
+                />
+              </AntdFormWrapper>
+            </div>
           </SettingBar>
           <SettingBar className="themes-bar">
             <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.themes')}</h2>
@@ -487,9 +548,12 @@ const Settings: React.FC = () => {
             </AntdFormWrapper>
           </SettingBar>
           <SettingBar>
-            <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.general')}</h2>
-            <LockAppSetting />
+            <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.notifications')}</h2>
             <PushNotificationSetting />
+          </SettingBar>
+          <SettingBar>
+            <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.lockApp')}</h2>
+            <LockAppSetting />
           </SettingBar>
         </Spin>
       </WrapperPage>

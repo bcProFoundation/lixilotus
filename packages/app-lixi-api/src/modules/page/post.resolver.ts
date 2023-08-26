@@ -7,19 +7,22 @@ import {
   PostConnection,
   PostOrder,
   PostTranslation,
+  Repost,
   RepostInput,
   Token,
-  Repost,
-  UpdatePostInput
+  UpdatePostInput,
+  UploadDetail
 } from '@bcpros/lixi-models';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { HttpException, HttpStatus, Inject, Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
-import { SkipThrottle, Throttle } from '@nestjs/throttler';
+import { SkipThrottle } from '@nestjs/throttler';
 import { ChronikClient } from 'chronik-client';
 import { PubSub } from 'graphql-subscriptions';
+import { Redis } from 'ioredis';
 import * as _ from 'lodash';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
@@ -31,13 +34,12 @@ import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import VError from 'verror';
 import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
 import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
+import { FollowCacheService } from '../account/follow-cache.service';
 import { GqlJwtAuthGuard, GqlJwtAuthGuardByPass } from '../auth/guards/gql-jwtauth.guard';
 import { HashtagService } from '../hashtag/hashtag.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { HASHTAG, POSTS } from './constants/meili.constants';
 import { MeiliService } from './meili.service';
-import { GqlThrottlerGuard } from '../auth/guards/gql-throttler.guard';
-import { FollowCacheService } from '../account/follow-cache.service';
 
 const pubSub = new PubSub();
 
@@ -51,12 +53,13 @@ export class PostResolver {
     private readonly followCacheService: FollowCacheService,
     private prisma: PrismaService,
     private meiliService: MeiliService,
+    @InjectRedis() private readonly redis: Redis,
     private readonly notificationService: NotificationService,
     private hashtagService: HashtagService,
     @Inject('xpijs') private XPI: BCHJS,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -66,7 +69,7 @@ export class PostResolver {
   @SkipThrottle()
   @Query(() => Post)
   async post(@Args('id', { type: () => String }) id: string) {
-    return this.prisma.post.findUnique({
+    return await this.prisma.post.findUnique({
       where: { id: id },
       include: {
         postAccount: true,
@@ -936,10 +939,10 @@ export class PostResolver {
         connect:
           uploadDetailIds.length > 0
             ? uploadDetailIds.map((uploadDetail: any) => {
-                return {
-                  id: uploadDetail
-                };
-              })
+              return {
+                id: uploadDetail
+              };
+            })
             : undefined
       },
       page: {
@@ -1167,6 +1170,10 @@ export class PostResolver {
       hashtag: hashtags
     };
 
+    // Clear the post from cache
+    const hashPrefix = `posts:item-data`;
+    await this.redis.hdel(hashPrefix, id);
+
     await this.meiliService.update(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, updatedPost.id);
 
     pubSub.publish('postUpdated', { postUpdated: updatedPost });
@@ -1228,20 +1235,21 @@ export class PostResolver {
 
   @ResolveField('reposts', () => Repost)
   async reposts(@Parent() post: Post) {
-    const reposts = await this.prisma.repost.findMany({
-      where: {
-        id: post.id
-      }
-    });
-
+    const reposts = await this.prisma.post
+      .findUnique({
+        where: {
+          id: post.id
+        }
+      })
+      .reposts();
     return reposts;
   }
 
-  @ResolveField('repostCount', () => Repost)
+  @ResolveField('repostCount', () => Number)
   async repostCount(@Parent() post: Post) {
     const repostCount = await this.prisma.repost.count({
       where: {
-        id: post.id
+        postId: post.id
       }
     });
 
@@ -1250,11 +1258,13 @@ export class PostResolver {
 
   @ResolveField('postAccount', () => Account)
   async postAccount(@Parent() post: Post) {
-    const account = await this.prisma.account.findFirst({
-      where: {
-        id: post.postAccountId
-      }
-    });
+    const account = await this.prisma.post
+      .findUnique({
+        where: {
+          id: post.id
+        }
+      })
+      .postAccount();
 
     return account;
   }
@@ -1273,11 +1283,13 @@ export class PostResolver {
   @ResolveField('page', () => Page)
   async page(@Parent() post: Post) {
     if (post.pageId) {
-      const page = await this.prisma.page.findFirst({
-        where: {
-          id: post.pageId
-        }
-      });
+      const page = await this.prisma.post
+        .findUnique({
+          where: {
+            id: post.id
+          }
+        })
+        .page();
 
       return page;
     }
@@ -1287,54 +1299,59 @@ export class PostResolver {
   @ResolveField('token', () => Token)
   async token(@Parent() post: Post) {
     if (post.tokenId) {
-      const token = await this.prisma.token.findFirst({
-        where: {
-          id: post.tokenId
-        }
-      });
+      const token = await this.prisma.post
+        .findUnique({
+          where: {
+            id: post.id
+          }
+        })
+        .token();
 
       return token;
     }
     return null;
   }
 
-  @ResolveField('translations', () => PostTranslation)
+  @ResolveField('translations', () => [PostTranslation])
   async translations(@Parent() post: Post) {
     if (post.translations) {
-      const translations = await this.prisma.postTranslation.findMany({
-        where: {
-          postId: post.id
-        }
-      });
+      const translations = await this.prisma.post
+        .findUnique({
+          where: {
+            id: post.id
+          }
+        })
+        .translations();
 
       return translations;
     }
     return null;
   }
 
-  @ResolveField()
+  @ResolveField('uploads', () => [UploadDetail])
   async uploads(@Parent() post: Post) {
-    const uploads = await this.prisma.uploadDetail.findMany({
-      where: {
-        postId: post.id
-      },
-      include: {
-        upload: {
-          select: {
-            id: true,
-            sha: true,
-            bucket: true,
-            width: true,
-            height: true,
-            sha800: true,
-            sha320: true,
-            sha40: true,
-            cfImageId: true,
-            cfImageFilename: true
+    const uploads = await this.prisma.post
+      .findUnique({
+        where: {
+          id: post.id
+        }
+      })
+      .uploads({
+        include: {
+          upload: {
+            select: {
+              id: true,
+              sha: true,
+              bucket: true,
+              width: true,
+              height: true,
+              cfImageId: true,
+              cfImageFilename: true
+            }
           }
         }
-      }
-    });
+      });
+
     return uploads;
   }
 }

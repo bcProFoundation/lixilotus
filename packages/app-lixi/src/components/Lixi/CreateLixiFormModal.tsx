@@ -335,6 +335,8 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   const [joinLotteryProgram, setJoinLotteryProgram] = useState<boolean>(false);
 
+  const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
+
   const handleNewLixiNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiName(value);
@@ -968,6 +970,10 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     );
   };
 
+  const setUploadingImage = state => {
+    setIsUploadingImage(state);
+  };
+
   return (
     <>
       <Modal
@@ -984,6 +990,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
             onClick={() => handleSubmitCreateLixi()}
             disabled={!createLixiFormDataIsValid}
             style={{ width: '143px' }}
+            loading={isUploadingImage}
           >
             {intl.get('account.createLixi')}
           </Button>
@@ -1168,6 +1175,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
                       buttonName={intl.get('lixi.browser')}
                       buttonType={UPLOAD_BUTTON_TYPE.LINK}
                       showUploadList={false}
+                      setUploadingImage={setUploadingImage}
                     />
                   </Col>
                   <Col span={6} pull={18}>

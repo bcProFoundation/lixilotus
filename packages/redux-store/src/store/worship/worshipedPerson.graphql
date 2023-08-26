@@ -12,9 +12,6 @@ fragment WorshipedPersonFields on WorshipedPerson {
       bucket
       width
       height
-      sha800
-      sha320
-      sha40
     }
   }
   wikiAvatar

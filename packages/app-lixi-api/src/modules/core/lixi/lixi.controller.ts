@@ -946,6 +946,8 @@ export class LixiController {
       const results = claims.map(item => {
         return {
           ...item,
+          message: '',
+          image: '',
           amount: Number(item.amount)
         } as Claim;
       });

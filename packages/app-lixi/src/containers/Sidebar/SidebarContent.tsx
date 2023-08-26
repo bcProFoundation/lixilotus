@@ -1,13 +1,13 @@
 import { HashtagOrderField, OrderDirection, PostOrderField } from '@generated/types.generated';
 import { getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { useInfiniteHomeTimelineQuery } from '@store/timeline/useInfiniteHomeTimelineQuery';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
-import { getFilterPostsHome, getIsTopPosts, getNavCollapsed } from '@store/settings/selectors';
+import { getFilterPostsHome, getIsTopPosts, getLevelFilter, getNavCollapsed } from '@store/settings/selectors';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import {
   ItemQuickAccess,
@@ -25,6 +25,7 @@ import { useInfiniteHashtagByPageQuery } from '@store/hashtag/useInfiniteHashtag
 import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtPage';
 import { addRecentHashtagAtPages } from '@store/account';
 import { useSwipeable } from 'react-swipeable';
+import { Post } from '@bcpros/lixi-models';
 
 type SidebarContentProps = {
   className?: string;
@@ -104,30 +105,18 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [filterGroup, setFilterGroup] = useState([]);
   let isTop = useAppSelector(getIsTopPosts);
-  const [filterPosts, setFilterPosts] = useState([]);
   const [filterPage, setFilterPage] = useState({});
   const [filterPageQuery, setFilterPageQuery] = useState<typeFilterPageQuery>({});
   const [query, setQuery] = useState<any>('');
   const [hashtags, setHashtags] = useState<any>([]);
   const pageId = router.pathname.includes('page') && (router.query?.slug as string);
   const [cachePostIdGeneral, setCachePostIdGeneral] = useState(0);
+  const level = useAppSelector(getLevelFilter);
 
-  let { data: PostsData } = useInfinitePostsQuery(
+  let { data: timelineData } = useInfiniteHomeTimelineQuery(
     {
       first: 50,
-      minBurnFilter: filterValue,
-      accountId: selectedAccountId ?? null,
-      isTop: String(isTop),
-      orderBy: [
-        {
-          direction: OrderDirection.Desc,
-          field: PostOrderField.LastRepostAt
-        },
-        {
-          direction: OrderDirection.Desc,
-          field: PostOrderField.UpdatedAt
-        }
-      ]
+      level: level ?? 3
     },
     false
   );
@@ -256,16 +245,13 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
     setFilterPageQuery({ ...sortedQueryPage });
   }, [queryData]);
 
-  useEffect(() => {
-    const newArrFilter = _.uniqBy(PostsData, item => {
-      return item?.page?.id || item?.token?.tokenId || item?.postAccount.address;
+  const timelineItems = useMemo(() => {
+    return _.uniqBy(timelineData, item => {
+      const post: Post = item.data as Post;
+      return post?.page?.id || post?.token?.tokenId || post?.postAccount?.address;
     });
-    setFilterPosts([...newArrFilter]);
-  }, [PostsData]);
+  }, [timelineData]);
 
-  // const handleOnClick = () => {
-  //   dispatch(toggleCollapsedSideNav(!navCollapsed));
-  // };
 
   const handleIconClick = (newPath?: string) => {
     dispatch(push(newPath));
@@ -329,8 +315,8 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
   const showShortCutItemForHome = () => {
     return (
       <>
-        {filterPosts.map(item => {
-          return <ShortCutItem item={item} onClickIcon={() => handleClickShortCutItemForHome(item?.id)} />;
+        {timelineItems.map(item => {
+          return <ShortCutItem item={item.data} onClickIcon={() => handleClickShortCutItemForHome(item?.id)} />;
         })}
       </>
     );

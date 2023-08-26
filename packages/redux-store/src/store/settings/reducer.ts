@@ -4,6 +4,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
   saveAllowPushNotification,
   saveBurnFilter,
+  saveLevelFilter,
   saveTopPostsFilter,
   saveWebAuthnConfig,
   saveWebPushNotifConfig,
@@ -11,7 +12,8 @@ import {
   setInitIntlStatus,
   setIsSystemThemes,
   toggleCollapsedSideNav,
-  updateLocale
+  updateLocale,
+  setLanguageNotAutoTrans
 } from './actions';
 import { SettingsState } from './state';
 // import { SearchBoxType } from '@bcpros/lixi-models/src/lib/search';
@@ -31,7 +33,9 @@ const initialState: SettingsState = {
   filterPostsProfile: 1,
   isTopPosts: false,
   currentThemes: 'system',
-  isSystemThemes: true
+  isSystemThemes: true,
+  levelFilter: 3,
+  languageNotAutoTrans: null
 };
 
 export const settingsReducer = createReducer(initialState, builder => {
@@ -79,5 +83,11 @@ export const settingsReducer = createReducer(initialState, builder => {
     })
     .addCase(setIsSystemThemes, (state, action) => {
       state.isSystemThemes = action.payload;
+    })
+    .addCase(saveLevelFilter, (state, action) => {
+      state.levelFilter = action.payload;
+    })
+    .addCase(setLanguageNotAutoTrans, (state, action) => {
+      state.languageNotAutoTrans = action.payload;
     });
 });

@@ -540,9 +540,9 @@ type Page {
   accessMessageFee: Float
   address: String
   avatar: String
-  category: Category!
-  categoryId: String!
-  countryId: String
+  category: Category
+  categoryId: Int
+  countryId: Int
   countryName: String
   cover: String
   createCommentFee: String!
@@ -566,7 +566,7 @@ type Page {
   parent: Page
   parentId: String
   salt: String
-  stateId: String
+  stateId: Int
   stateName: String
   title: String
 
@@ -758,8 +758,8 @@ type PostTranslation {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   id: ID!
-  translateContent: String!
-  translateLanguage: String!
+  translateContent: String
+  translateLanguage: String
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -896,11 +896,13 @@ type Query {
   comment(id: String!): Comment!
   getAccountByAddress(address: String!): Account!
   hashtag(content: String!): Hashtag!
+  homeTimeline(after: String, before: String, first: Int, last: Int, level: Int, minBurnFilter: Int, skip: Int): TimelineItemConnection!
   message(id: String!): Message!
   page(id: String!): Page!
   pageMessageSession(id: String!): PageMessageSession!
   post(id: String!): Post!
   temple(id: String!): Temple!
+  timeline(id: String!): TimelineItem!
   token(tokenId: String!): Token!
   userHadMessageToPage(accountId: Int, pageId: String): PageMessageSession!
   worship(id: String!): Worship!
@@ -999,6 +1001,24 @@ enum TempleOrderField {
   updatedAt
 }
 
+type TimelineItem {
+  data: TimelineItemData
+  id: ID!
+}
+
+type TimelineItemConnection {
+  edges: [TimelineItemEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+union TimelineItemData = Post
+
+type TimelineItemEdge {
+  cursor: String!
+  node: TimelineItem!
+}
+
 type Token {
   """Identifies the date and time when the object was last comments."""
   comments: DateTime
@@ -1090,17 +1110,21 @@ type Upload {
   bucket: String
   cfImageFilename: String
   cfImageId: String
-  height: String
+  extension: String
+  height: Int
   id: ID!
   sha: String!
-  sha40: String
-  sha320: String
-  sha800: String
-  width: String
+  thumbnailHeight: Int
+  thumbnailWidth: Int
+  type: String
+  width: Int
 }
 
 type UploadDetail {
+  account: Account
+  accountId: Int
   id: ID!
+  postId: String
   upload: Upload!
 }
 

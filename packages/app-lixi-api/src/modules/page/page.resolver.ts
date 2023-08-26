@@ -291,22 +291,26 @@ export class PageResolver {
 
   @ResolveField('pageAccount', () => Account)
   async pageAccount(@Parent() page: Page) {
-    const pageAccount = this.prisma.account.findFirst({
-      where: {
-        id: page.pageAccountId
-      }
-    });
+    const pageAccount = this.prisma.page
+      .findUnique({
+        where: {
+          id: page.id
+        }
+      })
+      .pageAccount();
 
     return pageAccount;
   }
 
   @ResolveField('category', () => Category)
   async category(@Parent() page: Page) {
-    const category = this.prisma.category.findFirst({
-      where: {
-        id: _.toSafeInteger(page.categoryId)
-      }
-    });
+    const category = this.prisma.page
+      .findUnique({
+        where: {
+          id: page.id
+        }
+      })
+      .category();
 
     return category;
   }

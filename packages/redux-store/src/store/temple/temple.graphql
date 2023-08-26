@@ -14,9 +14,6 @@ fragment TempleFields on Temple {
       bucket
       width
       height
-      sha800
-      sha320
-      sha40
     }
   }
   cover {
@@ -27,9 +24,6 @@ fragment TempleFields on Temple {
       bucket
       width
       height
-      sha800
-      sha320
-      sha40
     }
   }
   achievement

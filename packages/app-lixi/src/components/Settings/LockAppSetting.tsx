@@ -28,13 +28,12 @@ const LockAppSetting = () => {
     <GeneralSettingsItem>
       {/* Lock app */}
       <div className="title">
-        <LockFilled /> {intl.get('settings.lockApp')}
+        <LockFilled width={18} height={18} /> {intl.get('settings.lockAppDesc')}
       </div>
       {authenticationContextValue ? (
         <Switch
-          size="small"
-          checkedChildren={<CheckOutlined />}
-          unCheckedChildren={<CloseOutlined />}
+          checkedChildren={<>ON</>}
+          unCheckedChildren={<>OFF</>}
           checked={
             authenticationContextValue.isAuthenticationRequired && authenticationContextValue.credentialId
               ? true

@@ -247,8 +247,8 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
   useEffect(() => {
     const mapImages = item.uploads.map(img => {
       const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${img.upload.sha}`;
-      let width = parseInt(img?.upload?.width) || 4;
-      let height = parseInt(img?.upload?.height) || 3;
+      let width = img?.upload?.width || 4;
+      let height = img?.upload?.height || 3;
       let objImg = {
         src: imgUrl,
         width: width,

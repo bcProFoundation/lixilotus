@@ -295,8 +295,6 @@ const Lixi = props => {
   const Wallet = React.useContext(WalletContext);
   const { XPI } = Wallet;
   const selectedAccount = useAppSelector(getSelectedAccount);
-  // const selectedLixiId = useAppSelector(getSelectedLixiId);
-  // const selectedLixi = useAppSelector(getSelectedLixi);
   const selectedLixiRedux = useAppSelector(getSelectedLixi);
   const selectedLixiIdRedux = useAppSelector(getSelectedLixiId);
   const selectedLixiId = lixi.id ? selectedLixiIdRedux : lixi;

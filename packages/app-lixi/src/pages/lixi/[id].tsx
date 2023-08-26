@@ -6,7 +6,9 @@ import { PrismaService } from '@bcpros/lixi-prisma';
 import _ from 'lodash';
 import BCHJS from '@bcpros/xpi-js';
 
-const LixiPage = ({ lixi }) => {
+const LixiPage = ({ lixiAsString }) => {
+  const lixi = JSON.parse(lixiAsString);
+
   return <Lixi lixi={lixi} />;
 };
 
@@ -14,7 +16,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
   const prisma = new PrismaService();
   const { id } = params;
   let lixi: LixiDto;
-
+  let lixiAsString;
   if (id) {
     const result = await prisma.lixi.findUnique({
       where: {
@@ -58,11 +60,13 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
       'encryptedXPriv',
       'encryptedClaimCode'
     );
+
+    lixiAsString = JSON.stringify(lixi);
   }
 
   return {
     props: {
-      lixi
+      lixiAsString
     }
   };
 };

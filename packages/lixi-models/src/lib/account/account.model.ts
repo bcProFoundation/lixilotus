@@ -69,29 +69,33 @@ export class Account {
   pageMessageSessions?: [PageMessageSession];
 
   @Field(() => String, { nullable: true })
-  avatar?: string;
+  avatar?: Nullable<string>;
 
   @Field(() => String, { nullable: true })
-  cover?: string;
+  cover?: Nullable<string>;
 
   @Field(() => String, { nullable: true })
-  description?: string;
+  description?: Nullable<string>;
 
   @Field(() => String, { nullable: true })
-  website?: string;
+  website?: Nullable<string>;
 
   @Field(() => Number, { nullable: true })
   @IsOptional()
-  dayOfBirth?: number;
+  dayOfBirth?: Nullable<number>;
 
   @Field(() => Number, { nullable: true })
   @IsOptional()
-  monthOfBirth?: number;
+  monthOfBirth?: Nullable<number>;
 
   @Field(() => Number, { nullable: true })
   @IsOptional()
-  yearOfBirth?: number;
+  yearOfBirth?: Nullable<number>;
 
   @Field(() => String, { nullable: true })
-  createCommentFee?: string;
+  createCommentFee?: Nullable<string>;
+
+  constructor(partial: Partial<Account>) {
+    Object.assign(this, partial);
+  }
 }

@@ -1,16 +1,14 @@
+import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
+import { Page, UpdatePageInput } from '@generated/types.generated';
 import { getPageAvatarUpload, getPageCoverUpload } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { UpdatePageInput, Page } from '@generated/types.generated';
-import Image from 'next/image';
-import { StyledUploader } from './Uploader/Uploader';
-import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
-import { Button, Form, Modal } from 'antd';
+import { closeModal } from '@store/modal/actions';
 import { setPage } from '@store/page/action';
 import { useUpdatePageMutation } from '@store/page/pages.generated';
 import { showToast } from '@store/toast/actions';
+import { Button, Form, Modal } from 'antd';
 import intl from 'react-intl-universal';
-import { closeModal } from '@store/modal/actions';
-import { useEffect } from 'react';
+import { StyledUploader } from './Uploader/Uploader';
 
 export interface UploadAvatarCoverProps {
   page: Page;

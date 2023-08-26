@@ -112,7 +112,7 @@ export interface LixiDto {
   distributions?: Nullable<Distribution[]>;
 }
 
-export interface Lixi {
+export class Lixi {
   id: number;
   name: string;
   maxClaim: number;
@@ -154,6 +154,10 @@ export interface Lixi {
   joinLotteryProgram: boolean;
   distributions?: Nullable<Distribution[]>;
   pageMessageSession?: PageMessageSession;
+
+  constructor(partial: Partial<Lixi>) {
+    Object.assign(this, partial);
+  }
 }
 
 export interface RegisterLixiPackCommand {

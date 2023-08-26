@@ -15,7 +15,7 @@ import { NotificationGateway } from 'src/common/modules/notifications/notificati
 import { HashtagModule } from '../hashtag/hashtag.module';
 import { AccountModule } from '../account/account.module';
 import { FollowCacheService } from '../account/follow-cache.service';
-import { Account } from 'aws-sdk';
+import PostLoader from './post.loader';
 
 @Module({
   imports: [AuthModule, NotificationModule, HashtagModule, AccountModule],
@@ -27,8 +27,9 @@ import { Account } from 'aws-sdk';
     CommentResolver,
     NotificationService,
     HashtagModule,
-    FollowCacheService
+    FollowCacheService,
+    PostLoader
   ],
-  exports: [MeiliService, NotificationService, FollowCacheService]
+  exports: [MeiliService, NotificationService, FollowCacheService, PostLoader]
 })
 export class PageModule {}

@@ -1,8 +1,10 @@
+import { CameraOutlined, CompassOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Account } from '@bcpros/lixi-models';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
-import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { Follow } from '@bcpros/lixi-models/lib/follow/follow.model';
-import { FilterBurnt } from '@components/Common/FilterBurn';
+import { transformShortName } from '@components/Common/AvatarUser';
+import { currency } from '@components/Common/Ticker';
 import PostListItem from '@components/Posts/PostListItem';
 import {
   CreateFollowAccountInput,
@@ -11,32 +13,25 @@ import {
   PostOrderField
 } from '@generated/types.generated';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import { renameAccount, setTransactionReady } from '@store/account/actions';
-import { getAccountInfoTemp, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
+import { setTransactionReady } from '@store/account/actions';
+import { getAccountInfoTemp, getSelectedAccountId } from '@store/account/selectors';
 import { addBurnQueue, addBurnTransaction, clearFailQueue, getFailQueue } from '@store/burn';
 import { useCreateFollowAccountMutation, useDeleteFollowAccountMutation } from '@store/follow/follows.api';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { useInfinitePostsByUserIdQuery } from '@store/post/useInfinitePostsByUserIdQuery';
-import { getFilterPostsProfile } from '@store/settings/selectors';
+import { getFilterPostsProfile, getLevelFilter } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
 import { Avatar, Button, Skeleton, Space, Tabs } from 'antd';
-import axios from 'axios';
 import BigNumber from 'bignumber.js';
-import { useRouter } from 'next/router';
-import { currency } from '@components/Common/Ticker';
 import React, { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
+import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { WithAuthorizeAction } from '../Common/Authorization/WithAuthorizeAction';
-import { CameraOutlined, CompassOutlined, EditOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { ReactSVG } from 'react-svg';
-import { Account, RenameAccountCommand } from '@bcpros/lixi-models';
-import { RenameAccountModalProps } from '@components/Settings/RenameAccountModal';
-import { transformShortName } from '@components/Common/AvatarUser';
 
 export const URL_AVATAR_DEFAULT = '/images/default-avatar.jpg';
 export const URL_COVER_DEFAULT = '/images/default-avatar.jpg';
@@ -467,9 +462,9 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsProfile);
   const [isFollowed, setIsFollowed] = useState<boolean>(checkIsFollowed);
-  const [listsPicture, setListsPicture] = useState<any>([]);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const accountInfoTemp = useAppSelector(getAccountInfoTemp);
+  const level = useAppSelector(getLevelFilter);
 
   const [
     createFollowAccountTrigger,
@@ -565,7 +560,8 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
         extraArguments: {
           postQueryTag: PostsQueryTag.PostsByUserId,
           userId: post.postAccount?.id as string,
-          minBurnFilter: filterValue
+          minBurnFilter: filterValue,
+          level: level
         }
       };
 

@@ -648,9 +648,9 @@ export type Page = {
   accessMessageFee?: Maybe<Scalars['Float']>;
   address?: Maybe<Scalars['String']>;
   avatar?: Maybe<Scalars['String']>;
-  category: Category;
-  categoryId: Scalars['String'];
-  countryId?: Maybe<Scalars['String']>;
+  category?: Maybe<Category>;
+  categoryId?: Maybe<Scalars['Int']>;
+  countryId?: Maybe<Scalars['Int']>;
   countryName?: Maybe<Scalars['String']>;
   cover?: Maybe<Scalars['String']>;
   createCommentFee: Scalars['String'];
@@ -673,7 +673,7 @@ export type Page = {
   parent?: Maybe<Page>;
   parentId?: Maybe<Scalars['String']>;
   salt?: Maybe<Scalars['String']>;
-  stateId?: Maybe<Scalars['String']>;
+  stateId?: Maybe<Scalars['Int']>;
   stateName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** The sum of burn amount for every post on page */
@@ -870,8 +870,8 @@ export type PostTranslation = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
-  translateContent: Scalars['String'];
-  translateLanguage: Scalars['String'];
+  translateContent?: Maybe<Scalars['String']>;
+  translateLanguage?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
 };
@@ -921,11 +921,13 @@ export type Query = {
   comment: Comment;
   getAccountByAddress: Account;
   hashtag: Hashtag;
+  homeTimeline: TimelineItemConnection;
   message: Message;
   page: Page;
   pageMessageSession: PageMessageSession;
   post: Post;
   temple: Temple;
+  timeline: TimelineItem;
   token: Token;
   userHadMessageToPage: PageMessageSession;
   worship: Worship;
@@ -1343,6 +1345,16 @@ export type QueryHashtagArgs = {
   content: Scalars['String'];
 };
 
+export type QueryHomeTimelineArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  level?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
 export type QueryMessageArgs = {
   id: Scalars['String'];
 };
@@ -1360,6 +1372,10 @@ export type QueryPostArgs = {
 };
 
 export type QueryTempleArgs = {
+  id: Scalars['String'];
+};
+
+export type QueryTimelineArgs = {
   id: Scalars['String'];
 };
 
@@ -1474,6 +1490,27 @@ export enum TempleOrderField {
   UpdatedAt = 'updatedAt'
 }
 
+export type TimelineItem = {
+  __typename?: 'TimelineItem';
+  data?: Maybe<TimelineItemData>;
+  id: Scalars['ID'];
+};
+
+export type TimelineItemConnection = {
+  __typename?: 'TimelineItemConnection';
+  edges?: Maybe<Array<TimelineItemEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type TimelineItemData = Post;
+
+export type TimelineItemEdge = {
+  __typename?: 'TimelineItemEdge';
+  cursor: Scalars['String'];
+  node: TimelineItem;
+};
+
 export type Token = {
   __typename?: 'Token';
   /** Identifies the date and time when the object was last comments. */
@@ -1568,18 +1605,22 @@ export type Upload = {
   bucket?: Maybe<Scalars['String']>;
   cfImageFilename?: Maybe<Scalars['String']>;
   cfImageId?: Maybe<Scalars['String']>;
-  height?: Maybe<Scalars['String']>;
+  extension?: Maybe<Scalars['String']>;
+  height?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
   sha: Scalars['String'];
-  sha40?: Maybe<Scalars['String']>;
-  sha320?: Maybe<Scalars['String']>;
-  sha800?: Maybe<Scalars['String']>;
-  width?: Maybe<Scalars['String']>;
+  thumbnailHeight?: Maybe<Scalars['Int']>;
+  thumbnailWidth?: Maybe<Scalars['Int']>;
+  type?: Maybe<Scalars['String']>;
+  width?: Maybe<Scalars['Int']>;
 };
 
 export type UploadDetail = {
   __typename?: 'UploadDetail';
+  account?: Maybe<Account>;
+  accountId?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
+  postId?: Maybe<Scalars['String']>;
   upload: Upload;
 };
 

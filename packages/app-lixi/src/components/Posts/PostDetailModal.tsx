@@ -37,7 +37,7 @@ import Gallery from 'react-photo-gallery';
 import { getBurnQueue, getFailQueue } from '@store/burn';
 import { TokenItem } from '@components/Token/TokensFeed';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import { getFilterPostsHome } from '@store/settings/selectors';
+import { getFilterPostsHome, getLevelFilter } from '@store/settings/selectors';
 import { OPTION_BURN_VALUE } from '@bcpros/lixi-models/constants';
 import parse from 'html-react-parser';
 import ReactDomServer from 'react-dom/server';
@@ -348,6 +348,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
   const { width } = useWindowDimensions();
   const accountInfoTemp = useAppSelector(getAccountInfoTemp);
   const [isSendingXPI, setIsSendingXPI] = useState<boolean>(false);
+  const level = useAppSelector(getLevelFilter);
 
   useEffect(() => {
     const isMobileDetail = width < 960 ? true : false;
@@ -379,8 +380,8 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
   useEffect(() => {
     const mapImages = post.uploads.map(img => {
       const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.upload.cfImageId}/public`;
-      let width = parseInt(img?.upload?.width) || 4;
-      let height = parseInt(img?.upload?.height) || 3;
+      let width = img?.upload?.width || 4;
+      let height = img?.upload?.height || 3;
       let objImg = {
         src: imgUrl,
         width: width,
@@ -466,7 +467,8 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
           postQueryTag: PostsQueryTag.Post,
           postId: postId,
           orderBy: queryParams,
-          minBurnFilter: filterValue
+          minBurnFilter: filterValue,
+          level: level
         }
       };
 
@@ -780,15 +782,14 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
       <Modal
         transitionName={isMobile ? '' : 'none'}
         width={'50vw'}
-        className={`${classStyle} post-detail-custom-modal ${
-          isMobile
+        className={`${classStyle} post-detail-custom-modal ${isMobile
             ? openPost
               ? 'animate__animated animate__faster animate__slideInRight'
               : 'animate__animated animate__faster animate__slideOutRight'
             : openPost
-            ? 'animate__animated animate__faster animate__zoomIn'
-            : 'animate__animated animate__faster animate__zoomOut'
-        }`}
+              ? 'animate__animated animate__faster animate__zoomIn'
+              : 'animate__animated animate__faster animate__zoomOut'
+          }`}
         style={{ top: 30 }}
         open={true}
         onCancel={handleOnCancel}

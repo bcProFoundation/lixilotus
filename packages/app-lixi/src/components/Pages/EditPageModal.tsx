@@ -56,13 +56,10 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled, cl
       id: page.id,
       name: page.name,
       categoryId: page.category.id,
-      categoryName: page.category.name,
       description: page.description,
       website: page.website,
       countryId: page.countryId,
-      countryName: page?.countryName,
       stateId: page.stateId,
-      stateName: page?.stateName,
       address: page.address,
       createPostFee: page.createPostFee,
       createCommentFee: page.createCommentFee
@@ -74,22 +71,24 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled, cl
     setComponentDisabled(disabled);
   };
 
-  const onSubmit: SubmitHandler<UpdatePageInput> = async data => {
+  const onSubmit: SubmitHandler<any> = async data => {
     try {
-      const updatePageInput: UpdatePageInput = _.omit(
-        {
-          ...data,
-          id: page.id,
-          categoryId: String(data.categoryId),
-          countryId: !_.isNil(data.countryId) ? String(data.countryId) : null,
-          stateId: !_.isNil(data.stateId) ? String(data.stateId) : null,
-          createPostFee: String(data.createPostFee),
-          createCommentFee: String(data.createCommentFee)
-        },
-        'categoryName',
-        'countryName',
-        'stateName'
-      );
+      const updatePageInput: UpdatePageInput = {
+        id: page.id,
+        title: data.title,
+        name: data.name,
+        categoryId: String(data.categoryId),
+        description: data.description,
+        avatar: data.avatar,
+        cover: data.cover,
+        parentId: data.parentId,
+        website: data.website,
+        countryId: !_.isNil(data.countryId) ? String(data.countryId) : null,
+        stateId: !_.isNil(data.stateId) ? String(data.stateId) : null,
+        address: data.address,
+        createPostFee: String(data.createPostFee),
+        createCommentFee: String(data.createCommentFee)
+      };
 
       const pageUpdated = await updatePageTrigger({ input: updatePageInput }).unwrap();
       dispatch(
@@ -145,7 +144,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled, cl
             <Form.Item
               name="name"
               label={intl.get('page.name')}
-              rules={[{ required: true, message: intl.get('page.inputName') }]}
+              rules={[{ required: false, message: intl.get('page.inputName') }]}
             >
               <Controller
                 name="name"
