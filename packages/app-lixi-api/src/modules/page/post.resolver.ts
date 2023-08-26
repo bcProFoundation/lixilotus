@@ -16,11 +16,13 @@ import {
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { HttpException, HttpStatus, Inject, Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { SkipThrottle } from '@nestjs/throttler';
 import { ChronikClient } from 'chronik-client';
 import { PubSub } from 'graphql-subscriptions';
+import { Redis } from 'ioredis';
 import * as _ from 'lodash';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
@@ -51,12 +53,13 @@ export class PostResolver {
     private readonly followCacheService: FollowCacheService,
     private prisma: PrismaService,
     private meiliService: MeiliService,
+    @InjectRedis() private readonly redis: Redis,
     private readonly notificationService: NotificationService,
     private hashtagService: HashtagService,
     @Inject('xpijs') private XPI: BCHJS,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -936,10 +939,10 @@ export class PostResolver {
         connect:
           uploadDetailIds.length > 0
             ? uploadDetailIds.map((uploadDetail: any) => {
-                return {
-                  id: uploadDetail
-                };
-              })
+              return {
+                id: uploadDetail
+              };
+            })
             : undefined
       },
       page: {
@@ -1166,6 +1169,10 @@ export class PostResolver {
       updatedAt: updatedPost.updatedAt,
       hashtag: hashtags
     };
+
+    // Clear the post from cache
+    const hashPrefix = `posts:item-data`;
+    await this.redis.hdel(hashPrefix, id);
 
     await this.meiliService.update(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, updatedPost.id);
 

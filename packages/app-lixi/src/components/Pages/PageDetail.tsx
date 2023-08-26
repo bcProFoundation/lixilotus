@@ -43,7 +43,7 @@ import { useCreateFollowPageMutation, useDeleteFollowPageMutation } from '@store
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
-import { getFilterPostsPage } from '@store/settings/selectors';
+import { getFilterPostsPage, getLevelFilter } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
