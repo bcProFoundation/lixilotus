@@ -935,7 +935,7 @@ export class PostResolver {
     const postToSave = {
       content: htmlContent,
       postAccount: { connect: { id: account.id } },
-      uploadedCovers: {
+      uploads: {
         connect:
           uploadDetailIds.length > 0
             ? uploadDetailIds.map((uploadDetail: any) => {

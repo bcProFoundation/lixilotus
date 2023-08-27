@@ -161,14 +161,14 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnQueueCommand>) {
       showToast('success', {
         message: intl.get(`toast.success`),
         description: intl.get('burn.totalBurn', {
-          burnValue: extraArguments?.selectAmountDanaMultiCoin,
+          burnValue: (extraArguments?.coin === 'xpi' || _.isNil(extraArguments?.coin)) ? burnValue : extraArguments?.selectAmountDanaMultiCoin || burnValue,
           totalAmount:
-            extraArguments?.coin === 'xpi'
+            (extraArguments?.coin === 'xpi' || _.isNil(extraArguments?.coin))
               ? burnValue + burnValue * currency.burnFee + Number(minerFee)
               : extraArguments?.fakeAmountMulti +
               extraArguments?.fakeAmountMulti * currency.burnFee +
               Number(minerFee),
-          coin: extraArguments?.coin.toUpperCase()
+          coin: extraArguments?.coin ? extraArguments?.coin?.toUpperCase() : 'XPI'
         })
       })
     );
