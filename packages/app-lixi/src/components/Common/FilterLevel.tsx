@@ -87,7 +87,7 @@ export const FilterLevel = () => {
             </Space>
           </Radio.Group>
         </FilterStyle>
-      </FilterContainer >
+      </FilterContainer>
     </>
   );
 };

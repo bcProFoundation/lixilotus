@@ -212,7 +212,7 @@ export type CreatePostInput = {
   pageId?: InputMaybe<Scalars['String']>;
   pureContent: Scalars['String'];
   tokenPrimaryId?: InputMaybe<Scalars['String']>;
-  uploadCovers?: InputMaybe<Array<Scalars['String']>>;
+  uploads?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateTempleInput = {

@@ -23,7 +23,7 @@ export class TimelineService {
     private readonly followCacheService: FollowCacheService,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   async cacheInNetworkByTime(accountId: number) {
     const key = `${TimelineService.inNetworkSourceKey}:${accountId}`;
@@ -188,7 +188,7 @@ export class TimelineService {
       throw new Error('Ratio should be between 0 and 1');
     }
 
-    const totalMinLength = Math.min(arr1.length + arr2.length, arr1.length / ratio)
+    const totalMinLength = Math.min(arr1.length + arr2.length, arr1.length / ratio);
     const totalLength = Math.max(totalMinLength, arr1.length + arr2.length);
     const countFromArr1 = Math.round(totalMinLength * ratio);
     const countFromArr2 = totalLength - countFromArr1;
@@ -243,7 +243,7 @@ export class TimelineService {
     const ratio = TimelineService.ratioSteps[level - 1];
 
     const timelineSortedSet = new SortedSet();
-    const inNetwork = accountId ? await this.getInNetwork(accountId) || [] : [];
+    const inNetwork = accountId ? (await this.getInNetwork(accountId)) || [] : [];
     const outNetwork = await this.getOutNetwork();
 
     const timeline = this.mergeByRatio(_.compact(inNetwork), _.compact(outNetwork), ratio);

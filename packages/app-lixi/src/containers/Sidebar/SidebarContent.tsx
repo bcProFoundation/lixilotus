@@ -252,7 +252,6 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
     });
   }, [timelineData]);
 
-
   const handleIconClick = (newPath?: string) => {
     dispatch(push(newPath));
   };

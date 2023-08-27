@@ -158,19 +158,22 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnQueueCommand>) {
     yield put(removeBurnQueue());
     yield put(
       burnForUpDownVoteSuccess(data) &&
-      showToast('success', {
-        message: intl.get(`toast.success`),
-        description: intl.get('burn.totalBurn', {
-          burnValue: (extraArguments?.coin === 'xpi' || _.isNil(extraArguments?.coin)) ? burnValue : extraArguments?.selectAmountDanaMultiCoin || burnValue,
-          totalAmount:
-            (extraArguments?.coin === 'xpi' || _.isNil(extraArguments?.coin))
-              ? burnValue + burnValue * currency.burnFee + Number(minerFee)
-              : extraArguments?.fakeAmountMulti +
-              extraArguments?.fakeAmountMulti * currency.burnFee +
-              Number(minerFee),
-          coin: extraArguments?.coin ? extraArguments?.coin?.toUpperCase() : 'XPI'
+        showToast('success', {
+          message: intl.get(`toast.success`),
+          description: intl.get('burn.totalBurn', {
+            burnValue:
+              extraArguments?.coin === 'xpi' || _.isNil(extraArguments?.coin)
+                ? burnValue
+                : extraArguments?.selectAmountDanaMultiCoin || burnValue,
+            totalAmount:
+              extraArguments?.coin === 'xpi' || _.isNil(extraArguments?.coin)
+                ? burnValue + burnValue * currency.burnFee + Number(minerFee)
+                : extraArguments?.fakeAmountMulti +
+                  extraArguments?.fakeAmountMulti * currency.burnFee +
+                  Number(minerFee),
+            coin: extraArguments?.coin ? extraArguments?.coin?.toUpperCase() : 'XPI'
+          })
         })
-      })
     );
   } catch (err) {
     let message;
@@ -230,7 +233,8 @@ function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
 
 function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
   const { extraArguments, burnValue: burnValueAsString, burnType, burnForId } = action.payload;
-  const { isTop, hashtagId, hashtags, minBurnFilter, pageId, query, tokenId, userId, postQueryTag, level } = extraArguments;
+  const { isTop, hashtagId, hashtags, minBurnFilter, pageId, query, tokenId, userId, postQueryTag, level } =
+    extraArguments;
   // @todo: better control the params for search/others
   const params = {
     orderBy: {

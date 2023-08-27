@@ -194,7 +194,7 @@ input CreatePostInput {
   pageId: String
   pureContent: String!
   tokenPrimaryId: String
-  uploadCovers: [String!]
+  uploads: [String!]
 }
 
 input CreateTempleInput {

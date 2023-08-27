@@ -290,7 +290,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       }
 
       const createPostInput: CreatePostInput = {
-        uploadCovers: postCoverUploads.map(upload => upload.id),
+        uploads: postCoverUploads.map(upload => upload.id),
         htmlContent: htmlContent,
         pureContent: pureContent,
         pageId: pageId || undefined,

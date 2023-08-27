@@ -59,7 +59,7 @@ export class PostResolver {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -916,11 +916,11 @@ export class PostResolver {
       throw new Error(couldNotFindAccount);
     }
 
-    const { uploadCovers, pageId, htmlContent, tokenPrimaryId, pureContent } = data;
+    const { uploads, pageId, htmlContent, tokenPrimaryId, pureContent } = data;
 
     let uploadDetailIds: any[] = [];
 
-    const promises = uploadCovers.map(async (id: string) => {
+    const promises = uploads.map(async (id: string) => {
       const uploadDetails = await this.prisma.uploadDetail.findFirst({
         where: {
           uploadId: id
@@ -939,10 +939,10 @@ export class PostResolver {
         connect:
           uploadDetailIds.length > 0
             ? uploadDetailIds.map((uploadDetail: any) => {
-              return {
-                id: uploadDetail
-              };
-            })
+                return {
+                  id: uploadDetail
+                };
+              })
             : undefined
       },
       page: {

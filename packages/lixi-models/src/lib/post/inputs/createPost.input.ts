@@ -26,7 +26,7 @@ export class CreatePostInput {
 
   @Field(() => [String], { nullable: true })
   @IsOptional()
-  uploadCovers: [string];
+  uploads: [string];
 
   @IsOptional()
   @Field(() => String, { nullable: true })
