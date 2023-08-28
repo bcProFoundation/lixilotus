@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { Injectable, Logger } from '@nestjs/common';
 import { Redis } from 'ioredis';
@@ -29,7 +30,8 @@ export class FollowCacheService {
     if (!exist) {
       await this._cacheAccountFollowers(key, accountId);
     }
-    return await this.redis.zrevrange(key, 0, -1);
+    const followers = await this.redis.zrevrange(key, 0, -1);
+    return followers.map(follower => _.toSafeInteger(follower));
   }
 
   private async _cacheAccountFollowings(key: string, accountId: number) {
@@ -52,7 +54,8 @@ export class FollowCacheService {
     if (!exist) {
       await this._cacheAccountFollowings(key, accountId);
     }
-    return await this.redis.zrevrange(key, 0, -1);
+    const followings = await this.redis.zrevrange(key, 0, -1);
+    return followings.map(following => _.toSafeInteger(following));
   }
 
   private async _cachePageFollowers(key: string, pageId: string) {
@@ -76,7 +79,8 @@ export class FollowCacheService {
     if (!exist) {
       await this._cachePageFollowers(key, pageId);
     }
-    return await this.redis.zrevrange(key, 0, -1);
+    const followers = await this.redis.zrevrange(key, 0, -1);
+    return followers.map(follower => _.toSafeInteger(follower));
   }
 
   private async _cachePageFollowingOfAccount(key: string, accountId: number) {

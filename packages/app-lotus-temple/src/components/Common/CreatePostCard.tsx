@@ -1,25 +1,22 @@
-import { PlusCircleOutlined, GlobalOutlined } from '@ant-design/icons';
+import { GlobalOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { CreatePostInput, OrderDirection, PostOrderField } from '@generated/types.generated';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
-import { getPostCoverUploads, getSelectedAccount } from '@store/account/selectors';
+import { deleteEditorTextFromCache, removeAllUpload } from '@store/account/actions';
+import { getEditorCache, getPostCoverUploads, getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { api as postApi, useCreatePostMutation } from '@store/post/posts.api';
 import { CreatePostMutation } from '@store/post/posts.generated';
+import { getFilterPostsHome } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { Button, Input, Modal } from 'antd';
 import _ from 'lodash';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import intl from 'react-intl-universal';
-import { CreatePostInput, OrderDirection, PostOrderField } from '@generated/types.generated';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { Embed, SocialsEnum } from './Embed';
-import EditorLexical from './Lexical/EditorLexical';
-import { removeAllUpload } from '@store/account/actions';
 import { AvatarUser } from './AvatarUser';
-import { getEditorCache } from '@store/account/selectors';
-import { deleteEditorTextFromCache } from '@store/account/actions';
-import { getFilterPostsHome } from '@store/settings/selectors';
-import { useCreateWorshipedPersonMutation } from '@store/worship/worshipedPerson.api';
+import { SocialsEnum } from './Embed';
+import EditorLexical from './Lexical/EditorLexical';
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -191,7 +188,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     }
 
     const createPostInput: CreatePostInput = {
-      uploadCovers: postCoverUploads.map(upload => upload.id),
+      uploads: postCoverUploads.map(upload => upload.id),
       htmlContent: htmlContent,
       pureContent: pureContent,
       pageId: pageId || undefined,

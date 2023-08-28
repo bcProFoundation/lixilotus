@@ -17,9 +17,11 @@ import { NotificationLevel } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { InjectQueue } from '@nestjs/bullmq';
 import { HttpException, HttpStatus, Inject, Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { SkipThrottle } from '@nestjs/throttler';
+import { Queue } from 'bullmq';
 import { ChronikClient } from 'chronik-client';
 import { PubSub } from 'graphql-subscriptions';
 import { Redis } from 'ioredis';
@@ -39,6 +41,7 @@ import { GqlJwtAuthGuard, GqlJwtAuthGuardByPass } from '../auth/guards/gql-jwtau
 import { HashtagService } from '../hashtag/hashtag.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { HASHTAG, POSTS } from './constants/meili.constants';
+import { POST_FANOUT_QUEUE } from './constants/post.constants';
 import { MeiliService } from './meili.service';
 
 const pubSub = new PubSub();
@@ -56,6 +59,7 @@ export class PostResolver {
     @InjectRedis() private readonly redis: Redis,
     private readonly notificationService: NotificationService,
     private hashtagService: HashtagService,
+    @InjectQueue(POST_FANOUT_QUEUE) private postFanoutQueue: Queue,
     @Inject('xpijs') private XPI: BCHJS,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @I18n() private i18n: I18nService
@@ -1108,6 +1112,9 @@ export class PostResolver {
         await this.notificationService.saveAnddDispathNotificationNewPost(createNotiNewPost);
       }
     }
+
+    // Fanout the post created
+    await this.postFanoutQueue.add(POST_FANOUT_QUEUE, { post: savedPost });
 
     return savedPost;
   }

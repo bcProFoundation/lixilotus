@@ -10,6 +10,8 @@ import { deleteEditorTextFromCache, removeAllUpload } from '@store/account/actio
 import { getAccountInfoTemp, getEditorCache, getPostCoverUploads, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { api as postApi, useCreatePostMutation } from '@store/post/posts.api';
+import { getLevelFilter } from '@store/settings';
+import { api as timelineApi } from '@store/timeline/timeline.generated';
 import { CreatePostMutation } from '@store/post/posts.generated';
 import {
   getCurrentThemes,
@@ -232,6 +234,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const showCreatePostMobile = useAppSelector(getShowCreatePost);
   const accountInfoTemp = useAppSelector(getAccountInfoTemp);
   const isTop = useAppSelector(getIsTopPosts);
+  const level = useAppSelector(getLevelFilter);
 
   const [
     createPostTrigger,
@@ -248,6 +251,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
   const handleCreateNewPost = async ({ htmlContent, pureContent }) => {
     let patches: PatchCollection;
+    let timelinePatches: PatchCollection;
     const params = {
       orderBy: {
         direction: OrderDirection.Desc,
@@ -309,7 +313,22 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         }
       };
 
-      await createPostTrigger({ input: createPostInput }).unwrap();
+      const result = await createPostTrigger({ input: createPostInput }).unwrap();
+
+      timelinePatches = dispatch(
+        timelineApi.util.updateQueryData('HomeTimeline', { ...params, level: level }, draft => {
+          draft.homeTimeline.edges.unshift({
+            cursor: result.createPost.id,
+            node: {
+              id: result.createPost.id,
+              data: {
+                ...result.createPost
+              }
+            }
+          });
+          draft.homeTimeline.totalCount = draft.homeTimeline.totalCount + 1;
+        })
+      );
 
       dispatch(
         showToast('success', {
@@ -331,6 +350,9 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       }
       if (patches) {
         dispatch(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
+      }
+      if (timelinePatches) {
+        dispatch(timelineApi.util.patchQueryData('HomeTimeline', { level: level }, timelinePatches.inversePatches));
       }
       dispatch(
         showToast('error', {
