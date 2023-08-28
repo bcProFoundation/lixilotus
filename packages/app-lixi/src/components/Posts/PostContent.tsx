@@ -34,12 +34,13 @@ const PostContent = ({ post, showTranslation, currentLocale }) => {
       } else if (postScore >= 5 && postScore < 10) {
         lineNum = 6;
       }
-    } else if (postScore > 10) {
-      let n1 = 0,
+    } else if (postScore >= 10) {
+      let n1 = 10,
         n2 = 10,
         next = 0;
+        lineNum = 6;
 
-      while (postScore > n2 || lineNum === 20) {
+      while (postScore >= n2 && lineNum < 21) {
         lineNum++;
         next = n1 + n2;
         n1 = n2;
