@@ -115,7 +115,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
 
   let { data: timelineData } = useInfiniteHomeTimelineQuery(
     {
-      first: 50,
+      first: 20,
       level: level ?? 3
     },
     false

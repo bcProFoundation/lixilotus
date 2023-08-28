@@ -48,7 +48,7 @@ export class TimelineService {
             },
             {
               postAccountId: {
-                in: accountFollowings
+                in: [accountId].concat(accountFollowings)
               }
             }
           ]
@@ -65,7 +65,7 @@ export class TimelineService {
         const id = `${post.id}`;
 
         const diffHour = moment.duration(moment(post.createdAt).diff(moment(epoch))).asHours();
-        const score = Math.pow(2, diffHour / 12);
+        const score = 10 * Math.pow(2, diffHour / 12);
         pipeline.zincrby(key, score, id);
       }
       pipeline.expire(key, 2592000);
@@ -81,10 +81,16 @@ export class TimelineService {
     const epoch = '2023-01-01 00:00:00';
     const halfLife = '12 hours';
     try {
-      const followings = (await this.followCacheService.getAccountFollowings(accountId)).map(item =>
+      const accountFollowings = (await this.followCacheService.getAccountFollowings(accountId)).map(item =>
         _.toSafeInteger(item)
       );
-      if (_.isNil(followings) || _.isEmpty(followings)) return;
+      const pageFollowings = await this.followCacheService.getPageFollowings(accountId);
+
+      if (
+        (_.isNil(accountFollowings) || _.isEmpty(accountFollowings)) &&
+        (_.isNil(pageFollowings) || _.isEmpty(pageFollowings))
+      )
+        return;
 
       const posts = await this.prisma.$queryRaw<{ id: string; score: number }[]>(
         Prisma.sql`
@@ -99,7 +105,10 @@ export class TimelineService {
             WHERE
               burn.burn_for_type = ${postBurnType} 
               AND burn.burned_value > 0 
-              AND post.post_account_id IN ${Prisma.join(followings)}
+              AND (
+                (post.post_account_id IN ${Prisma.join([accountId].concat(accountFollowings))} ) OR
+                (post.page_id) IN ${Prisma.join(pageFollowings)}
+              )
             GROUP BY
               post.id 
             ORDER by
@@ -294,7 +303,7 @@ export class TimelineService {
       // Get data from start
       const startOffset = 0;
       const endOffset = startOffset + first;
-      const ids: string[] = timelineSortedSet.range(startOffset + 1, startOffset + first);
+      const ids: string[] = timelineSortedSet.range(startOffset, startOffset + first - 1);
       const edges = ids.map((value, index) => {
         return {
           cursor: value,

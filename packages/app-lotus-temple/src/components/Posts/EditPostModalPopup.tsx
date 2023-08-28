@@ -9,10 +9,12 @@ import { getSelectedAccount } from '@store/account/selectors';
 import intl from 'react-intl-universal';
 import _ from 'lodash';
 import { useUpdatePostMutation, api as postApi } from '@store/post/posts.generated';
+import { api as timelineApi } from '@store/timeline/timeline.generated';
 import { UpdatePostInput, OrderDirection, PostOrderField } from '@generated/types.generated';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { UpdatePostMutation } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
+import { getLevelFilter } from '@store/settings';
 
 const UserCreate = styled.div`
   .user-create-post {
@@ -63,6 +65,7 @@ export type EditPostModalProps = {
 export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const level = useAppSelector(getLevelFilter);
 
   const [
     updatePostTrigger,
@@ -74,7 +77,9 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
       return;
     }
 
-    let patches: PatchCollection;
+    let postPatches: PatchCollection;
+    let timelinePatches: PatchCollection;
+
     const editPostInput: UpdatePostInput = {
       htmlContent: htmlContent,
       pureContent: pureContent,
@@ -90,7 +95,13 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
 
     try {
       const result = await updatePostTrigger({ input: editPostInput }).unwrap();
-      const patches = dispatch(
+      timelinePatches = dispatch(
+        timelineApi.util.updateQueryData('HomeTimeline', { ...params, level: level }, draft => {
+          const index = draft.homeTimeline.edges.findIndex(x => x.cursor === result.updatePost.id);
+          draft.homeTimeline.edges[index].node.data.content = result.updatePost.content;
+        })
+      );
+      postPatches = dispatch(
         postApi.util.updateQueryData('Posts', params, draft => {
           const index = draft.allPosts.edges.findIndex(x => x.cursor === result.updatePost.id);
           draft.allPosts.edges[index].node.content = result.updatePost.content;
@@ -107,8 +118,11 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
       );
     } catch (err) {
       const message = intl.get('post.unableEditPostServer');
-      if (patches) {
-        dispatch(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
+      if (postPatches) {
+        dispatch(postApi.util.patchQueryData('Posts', params, postPatches.inversePatches));
+      }
+      if (timelinePatches) {
+        dispatch(timelineApi.util.patchQueryData('HomeTimeline', { level: level }, timelinePatches.inversePatches));
       }
       dispatch(
         showToast('error', {
