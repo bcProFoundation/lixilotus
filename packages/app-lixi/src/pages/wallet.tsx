@@ -9,8 +9,8 @@ const WalletPage = () => {
     <>
       <DeviceProtectableComponentWrapper>
         {/* //TODO: support multi currencies */}
-        <ListWallet />
-        {/* <FullWalletComponent /> */}
+        {/* <ListWallet /> */}
+        <FullWalletComponent />
       </DeviceProtectableComponentWrapper>
     </>
   );

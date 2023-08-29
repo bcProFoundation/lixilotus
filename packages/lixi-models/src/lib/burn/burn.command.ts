@@ -88,10 +88,4 @@ export class BurnExtraArguments {
   hashtagId?: string;
 
   orderBy?: any;
-
-  coin?: string;
-
-  fakeAmountMulti?: number;
-
-  selectAmountDanaMultiCoin?: number;
 }

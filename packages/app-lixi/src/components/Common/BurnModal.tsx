@@ -147,16 +147,6 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
     address: selectedAccount?.address
   };
 
-  const handleBurnValueMultiCoin = () => {
-    let burnValue = _.isNil(control._formValues.burnedValue)
-      ? DefaultXpiBurnValues[0]
-      : control._formValues.burnedValue;
-    if (selectCurrencies?.symbol !== 'xpi') {
-      burnValue = 1;
-    }
-    return burnValue;
-  };
-
   const handleBurn = async (isUpVote: boolean) => {
     try {
       let queryParams;
@@ -166,7 +156,9 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
       let tokenId;
       let userId;
       let id: string;
-      let burnValue = handleBurnValueMultiCoin();
+      const burnValue = _.isNil(control._formValues.burnedValue)
+        ? DefaultXpiBurnValues[0]
+        : control._formValues.burnedValue;
       if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
@@ -254,9 +246,6 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
           orderBy: queryParams,
           pageId: pageId,
           minBurnFilter: filterValue,
-          coin: selectCurrencies?.symbol,
-          fakeAmountMulti: calcAmountBurn(currency.burnFee * selectedAmount + selectedAmount, selectCurrencies?.symbol),
-          selectAmountDanaMultiCoin: selectedAmount,
           level: level
         }
       };
@@ -493,7 +482,8 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
               </div>
             </div>
           </div>
-          {selectCurrencies && (
+          {/* TODO: Burn multi coin */}
+          {/* {selectCurrencies && (
             <>
               <WalletItem className="current-wallet-burn" style={{ backgroundImage: `url(${selectCurrencies.bg})` }}>
                 <div className="wallet-card-header">
@@ -555,7 +545,7 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
                 </div>
               </WalletItem>
             </>
-          )}
+          )} */}
         </div>
       }
       footer={
@@ -574,10 +564,10 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
     >
       <Form>
         <p className="question-txt">
-          {intl.get('text.selectXpi')}{' '}
-          <Button type="primary" onClick={() => setOpenSelectCurrencies(!openSelectCurrencies)}>
+          {intl.get('text.selectXpi')} {/* TODO: Burn multi coin */}
+          {/* <Button type="primary" onClick={() => setOpenSelectCurrencies(!openSelectCurrencies)}>
             Select Currencies
-          </Button>
+          </Button> */}
         </p>
 
         <Controller
@@ -612,8 +602,8 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
 
       <p className="fee-burn">
         {intl.get('burn.sendDana', {
-          cost: calcAmountBurn(currency.burnFee * selectedAmount + selectedAmount, selectCurrencies?.symbol),
-          coin: selectCurrencies?.symbol?.toUpperCase() || 'XPI'
+          cost: currency.burnFee * selectedAmount + selectedAmount,
+          coin: 'XPI'
         })}
       </p>
       <p className="trans-amount">
@@ -621,7 +611,8 @@ export const BurnModal = ({ id, burnForType, isPage, classStyle }: BurnModalProp
           amount: TRANSLATION_REQUIRE_AMOUNT
         })}
       </p>
-      <>{modalSelectWallet()}</>
+      {/* TODO: Burn multi coin */}
+      {/* <>{modalSelectWallet()}</>/ */}
     </Modal>
   );
 };
