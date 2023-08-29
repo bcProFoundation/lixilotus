@@ -6,11 +6,13 @@ import { AuthorizationContext } from './authorizationProvider';
 import { WalletContext } from './walletProvider';
 import { ServiceWorkerContext } from './serviceWorkerProvider';
 import { SocketContext } from './socketContext';
+import { FeatureToggleContext } from './featureToggleContext';
 
 export const callConfig = createCaller({
   serviceWorkerContext: () => useContext(ServiceWorkerContext),
   authenticationContext: () => useContext(AuthenticationContext),
   authorizationContext: () => useContext(AuthorizationContext),
   walletContext: () => useContext(WalletContext),
-  socketContext: () => useContext(SocketContext)
+  socketContext: () => useContext(SocketContext),
+  featureContext: () => useContext(FeatureToggleContext)
 });

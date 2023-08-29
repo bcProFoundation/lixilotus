@@ -860,3 +860,13 @@ model GiveTipMessage {
 
   @@map("give_tip_messsage")
 }
+
+model FeatureFlag {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  enabled   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@map("feature_flag")
+}

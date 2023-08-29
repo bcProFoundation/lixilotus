@@ -27,6 +27,7 @@ import { CloudflareModule } from '../../common/modules/cloudflare/cloudflare.mod
 import { MessageModule } from '../message/message.module';
 import { BurnFanoutProcessor } from './burn/burn-fanout.processor';
 import { AccountModule } from '../account/account.module';
+import { FeatureFlagController } from './feature-flag/feature-flag.controller';
 const baseCorsConfig = cors({
   origin: process.env.BASE_URL ?? ''
 });
@@ -58,7 +59,8 @@ const baseCorsConfig = cors({
     UploadFilesController,
     CountryController,
     BurnController,
-    CategoryController
+    CategoryController,
+    FeatureFlagController
   ],
   providers: [
     LixiService,

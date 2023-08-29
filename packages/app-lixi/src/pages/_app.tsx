@@ -14,7 +14,8 @@ import {
   ServiceWorkerProvider,
   WalletProvider,
   callConfig,
-  SocketProvider
+  SocketProvider,
+  FeatureToggleProvider
 } from '@context/index';
 import { wrapper } from '@store/store';
 import { ConfigProvider } from 'antd';
@@ -23,6 +24,8 @@ import { NextSeo } from 'next-seo';
 import OutsideCallConsumer from 'react-outside-call';
 import lightTheme from 'src/styles/themes/lightTheme';
 import { stripHtml } from 'string-strip-html';
+import { useEffect, useState } from 'react';
+import axiosClient from 'src/utils/axiosClient';
 
 const PersistGateServer = (props: any) => {
   return props.children;
@@ -42,6 +45,7 @@ const getSitename = (postAsString): string => {
 
 const LixiApp = ({ Component, ...rest }) => {
   const { store, props } = wrapper.useWrappedStore(rest);
+  const [enabledFeatures, setEnabledFeatures] = useState<string[]>([]);
 
   const Layout = Component.Layout || MainLayout;
   const defaultImage = `${process.env.NEXT_PUBLIC_LIXI_URL}images/lixilotus-logo.svg`;
@@ -51,6 +55,20 @@ const LixiApp = ({ Component, ...rest }) => {
   const canonicalUrl = postId ? process.env.NEXT_PUBLIC_LIXI_URL + `post/${postId}` : process.env.NEXT_PUBLIC_LIXI_URL;
   const description = postId ? getDescription(postAsString) : 'Your Attention Your Money!';
   const sitename = postId ? getSitename(postAsString) : 'lixi.social';
+
+  //We need to fetch feature here because we need to get feature before rendering the page
+  const getFeatures = async () => {
+    const { data } = await axiosClient.get<string[]>('/api/features').catch(e => {
+      console.error(e);
+      return { data: [] };
+    });
+
+    setEnabledFeatures(data);
+  };
+
+  useEffect(() => {
+    getFeatures();
+  }, []);
 
   return (
     <Provider store={store}>
@@ -89,23 +107,25 @@ const LixiApp = ({ Component, ...rest }) => {
         }}
       />
       <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
-        <SocketProvider>
-          <ServiceWorkerProvider>
-            <WalletProvider>
-              <AuthenticationProvider>
-                <AuthorizationProvider>
-                  <OutsideCallConsumer config={callConfig}>
-                    <Layout className="lixi-app-layout">
-                      <ConnectedRouter>
-                        <Component {...props.pageProps} />
-                      </ConnectedRouter>
-                    </Layout>
-                  </OutsideCallConsumer>
-                </AuthorizationProvider>
-              </AuthenticationProvider>
-            </WalletProvider>
-          </ServiceWorkerProvider>
-        </SocketProvider>
+        <FeatureToggleProvider enabledFeatures={enabledFeatures}>
+          <SocketProvider>
+            <ServiceWorkerProvider>
+              <WalletProvider>
+                <AuthenticationProvider>
+                  <AuthorizationProvider>
+                    <OutsideCallConsumer config={callConfig}>
+                      <Layout className="lixi-app-layout">
+                        <ConnectedRouter>
+                          <Component {...props.pageProps} />
+                        </ConnectedRouter>
+                      </Layout>
+                    </OutsideCallConsumer>
+                  </AuthorizationProvider>
+                </AuthenticationProvider>
+              </WalletProvider>
+            </ServiceWorkerProvider>
+          </SocketProvider>
+        </FeatureToggleProvider>
       </PersistGate>
     </Provider>
   );

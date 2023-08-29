@@ -359,7 +359,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const walletHasUpdated = useAppSelector(getWalletHasUpdated);
 
   const slug: string = _.isArray(router?.query?.slug) ? router?.query?.slug[0] : router?.query?.slug;
-  const { currentData: currentDataPageQuery } = usePageQuery({ id: slug });
+  const { currentData: currentDataPageQuery } = usePageQuery({ id: slug }, { skip: !slug });
   const { currentData: currentDataGetAccount } = useGetAccountByAddressQuery(
     {
       address: slug

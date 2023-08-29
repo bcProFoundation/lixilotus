@@ -1,0 +1,6 @@
+{
+  "messages": {
+    "featureFlagNotExist": "The feature does not exist in the database.",
+    "couldNotFindFeature": "Could not found the feature in the database."
+  }
+}
