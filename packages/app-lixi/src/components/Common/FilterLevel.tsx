@@ -1,11 +1,11 @@
-import _ from 'lodash';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { saveLevelFilter } from '@store/settings/actions';
 import { getLevelFilter } from '@store/settings/selectors';
 import 'animate.css';
-import { Button, Input, Radio, RadioChangeEvent, Space } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, Input } from 'antd';
+import _ from 'lodash';
+import { useEffect } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 
@@ -44,7 +44,7 @@ const FilterStyle = styled.div`
       }
     }
     .ant-input-disabled {
-      width: 70px;
+      width: 110px;
       color: #000;
       cursor: pointer;
       border: 0px;
@@ -61,31 +61,64 @@ export const FilterLevel = () => {
   const dispatch = useAppDispatch();
   const level = useAppSelector(getLevelFilter);
 
+  let levelDescription = intl.get('general.levelBalanced');
+  if (level === 1) {
+    levelDescription = intl.get('general.levelOnlyTopPosts');
+  } else if (level === 2) {
+    levelDescription = intl.get('general.levelLessFollowing');
+  } else if (level === 3) {
+    levelDescription = intl.get('general.levelBalanced');
+  } else if (level === 4) {
+    levelDescription = intl.get('general.levelMoreFollowing');
+  } else if (level === 5) {
+    levelDescription = intl.get('general.levelMostlyFollowing');
+  }
+
   useEffect(() => {
     if (_.isNil(level) || level <= 0 || level > 5) {
       dispatch(saveLevelFilter(3));
     }
   }, [level]);
 
-  const [value, setValue] = useState(level);
+  const handleUpDownBtn = (isUp: boolean) => {
+    let newLevel = level;
+    if (isUp) {
+      if (level >= 5) {
+        newLevel = 5;
+      } else {
+        newLevel += 1;
+      }
+    } else {
+      if (newLevel <= 1) {
+        newLevel = 1;
+      } else {
+        newLevel -= 1;
+      }
+    }
 
-  const onChange = (e: RadioChangeEvent) => {
-    dispatch(saveLevelFilter(e.target.value));
+    dispatch(saveLevelFilter(newLevel));
   };
 
   return (
     <>
       <FilterContainer>
         <FilterStyle>
-          <Radio.Group onChange={onChange} defaultValue={level}>
-            <Space direction="vertical">
-              <Radio value={5}>Mostly Following</Radio>
-              <Radio value={4}>More Following</Radio>
-              <Radio value={3}>Balanced</Radio>
-              <Radio value={2}>Less Following</Radio>
-              <Radio value={1}>Only top posts</Radio>
-            </Space>
-          </Radio.Group>
+          <p>{intl.get('general.level')}: </p>
+          <Input.Group>
+            <Button
+              className="down-value"
+              icon={<MinusOutlined />}
+              onClick={() => handleUpDownBtn(false)}
+              disabled={level === 1}
+            />
+            <Input disabled value={levelDescription} />
+            <Button
+              className="up-value"
+              icon={<PlusOutlined />}
+              onClick={() => handleUpDownBtn(true)}
+              disabled={level === 5}
+            />
+          </Input.Group>
         </FilterStyle>
       </FilterContainer>
     </>

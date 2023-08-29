@@ -98,7 +98,6 @@ export class UploadFilesController {
 
       return resultImage;
     } catch (err) {
-      console.log(err);
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
@@ -181,7 +180,6 @@ export class UploadFilesController {
 
       return resultImages;
     } catch (err) {
-      console.log(err);
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {

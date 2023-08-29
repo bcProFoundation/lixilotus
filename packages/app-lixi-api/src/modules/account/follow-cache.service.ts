@@ -18,7 +18,6 @@ export class FollowCacheService {
     });
     const promises = [];
     for (const follower of followers) {
-      console.log('key', key);
       promises.push(this.redis.zadd(key, follower.createdAt.getTime(), follower.followerAccountId));
     }
     return Promise.all(promises);

@@ -206,15 +206,24 @@ export class TimelineResolver {
     }
     await pipeline.exec();
 
+    const edges = timelineItems.map((item, index) => {
+      return {
+        cursor: item.id,
+        node: timelineItems[index]
+      };
+    });
+    const firstEdge = edges[0];
+    const lastEdge = edges[edges.length - 1];
+    const lastTimelineIdCursor = timelineIds.edges[timelineIds.edges.length - 1].cursor;
     const result = {
       totalCount: timelineIds.totalCount,
-      pageInfo: timelineIds.pageInfo,
-      edges: timelineIds.edges.map((item, index) => {
-        return {
-          cursor: item.cursor,
-          node: timelineItems[index]
-        };
-      })
+      pageInfo: {
+        startCursor: firstEdge ? firstEdge.cursor : undefined,
+        endCursor: lastEdge ? lastEdge.cursor : undefined,
+        hasPreviousPage: true,
+        hasNextPage: lastEdge.cursor === lastTimelineIdCursor
+      },
+      edges
     };
     return result;
   }
