@@ -7,7 +7,7 @@ import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 import { useGetAccountByAddressQuery } from '@store/account/accounts.api';
 import { LoadingOutlined } from '@ant-design/icons';
 
-import { Footer } from '@bcpros/lixi-components/components';
+import Footer from '@components/Footer/Footer';
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 import Sidebar from '@containers/Sidebar';
 import DummySidebar from '@containers/Sidebar/DummySidebar';

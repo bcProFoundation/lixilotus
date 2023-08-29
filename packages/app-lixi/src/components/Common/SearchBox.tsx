@@ -1,5 +1,5 @@
 import { SearchOutlined, CloseCircleOutlined, CloseOutlined, HistoryOutlined } from '@ant-design/icons';
-import { Input, Popover, Tag } from 'antd';
+import { Input, Popover, Switch, Tag } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
@@ -20,8 +20,14 @@ import {
   removeRecentHashtagAtPages,
   removeRecentHashtagAtToken
 } from '@store/account';
-import { getCurrentThemes } from '@store/settings';
+import { getCurrentThemes, saveTopPostsFilter } from '@store/settings';
 import { ReactSVG } from 'react-svg';
+import { ButtonTopbar, PopoverStyled, TitleFilterStyled } from '@containers/Topbar';
+import { FilterBurnt } from './FilterBurn';
+import { FilterLevel } from './FilterLevel';
+import { Icon } from '@ant-design/compatible';
+import FollowSvg from '@assets/icons/follow.svg';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
 
 const Container = styled.div`
   display: flex;
@@ -29,6 +35,17 @@ const Container = styled.div`
   flex: 1;
   @media (max-width: 576px) {
     flex-direction: column;
+  }
+  .container-search-w-filter {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    width: 100%;
+    column-gap: 8px;
+    @media (min-width: 960px) {
+      .filter-btn-in-search {
+        display: none;
+      }
+    }
   }
 `;
 
@@ -155,6 +172,8 @@ const SearchBox = () => {
   const numberOfTags = 3;
   const dispatch = useAppDispatch();
   const currentTheme = useAppSelector(getCurrentThemes);
+  const currentPathName = router.pathname ?? '';
+  const pathDirection = currentPathName.split('/', 2);
 
   const { control, getValues, setValue } = useForm({
     defaultValues: {
@@ -409,50 +428,109 @@ const SearchBox = () => {
     );
   };
 
+  const handleMenuPosts = (checked: boolean) => {
+    dispatch(saveTopPostsFilter(checked));
+  };
+
+  const filterType = () => {
+    switch (pathDirection[1]) {
+      case '':
+        return FilterType.PostsHome;
+      case 'page':
+        return FilterType.PostsPage;
+      case 'profile':
+        return FilterType.PostsProfile;
+      case 'token':
+        return FilterType.PostsToken;
+
+      default:
+        return FilterType.PostsHome;
+    }
+  };
+
+  const contentFilterBurn = (
+    <>
+      {router?.pathname && router?.pathname != '/' ? (
+        <PopoverStyled>
+          <TitleFilterStyled>
+            <p className="follow-title">
+              {intl.get('general.postFilter')} <Icon component={() => <FollowSvg />} />
+            </p>
+            <Switch
+              checkedChildren={intl.get('general.on')}
+              unCheckedChildren={intl.get('general.off')}
+              defaultChecked={true}
+              onChange={handleMenuPosts}
+            />
+          </TitleFilterStyled>
+          <FilterBurnt filterForType={filterType()} />
+        </PopoverStyled>
+      ) : (
+        <PopoverStyled>
+          <FilterLevel />
+        </PopoverStyled>
+      )}
+    </>
+  );
+
   const recentContent = recentComponent;
 
   return (
     <Container className="search-container">
-      <Popover
-        overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} popover-recent-search`}
-        trigger="click"
-        arrow={false}
-        content={recentContent}
-        placement="bottomLeft"
-      >
-        <SearchBoxContainer className="searchbox-container">
-          <div className="btn-search">
-            <ReactSVG className="react-svg-custom" wrapper="span" src="/images/ico-search.svg" />
-          </div>
-          <TagContainer>
-            {tags.slice(0, numberOfTags).map(tag => (
-              <StyledTag closable onClose={() => handleTagClose(tag)} key={tag} color="magenta">
-                {tag}
-              </StyledTag>
-            ))}
-            {tags.length > numberOfTags && <StyledTag color="magenta">{`+${tags.length - numberOfTags}`}</StyledTag>}
-          </TagContainer>
-          <Controller
-            name="search"
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                style={{ paddingLeft: '0px' }}
-                bordered={false}
-                onChange={onChange}
-                onBlur={onBlur}
-                value={value}
-                placeholder="Search Lixi"
-                onKeyDown={onPressKeydown}
-                onPressEnter={onPressEnter}
-              />
+      <div className="container-search-w-filter">
+        <Popover
+          overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} popover-recent-search`}
+          trigger="click"
+          arrow={false}
+          content={recentContent}
+          placement="bottomLeft"
+        >
+          <SearchBoxContainer className="searchbox-container">
+            <div className="btn-search">
+              <ReactSVG className="react-svg-custom" wrapper="span" src="/images/ico-search.svg" />
+            </div>
+            <TagContainer>
+              {tags.slice(0, numberOfTags).map(tag => (
+                <StyledTag closable onClose={() => handleTagClose(tag)} key={tag} color="magenta">
+                  {tag}
+                </StyledTag>
+              ))}
+              {tags.length > numberOfTags && <StyledTag color="magenta">{`+${tags.length - numberOfTags}`}</StyledTag>}
+            </TagContainer>
+            <Controller
+              name="search"
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  style={{ paddingLeft: '0px' }}
+                  bordered={false}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  placeholder="Search Lixi"
+                  onKeyDown={onPressKeydown}
+                  onPressEnter={onPressEnter}
+                />
+              )}
+            />
+            {(getValues('search') || tags.length > 0) && (
+              <CloseCircleOutlined style={{ fontSize: '18px', color: '#7342cc' }} onClick={() => onDeleteQuery()} />
             )}
+          </SearchBoxContainer>
+        </Popover>
+        <Popover
+          overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} filter-btn-w-search`}
+          arrow={false}
+          content={contentFilterBurn}
+          placement="bottom"
+        >
+          <ButtonTopbar
+            className="btn-topbar filter-btn-in-search"
+            type="text"
+            icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-filter.svg'} />}
           />
-          {(getValues('search') || tags.length > 0) && (
-            <CloseCircleOutlined style={{ fontSize: '18px', color: '#7342cc' }} onClick={() => onDeleteQuery()} />
-          )}
-        </SearchBoxContainer>
-      </Popover>
+        </Popover>
+      </div>
       <MobileTagContainer style={{ margin: tags.length > 0 ? '10px' : '0px' }}>
         {tags.map(tag => (
           <StyledTag closable onClose={() => handleTagClose(tag)} key={tag} color="magenta">
