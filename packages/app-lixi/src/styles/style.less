@@ -83,7 +83,6 @@ code {
 }
 
 .ant-layout {
-
   // font-family: var(--font-family-primary);
   & * {
     // font-family: var(--font-family-primary);
@@ -1073,7 +1072,6 @@ code {
 
   .ant-form-item-control {
     .ant-form-item-control-input-content {
-
       input,
       textarea {
         padding: 8px 1rem;
@@ -1386,7 +1384,7 @@ code {
     }
   }
 
-  .ant-popover-arrow>.ant-popover-arrow-content::before {
+  .ant-popover-arrow > .ant-popover-arrow-content::before {
     background: var(--color-primary);
   }
 
@@ -1551,7 +1549,6 @@ code {
 }
 
 .ant-modal-dark {
-
   h1,
   h2,
   h3,
@@ -1784,7 +1781,7 @@ code {
     }
 
     .images-post {
-      .react-photo-gallery--gallery>div {
+      .react-photo-gallery--gallery > div {
         background: var(--bg-color-dark-item) !important;
       }
 
@@ -1847,12 +1844,17 @@ code {
 }
 
 .popover-dark {
-
   h1,
   h2,
   h3,
   p {
     color: var(--text-color-primary-dark) !important;
+  }
+
+  .ant-radio-wrapper {
+    span {
+      color: var(--text-color-on-dark) !important;
+    }
   }
 
   .ant-btn-primary {
@@ -2056,14 +2058,15 @@ code {
   }
 
   .ant-skeleton.ant-skeleton-active {
-
     .ant-skeleton-avatar,
     .ant-skeleton-title,
     li {
-      background: linear-gradient(90deg,
-          rgba(48, 48, 49, 0.7819721638655462) 25%,
-          rgba(48, 48, 49, 0.8239889705882353) 46%,
-          rgba(48, 48, 49, 1) 68%);
+      background: linear-gradient(
+        90deg,
+        rgba(48, 48, 49, 0.7819721638655462) 25%,
+        rgba(48, 48, 49, 0.8239889705882353) 46%,
+        rgba(48, 48, 49, 1) 68%
+      );
       background-size: 400% 100% !important;
     }
   }
@@ -2115,7 +2118,6 @@ code {
     color: var(--text-color-on-dark);
 
     .ant-table-thead {
-
       th,
       td {
         background: #1e1e1e;
@@ -2138,7 +2140,7 @@ code {
     }
 
     tr.ant-table-row:hover {
-      >td {
+      > td {
         background: #303031;
       }
     }
@@ -2147,7 +2149,7 @@ code {
       background: var(--bg-color-dark-item);
     }
 
-    .ant-table-tbody>tr.ant-table-placeholder:hover>td {
+    .ant-table-tbody > tr.ant-table-placeholder:hover > td {
       background: var(--bg-color-dark-item) !important;
     }
 
@@ -2381,7 +2383,7 @@ code {
 
   //Footer
   .footer-component {
-    background-color: rgba(30, 30, 30, 0.85) !important;
+    background: var(--bg-color-dark-item) !important;
     border-color: var(--border-color-dark-base) !important;
 
     button {
@@ -2592,7 +2594,7 @@ code {
     .images-post {
       background: var(--bg-color-dark-item);
 
-      .react-photo-gallery--gallery>div {
+      .react-photo-gallery--gallery > div {
         background: var(--bg-color-dark-item) !important;
       }
 
@@ -2703,7 +2705,7 @@ code {
 
       .distance {
         .ant-space-item {
-          >div {
+          > div {
             color: var(--text-color-primary-dark) !important;
           }
 
@@ -2852,7 +2854,6 @@ code {
 
   //Page Message
   .page-message {
-
     div,
     p {
       border-color: var(--border-color-dark-base);
@@ -2998,7 +2999,6 @@ code {
   }
 
   .description-translate {
-
     p,
     span,
     div {
@@ -3007,7 +3007,7 @@ code {
   }
 
   .images-post {
-    .react-photo-gallery--gallery>div {
+    .react-photo-gallery--gallery > div {
       background: var(--bg-color-dark-item) !important;
     }
   }
@@ -3108,6 +3108,5 @@ code {
         border-color: var(--border-color-dark-base) !important;
       }
     }
-
   }
 }

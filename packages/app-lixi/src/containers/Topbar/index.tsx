@@ -70,7 +70,7 @@ const PathDirection = styled.div`
 
   .menu-mobile {
     display: none;
-    margin: 0 10px;
+    margin-right: 8px;
     @media (max-width: 960px) {
       display: block;
     }
@@ -94,6 +94,7 @@ const PathDirection = styled.div`
     box-orient: vertical;
     -webkit-box-orient: vertical;
     text-align: left;
+    word-break: break-all;
   }
 
   .checkbox {
@@ -214,7 +215,13 @@ const AccountBox = styled.div`
   }
 `;
 
-const PopoverStyled = styled.div`
+const StyledImagePathDirection = styled.img`
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+`;
+
+export const PopoverStyled = styled.div`
   .social-menu,
   .social-feature {
     width: 100%;
@@ -273,7 +280,7 @@ const PopoverStyled = styled.div`
   }
 `;
 
-const TitleFilterStyled = styled.span`
+export const TitleFilterStyled = styled.span`
   display: flex;
   justify-content: space-between;
   .follow-title {
@@ -318,7 +325,7 @@ const StyledHeader = styled(Header)`
   }
 `;
 
-const ButtonTopbar = styled(Button)`
+export const ButtonTopbar = styled(Button)`
   width: 44px !important;
   height: 44px !important;
   background: var(--bg-color-light-theme);
@@ -328,6 +335,11 @@ const ButtonTopbar = styled(Button)`
   align-self: center;
   align-items: center;
   justify-content: center;
+  &.filter-btn {
+    @media (max-width: 960px) {
+      display: none;
+    }
+  }
 `;
 
 // eslint-disable-next-line react/display-name
@@ -382,6 +394,16 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       pathName = pathDirection[1];
     }
     return pathName;
+  }, [currentDataPageQuery, currentDataGetAccount, router]);
+
+  const handleImagePathDirection = useMemo(() => {
+    let pathImageUrl = '';
+    if (router.pathname === '/page/[slug]') {
+      pathImageUrl = currentDataPageQuery?.page?.avatar || '';
+    } else if (router.pathname === '/profile/[slug]') {
+      pathImageUrl = currentDataGetAccount?.getAccountByAddress?.avatar || '';
+    }
+    return pathImageUrl;
   }, [currentDataPageQuery, currentDataGetAccount, router]);
 
   useEffect(() => {
@@ -545,9 +567,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
                   {balanceAccount(selectedAccount)} {currency.ticker}
                 </span>
               ) : (
-                <React.Fragment>
+                <div>
                   <SyncOutlined spin /> {currency.ticker}
-                </React.Fragment>
+                </div>
               )}
 
               <Link href="/send">
@@ -707,17 +729,42 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           <img className="navigate-back-btn" src="/images/ico-back-topbar.svg" alt="" onClick={handleNavigateBack} />
         )}
         {(currentPathName === '/' || currentPathName === '/page/[slug]') && (
-          <img className="menu-mobile" src="/images/ico-list-bullet_2.svg" alt="" onClick={handleMenuClick} />
+          <img
+            className="menu-mobile"
+            style={{ marginLeft: currentPathName === '/page/[slug]' ? '0' : '10px' }}
+            src="/images/ico-list-bullet_2.svg"
+            alt=""
+            onClick={handleMenuClick}
+          />
         )}
         {(currentPathName == '/' || currentPathName == '/page-message') && (
           <picture>
-            <img
-              className={`${isMobile ? '' : 'logo-app-desktop'} logo-app`}
-              height={'64px'}
-              src={`${isMobile ? '/images/lixilotus-logo.svg' : '/images/lixilotus-text.svg'}`}
-              alt="lixilotus-logo"
-              onClick={() => handleIconClick('/')}
-            />
+            {isMobile ? (
+              <>
+                <img
+                  className={'logo-app'}
+                  height={'64px'}
+                  src={'/images/lixilotus-logo.svg'}
+                  alt="lixilotus-logo"
+                  onClick={() => handleIconClick('/')}
+                />
+                <img
+                  className={'logo-app'}
+                  height={'64px'}
+                  src={'/images/lixilotus-text.svg'}
+                  alt="lixilotus-logo"
+                  onClick={() => handleIconClick('/')}
+                />
+              </>
+            ) : (
+              <img
+                className={'logo-app-desktop logo-app'}
+                height={'64px'}
+                src={'/images/lixilotus-text.svg'}
+                alt="lixilotus-logo"
+                onClick={() => handleIconClick('/')}
+              />
+            )}
           </picture>
         )}
         {/* <div
@@ -733,9 +780,23 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
           </div>
         </div> */}
         {pathDirection[1] != '' && currentPathName != '/page-message' && (
-          <h3 style={{ marginLeft: currentPathName === '/page/[slug]' ? '8px' : '0' }} className="path-direction-text">
-            {handlePathDirection}
-          </h3>
+          <>
+            {handleImagePathDirection && (
+              <StyledImagePathDirection
+                style={{ borderRadius: currentPathName === '/page/[slug]' ? 'var(--border-radius-primary)' : '50%' }}
+                src={handleImagePathDirection}
+                alt=""
+              />
+            )}
+            <h3
+              style={{
+                marginLeft: currentPathName === '/page/[slug]' || currentPathName === '/profile/[slug]' ? '8px' : '0'
+              }}
+              className="path-direction-text"
+            >
+              {handlePathDirection}
+            </h3>
+          </>
         )}
       </PathDirection>
       <div className="filter-bar">
@@ -764,13 +825,13 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-message-heart-circle-topbar.svg'} />}
           />
           <Popover
-            overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} filter-btn`}
+            overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''}`}
             arrow={false}
             content={contentFilterBurn}
             placement="bottom"
           >
             <ButtonTopbar
-              className="btn-topbar"
+              className="btn-topbar filter-btn"
               type="text"
               icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-filter.svg'} />}
             />
@@ -803,7 +864,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
             open={openMoreOption}
           >
             <ButtonTopbar
-              className="btn-topbar"
+              className="btn-topbar filter-btn"
               type="text"
               icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-category.svg'} />}
             />
@@ -830,9 +891,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
                     {balanceAccount(selectedAccount)} <span className="unit">{currency.ticker}</span>
                   </span>
                 ) : (
-                  <React.Fragment>
+                  <span>
                     <SyncOutlined spin /> <span className="unit">{currency.ticker}</span>
-                  </React.Fragment>
+                  </span>
                 )}
               </p>
             </div>
@@ -887,12 +948,12 @@ const SpaceStyled = styled(Space)`
         &.account-balance {
           font-size: 12px;
           color: #a9a8a9;
-          .unit {
-            font-size: 9px;
-            font-weight: 600;
-            color: var(--color-primary);
-          }
         }
+      }
+      .unit {
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--color-primary);
       }
     }
 
@@ -943,7 +1004,7 @@ const StyledTopbar = styled(Topbar)`
   }
 
   @media (max-width: 960px) {
-    grid-template-columns: auto auto;
+    grid-template-columns: 1fr auto;
     .action-bar-header {
       .home-btn {
         display: none !important;

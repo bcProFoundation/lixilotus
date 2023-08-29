@@ -753,7 +753,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     <>
       <StyledContainerPostDetail className="post-detail" style={{ paddingBottom: isMobileView ? '3rem' : '1rem' }}>
         <NavBarHeader onClick={() => router.back()}>
-          <LeftOutlined style={{ marginRight: '0.5rem' }} />
           <InfoCardUser
             imgUrl={post.postAccount.avatar ? post.postAccount.avatar : ''}
             name={post.postAccount.name}
