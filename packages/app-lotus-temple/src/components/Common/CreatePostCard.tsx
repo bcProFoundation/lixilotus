@@ -124,7 +124,7 @@ const UserCreate = styled.div`
 type CreatePostCardProp = {
   pageId?: string;
   tokenPrimaryId?: string;
-  userId?: string;
+  userId?: number;
   refetch?: () => void;
 };
 

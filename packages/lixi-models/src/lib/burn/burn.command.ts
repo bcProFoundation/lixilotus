@@ -83,7 +83,7 @@ export class BurnExtraArguments {
 
   postId?: string;
 
-  userId?: string;
+  userId?: number;
 
   hashtagId?: string;
 

@@ -87,7 +87,7 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
     isFetching: followersIsFetching
   } = useInfiniteFollowersByFollowingQuery(
     {
-      first: 10,
+      first: 20,
       followingAccountId: props.accountId
     },
     false
@@ -108,7 +108,7 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
     isFetching: followingsIsFetching
   } = useInfiniteFollowingsByFollowerQuery(
     {
-      first: 10,
+      first: 20,
       followerAccountId: props.accountId
     },
     false
@@ -129,7 +129,7 @@ export const FollowModal: React.FC<FollowModalProps> = (props: FollowModalProps)
     isFetching: followingPagesIsFetching
   } = useInfinitePagesByFollowerIdQuery(
     {
-      first: 10,
+      first: 20,
       id: props.accountId
     },
     false

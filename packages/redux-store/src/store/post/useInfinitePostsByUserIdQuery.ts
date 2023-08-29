@@ -15,13 +15,13 @@ const postsAdapter = createEntityAdapter<PostQuery['post']>({
 
 const { selectAll, selectEntities, selectIds, selectTotal } = postsAdapter.getSelectors();
 
-interface PostListByIdParams extends PaginationArgs {
+interface PostListByUserIdParams extends PaginationArgs {
   orderBy?: PostOrder;
-  id?: string;
+  id?: number;
 }
 
 export function useInfinitePostsByUserIdQuery(
-  params: PostListByIdParams,
+  params: PostListByUserIdParams,
   fetchAll = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const baseResult = usePostsByUserIdQuery(params);

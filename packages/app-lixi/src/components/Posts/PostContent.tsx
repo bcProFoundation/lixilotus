@@ -38,7 +38,7 @@ const PostContent = ({ post, showTranslation, currentLocale }) => {
       let n1 = 10,
         n2 = 10,
         next = 0;
-        lineNum = 6;
+      lineNum = 6;
 
       while (postScore >= n2 && lineNum < 21) {
         lineNum++;

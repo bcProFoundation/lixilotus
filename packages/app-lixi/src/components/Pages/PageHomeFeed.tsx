@@ -274,7 +274,7 @@ const PageHome = () => {
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePagesQuery(
     {
-      first: 10,
+      first: 20,
       orderBy: [
         {
           direction: OrderDirection.Desc,
@@ -296,7 +296,7 @@ const PageHome = () => {
     isFetching: usePageIsFetching
   } = useInfinitePagesByUserIdQuery(
     {
-      first: 10,
+      first: 20,
       id: selectedAccountId
     },
     false
@@ -309,7 +309,7 @@ const PageHome = () => {
     isFetching: pageFollowingsIsFetching
   } = useInfinitePagesByFollowerIdQuery(
     {
-      first: 10,
+      first: 20,
       id: selectedAccountId,
       pagesOnly: true
     },

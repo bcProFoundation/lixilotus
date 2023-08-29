@@ -682,7 +682,7 @@ const PageMessage = () => {
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } =
     useInfinitePageMessageSessionByAccountId(
       {
-        first: 10,
+        first: 20,
         id: selectedAccount?.id
       },
       false

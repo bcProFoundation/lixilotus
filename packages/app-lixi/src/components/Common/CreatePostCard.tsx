@@ -185,7 +185,7 @@ const SpaceIconNoneHover = styled(Space)`
 type CreatePostCardProp = {
   page?: PageItem;
   tokenPrimaryId?: string;
-  userId?: string;
+  userId?: number;
   refetch?: () => void;
   hashtags?: string[]; //Multiple hashtag for search function
   hashtagId?: string; // hashtagId here for the url /hashtag/{hashtag}

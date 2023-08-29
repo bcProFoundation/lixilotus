@@ -853,7 +853,7 @@ type Query {
     tokenId: String
   ): PostResponse!
   allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
-  allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allPostsByUserId(after: String, before: String, first: Int, id: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allTemple(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: TempleOrder, skip: Int): TempleConnection!
   allTempleBySearch(
     """Paginate after opaque cursor"""

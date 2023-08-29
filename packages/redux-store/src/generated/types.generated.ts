@@ -1222,7 +1222,7 @@ export type QueryAllPostsByUserIdArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
-  id?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;

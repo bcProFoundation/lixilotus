@@ -223,7 +223,7 @@ type PostListItemProps = {
   index: number;
   item: PostItem;
   searchValue?: string;
-  handleBurnForPost?: (isUpVote: boolean, post: any) => Promise<void>;
+  handleBurnForPost?: (isUpVote: boolean, post: PostItem) => Promise<void>;
 };
 
 const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListItemProps) => {

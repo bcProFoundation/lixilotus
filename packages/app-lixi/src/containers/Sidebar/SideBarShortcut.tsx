@@ -779,7 +779,7 @@ const SidebarShortcut = () => {
 
   let { data: postsOfPage } = useInfinitePostsByPageIdQuery(
     {
-      first: 10,
+      first: 20,
       minBurnFilter: filterValue ?? 1,
       accountId: selectedAccountId ?? undefined,
       orderBy: [
@@ -799,7 +799,7 @@ const SidebarShortcut = () => {
 
   const { data: hashtagData } = useInfiniteHashtagByPageQuery(
     {
-      first: 10,
+      first: 20,
       orderBy: {
         direction: OrderDirection.Desc,
         field: HashtagOrderField.DanaBurnScore

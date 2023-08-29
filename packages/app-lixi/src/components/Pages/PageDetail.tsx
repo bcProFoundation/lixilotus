@@ -563,7 +563,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
-      first: 10,
+      first: 20,
       minBurnFilter: filterValue ?? 1,
       accountId: selectedAccountId ?? undefined,
       orderBy: [

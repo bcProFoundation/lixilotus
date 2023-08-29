@@ -42,7 +42,7 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext } = useInfinitePagesQuery(
     {
-      first: 10
+      first: 20
     },
     false
   );

@@ -772,8 +772,8 @@ export class PostResolver {
   async allPostsByUserId(
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
-    @Args({ name: 'id', type: () => String, nullable: true })
-    id: string,
+    @Args({ name: 'id', type: () => Number, nullable: true })
+    id: number,
     @Args({
       name: 'orderBy',
       type: () => PostOrder,

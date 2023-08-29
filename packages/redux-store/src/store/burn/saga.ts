@@ -73,7 +73,7 @@ function* createTxHexSaga(action: PayloadAction<BurnQueueCommand>) {
     );
     const payload = {
       rawTxHex: rawTxHex,
-      minerFee: fromSatoshisToXpi(minerFee)
+      minerFee: _.toString(fromSatoshisToXpi(minerFee))
     };
 
     yield put({ type: returnTxHex.type, payload });
@@ -401,7 +401,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
           }
         )
       );
-      return yield put(
+      yield put(
         postApi.util.updateQueryData('PostsByPageId', { id: pageId, minBurnFilter: minBurnFilter }, draft => {
           const postToUpdateIndex = draft.allPostsByPageId.edges.findIndex(item => item.node.id === burnForId);
           const postToUpdate = draft.allPostsByPageId.edges[postToUpdateIndex];
@@ -424,6 +424,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
           }
         })
       );
+      break;
     case PostsQueryTag.PostsByTokenId:
       yield put(
         postApi.util.updateQueryData(
@@ -458,7 +459,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
           }
         )
       );
-      return yield put(
+      yield put(
         postApi.util.updateQueryData('PostsByTokenId', { id: tokenId, minBurnFilter: minBurnFilter }, draft => {
           const postToUpdateIndex = draft.allPostsByTokenId.edges.findIndex(item => item.node.id === burnForId);
           const postToUpdate = draft.allPostsByTokenId.edges[postToUpdateIndex];
@@ -481,32 +482,43 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
           }
         })
       );
+      break;
     case PostsQueryTag.PostsByUserId:
-      return yield put(
-        postApi.util.updateQueryData('PostsByUserId', { id: userId, minBurnFilter: minBurnFilter }, draft => {
-          const postToUpdateIndex = draft.allPostsByUserId.edges.findIndex(item => item.node.id === burnForId);
-          const postToUpdate = draft.allPostsByUserId.edges[postToUpdateIndex];
-          if (postToUpdateIndex >= 0) {
-            let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
-            let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
-            if (burnType == BurnType.Up) {
-              danaBurnUp = danaBurnUp + burnValue;
-            } else {
-              danaBurnDown = danaBurnDown + burnValue;
-            }
-            const danaBurnScore = danaBurnUp - danaBurnDown;
-            draft.allPostsByUserId.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
-            draft.allPostsByUserId.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
-            draft.allPostsByUserId.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
-            if (danaBurnScore < 0) {
-              draft.allPostsByUserId.edges.splice(postToUpdateIndex, 1);
-              draft.allPostsByUserId.totalCount = draft.allPostsByUserId.totalCount - 1;
+      yield put(
+        postApi.util.updateQueryData(
+          'PostsByUserId',
+          {
+            id: userId,
+            minBurnFilter: minBurnFilter
+          },
+          draft => {
+            const postToUpdateIndex = draft.allPostsByUserId.edges.findIndex(item => item.node.id === burnForId);
+            const postToUpdate = draft.allPostsByUserId.edges[postToUpdateIndex];
+            console.log(postToUpdateIndex);
+            console.log(postToUpdate);
+            if (postToUpdateIndex >= 0) {
+              let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
+              let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
+              if (burnType == BurnType.Up) {
+                danaBurnUp = danaBurnUp + burnValue;
+              } else {
+                danaBurnDown = danaBurnDown + burnValue;
+              }
+              const danaBurnScore = danaBurnUp - danaBurnDown;
+              draft.allPostsByUserId.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
+              draft.allPostsByUserId.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
+              draft.allPostsByUserId.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
+              if (danaBurnScore < 0) {
+                draft.allPostsByUserId.edges.splice(postToUpdateIndex, 1);
+                draft.allPostsByUserId.totalCount = draft.allPostsByUserId.totalCount - 1;
+              }
             }
           }
-        })
+        )
       );
+      break;
     default:
-      return yield put(
+      yield put(
         postApi.util.updateQueryData('OrphanPosts', { minBurnFilter: minBurnFilter }, draft => {
           const postToUpdateIndex = draft.allOrphanPosts.edges.findIndex(item => item.node.id === burnForId);
           const postToUpdate = draft.allOrphanPosts.edges[postToUpdateIndex];

@@ -57,7 +57,7 @@ const Hashtag = ({ hashtag, isMobile }: HashtagProps) => {
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } =
     useInfinitePostsByHashtagIdQuery(
       {
-        first: 10,
+        first: 20,
         minBurnFilter: filterValue ?? 1,
         orderBy: {
           direction: OrderDirection.Desc,

@@ -115,7 +115,7 @@ query PostsByUserId(
   $first: Int = 20
   $last: Int
   $orderBy: PostOrder
-  $id: String
+  $id: Int
   $skip: Int
   $minBurnFilter: Int
 ) {

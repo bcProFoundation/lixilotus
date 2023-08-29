@@ -26,15 +26,19 @@ import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@sto
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
 import { Avatar, Button, Skeleton, Space, Tabs } from 'antd';
 import BigNumber from 'bignumber.js';
+import _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
 import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { WithAuthorizeAction } from '../Common/Authorization/WithAuthorizeAction';
+import { PostsQuery } from '@store/post/posts.generated';
 
 export const URL_AVATAR_DEFAULT = '/images/default-avatar.jpg';
 export const URL_COVER_DEFAULT = '/images/default-avatar.jpg';
+
+type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
 const AuthorizedButton = WithAuthorizeAction(Button);
 
@@ -489,13 +493,13 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch, isLoading } =
     useInfinitePostsByUserIdQuery(
       {
-        first: 10,
+        first: 20,
         minBurnFilter: filterValue ?? 1,
         orderBy: {
           direction: OrderDirection.Desc,
           field: PostOrderField.UpdatedAt
         },
-        id: user.id.toString()
+        id: _.toSafeInteger(user.id)
       },
       false
     );
@@ -521,7 +525,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     }
   };
 
-  const handleBurnForPost = async (isUpVote: boolean, post: any) => {
+  const handleBurnForPost = async (isUpVote: boolean, post: PostItem) => {
     try {
       const burnValue = '1';
       if (failQueue.length > 0) dispatch(clearFailQueue());
@@ -559,7 +563,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
         tipToAddresses: tipToAddresses,
         extraArguments: {
           postQueryTag: PostsQueryTag.PostsByUserId,
-          userId: post.postAccount?.id as string,
+          userId: post.postAccount?.id,
           minBurnFilter: filterValue,
           level: level
         }

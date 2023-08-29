@@ -353,7 +353,7 @@ export type PostsByUserIdQueryVariables = Types.Exact<{
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
   orderBy?: Types.InputMaybe<Types.PostOrder>;
-  id?: Types.InputMaybe<Types.Scalars['String']>;
+  id?: Types.InputMaybe<Types.Scalars['Int']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
   minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
@@ -1414,7 +1414,7 @@ export const PostsByPageIdDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const PostsByUserIdDocument = `
-    query PostsByUserId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int, $minBurnFilter: Int) {
+    query PostsByUserId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: Int, $skip: Int, $minBurnFilter: Int) {
   allPostsByUserId(
     after: $after
     before: $before
