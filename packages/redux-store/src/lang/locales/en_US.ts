@@ -222,6 +222,7 @@ export default {
   'account.birthday': 'Birthday',
   'account.updateProfileSuccessful': 'Update the profile successful',
   'account.unableUpdateProfile': 'Unable to update the profile.',
+  'account.unableSetSecondLanguage': 'Unable to set secondary language',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Create new lixi',

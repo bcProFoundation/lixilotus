@@ -28,6 +28,7 @@ type Account {
   pageMessageSessions: [PageMessageSession!]
   pages: [Page!]
   publicKey: String
+  secondaryLanguage: String
   secret: String
 
   """Identifies the date and time when the object was last updated."""

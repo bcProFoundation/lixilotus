@@ -220,6 +220,7 @@ export default {
   'account.birthday': 'Sinh nhật',
   'account.updateProfileSuccessful': 'Hồ sơ đã được cập nhật thành công',
   'account.unableUpdateProfile': 'Không thể cập nhật hồ sơ.',
+  'account.unableSetSecondLanguage': 'Không thể chọn ngôn ngữ thứ 2',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',

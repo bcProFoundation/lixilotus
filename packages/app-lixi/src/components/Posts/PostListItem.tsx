@@ -21,6 +21,7 @@ import { PostListType } from '@bcpros/lixi-models/constants';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { LoadingIcon } from '@components/Layout/MainLayout';
 import { getCurrentLocale, getLanguageNotAutoTrans } from '@store/settings/selectors';
+import { getSelectedAccount } from '@store/account';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List
@@ -263,8 +264,8 @@ const PostListItem = ({
   const ref = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowDimensions();
   const currentLocale = useAppSelector(getCurrentLocale);
-  const languageNotAutoTrans = useAppSelector(getLanguageNotAutoTrans);
   const [showFeatureTrans, setShowFeatureTrans] = useState(true);
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   useEffect(() => {
     const mapImages = item.uploads.map(img => {
@@ -377,11 +378,14 @@ const PostListItem = ({
   };
 
   const toggleAutoTranslate = () => {
-    if (!_.isNil(post.originalLanguage)) {
+    if (!_.isNil(post.originalLanguage)) {      
       const doc = new DOMParser().parseFromString(post.content, 'text/html');
       const content = doc.querySelector('.EditorLexical_paragraph')?.textContent;
 
-      if (!post.originalLanguage.includes(languageNotAutoTrans) && post.originalLanguage !== currentLocale) {
+      if (
+        !post.originalLanguage.includes(selectedAccount?.secondaryLanguage) &&
+        post.originalLanguage !== currentLocale
+      ) {
         translatePost();
       }
       if (post.originalLanguage === currentLocale || content === '' || post.content.trim() === '') {

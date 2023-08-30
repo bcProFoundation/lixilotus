@@ -8,7 +8,8 @@ import {
   LocalUserAccount,
   LoginViaEmailCommand,
   RegisterViaEmailNoVerifiedCommand,
-  RenameAccountCommand
+  RenameAccountCommand,
+  SecondaryLanguageAccountCommand
 } from '@bcpros/lixi-models';
 import { callConfig } from '@context/index';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -76,7 +77,10 @@ import {
   silentLoginSuccess,
   verifyEmail,
   verifyEmailFailure,
-  verifyEmailSuccess
+  verifyEmailSuccess,
+  setSecondaryLanguageAccount,
+  setSecondaryLanguageAccountSuccess,
+  setSecondaryLanguageAccountFailure
 } from './actions';
 import { getAccountById, getSelectedAccount, getSelectedAccountId } from './selectors';
 import { saveClaimAddress } from '@store/claim';
@@ -641,6 +645,54 @@ function* verifyEmailFailureSaga(action: PayloadAction<any>) {
   yield put(hideLoading(loginViaEmail.type));
 }
 
+function* setSecondaryLanguageAccountSaga(action: PayloadAction<SecondaryLanguageAccountCommand>) {
+  try {
+    yield put(showLoading(setSecondaryLanguageAccount.type));
+    const { id, mnemonic, secondaryLanguage } = action.payload;
+    const patchAccountCommand: PatchAccountCommand = {
+      id,
+      mnemonic,
+      secondaryLanguage
+    };
+
+    const data = yield call(accountApi.patch, id, patchAccountCommand);
+    const account = data as Account;
+    yield put(setSecondaryLanguageAccountSuccess(account));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('account.unableSetSecondLanguage');
+    yield put(setSecondaryLanguageAccountFailure(message));
+  }
+}
+
+function* setSecondaryLanguageAccountSuccessSaga(action: PayloadAction<Account>) {
+  const { secondaryLanguage } = action.payload;
+  yield put(hideLoading(setSecondaryLanguageAccount.type));
+  yield put(
+    secondaryLanguage != null
+      ? showToast('success', {
+          message: intl.get('toast.success'),
+          description: intl.get('settings.selectLanguageNotTransSuccess', {
+            language: intl.get(`code.${secondaryLanguage}`)
+          })
+        })
+      : showToast('success', {
+          message: intl.get('toast.success'),
+          description: intl.get('settings.removeLanguageNotTrans'),
+          duration: 5
+        })
+  );
+}
+
+function* setSecondaryLanguageAccountFailureSaga(action: PayloadAction<string>) {
+  yield put(
+    showToast('error', {
+      message: intl.get('toast.error'),
+      description: intl.get('account.unableSetSecondLanguage')
+    })
+  );
+  yield put(hideLoading(setSecondaryLanguageAccount.type));
+}
+
 function* watchGenerateAccount() {
   yield takeLatest(generateAccount.type, generateAccountSaga);
 }
@@ -834,6 +886,18 @@ function* watchSilentLoginSuccess() {
   yield takeLatest(silentLoginSuccess.type, silentLoginSuccessSaga);
 }
 
+function* watchSetSecondaryLanguageAccount() {
+  yield takeLatest(setSecondaryLanguageAccount.type, setSecondaryLanguageAccountSaga);
+}
+
+function* watchSetSecondaryLanguageAccountSagaSuccess() {
+  yield takeLatest(setSecondaryLanguageAccountSuccess.type, setSecondaryLanguageAccountSuccessSaga);
+}
+
+function* watchSetSecondaryLanguageAccountSagaFailure() {
+  yield takeLatest(setSecondaryLanguageAccountFailure.type, setSecondaryLanguageAccountFailureSaga);
+}
+
 export default function* accountSaga() {
   yield all([
     fork(watchGenerateAccount),
@@ -877,6 +941,9 @@ export default function* accountSaga() {
     fork(watchVerifyEmailFailure),
     fork(watchTopFive),
     fork(watchTopFiveSuccess),
-    fork(watchTopFiveFailure)
+    fork(watchTopFiveFailure),
+    fork(watchSetSecondaryLanguageAccount),
+    fork(watchSetSecondaryLanguageAccountSagaSuccess),
+    fork(watchSetSecondaryLanguageAccountSagaFailure)
   ]);
 }
