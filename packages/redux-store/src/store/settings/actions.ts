@@ -21,3 +21,4 @@ export const saveWebPushNotifConfig = createAction<WebPushNotifConfig>('settings
 export const saveAllowPushNotification = createAction<boolean>('settings/saveAllowPushNotification');
 export const saveLevelFilter = createAction<number>('settings/saveLevelFilter');
 export const setLanguageNotAutoTrans = createAction<string>('settings/setLanguageNotAutotrans');
+export const changeCurrentLocale = createAction<string>('settings/changeCurrentLocale');

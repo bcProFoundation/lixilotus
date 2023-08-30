@@ -486,7 +486,7 @@ const Settings: React.FC = () => {
             <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.primaryLanguage')}</h2>
             <AntdFormWrapper>
               <LanguageSelectDropdown
-                defaultValue={currentLocale}
+                defaultValue={selectedAccount?.language}
                 onChange={(locale: any) => {
                   setLocale(locale);
                 }}
@@ -495,7 +495,6 @@ const Settings: React.FC = () => {
 
             <div className="second-language">
               <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.secondLanguage')}</h2>
-
               <AntdFormWrapper>
                 <LanguageNotAutoTransDropdown
                   defaultValue={languageNotAutoTrans}

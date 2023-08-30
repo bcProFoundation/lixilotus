@@ -28,6 +28,7 @@ export const selectAccount = createAction<number>('account/selectAccount');
 export const selectAccountSuccess = createAction<{
   account: Account;
   lixies: Lixi[];
+  previousAccount: Account;
 }>('account/selectAccountSuccess');
 export const selectAccountFailure = createAction<string>('account/selectAccountFailure');
 export const importAccount = createAction<string>('account/importAccount');
