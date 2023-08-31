@@ -526,15 +526,19 @@ const SpaceShortCutTopicItem = styled(Space)`
 `;
 
 export const transformCreatedAt = date => {
+  let dateFromNow = '';
   let dateFormated = '';
-  const today = new Date();
-  if (moment(date).isSame(today, 'day')) {
-    dateFormated = moment(date).format('HH:mm');
-  } else if (moment(date).isSame(today, 'week')) {
-    dateFormated = moment(date).format('ddd');
-  } else {
-    dateFormated = moment(date).format('DD/MM');
-  }
+  dateFromNow = moment(date).fromNow();
+  if (dateFromNow.includes('seconds') || dateFromNow === 'a minute ago') dateFormated = '1m';
+  if (dateFromNow.includes('minutes')) dateFormated = dateFromNow.replace(' minutes ago', 'm');
+  if (dateFromNow === 'an hour ago') dateFormated = '1h';
+  if (dateFromNow.includes('hours')) dateFormated = dateFromNow.replace(' hours ago', 'h');
+  if (dateFromNow === 'a day ago') dateFormated = '1d';
+  if (dateFromNow.includes('days')) dateFormated = dateFromNow.replace(' days ago', 'd');
+  if (dateFromNow === 'a month ago') dateFormated = '1mo';
+  if (dateFromNow.includes('months')) dateFormated = dateFromNow.replace(' months ago', 'mo');
+  if (dateFromNow === 'a year ago') dateFormated = '1y';
+  if (dateFromNow.includes('years')) dateFormated = dateFromNow.replace(' years ago', 'y');
 
   return dateFormated;
 };

@@ -70,7 +70,8 @@ export default {
   'general.num': 'No.',
   'general.amount': 'Amount',
   'general.chooseCamera': 'Please choose camera',
-  'general.chooseCameraTip': 'Try switching camera when its not working properly',
+  'general.chooseCameraTip':
+    'Try switching camera when its not working properly',
   'general.notifications': 'Notifications',
   'general.viewmore': 'View more',
   'general.ended': 'Ended',
@@ -94,7 +95,8 @@ export default {
   'general.subTitleEditPage': 'Change information your page',
   'general.subTitleClaimed': 'Detail of claimed',
   'general.notFoundTitle': 'Opp! Page not found',
-  'general.notFoundDescription': 'Sorry, we can’t find the page you’re looking for.',
+  'general.notFoundDescription':
+    'Sorry, we can’t find the page you’re looking for.',
   'general.goBackToHome': 'Go back',
   'general.searchResults': 'Search results for "{text}"',
   'general.post': 'Post',
@@ -133,7 +135,8 @@ export default {
   'account.managePage': 'Manage Page',
   'account.refreshLixiList': 'Refresh Lixi List',
   'account.unableCreateLixi': 'Unable to create lixi.',
-  'account.selectLixiFirst': 'Please Select an account first before creating lixi',
+  'account.selectLixiFirst':
+    'Please Select an account first before creating lixi',
   'account.random': 'Random',
   'account.fixed': 'Fixed',
   'account.divided': 'Divided',
@@ -181,7 +184,8 @@ export default {
   'account.unableToChangeLocaleAccount': 'Unable to change locale the account.',
   'account.unableToDelete': 'Unable to delete the account.',
   'account.unableToRefresh': 'Unable to refresh lixi list.',
-  'account.renameFailed': 'Rename failed. All accounts must have a unique name.',
+  'account.renameFailed':
+    'Rename failed. All accounts must have a unique name.',
   'account.deleteFailed': 'Delete failed. Could not delete the account.',
   'account.accountRenamedSuccess': 'Account has renamed to {accountName}',
   'account.accountChangeLocaleSuccess': 'Account locale has changed to English',
@@ -198,7 +202,8 @@ export default {
   'account.repeatPassword': 'Repeat password',
   'account.nameRequired': 'Username is required',
   'account.verificationCodeRequired': 'Verification code is required',
-  'account.verificationCodeSent': 'Verification code has been sent to <b>{email}</b>. Please check your inbox !',
+  'account.verificationCodeSent':
+    'Verification code has been sent to <b>{email}</b>. Please check your inbox !',
   'account.transactionHistory': 'Transaction History',
   'account.loginSuccess': 'Login sucessfully!',
   'account.loginFailed': 'Login failed',
@@ -240,7 +245,8 @@ export default {
   'lixi.amount': 'Amount: {newLixiAmount}',
   'lixi.totalAmountRequire': 'Total amount require: {newLixiAmount}',
   'lixi.numberOfSub': 'Number of sub lixi: {newNumberOfSubLixi}',
-  'lixi.numberLixiPerPackage': 'Number of sub-lixi per package: {newNumberLixiPerPackage}',
+  'lixi.numberLixiPerPackage':
+    'Number of sub-lixi per package: {newNumberLixiPerPackage}',
   'lixi.package': 'Package',
   'lixi.maxClaim': 'Max Redemption: {newMaxClaim}',
   'lixi.country': 'Country: ',
@@ -284,12 +290,14 @@ export default {
   'lixi.envelopesSelect': 'Select from our library',
   'lixi.renameLixi': 'Rename Lixi',
   'lixi.enterNewLixiName': 'Enter new lixi name',
-  'lixi.lixiLengthError': 'Lixi name must be a string between 1 and 24 characters long',
+  'lixi.lixiLengthError':
+    'Lixi name must be a string between 1 and 24 characters long',
   'lixi.couldNotFetchLixi': 'Could not fetch the lixi from api.',
   'lixi.unableGetLixi': 'Unable to get the lixi from server',
   'lixi.unableGetChildLixi': 'Unable to get the children lixies from server',
   'lixi.unableCreateLixi': 'Unable to create the lixi.',
-  'lixi.unableCreateChildLixi': 'Unable to create the children lixies from server',
+  'lixi.unableCreateChildLixi':
+    'Unable to create the children lixies from server',
   'lixi.couldNotPostLixi': 'Could not post the lixi to the api.',
   'lixi.createLixiSuccessful': 'Create lixi successfully.',
   'lixi.errorWhenCreateLixi': "There's an error happens when create new lixi.",
@@ -331,9 +339,12 @@ export default {
   'NetworkType.SingleIP': 'Single IP',
   'NetworkType.FamilyFriendly': 'Family Friendly',
   'NetworkType.NoWifiRestriction': 'No Wifi Restriction',
-  'NetworkType.SingleIPInfo': 'Only one user can claim Lixi under the wifi network',
-  'NetworkType.FamilyFriendlyInfo': 'Max 5 users can claim Lixi under the wifi network',
-  'NetworkType.NoWifiRestrictionInfo': 'Unlimited user can claim Lixi under the wifi network',
+  'NetworkType.SingleIPInfo':
+    'Only one user can claim Lixi under the wifi network',
+  'NetworkType.FamilyFriendlyInfo':
+    'Max 5 users can claim Lixi under the wifi network',
+  'NetworkType.NoWifiRestrictionInfo':
+    'Unlimited user can claim Lixi under the wifi network',
   'lixi.detail': 'Details of lixi',
   'lixi.accountLixi': 'Account of lixi ',
   'lixi.balance': 'Balance',
@@ -383,14 +394,18 @@ export default {
   'settings.revealPhrase': 'Click to reveal seed phrase',
   'settings.backupAccountWarning':
     'Your seed phrase is the only way to restore your account. Write it down. Keep it safe.',
-  'settings.backupAccountHint': 'Copy and paste your mnemonic seed phrase below to import an existing account',
+  'settings.backupAccountHint':
+    'Copy and paste your mnemonic seed phrase below to import an existing account',
   'settings.accountNameEmpty': 'Account name must must not be empty',
-  'settings.accountLengthMessage': 'Account name must be a string between 1 and 24 characters long',
+  'settings.accountLengthMessage':
+    'Account name must be a string between 1 and 24 characters long',
   'settings.enterAccountName': 'Enter new account name',
   'settings.renameAccount': 'Rename Account',
   'settings.deleteAccountConfirm': 'Type "delete {account}" to confirm',
-  'settings.deleteAccountConfirmMessage': 'Are you sure you want to delete account "{account}"?',
-  'settings.yourConfirmationPhraseMustExact': 'Your confirmation phrase must match exactly',
+  'settings.deleteAccountConfirmMessage':
+    'Are you sure you want to delete account "{account}"?',
+  'settings.yourConfirmationPhraseMustExact':
+    'Your confirmation phrase must match exactly',
   'settings.en': 'English',
   'settings.vi': 'Vietnamese',
   'settings.allowNotification': 'Allow notification for the',
@@ -398,19 +413,23 @@ export default {
   'settings.thenAllowNotification': 'Then allow notification for',
   'settings.lixilotusOnBrower': 'lixilotus.com on your browser',
   'settings.enableNotification': 'Enable Notification',
-  'settings.grantPermisson': 'You will be prompted to grant permisson for notification, Please click "Allow"',
+  'settings.grantPermisson':
+    'You will be prompted to grant permisson for notification, Please click "Allow"',
   'settings.ok': 'OK',
   'settings.permissionError': 'Error - Permision Error',
   'settings.blockedDevice': 'Blocked by device',
   'setting.notSupported': 'Not Supported',
   'setting.gotIt': 'Got It',
   'settings.howEnableNotification': 'How to enable notification',
-  'settings.deviceSupport': 'This feature works best with Chrome or Brave on Android device',
+  'settings.deviceSupport':
+    'This feature works best with Chrome or Brave on Android device',
   'settings.twoStepEnableNotification': '2 steps to enable notification',
   'settings.primaryLanguage': 'Primary language',
   'settings.secondLanguage': 'Secondary language (Do not auto translate)',
-  'settings.selectLanguageNotTransSuccess': '{language} will not auto translate',
-  'settings.removeLanguageNotTrans': 'Every post will be automatically translated to primary language.',
+  'settings.selectLanguageNotTransSuccess':
+    '{language} will not auto translate',
+  'settings.removeLanguageNotTrans':
+    'Every post will be automatically translated to primary language.',
   'settings.lockAppDesc': 'Request lock app',
   'settings.notificationsDesc': 'Allow notification',
 
@@ -431,9 +450,12 @@ export default {
   'onboarding.importAccount': 'Import Account',
   'onboarding.import': 'Import',
   'onboarding.welcomeToLotus': 'Welcome to Lixi!',
-  'onboarding.lixiLotusIntroduce1': 'Lixi is an open-source, non-custodial web wallet for Lotus.',
-  'onboarding.lixiLotusIntroduce2': 'Lixi allow you to giveaway your Lotus effortlessly.',
-  'onboarding.lixiLotusIntroduce3': 'To start, install Lixi to your device follow',
+  'onboarding.lixiLotusIntroduce1':
+    'Lixi is an open-source, non-custodial web wallet for Lotus.',
+  'onboarding.lixiLotusIntroduce2':
+    'Lixi allow you to giveaway your Lotus effortlessly.',
+  'onboarding.lixiLotusIntroduce3':
+    'To start, install Lixi to your device follow',
   'onboarding.lixiLotusIntroduce4': 'the guide',
   'onboarding.maybeLater': 'Maybe later',
   'onboarding.registration': 'Registration',
@@ -466,21 +488,27 @@ export default {
   'send.invalidDecimalPlaces': 'Invalid decimal places for send amount',
   'send.insufficientPriority': 'Insufficient priority',
   'send.networkError': 'Network Error',
-  'send.longMempoolChain': 'too-long-mempool-chain, too many unconfirmed ancestors',
+  'send.longMempoolChain':
+    'too-long-mempool-chain, too many unconfirmed ancestors',
   'send.communicateApi': 'Could not communicate with API. Please try again.',
   'send.manyAncestors':
     'The XPI you are trying to send has too many unModaled ancestors to send (limit 50). Sending will be possible after a block Modal.ation. Try again in about 10 minutes.',
   'send.onlyMessage': 'Send only message',
   'send.canNotEncryptMessage': 'Cannot encrypt message',
-  'send.addressNoOutgoingTrans': 'This address has no outgoing transaction, you cannot send message.',
-  'send.newAddress': 'It looks like this address is NEW, please verify it before sending a large amount.',
+  'send.addressNoOutgoingTrans':
+    'This address has no outgoing transaction, you cannot send message.',
+  'send.newAddress':
+    'It looks like this address is NEW, please verify it before sending a large amount.',
   'send.canNotSendToYourSelf': 'Cannot send to yourself!',
-  'send.calcMaxError': 'Unable to calculate the max value due to network errors',
-  'send.sendModalTitle': 'Are you sure you want to send {value} {ticker} to {address}?',
+  'send.calcMaxError':
+    'Unable to calculate the max value due to network errors',
+  'send.sendModalTitle':
+    'Are you sure you want to send {value} {ticker} to {address}?',
   'send.queryString':
     'You are sending a transaction to an address including query parameters "{queryStringText}." Only the "amount" parameter, in units of {currency} satoshis, is currently supported.',
   'send.optionalPrivateMessage': 'Optional Private Message',
-  'send.syntaxError': "Syntax error. XPI to give can't be less than or equal to 0",
+  'send.syntaxError':
+    "Syntax error. XPI to give can't be less than or equal to 0",
   'send.sendXpi': ' Send',
 
   /* 12.Zero balance header */
@@ -520,6 +548,7 @@ export default {
   'page.address': 'Address',
   'page.inputAddress': 'Please input address',
   'page.createPostFee': 'Create post fee',
+  'page.createPostFeeOn': 'Create post fee on',
   'page.createCommentFee': 'Create comment fee',
   'page.repostFee': 'Repost fee',
   'page.couldNotpostPage': 'Could not create page',
@@ -532,7 +561,8 @@ export default {
   'page.unableUpdatePage': 'Unable to update the page.',
   'page.xpiHasBurned': 'XPI has been burned',
   'page.noXpiHasBurned': 'No one has burned for this page!',
-  'page.selectAccountFirst': 'Please Select an account first before creating page',
+  'page.selectAccountFirst':
+    'Please Select an account first before creating page',
 
   /* 14.Country */
   'country.unablegetCountries': 'Unable to get countries',
@@ -570,7 +600,8 @@ export default {
   'post.copyToClipboard': 'Link copied to clipboard',
   'post.unableCreatePost': 'Unable to create post.',
   'post.unableUpdatePost': 'Unable to update the post.',
-  'post.selectAccountFirst': 'Please Select an account first before creating post',
+  'post.selectAccountFirst':
+    'Please Select an account first before creating post',
   'post.content': 'Content',
   'post.unableToBurn': 'Unable to burn for the post',
   'post.burning': 'Burning post',
@@ -595,7 +626,8 @@ export default {
   'token.couldNotpostToken': 'Could not create token',
   'token.createTokenSuccessful': 'Create token successful',
   'token.unableCreateTokenServer': 'Unable to create token on server',
-  'token.errorWhenCreateToken': "There's an error happens when create new Token",
+  'token.errorWhenCreateToken':
+    "There's an error happens when create new Token",
   'token.couldNotFindToken': 'Could not find tokens',
   'token.unableCreateToken': 'Unable to create token.',
   'token.unableSelect': 'Unable to select token',
@@ -690,7 +722,8 @@ export default {
 
   /* 22. Guide */
   'guide.title': 'Install Lixi Social',
-  'guide.body': 'Install the app on your device to easily access it anytime. No app store. No download. No hassle.',
+  'guide.body':
+    'Install the app on your device to easily access it anytime. No app store. No download. No hassle.',
   'guide.descOne': '1. Open in Safari (optional)',
   'guide.descTwo': '2. Tap on',
   'guide.descThree': '3. Select',
@@ -856,5 +889,5 @@ export default {
   'code.xh': 'Xhosa',
   'code.yi': 'Yiddish',
   'code.yo': 'Yoruba',
-  'code.zu': 'Zulu'
+  'code.zu': 'Zulu',
 };

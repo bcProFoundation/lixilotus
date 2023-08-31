@@ -26,7 +26,7 @@ import { getUtxoWif } from '@utils/cashMethods';
 import { Button, Input, Modal, Space } from 'antd';
 import _ from 'lodash';
 import router from 'next/router';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { AvatarUser } from './AvatarUser';
@@ -35,6 +35,7 @@ import EditorLexical from './Lexical/EditorLexical';
 import { currency } from './Ticker';
 import useAuthorization from './Authorization/use-authorization.hooks';
 import { getShowCreatePost } from '@store/post/selectors';
+import { closeActionSheet } from '@store/action-sheet/actions';
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -190,6 +191,7 @@ type CreatePostCardProp = {
   hashtags?: string[]; //Multiple hashtag for search function
   hashtagId?: string; // hashtagId here for the url /hashtag/{hashtag}
   query?: string;
+  autoEnable?: boolean;
 };
 
 const IconWImage = ({
@@ -216,7 +218,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const pathname = router.pathname ?? '';
   const [enableEditor, setEnableEditor] = useState(false);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
-  const { page, tokenPrimaryId, hashtagId, hashtags, query } = props;
+  const { page, tokenPrimaryId, hashtagId, hashtags, query, autoEnable } = props;
   const pageId = page ? page.id : undefined;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const editorCache = useAppSelector(getEditorCache);
@@ -248,6 +250,12 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       askAuthorization();
     }
   };
+
+  useEffect(() => {
+    if (autoEnable && authorization.authorized) {
+      setEnableEditor(true);
+    }
+  }, []);
 
   const handleCreateNewPost = async ({ htmlContent, pureContent }) => {
     let patches: PatchCollection;
@@ -362,6 +370,9 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         })
       );
     }
+    if (autoEnable) {
+      dispatch(closeActionSheet());
+    }
   };
 
   const getCreatePostLocation = () => {
@@ -371,7 +382,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           {intl.get('post.token')} <DollarOutlined />
         </React.Fragment>
       );
-    } else if (pathname.includes('/page')) {
+    } else if (pathname.includes('/page') || autoEnable) {
       return (
         <React.Fragment>
           {intl.get('post.page')} <ShopOutlined />
@@ -383,6 +394,13 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           {intl.get('post.public')} <GlobalOutlined />
         </React.Fragment>
       );
+    }
+  };
+
+  const handleOnCancelCreatePost = () => {
+    setEnableEditor(false);
+    if (autoEnable) {
+      dispatch(closeActionSheet());
     }
   };
 
@@ -441,7 +459,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           open={enableEditor}
           footer={null}
           maskClosable={false}
-          onCancel={() => setEnableEditor(false)}
+          onCancel={handleOnCancelCreatePost}
         >
           <UserCreate>
             <div className="user-create-post">
