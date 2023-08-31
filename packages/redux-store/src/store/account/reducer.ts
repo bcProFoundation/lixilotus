@@ -35,7 +35,7 @@ import {
   removeAllMessageUpload,
   setAccountAvatar,
   setAccountCover,
-  setSecondaryLanguageAccountSuccess
+  setSecondaryLanguageAccountSuccess,
   changeAccountLocale
 } from './actions';
 import { AccountsState } from './state';
@@ -335,6 +335,7 @@ export const accountReducer = createReducer(initialState, builder => {
     .addCase(setSecondaryLanguageAccountSuccess, (state, action) => {
       const account: Account = action.payload;
       state.entities[account.id].secondaryLanguage = account.secondaryLanguage;
+    })
     .addCase(changeAccountLocale, (state, action) => {
       const { language, id } = action.payload;
       state.entities[id].language = language;

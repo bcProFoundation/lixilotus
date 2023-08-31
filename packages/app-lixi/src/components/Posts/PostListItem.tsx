@@ -378,7 +378,7 @@ const PostListItem = ({
   };
 
   const toggleAutoTranslate = () => {
-    if (!_.isNil(post.originalLanguage)) {      
+    if (!_.isNil(post.originalLanguage)) {
       const doc = new DOMParser().parseFromString(post.content, 'text/html');
       const content = doc.querySelector('.EditorLexical_paragraph')?.textContent;
 
