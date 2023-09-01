@@ -6,7 +6,12 @@ import {
   ThemedQuerstionCircleOutlinedFaded,
   ThemedSettingOutlined
 } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
+import {
+  Account,
+  DeleteAccountCommand,
+  RenameAccountCommand,
+  SecondaryLanguageAccountCommand
+} from '@bcpros/lixi-models';
 import {
   AntdFormWrapper,
   LanguageNotAutoTransDropdown,
@@ -15,7 +20,14 @@ import {
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
 import { WalletContext } from '@context/index';
-import { deleteAccount, generateAccount, importAccount, renameAccount, selectAccount } from '@store/account/actions';
+import {
+  deleteAccount,
+  generateAccount,
+  importAccount,
+  renameAccount,
+  selectAccount,
+  setSecondaryLanguageAccount
+} from '@store/account/actions';
 import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getIsGlobalLoading } from '@store/loading/selectors';
@@ -486,7 +498,7 @@ const Settings: React.FC = () => {
             <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.primaryLanguage')}</h2>
             <AntdFormWrapper>
               <LanguageSelectDropdown
-                defaultValue={currentLocale}
+                defaultValue={selectedAccount?.language}
                 onChange={(locale: any) => {
                   setLocale(locale);
                 }}
@@ -495,29 +507,16 @@ const Settings: React.FC = () => {
 
             <div className="second-language">
               <h2 style={{ color: 'var(--color-primary)' }}>{intl.get('settings.secondLanguage')}</h2>
-
               <AntdFormWrapper>
                 <LanguageNotAutoTransDropdown
-                  defaultValue={languageNotAutoTrans}
+                  defaultValue={selectedAccount?.secondaryLanguage}
                   onChange={(locale: any) => {
-                    dispatch(setLanguageNotAutoTrans(locale));
-                    locale != null
-                      ? dispatch(
-                          showToast('success', {
-                            message: intl.get('toast.success'),
-                            description: intl.get('settings.selectLanguageNotTransSuccess', {
-                              language: handleCodeToLanguage(locale)
-                            }),
-                            duration: 5
-                          })
-                        )
-                      : dispatch(
-                          showToast('success', {
-                            message: intl.get('toast.success'),
-                            description: intl.get('settings.removeLanguageNotTrans'),
-                            duration: 5
-                          })
-                        );
+                    const secondaryLanguageAccountCommand: SecondaryLanguageAccountCommand = {
+                      id: selectedAccount.id,
+                      mnemonic: selectedAccount.mnemonic,
+                      secondaryLanguage: locale
+                    };
+                    dispatch(setSecondaryLanguageAccount(secondaryLanguageAccountCommand));
                   }}
                 />
               </AntdFormWrapper>

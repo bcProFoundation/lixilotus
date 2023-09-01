@@ -7,6 +7,7 @@ import {
   LoginViaEmailCommand,
   RegisterViaEmailNoVerifiedCommand,
   RenameAccountCommand,
+  SecondaryLanguageAccountCommand,
   Upload
 } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
@@ -28,6 +29,7 @@ export const selectAccount = createAction<number>('account/selectAccount');
 export const selectAccountSuccess = createAction<{
   account: Account;
   lixies: Lixi[];
+  previousAccount: Account;
 }>('account/selectAccountSuccess');
 export const selectAccountFailure = createAction<string>('account/selectAccountFailure');
 export const importAccount = createAction<string>('account/importAccount');
@@ -110,3 +112,8 @@ export const removeRecentHashtagAtToken = createAction<{
   hashtag: string;
 }>('account/removeRecentHashtagAtToken');
 export const clearRecentHashtagAtToken = createAction<{ id: string }>('account/clearRecentHashtagAtToken');
+export const setSecondaryLanguageAccount = createAction<SecondaryLanguageAccountCommand>(
+  'account/setSecondaryLanguageAccount'
+);
+export const setSecondaryLanguageAccountSuccess = createAction<Account>('account/setSecondaryLanguageAccountSuccess');
+export const setSecondaryLanguageAccountFailure = createAction<string>('account/setSecondaryLanguageAccountFailure');

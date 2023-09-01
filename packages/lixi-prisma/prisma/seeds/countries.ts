@@ -38,7 +38,11 @@ async function main() {
       name : "United State Minor Outlying Islands"
     }
   })
-    
+
+  await prisma.$transaction([
+    prisma.country.updateMany({where: {name : "United State"}, data: {name: "United States"}}),
+    prisma.country.updateMany({where: {name : "United State Minor Outlying Islands"}, data: {name: "United States Minor Outlying Islands"}})
+  ])
 }
 
 main()

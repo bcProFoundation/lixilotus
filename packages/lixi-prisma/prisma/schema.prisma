@@ -211,6 +211,7 @@ model Account {
   address             String               @default("") @map("address")
   notifications       Notification[]
   language            String               @default("en")
+  secondaryLanguage   String?              @map("secondary_language")
   publicKey           String               @default("") @map("public_key")
   email               String?              @unique
   uploadDetail        UploadDetail[]

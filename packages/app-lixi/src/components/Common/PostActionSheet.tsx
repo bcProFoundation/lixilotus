@@ -20,6 +20,7 @@ import { CreateFollowAccountInput, DeleteFollowAccountInput } from '@generated/t
 import { getWalletStatus } from '@store/wallet';
 import { useSwipeable } from 'react-swipeable';
 import { useUserHadMessageToPageQuery } from '@store/message/pageMessageSession.generated';
+import CreatePostCard from './CreatePostCard';
 
 interface PostActionSheetProps {
   id?: string;
@@ -106,6 +107,7 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [isFollowedPage, setIsFollowedPage] = useState<boolean>(false);
   const [isFollowedAccount, setIsFollowedAccount] = useState<boolean>(false);
+  const [openCreatePost, setOpenCreatePost] = useState<boolean>(false);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const walletStatus = useAppSelector(getWalletStatus);
 
@@ -160,6 +162,8 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     },
     { skip: selectedAccount?.id === page?.pageAccountId || !selectedAccount?.id }
   );
+
+  const { currentData: currentDataPageQuery, isSuccess: isSuccessPageQuery } = usePageQuery({ id: post?.page?.id });
 
   const onClose = () => {
     setOpen(false);
@@ -222,6 +226,10 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     onSwipedDown: eventData => onClose()
   });
 
+  const openCreatePostPage = () => {
+    setOpenCreatePost(true);
+  };
+
   return (
     <>
       <Drawer
@@ -233,9 +241,21 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
         height={'auto'}
       >
         <ContainerActionSheet {...handlersSwipe}>
+          <div hidden={true}>
+            {openCreatePost && <CreatePostCard page={page} hashtags={[]} query={''} autoEnable={true} />}
+          </div>
           <div className="bar-close" onClick={onClose}></div>
           {isEditPost && <ItemActionSheetBottom text="Edit post" icon="/images/ico-edit.svg" onClickItem={editPost} />}
           {/* <ItemActionSheetBottom type="danger" text="Remove" /> */}
+          {post.page && isSuccessPageQuery && (
+            <>
+              <ItemActionSheetBottom
+                text={`${intl.get('page.createPostFeeOn')} ${currentDataPageQuery?.page?.name}`}
+                icon="/images/ico-create-post.svg"
+                onClickItem={openCreatePostPage}
+              />
+            </>
+          )}
           {post.page && post.postAccount.id != selectedAccountId && !pageMessageSessionData && (
             <ItemActionSheetBottom
               text={`${intl.get('messenger.chat')} ${page?.name}`}

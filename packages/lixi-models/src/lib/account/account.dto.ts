@@ -26,11 +26,18 @@ export interface RenameAccountCommand {
   isAutoNameGenerator?: boolean;
 }
 
+export interface SecondaryLanguageAccountCommand {
+  id: number;
+  mnemonic: string;
+  secondaryLanguage: string;
+}
+
 export interface PatchAccountCommand {
   id: number;
   mnemonic: string;
   language?: string;
   name?: string;
+  secondaryLanguage?: string;
 }
 
 export interface DeleteAccountCommand {
@@ -50,6 +57,7 @@ export interface AccountDto {
   address: string;
   balance?: number;
   language?: string;
+  secondaryLanguage?: Nullable<string>;
   page?: Nullable<Page[]>;
 }
 

@@ -13,7 +13,8 @@ import {
   setIsSystemThemes,
   toggleCollapsedSideNav,
   updateLocale,
-  setLanguageNotAutoTrans
+  setLanguageNotAutoTrans,
+  changeCurrentLocale
 } from './actions';
 import { SettingsState } from './state';
 // import { SearchBoxType } from '@bcpros/lixi-models/src/lib/search';
@@ -89,5 +90,8 @@ export const settingsReducer = createReducer(initialState, builder => {
     })
     .addCase(setLanguageNotAutoTrans, (state, action) => {
       state.languageNotAutoTrans = action.payload;
+    })
+    .addCase(changeCurrentLocale, (state, action) => {
+      state.locale = action.payload;
     });
 });

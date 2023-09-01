@@ -50,6 +50,9 @@ export class Account {
   @Field(() => String)
   language?: string;
 
+  @Field(() => String, { nullable: true })
+  secondaryLanguage?: Nullable<string>;
+
   @Field(() => [Page], { nullable: true })
   pages?: [Page];
 

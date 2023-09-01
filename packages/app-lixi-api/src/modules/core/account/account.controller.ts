@@ -354,7 +354,8 @@ export class AccountController {
           data: {
             name: command.name,
             language: command.language,
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            secondaryLanguage: command.secondaryLanguage
           }
         });
 

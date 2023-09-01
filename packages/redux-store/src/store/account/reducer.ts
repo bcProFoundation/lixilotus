@@ -34,7 +34,9 @@ import {
   setAccountInfoTemp,
   removeAllMessageUpload,
   setAccountAvatar,
-  setAccountCover
+  setAccountCover,
+  setSecondaryLanguageAccountSuccess,
+  changeAccountLocale
 } from './actions';
 import { AccountsState } from './state';
 
@@ -329,6 +331,14 @@ export const accountReducer = createReducer(initialState, builder => {
     .addCase(setAccountInfoTemp, (state, action) => {
       const accountInfo: Account = action.payload;
       if (accountInfo) state.accountInfoTemp = accountInfo;
+    })
+    .addCase(setSecondaryLanguageAccountSuccess, (state, action) => {
+      const account: Account = action.payload;
+      state.entities[account.id].secondaryLanguage = account.secondaryLanguage;
+    })
+    .addCase(changeAccountLocale, (state, action) => {
+      const { language, id } = action.payload;
+      state.entities[id].language = language;
     })
     .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
       const { account, lixies } = action.payload;
