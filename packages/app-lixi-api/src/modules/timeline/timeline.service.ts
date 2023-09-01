@@ -10,6 +10,8 @@ import { FollowCacheService } from '../account/follow-cache.service';
 import { PrismaService } from '../prisma/prisma.service';
 import SortedSet from 'redis-sorted-set';
 
+
+
 @Injectable()
 export class TimelineService {
   private logger: Logger = new Logger(this.constructor.name);
@@ -23,7 +25,7 @@ export class TimelineService {
     private readonly followCacheService: FollowCacheService,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   async cacheInNetworkByTime(accountId: number) {
     const key = `${TimelineService.inNetworkSourceKey}:${accountId}`;
@@ -139,7 +141,7 @@ export class TimelineService {
       await this.cacheInNetworkByScore(accountId);
     }
 
-    return await this.redis.zrevrange(key, 0, -1);
+    return await this.redis.zrevrange(key, 0, -1, "WITHSCORES");
   }
 
   async cacheOutNetwork() {
@@ -189,7 +191,7 @@ export class TimelineService {
       await this.cacheOutNetwork();
     }
 
-    return await this.redis.zrevrange(key, 0, -1);
+    return await this.redis.zrevrange(key, 0, -1, 'WITHSCORES');
   }
 
   private mergeByRatio(arr1: string[], arr2: string[], ratio: number): string[] {
@@ -197,10 +199,25 @@ export class TimelineService {
       throw new Error('Ratio should be between 0 and 1');
     }
 
-    const totalMinLength = Math.min(arr1.length + arr2.length, arr1.length / ratio);
-    const totalLength = Math.max(totalMinLength, arr1.length + arr2.length);
-    const countFromArr1 = Math.round(totalMinLength * ratio);
-    const countFromArr2 = totalLength - countFromArr1;
+    const gcd = (x: number, y: number) => {
+      x = Math.abs(x);
+      y = Math.abs(y);
+      while (y) {
+        const t = y;
+        y = x % y;
+        x = t;
+      }
+      return x;
+    }
+
+    // find the gcd from ratio
+    const numOfArr1In10Items = Math.round(ratio * 10);
+    const numOfArr2In10Items = 10 - numOfArr1In10Items;
+
+    // Reduce to fraction
+    const gcdValue = gcd(numOfArr1In10Items, numOfArr2In10Items);
+    const numOfArr1ItemsEachBatch = numOfArr1In10Items / gcdValue;
+    const numOfArr2ItemsEachBatch = numOfArr2In10Items / gcdValue;
 
     const result: string[] = [];
     const seen = new Set<string>();
@@ -208,32 +225,55 @@ export class TimelineService {
     let i = 0,
       j = 0,
       k = 0;
-    while (k < totalLength) {
-      if (i < countFromArr1 && j < countFromArr2) {
-        if (!seen.has(arr1[i])) {
-          result.push(arr1[i]);
-          seen.add(arr1[i]);
+
+    while (i < arr1.length && j < arr2.length) {
+
+      const numOfItemsToInsertFromArr1 = Math.min(numOfArr1ItemsEachBatch, arr1.length - i);
+      const numOfItemsToInsertFromArr2 = Math.min(numOfArr2ItemsEachBatch, arr2.length - j);
+      
+      k = 0;
+      let index1 = 0; // the index to track pointer moving in arr1
+      while ((k < numOfItemsToInsertFromArr1) && (i + index1 < arr1.length)) {
+        const item1 = arr1[i + index1];
+        if (!seen.has(item1) && !_.isNil(item1)) {
+          seen.add(item1);
+          result.push(item1);
+          k += 1;
         }
-        i++;
-        if (!seen.has(arr2[j])) {
-          result.push(arr2[j]);
-          seen.add(arr2[j]);
-        }
-        j++;
-      } else if (i < countFromArr1) {
-        if (!seen.has(arr1[i])) {
-          result.push(arr1[i]);
-          seen.add(arr1[i]);
-        }
-        i++;
-      } else if (j < countFromArr2) {
-        if (!seen.has(arr2[j])) {
-          result.push(arr2[j]);
-          seen.add(arr2[j]);
-        }
-        j++;
+        index1 += 1;
       }
-      k = i + j;
+      i += numOfItemsToInsertFromArr1;
+
+      k = 0;
+      let index2 = 0; // the index to track pointer moving in arr2
+      while ((k < numOfItemsToInsertFromArr2) &&  (j + index2 < arr2.length)) {
+        const item2 = arr2[j + index2];
+        if (!seen.has(item2)) {
+          seen.add(item2);
+          result.push(item2);
+          k += 1;
+        }
+        index2 += 1;
+      }
+      j += numOfItemsToInsertFromArr2;
+    }
+
+    if (i < arr1.length) {
+      for (; i < arr1.length; i++) {
+        const item = arr1[i];
+        if (!seen.has(item)) {
+          seen.add(item);
+          result.push(item);
+        }
+      }
+    } else if (j < arr2.length) {
+      for (; j < arr2.length; j++) {
+        const item = arr2[j];
+        if (!seen.has(item)) {
+          seen.add(item);
+          result.push(item);
+        }
+      }
     }
 
     return result;
@@ -252,10 +292,18 @@ export class TimelineService {
     const ratio = TimelineService.ratioSteps[level - 1];
 
     const timelineSortedSet = new SortedSet();
-    const inNetwork = accountId ? (await this.getInNetwork(accountId)) || [] : [];
-    const outNetwork = await this.getOutNetwork();
+    const inNetworkWithScores = accountId ? (await this.getInNetwork(accountId)) || [] : [];
+    const outNetworkWithScores = await this.getOutNetwork();
 
-    const timeline = this.mergeByRatio(_.compact(inNetwork), _.compact(outNetwork), ratio);
+    const maxScoreInNetwork = inNetworkWithScores.length > 1 ? inNetworkWithScores[1] : 0;
+    const maxScoreOutNetwork = outNetworkWithScores.length > 1 ? outNetworkWithScores[1] : 0;
+
+    const inNetwork = inNetworkWithScores.filter((item, index) => index % 2 === 0);
+    const outNetwork = outNetworkWithScores.filter((item, index) => index % 2 === 0);
+
+    const timeline = _.toNumber(maxScoreInNetwork) > _.toNumber(maxScoreOutNetwork) ?
+      this.mergeByRatio(_.compact(inNetwork), _.compact(outNetwork), _.round(ratio, 1)) :
+      this.mergeByRatio(_.compact(outNetwork), _.compact(inNetwork), _.round(1 - ratio, 1));
 
     let index = 0;
     for (const id of timeline) {
