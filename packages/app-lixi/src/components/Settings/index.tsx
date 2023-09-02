@@ -32,19 +32,8 @@ import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getIsGlobalLoading } from '@store/loading/selectors';
 import { openModal } from '@store/modal/actions';
-import {
-  setCurrentThemes,
-  setInitIntlStatus,
-  setIsSystemThemes,
-  setLanguageNotAutoTrans,
-  updateLocale
-} from '@store/settings/actions';
-import {
-  getCurrentLocale,
-  getCurrentThemes,
-  getIsSystemThemes,
-  getLanguageNotAutoTrans
-} from '@store/settings/selectors';
+import { setCurrentThemes, setInitIntlStatus, setIsSystemThemes, updateLocale } from '@store/settings/actions';
+import { getCurrentLocale, getCurrentThemes, getIsSystemThemes } from '@store/settings/selectors';
 import { Alert, Button, Collapse, Form, Input, Modal, Select, Spin } from 'antd';
 import axios from 'axios';
 import * as _ from 'lodash';
@@ -290,7 +279,6 @@ const Settings: React.FC = () => {
   const currentDeviceTheme = useThemeDetector();
   const isSystemThemes = useAppSelector(getIsSystemThemes);
   const currentLocale = useAppSelector(getCurrentLocale);
-  const languageNotAutoTrans = useAppSelector(getLanguageNotAutoTrans);
 
   useEffect(() => {
     if (isSystemThemes) {

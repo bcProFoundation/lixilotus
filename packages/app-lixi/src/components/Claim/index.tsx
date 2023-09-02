@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import intl from 'react-intl-universal';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
 import PrimaryButton from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import { CashLoadingIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
@@ -11,14 +11,20 @@ import {
 import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { postClaim, saveClaimAddress, saveClaimCode } from '@store/claim/actions';
+import {
+  checkInformationAndClaim,
+  checkInformationAndClaimNoAccount,
+  postClaim,
+  saveClaimAddress,
+  saveClaimCode
+} from '@store/claim/actions';
 import { CreateClaimDto } from '@bcpros/lixi-models/lib/claim';
 import { getIsGlobalLoading } from '@store/loading/selectors';
 import { getCurrentAddress, getCurrentClaimCode } from '@store/claim/selectors';
 import { useSelector } from 'react-redux';
 import { getSelectedAccount } from '@store/account/selectors';
 import styled from 'styled-components';
-import { WalletContext } from '@context/index';
+import { AuthorizationContext, WalletContext } from '@context/index';
 import { openModal } from '@store/modal/actions';
 import useAuthorization from '@components/Common/Authorization/use-authorization.hooks';
 import InApp from '@utils/inapp';
@@ -90,6 +96,7 @@ const ClaimComponent = ({ isClaimFromAccount, claimCodeFromURL }: ClaimProps) =>
   const currentClaimCode = claimCodeFromURL ?? useSelector(getCurrentClaimCode);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const askAuthorization = useAuthorization();
+  const authorization = useContext(AuthorizationContext);
 
   const [claimXpiAddressError, setClaimXpiAddressError] = useState<string | boolean>(false);
   const inapp = new InApp(navigator.userAgent || navigator.vendor);
@@ -135,45 +142,21 @@ const ClaimComponent = ({ isClaimFromAccount, claimCodeFromURL }: ClaimProps) =>
     if (captcha) {
       captcha.ready(() => {
         captcha.execute(SITE_KEY, { action: 'submit' }).then((token: any) => {
-          submit(token);
+          if (authorization.authorized) {
+            const payload = {
+              claimAddress: currentAddress,
+              claimCode: currentClaimCode,
+              captchaToken: token
+            };
+            dispatch(checkInformationAndClaim(payload));
+          } else {
+            dispatch(checkInformationAndClaimNoAccount(token));
+            dispatch(generateAccount());
+          }
         });
       });
     }
   };
-
-  async function submit(token) {
-    let claimCode = currentClaimCode;
-    if (!currentAddress || !currentClaimCode) {
-      if (inapp?.isInApp) {
-        askAuthorization();
-        return;
-      } else {
-        await dispatch(generateAccount());
-      }
-    }
-
-    if (currentClaimCode.includes('lixi_')) {
-      claimCode = claimCode.match('(?<=lixi_).*')[0];
-    }
-
-    // Get the param-free address
-    let cleanAddress = currentAddress.split('?')[0];
-
-    const isValidAddress = XPI.Address.isXAddress(cleanAddress);
-
-    if (!isValidAddress) {
-      const error = intl.get('claim.titleShared', { ticker: currency.ticker });
-      setClaimXpiAddressError(error);
-    }
-
-    dispatch(
-      postClaim({
-        claimAddress: cleanAddress,
-        claimCode: claimCode,
-        captchaToken: token
-      } as CreateClaimDto)
-    );
-  }
 
   const handleAddressChange = e => {
     const { value, name } = e.target;

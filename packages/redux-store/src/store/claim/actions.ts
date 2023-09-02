@@ -16,3 +16,6 @@ export const saveClaimCode = createAction<string>('claim/saveClaimCode');
 export const viewClaim = createAction<number>('claim/viewClaim');
 export const viewClaimSuccess = createAction<ViewClaimDto>('claim/viewClaimSuccess');
 export const viewClaimFailure = createAction<string>('claim/viewClaimFailure');
+
+export const checkInformationAndClaim = createAction<CreateClaimDto>('claim/checkInformationAndClaim');
+export const checkInformationAndClaimNoAccount = createAction<string>('claim/getInformationAndClaimNoAccount');

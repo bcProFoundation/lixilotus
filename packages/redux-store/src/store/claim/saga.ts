@@ -8,6 +8,8 @@ import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 
 import {
+  checkInformationAndClaim,
+  checkInformationAndClaimNoAccount,
   postClaim,
   postClaimActionType,
   postClaimFailure,
@@ -17,6 +19,11 @@ import {
   viewClaimSuccess
 } from './actions';
 import claimApi from './api';
+import { callConfig } from '@context/index';
+import { currency } from '@components/Common/Ticker';
+import { take } from 'redux-saga/effects';
+import { setAccount } from '@store/account/actions';
+import { getCurrentAddress, getCurrentClaimCode } from './selectors';
 
 function* postClaimSuccessSaga(action: PayloadAction<Claim>) {
   const claim = action.payload;
@@ -79,6 +86,51 @@ function* viewClaimSaga(action: PayloadAction<number>) {
   }
 }
 
+function* checkInformationAndClaimSaga(action: PayloadAction<CreateClaimDto>) {
+  const Wallet = callConfig.call.walletContext;
+  const { XPI } = Wallet;
+  const { claimCode: currentClaimCode, claimAddress: currentAddress, captchaToken } = action.payload;
+
+  let claimCode = currentClaimCode;
+  if (!currentAddress || !currentClaimCode) {
+    return;
+  }
+
+  if (currentClaimCode.includes('lixi_')) {
+    claimCode = claimCode.match('(?<=lixi_).*')[0];
+  }
+
+  // Get the param-free address
+  let cleanAddress = currentAddress.split('?')[0];
+
+  const isValidAddress = XPI.Address.isXAddress(cleanAddress);
+
+  if (!isValidAddress) {
+    const error = intl.get('claim.titleShared', { ticker: currency.ticker });
+    throw new Error(error);
+  }
+
+  yield put(
+    postClaim({
+      claimAddress: cleanAddress,
+      claimCode,
+      captchaToken
+    } as CreateClaimDto)
+  );
+}
+
+function* checkInformationAndClaimNoAccountSaga(action: PayloadAction<string>) {
+  yield take(setAccount.type);
+  const currentAddress: string = yield select(getCurrentAddress);
+  const currentClaimCode: string = yield select(getCurrentClaimCode);
+  const payload = {
+    claimAddress: currentAddress,
+    claimCode: currentClaimCode,
+    captchaToken: action.payload
+  };
+  yield put(checkInformationAndClaim(payload));
+}
+
 function* viewClaimSuccessSaga(action: PayloadAction<Claim>) {
   yield put(hideLoading(viewClaim.type));
 }
@@ -111,6 +163,14 @@ function* watchViewClaimFailure() {
   yield takeLatest(viewClaimFailure.type, viewClaimFailureSaga);
 }
 
+function* watchCheckInformationAndClaim() {
+  yield takeLatest(checkInformationAndClaim.type, checkInformationAndClaimSaga);
+}
+
+function* watchCheckInformationAndClaimNoAccount() {
+  yield takeLatest(checkInformationAndClaimNoAccount.type, checkInformationAndClaimNoAccountSaga);
+}
+
 export default function* claimSaga() {
   yield all([
     fork(watchPostClaim),
@@ -118,6 +178,8 @@ export default function* claimSaga() {
     fork(watchPostClaimFailure),
     fork(watchViewClaim),
     fork(watchViewClaimSuccess),
-    fork(watchViewClaimFailure)
+    fork(watchViewClaimFailure),
+    fork(watchCheckInformationAndClaim),
+    fork(watchCheckInformationAndClaimNoAccount)
   ]);
 }

@@ -20,7 +20,7 @@ import PostTranslate from './PostTranslate';
 import { PostListType } from '@bcpros/lixi-models/constants';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { LoadingIcon } from '@components/Layout/MainLayout';
-import { getCurrentLocale, getLanguageNotAutoTrans } from '@store/settings/selectors';
+import { getCurrentLocale } from '@store/settings/selectors';
 import { getSelectedAccount } from '@store/account';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (

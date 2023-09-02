@@ -13,7 +13,6 @@ import {
   setIsSystemThemes,
   toggleCollapsedSideNav,
   updateLocale,
-  setLanguageNotAutoTrans,
   changeCurrentLocale
 } from './actions';
 import { SettingsState } from './state';
@@ -35,8 +34,7 @@ const initialState: SettingsState = {
   isTopPosts: false,
   currentThemes: 'system',
   isSystemThemes: true,
-  levelFilter: 3,
-  languageNotAutoTrans: null
+  levelFilter: 3
 };
 
 export const settingsReducer = createReducer(initialState, builder => {
@@ -87,9 +85,6 @@ export const settingsReducer = createReducer(initialState, builder => {
     })
     .addCase(saveLevelFilter, (state, action) => {
       state.levelFilter = action.payload;
-    })
-    .addCase(setLanguageNotAutoTrans, (state, action) => {
-      state.languageNotAutoTrans = action.payload;
     })
     .addCase(changeCurrentLocale, (state, action) => {
       state.locale = action.payload;
