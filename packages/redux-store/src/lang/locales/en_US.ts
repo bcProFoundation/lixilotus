@@ -465,6 +465,7 @@ export default {
   'envelope.unableGetEnvelope': 'Unable to get the envelope from server',
   'envelope.pleaseSelectEnvelope': 'Please select your envelope',
   'envelope.couldNotFetch': 'Could not fetch the envelope from api.',
+  'envelope.cancel': 'Cancel',  
 
   /* 09.Notification */
   'notification.unableToFetch': 'Unable to fetch the notification.',

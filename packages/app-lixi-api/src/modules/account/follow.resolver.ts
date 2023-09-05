@@ -383,7 +383,7 @@ export class FollowResolver {
         const recipient = await this.prisma.account.findFirst({
           where: {
             pages: {
-              every: {
+              some: {
                 id: pageId
               }
             }

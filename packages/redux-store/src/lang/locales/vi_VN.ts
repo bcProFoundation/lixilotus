@@ -464,6 +464,7 @@ export default {
   'envelope.unableGetEnvelope': 'Không thể tải phong bì từ máy chủ',
   'envelope.pleaseSelectEnvelope': 'Hãy chọn 1 phong bì bạn thích',
   'envelope.couldNotFetch': 'Không thể làm mới phong bì.',
+  'envelope.cancel': 'Hủy bỏ',
 
   /* 09.Notification */
   'notification.unableToFetch': 'Không thể tải thông báo.',

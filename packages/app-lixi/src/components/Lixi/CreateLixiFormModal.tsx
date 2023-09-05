@@ -254,6 +254,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   };
 
   const handleCancel = () => {
+    setNewEnvelopeId(null);
     setIsModalVisible(false);
   };
 
@@ -1265,10 +1266,10 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
               flexGrow: '0',
               border: 'none'
             }}
-            key={intl.get('cancel')}
+            key="Cancel"
             onClick={handleCancel}
           >
-            {intl.get('cancel')}
+            {intl.get('envelope.cancel')}
           </Button>,
           <Button
             style={{
