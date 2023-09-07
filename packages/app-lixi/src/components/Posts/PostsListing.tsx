@@ -176,7 +176,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   }, [router.query.q]);
 
-  useEffect(() => dispatch(getLeaderboard()), []);
   const refs = useRef([]);
   useEffect(() => {
     // when refresh page , or first time go in => no show new post for account

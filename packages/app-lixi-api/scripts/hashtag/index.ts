@@ -115,7 +115,6 @@ async function main() {
   }
 
   await updateLotusScoreForHashtag();
-
 }
 
 async function updateLotusScoreForHashtag() {

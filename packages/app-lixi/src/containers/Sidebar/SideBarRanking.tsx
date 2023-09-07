@@ -439,7 +439,7 @@ const SidebarRanking = () => {
                       {index === 0 && (
                         <h4 className="distance" key={`${item.id}-${item.address}`}>
                           <ShortcutItemAccess
-                            burnValue={item.totalBurned}
+                            burnValue={item.accountDana.danaGiven}
                             icon={getTopAccountAvatar(item)}
                             text={item.name}
                             href={`/profile/${item.address}`}
@@ -450,7 +450,7 @@ const SidebarRanking = () => {
                       {index === 1 && (
                         <h4 className="distance" key={`${item.id}-${item.address}`}>
                           <ShortcutItemAccess
-                            burnValue={item.totalBurned}
+                            burnValue={item.accountDana.danaGiven}
                             icon={getTopAccountAvatar(item)}
                             text={item.name}
                             href={`/profile/${item.address}`}
@@ -461,7 +461,7 @@ const SidebarRanking = () => {
                       {index === 2 && (
                         <h4 className="distance" key={`${item.id}-${item.address}`}>
                           <ShortcutItemAccess
-                            burnValue={item.totalBurned}
+                            burnValue={item.accountDana.danaGiven}
                             icon={getTopAccountAvatar(item)}
                             text={item.name}
                             href={`/profile/${item.address}`}
@@ -472,7 +472,7 @@ const SidebarRanking = () => {
                       {index > 2 && (
                         <h4 className="distance" key={`${item.id}-${item.address}`}>
                           <ShortcutItemAccess
-                            burnValue={item.totalBurned}
+                            burnValue={item.accountDana.danaGiven}
                             icon={getTopAccountAvatar(item)}
                             text={item.name}
                             href={`/profile/${item.address}`}

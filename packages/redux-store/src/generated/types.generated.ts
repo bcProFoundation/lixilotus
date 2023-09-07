@@ -18,6 +18,7 @@ export type Scalars = {
 
 export type Account = {
   __typename?: 'Account';
+  accountDana?: Maybe<AccountDana>;
   address: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
   balance: Scalars['Int'];
@@ -42,6 +43,7 @@ export type Account = {
   pageMessageSessions?: Maybe<Array<PageMessageSession>>;
   pages?: Maybe<Array<Page>>;
   publicKey?: Maybe<Scalars['String']>;
+  secondaryLanguage?: Maybe<Scalars['String']>;
   secret?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
@@ -54,6 +56,19 @@ export type AccountConnection = {
   edges?: Maybe<Array<AccountEdge>>;
   pageInfo: PageInfo;
   totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type AccountDana = {
+  __typename?: 'AccountDana';
+  accountDanaHistory?: Maybe<Array<AccountDanaHistory>>;
+  danaGiven?: Maybe<Scalars['Float']>;
+  danaReceived?: Maybe<Scalars['Float']>;
+  id: Scalars['ID'];
+};
+
+export type AccountDanaHistory = {
+  __typename?: 'AccountDanaHistory';
+  id: Scalars['ID'];
 };
 
 export type AccountEdge = {

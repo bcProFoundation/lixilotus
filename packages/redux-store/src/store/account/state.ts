@@ -16,7 +16,7 @@ export interface AccountsState extends EntityState<Account> {
   postCoverUploads: Upload[];
   messageUploads: Upload[];
   editorCache: Nullable<string> | undefined;
-  leaderBoard: Array<Account & { totalBurned: number }>;
+  leaderBoard: Account[];
   transactionReady: boolean;
   graphqlRequestLoading: boolean;
   recentVisitedPeople: WorshipedPerson[];

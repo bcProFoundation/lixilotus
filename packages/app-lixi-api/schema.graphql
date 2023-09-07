@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 type Account {
+  accountDana: AccountDana
   address: String!
   avatar: String
   balance: Int!
@@ -41,6 +42,17 @@ type AccountConnection {
   edges: [AccountEdge!]
   pageInfo: PageInfo!
   totalCount: Int
+}
+
+type AccountDana {
+  accountDanaHistory: [AccountDanaHistory!]
+  danaGiven: Float
+  danaReceived: Float
+  id: ID!
+}
+
+type AccountDanaHistory {
+  id: ID!
 }
 
 type AccountEdge {

@@ -26,7 +26,8 @@
     "indexing:post": "ts-node scripts/meilisearch/post/index.ts",
     "indexing:worship": "ts-node scripts/meilisearch/worship/index.ts",
     "indexing:hashtag": "ts-node scripts/hashtag/index.ts",
-    "update:page": "ts-node scripts/page/index.ts"
+    "update:page": "ts-node scripts/page/index.ts",
+    "update:dana": "ts-node scripts/dana/index.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.6.0",

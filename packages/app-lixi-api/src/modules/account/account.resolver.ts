@@ -1,4 +1,11 @@
-import { Account, AccountDto, CreateAccountInput, ImportAccountInput, UpdateAccountInput } from '@bcpros/lixi-models';
+import {
+  Account,
+  AccountDana,
+  AccountDto,
+  CreateAccountInput,
+  ImportAccountInput,
+  UpdateAccountInput
+} from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { HttpException, HttpStatus, Inject, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
@@ -349,5 +356,18 @@ export class AccountResolver {
     const url = upload.cfImageId ? cfUrl : upload.url;
 
     return url;
+  }
+
+  @ResolveField('accountDana', () => AccountDana)
+  async accountDana(@Parent() account: Account) {
+    const accountDana = await this.prisma.account
+      .findUnique({
+        where: {
+          id: account.id
+        }
+      })
+      .accountDana();
+
+    return accountDana;
   }
 }

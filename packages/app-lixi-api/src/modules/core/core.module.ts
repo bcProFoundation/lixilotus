@@ -28,6 +28,11 @@ import { MessageModule } from '../message/message.module';
 import { BurnFanoutProcessor } from './burn/burn-fanout.processor';
 import { AccountModule } from '../account/account.module';
 import { FeatureFlagController } from './feature-flag/feature-flag.controller';
+import { AccountDanaProcessor } from './burn/account-dana.processor';
+import { BullModule } from '@nestjs/bullmq';
+import { ACCOUNT_DANA_QUEUE } from './burn/burn.constants';
+import IORedis from 'ioredis';
+import _ from 'lodash';
 const baseCorsConfig = cors({
   origin: process.env.BASE_URL ?? ''
 });
@@ -41,6 +46,22 @@ const baseCorsConfig = cors({
         return {
           host: chronikUrl,
           networks: ['xec', 'xpi']
+        };
+      }
+    }),
+    BullModule.registerQueueAsync({
+      name: ACCOUNT_DANA_QUEUE,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          prefix: 'lixilotus:lixi',
+          name: ACCOUNT_DANA_QUEUE,
+          connection: new IORedis({
+            maxRetriesPerRequest: null,
+            enableReadyCheck: false,
+            host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
+            port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
+          })
         };
       }
     }),
@@ -73,7 +94,8 @@ const baseCorsConfig = cors({
     ExportSubLixiesProcessor,
     ExportSubLixiesEventsListener,
     WithdrawSubLixiesEventsListener,
-    BurnFanoutProcessor
+    BurnFanoutProcessor,
+    AccountDanaProcessor
   ],
   exports: [
     LixiService,

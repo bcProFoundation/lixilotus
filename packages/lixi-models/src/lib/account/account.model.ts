@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
 import { GraphQLDateTime } from 'graphql-scalars';
 
@@ -98,7 +98,33 @@ export class Account {
   @Field(() => String, { nullable: true })
   createCommentFee?: Nullable<string>;
 
+  @Field(() => AccountDana, { nullable: true })
+  accountDana?: Nullable<AccountDana>;
+
   constructor(partial: Partial<Account>) {
     Object.assign(this, partial);
   }
+}
+
+@ObjectType()
+export class AccountDana {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => Float, { nullable: true })
+  danaGiven?: number;
+
+  @Field(() => Float, { nullable: true })
+  danaReceived?: number;
+
+  @Field(() => [AccountDanaHistory], { nullable: true })
+  accountDanaHistory?: [AccountDanaHistory];
+}
+
+@ObjectType()
+export class AccountDanaHistory {
+  @Field(() => ID)
+  id: string;
+
+  //Add more if needed
 }
