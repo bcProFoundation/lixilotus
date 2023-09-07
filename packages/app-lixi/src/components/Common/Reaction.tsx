@@ -3,8 +3,7 @@ import { BurnForType } from '@bcpros/lixi-models/lib/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Space, Popover } from 'antd';
 import { openModal } from '@store/modal/actions';
-import React, { useContext, useEffect, useState } from 'react';
-import useWindowDimensions from '@hooks/useWindowDimensions';
+import React, { useContext, useState } from 'react';
 import { OPTION_BURN_TYPE, OPTION_BURN_VALUE } from '@bcpros/lixi-models/constants';
 import { formatBalance } from 'src/utils/cashMethods';
 import { Counter } from './Counter';
@@ -12,6 +11,7 @@ import { PostItem } from '@components/Posts/PostDetail';
 import { getCurrentThemes } from '@store/settings';
 import useAuthorization from './Authorization/use-authorization.hooks';
 import { AuthorizationContext } from '@context/index';
+import useDetectMobileView from '@local-hooks/useDetectMobileView';
 
 const SpaceIconBurnHover = styled(Space)`
   min-height: 38px;
@@ -126,19 +126,13 @@ type ReactionProps = {
 
 const Reaction = ({ post, handleBurnForPost }: ReactionProps) => {
   const dispatch = useAppDispatch();
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useDetectMobileView();
   const [clicked, setClicked] = useState(false);
   const [hovered, setHovered] = useState(false);
-  const { width } = useWindowDimensions();
   const currentTheme = useAppSelector(getCurrentThemes);
 
   const authorization = useContext(AuthorizationContext);
   const askAuthorization = useAuthorization();
-
-  useEffect(() => {
-    const isMobile = width < 868 ? true : false;
-    setIsMobile(isMobile);
-  }, [width]);
 
   const contentHoverLike = <Hint>+{OPTION_BURN_VALUE.LOVE} </Hint>;
 

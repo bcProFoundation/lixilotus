@@ -1,22 +1,19 @@
 import Icon, { UserSwitchOutlined, SendOutlined, CopyOutlined, SyncOutlined } from '@ant-design/icons';
 import { Account } from '@bcpros/lixi-models';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
-import { AvatarUser } from '@components/Common/AvatarUser';
+import AvatarUser from '@components/Common/AvatarUser';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import SearchBox from '@components/Common/SearchBox';
 import NotificationPopup from '@components/NotificationPopup';
 import { ItemAccess } from '@containers/Sidebar/SideBarShortcut';
-import { OrderDirection, PostOrderField } from '@generated/types.generated';
 import { selectAccount, setGraphqlRequestLoading } from '@store/account/actions';
 import { getAccountInfoTemp, getAllAccounts, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { fetchNotifications, startChannel, stopChannel } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
 import { api as postApi } from '@store/post/posts.api';
-import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { saveTopPostsFilter, toggleCollapsedSideNav } from '@store/settings/actions';
 import { getCurrentThemes, getFilterPostsHome, getIsTopPosts, getNavCollapsed } from '@store/settings/selectors';
-import { Badge, Button, Popover, Space, Switch, message, Spin } from 'antd';
+import { Badge, Button, Popover, Space, Switch } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import { push } from 'connected-next-router';
 import * as _ from 'lodash';
@@ -25,7 +22,6 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import intl from 'react-intl-universal';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import styled from 'styled-components';
-import useWindowDimensions from '@hooks/useWindowDimensions';
 import FollowSvg from '@assets/icons/follow.svg';
 import { AuthorizationContext } from '@context/index';
 import useAuthorization from '../../components/Common/Authorization/use-authorization.hooks';
@@ -33,17 +29,80 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Link from 'next/link';
 import { getModals } from '@store/modal/selectors';
 import { showToast } from '@store/toast/actions';
-import { getSelectedWalletPath, getWalletHasUpdated, getWalletStatus } from '@store/wallet';
+import { getWalletHasUpdated, getWalletStatus } from '@store/wallet';
 import { ReactSVG } from 'react-svg';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { openActionSheet } from '@store/action-sheet/actions';
 import { usePageQuery } from '@store/page/pages.generated';
 import { useGetAccountByAddressQuery } from '@store/account/accounts.generated';
 import { FilterLevel } from '../../components/Common/FilterLevel';
+import useDetectMobileView from '@local-hooks/useDetectMobileView';
 
 export type TopbarProps = {
   className?: string;
 };
+
+const SpaceStyled = styled(Space)`
+  justify-self: end;
+  .ant-space-item {
+    div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+  .anticon {
+    font-size: 20px;
+    color: var(--color-primary);
+  }
+  .account-bar {
+    cursor: pointer;
+    padding-right: 1rem;
+    &:hover {
+      .account-name {
+        color: var(--color-primary);
+      }
+    }
+
+    & > span {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .account-info {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      span {
+        line-height: initial;
+        &.account-name {
+          font-size: 13px;
+          font-weight: 500;
+        }
+        &.account-balance {
+          font-size: 12px;
+          color: #a9a8a9;
+        }
+      }
+      .unit {
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--color-primary);
+      }
+    }
+
+    @media (max-width: 960px) {
+      padding-right: 8px;
+      .account-info {
+        display: none !important;
+      }
+    }
+  }
+`;
 
 const PathDirection = styled.div`
   display: flex;
@@ -311,12 +370,55 @@ const BadgeStyled = styled(Badge)`
 `;
 
 const StyledHeader = styled(Header)`
+  background: #fff;
+  display: grid;
+  padding: 0;
+  grid-template-columns: auto auto auto;
+  max-height: 64px;
+  .filter-bar {
+    display: flex;
+    align-items: center;
+  }
+  .action-bar-header {
+    display: flex;
+    align-items: baseline !important;
+    gap: 8px;
+    .anticon {
+      font-size: 20px;
+    }
+    .more-btn {
+      display: flex;
+      justify-content: center;
+      img {
+        width: 20px;
+        height: 20px;
+        filter: var(--filter-color-primary);
+      }
+    }
+  }
+  .home-btn {
+    .anticon {
+      svg {
+        width: 28px;
+        height: 28px;
+      }
+    }
+  }
   @media (max-width: 960px) {
     position: fixed;
     top: 0;
     z-index: 9;
     width: 100%;
     height: 64px;
+    grid-template-columns: 1fr auto;
+    .action-bar-header {
+      .home-btn {
+        display: none !important;
+      }
+    }
+    .filter-bar {
+      display: none !important;
+    }
   }
   @media (max-width: 526px) {
     &.hide-header {
@@ -342,8 +444,7 @@ export const ButtonTopbar = styled(Button)`
   }
 `;
 
-// eslint-disable-next-line react/display-name
-const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallback<HTMLElement>) => {
+const Topbar: React.FC<any> = ({ className }: { className: string }) => {
   const dispatch = useAppDispatch();
   const navCollapsed = useAppSelector(getNavCollapsed);
   const selectedAccount = useAppSelector(getSelectedAccount);
@@ -352,18 +453,12 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const currentPathName = router.pathname ?? '';
   const currentAbsolutePathName = router.asPath ?? '';
   const pathDirection = currentPathName.split('/', 2);
-  const filterValue = useAppSelector(getFilterPostsHome);
-  const selectedAccountId = useAppSelector(getSelectedAccountId);
   const notifications = useAppSelector(getAllNotifications);
-  const [searchValue, setSearchValue] = useState<string | null>(null);
-  const [hashtags, setHashtags] = useState([]);
   const [openMoreOption, setOpenMoreOption] = useState(false);
-  const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   let isTop = useAppSelector(getIsTopPosts);
   const currentTheme = useAppSelector(getCurrentThemes);
-  const [isMobile, setIsMobile] = useState(false);
-  const { width } = useWindowDimensions();
+  const isMobile = useDetectMobileView();
   const authorization = useContext(AuthorizationContext);
   const askAuthorization = useAuthorization();
   const currentModal = useAppSelector(getModals);
@@ -378,11 +473,6 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     },
     { skip: !slug }
   );
-
-  useEffect(() => {
-    const isMobile = width < 968 ? true : false;
-    setIsMobile(isMobile);
-  }, [width]);
 
   const handlePathDirection = useMemo(() => {
     let pathName = '';
@@ -406,55 +496,12 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     return pathImageUrl;
   }, [currentDataPageQuery, currentDataGetAccount, router]);
 
-  useEffect(() => {
-    setOtherAccounts(_.filter(savedAccounts, acc => acc && acc.id !== selectedAccount?.id));
+  const otherAccounts = useMemo(() => {
+    return _.filter(savedAccounts, acc => acc && acc.id !== selectedAccount?.id);
   }, [savedAccounts]);
 
   const handleMenuClick = e => {
     dispatch(toggleCollapsedSideNav(!navCollapsed));
-  };
-
-  const { refetch } = useInfinitePostsQuery(
-    {
-      first: 20,
-      minBurnFilter: filterValue,
-      accountId: selectedAccountId,
-      isTop: String(isTop),
-      orderBy: [
-        {
-          direction: OrderDirection.Desc,
-          field: PostOrderField.UpdatedAt
-        },
-        {
-          direction: OrderDirection.Desc,
-          field: PostOrderField.LastRepostAt
-        }
-      ]
-    },
-    false
-  );
-
-  const handleLogoClick = () => {
-    if (currentPathName === '/') {
-      dispatch(postApi.util.resetApiState());
-      refetch();
-      dispatch(setGraphqlRequestLoading());
-    }
-  };
-
-  const searchPost = (value: string, hashtagsValue?: string[]) => {
-    setSearchValue(value);
-
-    if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
-  };
-
-  const onDeleteQuery = () => {
-    setSearchValue(null);
-    setHashtags([]);
-  };
-
-  const onDeleteHashtag = (hashtagsValue: string[]) => {
-    setHashtags([...hashtagsValue]);
   };
 
   const filterType = () => {
@@ -476,7 +523,6 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const handleIconClick = (newPath?: string) => {
     if (currentPathName === '/' && newPath === '/') {
       dispatch(postApi.util.resetApiState());
-      refetch();
       dispatch(setGraphqlRequestLoading());
     } else {
       dispatch(push(newPath));
@@ -491,6 +537,24 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
 
   const handleMenuPosts = (checked: boolean) => {
     dispatch(saveTopPostsFilter(checked));
+  };
+
+  const balanceAccount = (acc?: any) => {
+    const balanceString = fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0);
+    return `~ ${balanceString.toFixed(2)}`;
+  };
+
+  const handleOnCopy = () => {
+    dispatch(
+      showToast('info', {
+        message: intl.get('toast.info'),
+        description: intl.get('lixi.addressCopied')
+      })
+    );
+  };
+
+  const handleNavigateBack = () => {
+    router.back();
   };
 
   const contentNotification = <PopoverStyled>{NotificationPopup(notifications, selectedAccount, true)}</PopoverStyled>;
@@ -519,24 +583,6 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       )}
     </>
   );
-
-  const balanceAccount = (acc?: any) => {
-    const balanceString = fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0);
-    return `~ ${balanceString.toFixed(2)}`;
-  };
-
-  const handleOnCopy = () => {
-    dispatch(
-      showToast('info', {
-        message: intl.get('toast.info'),
-        description: intl.get('lixi.addressCopied')
-      })
-    );
-  };
-
-  const handleNavigateBack = () => {
-    router.back();
-  };
 
   const contentSelectAccount = (
     <AccountBox>
@@ -710,297 +756,175 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   );
 
   return (
-    <StyledHeader style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={`${className} header-component`}>
-      <PathDirection>
-        {currentPathName !== '/' && (
-          <img className="navigate-back-btn" src="/images/ico-back-topbar.svg" alt="" onClick={handleNavigateBack} />
-        )}
-        {(currentPathName === '/' || currentPathName === '/page/[slug]') && (
-          <img
-            className="menu-mobile"
-            style={{ marginLeft: currentPathName === '/page/[slug]' ? '0' : '10px' }}
-            src="/images/ico-list-bullet_2.svg"
-            alt=""
-            onClick={handleMenuClick}
-          />
-        )}
-        {(currentPathName == '/' || currentPathName == '/page-message') && (
-          <picture>
-            {isMobile ? (
-              <>
+    <>
+      <StyledHeader style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={`${className} header-component`}>
+        <PathDirection>
+          {currentPathName !== '/' && (
+            <img className="navigate-back-btn" src="/images/ico-back-topbar.svg" alt="" onClick={handleNavigateBack} />
+          )}
+          {(currentPathName === '/' || currentPathName === '/page/[slug]') && (
+            <img
+              className="menu-mobile"
+              style={{ marginLeft: currentPathName === '/page/[slug]' ? '0' : '10px' }}
+              src="/images/ico-list-bullet_2.svg"
+              alt=""
+              onClick={handleMenuClick}
+            />
+          )}
+          {(currentPathName == '/' || currentPathName == '/page-message') && (
+            <picture>
+              {isMobile ? (
+                <>
+                  <img
+                    className={'logo-app'}
+                    height={'64px'}
+                    src={'/images/lixilotus-logo.svg'}
+                    alt="lixilotus-logo"
+                    onClick={() => handleIconClick('/')}
+                  />
+                  <img
+                    className={'logo-app'}
+                    height={'64px'}
+                    src={'/images/lixilotus-text.svg'}
+                    alt="lixilotus-logo"
+                    onClick={() => handleIconClick('/')}
+                  />
+                </>
+              ) : (
                 <img
-                  className={'logo-app'}
-                  height={'64px'}
-                  src={'/images/lixilotus-logo.svg'}
-                  alt="lixilotus-logo"
-                  onClick={() => handleIconClick('/')}
-                />
-                <img
-                  className={'logo-app'}
+                  className={'logo-app-desktop logo-app'}
                   height={'64px'}
                   src={'/images/lixilotus-text.svg'}
                   alt="lixilotus-logo"
                   onClick={() => handleIconClick('/')}
                 />
-              </>
-            ) : (
-              <img
-                className={'logo-app-desktop logo-app'}
-                height={'64px'}
-                src={'/images/lixilotus-text.svg'}
-                alt="lixilotus-logo"
-                onClick={() => handleIconClick('/')}
-              />
-            )}
-          </picture>
-        )}
-        {/* <div
-          onClick={handleMenuClick}
-          style={{ marginLeft: currentPathName == '/' ? '2rem' : '0.5rem' }}
-          className="menu-hamburger"
-        >
-          <input className="checkbox" type="checkbox" name="" id="" checked={navCollapsed} />
-          <div className="hamburger-lines">
-            <span className="line line1"></span>
-            <span className="line line2"></span>
-            <span className="line line3"></span>
-          </div>
-        </div> */}
-        {pathDirection[1] != '' && currentPathName != '/page-message' && (
-          <>
-            {handleImagePathDirection && (
-              <StyledImagePathDirection
-                style={{ borderRadius: currentPathName === '/page/[slug]' ? 'var(--border-radius-primary)' : '50%' }}
-                src={handleImagePathDirection}
-                alt=""
-              />
-            )}
-            <h3
-              style={{
-                marginLeft: currentPathName === '/page/[slug]' || currentPathName === '/profile/[slug]' ? '8px' : '0'
-              }}
-              className="path-direction-text"
-            >
-              {handlePathDirection}
-            </h3>
-          </>
-        )}
-      </PathDirection>
-      <div className="filter-bar">
-        <SearchBox />
-      </div>
-      <SpaceStyled direction="horizontal" size={15}>
-        <div className="action-bar-header">
-          {!isMobile && (
-            <ButtonTopbar
-              onClick={() => handleIconClick('/')}
-              className="btn-topbar"
-              type="text"
-              icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-home-topbar.svg'} />}
-            />
+              )}
+            </picture>
           )}
-          <ButtonTopbar
-            onClick={() => {
-              if (authorization.authorized) {
-                handleIconClick('/page-message');
-              } else {
-                askAuthorization();
-              }
-            }}
-            className="btn-topbar home-btn"
-            type="text"
-            icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-message-heart-circle-topbar.svg'} />}
-          />
-          <Popover
-            overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''}`}
-            arrow={false}
-            content={contentFilterBurn}
-            placement="bottom"
-          >
+          {pathDirection[1] != '' && currentPathName != '/page-message' && (
+            <>
+              {handleImagePathDirection && (
+                <StyledImagePathDirection
+                  style={{ borderRadius: currentPathName === '/page/[slug]' ? 'var(--border-radius-primary)' : '50%' }}
+                  src={handleImagePathDirection}
+                  alt=""
+                />
+              )}
+              <h3
+                style={{
+                  marginLeft: currentPathName === '/page/[slug]' || currentPathName === '/profile/[slug]' ? '8px' : '0'
+                }}
+                className="path-direction-text"
+              >
+                {handlePathDirection}
+              </h3>
+            </>
+          )}
+        </PathDirection>
+        <div className="filter-bar">
+          <SearchBox />
+        </div>
+        <SpaceStyled direction="horizontal" size={15}>
+          <div className="action-bar-header">
+            {!isMobile && (
+              <ButtonTopbar
+                onClick={() => handleIconClick('/')}
+                className="btn-topbar"
+                type="text"
+                icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-home-topbar.svg'} />}
+              />
+            )}
             <ButtonTopbar
-              className="btn-topbar filter-btn"
+              onClick={() => {
+                if (authorization.authorized) {
+                  handleIconClick('/page-message');
+                } else {
+                  askAuthorization();
+                }
+              }}
+              className="btn-topbar home-btn"
               type="text"
-              icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-filter.svg'} />}
+              icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-message-heart-circle-topbar.svg'} />}
             />
-          </Popover>
-          <Popover
-            overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} nofication-btn`}
-            arrow={false}
-            content={contentNotification}
-            placement="bottom"
-          >
-            <BadgeStyled
-              count={notifications.filter(item => _.isNil(item.readAt)).length > 0 ? 1 : null}
-              overflowCount={9}
-              offset={[notifications?.length < 10 ? 0 : 5, 8]}
-              color="var(--color-primary)"
+            <Popover
+              overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''}`}
+              arrow={false}
+              content={contentFilterBurn}
+              placement="bottom"
             >
               <ButtonTopbar
-                className="btn-topbar animate__animated animate__heartBeat"
+                className="btn-topbar filter-btn"
                 type="text"
-                icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-notification.svg'} />}
+                icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-filter.svg'} />}
               />
-            </BadgeStyled>
-          </Popover>
-          <Popover
-            onOpenChange={visible => setOpenMoreOption(visible)}
-            overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} more-btn`}
-            arrow={false}
-            content={contentMoreAction}
-            placement="bottom"
-            open={openMoreOption}
-          >
-            <ButtonTopbar
-              className="btn-topbar filter-btn"
-              type="text"
-              icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-category.svg'} />}
-            />
-          </Popover>
-        </div>
-        <div className="account-bar">
-          <Popover
-            overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} account-popover`}
-            arrow={false}
-            content={contentSelectAccount}
-            placement="bottom"
-          >
-            <div
-              onClick={() => {
-                if (authorization.authorized) !isMobile && router.push(`/profile/${selectedAccount.address}`);
-                else askAuthorization();
-              }}
+            </Popover>
+            <Popover
+              overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} nofication-btn`}
+              arrow={false}
+              content={contentNotification}
+              placement="bottom"
             >
-              <AvatarUser name={selectedAccount?.name || null} icon={accountInfoTemp?.avatar} isMarginRight={false} />
-              <p className="account-info">
-                <span className="account-name">{selectedAccount?.name}</span>
-                {walletHasUpdated ? (
-                  <span className="account-balance">
-                    {balanceAccount(selectedAccount)} <span className="unit">{currency.ticker}</span>
-                  </span>
-                ) : (
-                  <span>
-                    <SyncOutlined spin /> <span className="unit">{currency.ticker}</span>
-                  </span>
-                )}
-              </p>
-            </div>
-          </Popover>
-        </div>
-      </SpaceStyled>
-    </StyledHeader>
+              <BadgeStyled
+                count={notifications.filter(item => _.isNil(item.readAt)).length > 0 ? 1 : null}
+                overflowCount={9}
+                offset={[notifications?.length < 10 ? 0 : 5, 8]}
+                color="var(--color-primary)"
+              >
+                <ButtonTopbar
+                  className="btn-topbar animate__animated animate__heartBeat"
+                  type="text"
+                  icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-notification.svg'} />}
+                />
+              </BadgeStyled>
+            </Popover>
+            <Popover
+              onOpenChange={visible => setOpenMoreOption(visible)}
+              overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} more-btn`}
+              arrow={false}
+              content={contentMoreAction}
+              placement="bottom"
+              open={openMoreOption}
+            >
+              <ButtonTopbar
+                className="btn-topbar filter-btn"
+                type="text"
+                icon={<ReactSVG wrapper="span" className="anticon" src={'/images/ico-category.svg'} />}
+              />
+            </Popover>
+          </div>
+          <div className="account-bar">
+            <Popover
+              overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} account-popover`}
+              arrow={false}
+              content={contentSelectAccount}
+              placement="bottom"
+            >
+              <div
+                onClick={() => {
+                  if (authorization.authorized) !isMobile && router.push(`/profile/${selectedAccount.address}`);
+                  else askAuthorization();
+                }}
+              >
+                <AvatarUser name={selectedAccount?.name || null} icon={accountInfoTemp?.avatar} isMarginRight={false} />
+                <p className="account-info">
+                  <span className="account-name">{selectedAccount?.name}</span>
+                  {walletHasUpdated ? (
+                    <span className="account-balance">
+                      {balanceAccount(selectedAccount)} <span className="unit">{currency.ticker}</span>
+                    </span>
+                  ) : (
+                    <span>
+                      <SyncOutlined spin /> <span className="unit">{currency.ticker}</span>
+                    </span>
+                  )}
+                </p>
+              </div>
+            </Popover>
+          </div>
+        </SpaceStyled>
+      </StyledHeader>
+    </>
   );
-});
+};
 
-const SpaceStyled = styled(Space)`
-  justify-self: end;
-  .ant-space-item {
-    div {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-  }
-  .anticon {
-    font-size: 20px;
-    color: var(--color-primary);
-  }
-  .account-bar {
-    cursor: pointer;
-    padding-right: 1rem;
-    &:hover {
-      .account-name {
-        color: var(--color-primary);
-      }
-    }
-
-    & > span {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .account-info {
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-      span {
-        line-height: initial;
-        &.account-name {
-          font-size: 13px;
-          font-weight: 500;
-        }
-        &.account-balance {
-          font-size: 12px;
-          color: #a9a8a9;
-        }
-      }
-      .unit {
-        font-size: 9px;
-        font-weight: 600;
-        color: var(--color-primary);
-      }
-    }
-
-    @media (max-width: 960px) {
-      padding-right: 8px;
-      .account-info {
-        display: none !important;
-      }
-    }
-  }
-`;
-
-const StyledTopbar = styled(Topbar)`
-  background: #fff;
-  display: grid;
-  padding: 0;
-  grid-template-columns: auto auto auto;
-  max-height: 64px;
-
-  .filter-bar {
-    display: flex;
-    align-items: center;
-  }
-  .action-bar-header {
-    display: flex;
-    align-items: baseline !important;
-    gap: 8px;
-    .anticon {
-      font-size: 20px;
-    }
-    .more-btn {
-      display: flex;
-      justify-content: center;
-      img {
-        width: 20px;
-        height: 20px;
-        filter: var(--filter-color-primary);
-      }
-    }
-  }
-  .home-btn {
-    .anticon {
-      svg {
-        width: 28px;
-        height: 28px;
-      }
-    }
-  }
-
-  @media (max-width: 960px) {
-    grid-template-columns: 1fr auto;
-    .action-bar-header {
-      .home-btn {
-        display: none !important;
-      }
-    }
-    .filter-bar {
-      display: none !important;
-    }
-  }
-`;
-
-export default StyledTopbar;
+export default React.memo(Topbar);

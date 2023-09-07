@@ -29,7 +29,7 @@ import router from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import { AvatarUser } from './AvatarUser';
+import AvatarUser from './AvatarUser';
 import { SocialsEnum } from './Embed';
 import EditorLexical from './Lexical/EditorLexical';
 import { currency } from './Ticker';

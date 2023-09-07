@@ -1,6 +1,6 @@
 import { Comment } from '@ant-design/compatible';
 import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';
-import { AvatarUser } from '@components/Common/AvatarUser';
+import AvatarUser from '@components/Common/AvatarUser';
 import { getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { downloadExportedLixi } from '@store/lixi/actions';

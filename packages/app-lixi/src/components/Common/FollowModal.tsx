@@ -13,7 +13,7 @@ import { useInfiniteFollowingsByFollowerQuery } from '@store/account/useInfinite
 import { useInfiniteFollowersByFollowingQuery } from '@store/account/useInfiniteFollowersByFollowingQuery';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Link from 'next/link';
-import { AvatarUser } from './AvatarUser';
+import AvatarUser from './AvatarUser';
 import { currency } from './Ticker';
 
 const { TabPane } = Tabs;

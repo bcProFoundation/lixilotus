@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import intl from 'react-intl-universal';
 import { useRouter } from 'next/router';
 import { Badge, Popover } from 'antd';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import _ from 'lodash';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { PopoverStyled } from '@containers/Topbar';
@@ -11,22 +11,11 @@ import { getCurrentThemes } from '@store/settings';
 import useAuthorization from '@components/Common/Authorization/use-authorization.hooks';
 import { AuthorizationContext } from '@context/index';
 import { getModals } from '@store/modal';
-import { ReactSVG } from 'react-svg';
 import { openActionSheet } from '@store/action-sheet/actions';
-import { DefaultTheme } from 'styled-components';
 import { push } from 'connected-next-router';
+import { getAllNotifications } from '@store/notification';
 
-type INavButtonProps = React.PropsWithChildren<{
-  active?: boolean;
-  theme?: DefaultTheme;
-  onClick?: Function;
-}>;
-
-const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProps>`
-  :focus,
-  :active {
-    outline: none;
-  }
+const NavButton = styled.button<{ $active?: boolean }>`
   min-width: 62px;
   max-width: 62px;
   cursor: pointer;
@@ -54,17 +43,7 @@ const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProps>`
       height: 26px;
     }
   }
-  ${({ active, ...props }) =>
-    active &&
-    `
-        color: ${props.theme.primary};
-        border-top: 3px solid ${props.theme.primary};
-        .ico-img {
-          &:path {
-            color: ${props.theme.primary};
-          }
-        }
-  `}
+  color: ${props => (props.$active ? '#BF4F74' : 'white')};
 `;
 
 const StyledFooter = styled.div`
@@ -90,14 +69,9 @@ const StyledFooter = styled.div`
     display: flex;
     left: 0;
   }
-  @media (max-width: 526px) {
-    &.hide-footer {
-      display: none;
-    }
-  }
 `;
 
-const Footer = ({ notifications, classList }: { notifications?: any; classList?: any }) => {
+const Footer = ({ classList }: { classList?: any }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const currentPathName = router.pathname ?? '';
@@ -107,6 +81,7 @@ const Footer = ({ notifications, classList }: { notifications?: any; classList?:
   const authorization = useContext(AuthorizationContext);
   const askAuthorization = useAuthorization();
   const currentModal = useAppSelector(getModals);
+  const notifications = useAppSelector(getAllNotifications);
 
   const handleIconClick = (newPath?: string) => {
     dispatch(push(newPath));
@@ -235,7 +210,7 @@ const Footer = ({ notifications, classList }: { notifications?: any; classList?:
     <>
       <StyledFooter className={`footer-component ${classList}`}>
         <div onClick={() => router.push('/')}>
-          <NavButton active={currentPathName == '/'}>
+          <NavButton $active={currentPathName == '/'}>
             <img
               className="ico-img"
               src={currentPathName == '/' ? '/images/ico-home-active.svg' : '/images/ico-home.svg'}
@@ -244,7 +219,7 @@ const Footer = ({ notifications, classList }: { notifications?: any; classList?:
           </NavButton>
         </div>
         <div onClick={() => router.push('/page-message')}>
-          <NavButton active={currentPathName.includes('/page-message')}>
+          <NavButton $active={currentPathName.includes('/page-message')}>
             <img
               className="ico-img ico-messenger"
               src={
@@ -257,7 +232,7 @@ const Footer = ({ notifications, classList }: { notifications?: any; classList?:
           </NavButton>
         </div>
         <div onClick={() => router.push('/notifications')}>
-          <NavButton active={currentPathName == '/notifications'}>
+          <NavButton $active={currentPathName == '/notifications'}>
             <Badge
               count={notifications.filter(item => item && _.isNil(item.readAt)).length}
               overflowCount={9}
@@ -293,4 +268,4 @@ const Footer = ({ notifications, classList }: { notifications?: any; classList?:
   );
 };
 
-export default Footer;
+export default React.memo(Footer);

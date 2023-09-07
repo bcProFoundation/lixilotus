@@ -1,23 +1,19 @@
-import { getGraphqlRequestStatus, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
+import { getGraphqlRequestStatus, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { Button, ConfigProvider, Layout, Spin } from 'antd';
+import { ConfigProvider, Layout, Spin } from 'antd';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
-import { useGetAccountByAddressQuery } from '@store/account/accounts.api';
 import { LoadingOutlined } from '@ant-design/icons';
 
-import Footer from '@components/Footer/Footer';
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 import Sidebar from '@containers/Sidebar';
 import DummySidebar from '@containers/Sidebar/DummySidebar';
 import SidebarRanking from '@containers/Sidebar/SideBarRanking';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import Topbar from '@containers/Topbar';
-import { setAccountInfoTemp, setTransactionReady } from '@store/account/actions';
+import { setTransactionReady } from '@store/account/actions';
 import { getIsGlobalLoading } from '@store/loading/selectors';
-import { fetchNotifications } from '@store/notification/actions';
-import { getAllNotifications } from '@store/notification/selectors';
 import { loadLocale, setCurrentThemes } from '@store/settings/actions';
 import { getCurrentLocale, getCurrentThemes, getIntlInitStatus, getIsSystemThemes } from '@store/settings/selectors';
 import { getSlpBalancesAndUtxos } from '@store/wallet';
@@ -28,15 +24,14 @@ import ActionSheet from '../../Common/ActionSheet';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
 import 'animate.css';
-import useWindowDimensions from '@hooks/useWindowDimensions';
 import useThemeDetector from '@local-hooks/useThemeDetector';
 import { setShowCreatePost } from '@store/post/actions';
 import ToastNotificationManage from '@components/Common/ToastNotificationManage';
 import lightTheme from 'src/styles/themes/lightTheme';
 import darkTheme from 'src/styles/themes/darkTheme';
-import { useSocket } from '@context/index';
-import { userSubcribeToAddressChannel, userSubcribeToMultiPageMessageSession } from '@store/message/actions';
 import { getCurrentPageMessageSession } from '@store/page/selectors';
+import Footer from '@components/Footer/Footer';
+import useDetectMobileView from '@local-hooks/useDetectMobileView';
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -229,23 +224,17 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const currentLocale = useAppSelector(getCurrentLocale);
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
-  const [height, setHeight] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [navBarTitle, setNavBarTitle] = useState('');
   const router = useRouter();
   const selectedKey = router.pathname ?? '';
-  const disableSideBarRanking = ['lixi', 'profile'];
-  const ref = useRef(null);
-  const notifications = useAppSelector(getAllNotifications);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
   const scrollRef = useRef(null);
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
   const currentTheme = useAppSelector(getCurrentThemes);
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useDetectMobileView();
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
-  const { width } = useWindowDimensions();
   const currentDeviceTheme = useThemeDetector();
   const isSystemThemes = useAppSelector(getIsSystemThemes);
   const currentPageMessageSession = useAppSelector(getCurrentPageMessageSession);
@@ -257,24 +246,9 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   }, [currentDeviceTheme, currentTheme]);
 
   useEffect(() => {
-    const isMobile = width < 960 ? true : false;
-    setIsMobile(isMobile);
-  }, [width]);
-
-  useEffect(() => {
     if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
-
-  const setRef = useCallback(node => {
-    if (node && node.clientHeight) {
-      // Check if a node is actually passed. Otherwise node would be null.
-      const height = node.clientHeight;
-      setHeight(height);
-    }
-    // Save a reference to the node
-    ref.current = node;
-  }, []);
 
   useEffect(() => {
     if (graphqlRequestLoading) {
@@ -289,15 +263,6 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
 
   injectStore(currentLocale);
   const isLoading = useAppSelector(getIsGlobalLoading);
-
-  const getNamePathDirection = () => {
-    const itemSelect = navBarHeaderList.find(item => item.path === selectedKey) || null;
-    setNavBarTitle(itemSelect?.name || '');
-  };
-
-  useEffect(() => {
-    getNamePathDirection();
-  }, [selectedKey]);
 
   useEffect(() => {
     dispatch(loadLocale(currentLocale));
@@ -317,11 +282,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   };
 
   const hideStatusBar = useMemo(() => {
-    let isHide = false;
-    if (selectedKey === '/page-message' && currentPageMessageSession) {
-      isHide = true;
-    }
-    return isHide;
+    return selectedKey === '/page-message' && currentPageMessageSession && isMobile;
   }, [selectedKey, currentPageMessageSession]);
 
   return (
@@ -336,14 +297,17 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                   <ModalManager />
                   <AppContainer className="app-container">
                     <Sidebar className="sidebar-mobile" />
-                    {/* Need to reimplement top bar */}
-                    {/* <Topbar ref={ref}/> */}
-                    <Topbar
-                      className={`animate__animated ${
-                        isMobile && selectedKey === '/' ? (visible ? 'animate__fadeInDown' : 'animate__fadeOutUp') : ''
-                      } ${hideStatusBar ? 'hide-header' : ''}`}
-                    />
-                    {/* @ts-ignore */}
+                    {!hideStatusBar && (
+                      <Topbar
+                        className={`animate__animated animate__faster ${
+                          isMobile && selectedKey === '/'
+                            ? visible
+                              ? 'animate__fadeInDown'
+                              : 'animate__fadeOutUp'
+                            : ''
+                        }`}
+                      />
+                    )}
                     <div
                       className="container-content"
                       style={{ padding: selectedKey === '/page-message' ? '0' : '' }}
@@ -356,19 +320,19 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                         {children}
                       </div>
                       {/* This below is just a dummy sidebar */}
-                      {/* TODO: Implement SidebarRanking in future */}
                       {(selectedKey === '/wallet' || selectedKey === '/') && <SidebarRanking></SidebarRanking>}
                       <DummySidebar />
-                      <Footer
-                        classList={`animate__animated ${
-                          isMobile && selectedKey === '/'
-                            ? visible
-                              ? 'animate__fadeInUp'
-                              : 'animate__fadeOutDown'
-                            : ''
-                        } ${hideStatusBar ? 'hide-footer' : ''}`}
-                        notifications={notifications}
-                      />
+                      {!hideStatusBar && (
+                        <Footer
+                          classList={`animate__animated animate__faster ${
+                            isMobile && selectedKey === '/'
+                              ? visible
+                                ? 'animate__fadeInUp'
+                                : 'animate__fadeOutDown'
+                              : ''
+                          }`}
+                        />
+                      )}
                     </div>
                   </AppContainer>
                   <ActionSheet />

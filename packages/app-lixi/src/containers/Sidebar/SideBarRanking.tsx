@@ -6,18 +6,16 @@ import { WalletContext } from '@context/index';
 import { generateAccount, getLeaderboard, importAccount, selectAccount } from '@store/account/actions';
 import { getAllAccounts, getSelectedAccount, getLeaderBoard } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { fetchNotifications } from '@store/notification/actions';
-import { getAllNotifications } from '@store/notification/selectors';
-import { Badge, Button, Space, Form, Input, Layout, Modal, Tabs, Collapse, Skeleton } from 'antd';
+import { Button, Space, Form, Input, Layout, Modal, Skeleton } from 'antd';
 import * as _ from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 import { OrderDirection, PageOrderField } from '@generated/types.generated';
-import { AvatarUser } from '@components/Common/AvatarUser';
+import AvatarUser from '@components/Common/AvatarUser';
 import { getCurrentThemes } from '@store/settings';
 const { Sider } = Layout;
 
@@ -66,16 +64,6 @@ const RankingSideBar = styled(Sider)`
   }
   &::-webkit-scrollbar-thumb {
     background: transparent;
-  }
-  &.show-scroll {
-    &::-webkit-scrollbar {
-      width: 5px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
-      box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
-      border-radius: 100px;
-    }
   }
   .ant-layout-sider-children {
     display: flex;
@@ -250,15 +238,9 @@ const SidebarRanking = () => {
   const dispatch = useAppDispatch();
   const Wallet = React.useContext(WalletContext);
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const notifications = useAppSelector(getAllNotifications);
   const [isSeemore, setIsSeemore] = useState<boolean>(false);
-  const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
-  const refSidebarRanking = useRef<HTMLDivElement | null>(null);
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
-  const [isShowNotification, setIsShowNotification] = useState<boolean>(false);
-  const [isCollapse, setIsCollapse] = useState(false);
   const leaderboard = useAppSelector(getLeaderBoard);
-  const { Panel } = Collapse;
   const currentTheme = useAppSelector(getCurrentThemes);
   const [open, setOpen] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
@@ -289,8 +271,8 @@ const SidebarRanking = () => {
     false
   );
 
-  useEffect(() => {
-    setOtherAccounts(_.filter(savedAccounts, acc => acc && acc.id !== selectedAccount?.id));
+  const otherAccounts = useMemo(() => {
+    return _.filter(savedAccounts, acc => acc && acc.id !== selectedAccount?.id) || [];
   }, [savedAccounts]);
 
   const showModal = () => {
@@ -329,14 +311,6 @@ const SidebarRanking = () => {
     setFormData(p => ({ ...p, [name]: value }));
   };
 
-  const triggerSrollbar = e => {
-    const sidebarRankingNode = refSidebarRanking.current;
-    sidebarRankingNode.classList.add('show-scroll');
-    setTimeout(() => {
-      sidebarRankingNode.classList.remove('show-scroll');
-    }, 700);
-  };
-
   const getTopAccountAvatar = (item: any) => {
     if (item.avatar) {
       const { upload } = item.avatar;
@@ -347,152 +321,147 @@ const SidebarRanking = () => {
   };
 
   return (
-    <RankingSideBar
-      className="sidebar-ranking"
-      id="ranking-sidebar"
-      ref={refSidebarRanking}
-      onScroll={e => triggerSrollbar(e)}
-    >
+    <RankingSideBar className="sidebar-ranking" id="ranking-sidebar">
       {router?.pathname == '/' && (
-        <div className="right-bar">
-          <div className="container-right-bar your-shortcuts card">
-            <div className="content">
-              <h3 className="title-card">{intl.get('general.topPages')}</h3>
-              {isLoadingPage ? (
-                <SkeletonStyled active avatar paragraph={{ rows: 1 }} />
-              ) : (
-                topPagesData.slice(0, 5).map((item, index) => {
-                  return (
-                    <>
-                      {index === 0 && (
-                        <h4 className="distance" key={`${item.id}`}>
-                          <ShortcutItemAccess
-                            burnValue={item.totalBurnForPage}
-                            icon={item.avatar ? item.avatar : item.name}
-                            text={item.name}
-                            href={`/page/${item.id}`}
-                            isPage={true}
-                            icoRanking="/images/ico-circled-1-ranking.png"
-                          />
-                        </h4>
-                      )}
-                      {index === 1 && (
-                        <h4 className="distance" key={`${item.id}`}>
-                          <ShortcutItemAccess
-                            burnValue={item.totalBurnForPage}
-                            icon={item.avatar ? item.avatar : item.name}
-                            text={item.name}
-                            href={`/page/${item.id}`}
-                            isPage={true}
-                            icoRanking="/images/ico-circled-2-ranking.png"
-                          />
-                        </h4>
-                      )}
-                      {index === 2 && (
-                        <h4 className="distance" key={`${item.id}`}>
-                          <ShortcutItemAccess
-                            burnValue={item.totalBurnForPage}
-                            icon={item.avatar ? item.avatar : item.name}
-                            text={item.name}
-                            href={`/page/${item.id}`}
-                            isPage={true}
-                            icoRanking="/images/ico-circled-3-ranking.png"
-                          />
-                        </h4>
-                      )}
-                      {index > 2 && (
-                        <h4 className="distance" key={`${item.id}`}>
-                          <ShortcutItemAccess
-                            burnValue={item.totalBurnForPage}
-                            icon={item.avatar ? item.avatar : item.name}
-                            text={item.name}
-                            isPage={true}
-                            href={`/page/${item.id}`}
-                          />
-                        </h4>
-                      )}
-                    </>
-                  );
-                })
-              )}
+        <>
+          <div className="right-bar">
+            <div className="container-right-bar your-shortcuts card">
+              <div className="content">
+                <h3 className="title-card">{intl.get('general.topPages')}</h3>
+                {isLoadingPage ? (
+                  <SkeletonStyled active avatar paragraph={{ rows: 1 }} />
+                ) : (
+                  topPagesData.slice(0, 5).map((item, index) => {
+                    return (
+                      <>
+                        {index === 0 && (
+                          <h4 className="distance" key={`${item.id}`}>
+                            <ShortcutItemAccess
+                              burnValue={item.totalBurnForPage}
+                              icon={item.avatar ? item.avatar : item.name}
+                              text={item.name}
+                              href={`/page/${item.id}`}
+                              isPage={true}
+                              icoRanking="/images/ico-circled-1-ranking.png"
+                            />
+                          </h4>
+                        )}
+                        {index === 1 && (
+                          <h4 className="distance" key={`${item.id}`}>
+                            <ShortcutItemAccess
+                              burnValue={item.totalBurnForPage}
+                              icon={item.avatar ? item.avatar : item.name}
+                              text={item.name}
+                              href={`/page/${item.id}`}
+                              isPage={true}
+                              icoRanking="/images/ico-circled-2-ranking.png"
+                            />
+                          </h4>
+                        )}
+                        {index === 2 && (
+                          <h4 className="distance" key={`${item.id}`}>
+                            <ShortcutItemAccess
+                              burnValue={item.totalBurnForPage}
+                              icon={item.avatar ? item.avatar : item.name}
+                              text={item.name}
+                              href={`/page/${item.id}`}
+                              isPage={true}
+                              icoRanking="/images/ico-circled-3-ranking.png"
+                            />
+                          </h4>
+                        )}
+                        {index > 2 && (
+                          <h4 className="distance" key={`${item.id}`}>
+                            <ShortcutItemAccess
+                              burnValue={item.totalBurnForPage}
+                              icon={item.avatar ? item.avatar : item.name}
+                              text={item.name}
+                              isPage={true}
+                              href={`/page/${item.id}`}
+                            />
+                          </h4>
+                        )}
+                      </>
+                    );
+                  })
+                )}
+              </div>
+              <img
+                className="animation-top-ranking"
+                src={`${currentTheme === 'dark' ? '/images/ico-fire-static.png' : '/images/ico-fire-animation.gif'}`}
+                alt=""
+              />
             </div>
-            <img
-              className="animation-top-ranking"
-              src={`${currentTheme === 'dark' ? '/images/ico-fire-static.png' : '/images/ico-fire-animation.gif'}`}
-              alt=""
-            />
           </div>
-        </div>
-      )}
 
-      {router?.pathname == '/' && (
-        <div className="right-bar">
-          <div className="container-right-bar your-shortcuts card">
-            <div className="content">
-              <h3 className="title-card">{intl.get('general.topAccounts')}</h3>
-              {isLoadingPage ? (
-                <SkeletonStyled active avatar paragraph={{ rows: 1 }} />
-              ) : (
-                leaderboard.map((item, index) => {
-                  return (
-                    <>
-                      {index === 0 && (
-                        <h4 className="distance" key={`${item.id}-${item.address}`}>
-                          <ShortcutItemAccess
-                            burnValue={item.accountDana.danaGiven}
-                            icon={getTopAccountAvatar(item)}
-                            text={item.name}
-                            href={`/profile/${item.address}`}
-                            icoRanking="/images/ico-circled-1-ranking.png"
-                          />
-                        </h4>
-                      )}
-                      {index === 1 && (
-                        <h4 className="distance" key={`${item.id}-${item.address}`}>
-                          <ShortcutItemAccess
-                            burnValue={item.accountDana.danaGiven}
-                            icon={getTopAccountAvatar(item)}
-                            text={item.name}
-                            href={`/profile/${item.address}`}
-                            icoRanking="/images/ico-circled-2-ranking.png"
-                          />
-                        </h4>
-                      )}
-                      {index === 2 && (
-                        <h4 className="distance" key={`${item.id}-${item.address}`}>
-                          <ShortcutItemAccess
-                            burnValue={item.accountDana.danaGiven}
-                            icon={getTopAccountAvatar(item)}
-                            text={item.name}
-                            href={`/profile/${item.address}`}
-                            icoRanking="/images/ico-circled-3-ranking.png"
-                          />
-                        </h4>
-                      )}
-                      {index > 2 && (
-                        <h4 className="distance" key={`${item.id}-${item.address}`}>
-                          <ShortcutItemAccess
-                            burnValue={item.accountDana.danaGiven}
-                            icon={getTopAccountAvatar(item)}
-                            text={item.name}
-                            href={`/profile/${item.address}`}
-                          />
-                        </h4>
-                      )}
-                    </>
-                  );
-                })
-              )}
+          <div className="right-bar">
+            <div className="container-right-bar your-shortcuts card">
+              <div className="content">
+                <h3 className="title-card">{intl.get('general.topAccounts')}</h3>
+                {isLoadingPage ? (
+                  <SkeletonStyled active avatar paragraph={{ rows: 1 }} />
+                ) : (
+                  leaderboard.map((item, index) => {
+                    return (
+                      <>
+                        {index === 0 && (
+                          <h4 className="distance" key={`${item.id}-${item.address}`}>
+                            <ShortcutItemAccess
+                              burnValue={item.accountDana.danaGiven}
+                              icon={getTopAccountAvatar(item)}
+                              text={item.name}
+                              href={`/profile/${item.address}`}
+                              icoRanking="/images/ico-circled-1-ranking.png"
+                            />
+                          </h4>
+                        )}
+                        {index === 1 && (
+                          <h4 className="distance" key={`${item.id}-${item.address}`}>
+                            <ShortcutItemAccess
+                              burnValue={item.accountDana.danaGiven}
+                              icon={getTopAccountAvatar(item)}
+                              text={item.name}
+                              href={`/profile/${item.address}`}
+                              icoRanking="/images/ico-circled-2-ranking.png"
+                            />
+                          </h4>
+                        )}
+                        {index === 2 && (
+                          <h4 className="distance" key={`${item.id}-${item.address}`}>
+                            <ShortcutItemAccess
+                              burnValue={item.accountDana.danaGiven}
+                              icon={getTopAccountAvatar(item)}
+                              text={item.name}
+                              href={`/profile/${item.address}`}
+                              icoRanking="/images/ico-circled-3-ranking.png"
+                            />
+                          </h4>
+                        )}
+                        {index > 2 && (
+                          <h4 className="distance" key={`${item.id}-${item.address}`}>
+                            <ShortcutItemAccess
+                              burnValue={item.accountDana.danaGiven}
+                              icon={getTopAccountAvatar(item)}
+                              text={item.name}
+                              href={`/profile/${item.address}`}
+                            />
+                          </h4>
+                        )}
+                      </>
+                    );
+                  })
+                )}
+              </div>
+              <img
+                className="animation-top-ranking"
+                src={`${
+                  currentTheme === 'dark' ? '/images/ico-fire-heart-static.png' : '/images/ico-fire-heart-animation.gif'
+                }`}
+                alt=""
+              />
             </div>
-            <img
-              className="animation-top-ranking"
-              src={`${
-                currentTheme === 'dark' ? '/images/ico-fire-heart-static.png' : '/images/ico-fire-heart-animation.gif'
-              }`}
-              alt=""
-            />
           </div>
-        </div>
+        </>
       )}
 
       {router?.pathname === '/wallet' && (
@@ -613,4 +582,4 @@ const SidebarRanking = () => {
   );
 };
 
-export default SidebarRanking;
+export default React.memo(SidebarRanking);

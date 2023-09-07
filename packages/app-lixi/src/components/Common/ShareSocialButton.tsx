@@ -12,12 +12,14 @@ import {
 } from 'react-share';
 import { LinkOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { RWebShare } from 'react-web-share';
-import { Button, message, Popover } from 'antd';
+import { Button, Popover } from 'antd';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { stripHtml } from 'string-strip-html';
 import { useAppDispatch } from '@store/hooks';
 import { showToast } from '@store/toast/actions';
+import useDetectMobileView from '@local-hooks/useDetectMobileView';
+import React from 'react';
 
 type SocialSharePanelProps = {
   className?: string;
@@ -28,7 +30,6 @@ type ShareSocialProps = {
   slug: any;
   content?: string;
   postAccountName?: string;
-  isMobile?: boolean;
 };
 
 const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.Element => {
@@ -113,10 +114,11 @@ const ShareButton = styled.span`
   }
 `;
 
-export const ShareSocialButton = (props: ShareSocialProps) => {
-  const { slug, isMobile, content, postAccountName } = props;
+const ShareSocialButton = (props: ShareSocialProps) => {
+  const { slug, content, postAccountName } = props;
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const shareUrl = `${baseUrl}post/${slug}`;
+  const isMobile = useDetectMobileView();
 
   const ShareSocialDropdown = (
     <Popover content={() => popOverContent(shareUrl)}>
@@ -147,3 +149,5 @@ export const ShareSocialButton = (props: ShareSocialProps) => {
 
   return <>{!isMobile ? ShareSocialButton : ShareSocialDropdown}</>;
 };
+
+export default React.memo(ShareSocialButton);

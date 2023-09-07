@@ -13,7 +13,7 @@ import intl from 'react-intl-universal';
 import { getAllNotifications } from '@store/notification/selectors';
 import NotificationPopup from '@components/NotificationPopup';
 import { fetchNotifications } from '@store/notification/actions';
-import { AvatarUser } from '@components/Common/AvatarUser';
+import AvatarUser from '@components/Common/AvatarUser';
 
 const { Sider } = Layout;
 

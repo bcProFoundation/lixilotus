@@ -3,7 +3,7 @@ import { PostItem } from '@components/Posts/PostDetail';
 import styled from 'styled-components';
 import BaseReaction from './Reaction';
 import { formatBalance } from 'src/utils/cashMethods';
-import { ShareSocialButton } from './ShareSocialButton';
+import ShareSocialButton from './ShareSocialButton';
 import { RetweetOutlined } from '@ant-design/icons';
 import { Space, Tooltip } from 'antd';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
@@ -231,4 +231,4 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment, isSetBorde
   );
 };
 
-export default ActionPostBar;
+export default React.memo(ActionPostBar);

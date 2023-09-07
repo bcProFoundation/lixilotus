@@ -30,7 +30,6 @@ import { WalletContext } from '@context/walletProvider';
 import { SpaceShorcutItem, transformCreatedAt } from '@containers/Sidebar/SideBarShortcut';
 import { transformShortName } from '@components/Common/AvatarUser';
 import { ReactSVG } from 'react-svg';
-import useWindowDimensions from '@hooks/useWindowDimensions';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
@@ -46,6 +45,7 @@ import { URL_AVATAR_DEFAULT } from '@components/Profile/ProfileDetail';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { LoadingIcon } from '@components/Layout/MainLayout';
 import { CloseOutlined } from '@ant-design/icons';
+import useDetectMobileView from '@local-hooks/useDetectMobileView';
 
 type PageMessageSessionItem = PageMessageSessionQuery['pageMessageSession'];
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
@@ -592,8 +592,7 @@ const PageMessage = () => {
   const [open, setOpen] = useState(false);
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
-  const [isMobile, setIsMobile] = useState(false);
-  const { width } = useWindowDimensions();
+  const isMobile = useDetectMobileView();
   const router = useRouter();
   const [isSendingXPI, setIsSendingXPI] = useState<boolean>(false);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
@@ -604,11 +603,6 @@ const PageMessage = () => {
   const txFee = Math.ceil(Wallet.XPI.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 }) * 2.01); //satoshi
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const messageUploads = useAppSelector(getMessageUploads);
-
-  useEffect(() => {
-    const isMobile = width < 526 ? true : false;
-    setIsMobile(isMobile);
-  }, [width]);
 
   useEffect(() => {
     if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;

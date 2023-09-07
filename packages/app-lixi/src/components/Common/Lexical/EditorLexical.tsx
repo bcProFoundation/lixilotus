@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
@@ -29,9 +29,9 @@ import { getPostCoverUploads } from '@store/account/selectors';
 import Gallery from 'react-photo-gallery';
 import intl from 'react-intl-universal';
 import { removeUpload } from '@store/account';
-import useWindowDimensions from '@hooks/useWindowDimensions';
 import YouTubePlugin from './plugins/YouTubePlugin';
 import FigmaPlugin from './plugins/FigmaPlugin';
+import useDetectMobileView from '@local-hooks/useDetectMobileView';
 
 export type EditorLexicalProps = {
   initialContent?: string;
@@ -157,29 +157,26 @@ const EditorLexical = (props: EditorLexicalProps) => {
   const { initialContent, onSubmit, isEditMode, loading, hashtags } = props;
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
-  const { width } = useWindowDimensions();
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useDetectMobileView();
   const postCoverUploads = useAppSelector(getPostCoverUploads);
-  const imagesList = postCoverUploads.map(img => {
-    const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.cfImageId}/public`;
-    let width = img?.width || 4;
-    let height = img?.height || 3;
-    let id = img?.id || null;
-    let objImg = {
-      src: imgUrl,
-      width: width,
-      height: height,
-      id: id
-    };
-    return objImg;
-  });
+  const imagesList = useMemo(() => {
+    let imagesListResult = postCoverUploads.map(img => {
+      const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.cfImageId}/public`;
+      let width = img?.width || 4;
+      let height = img?.height || 3;
+      let id = img?.id || null;
+      let objImg = {
+        src: imgUrl,
+        width: width,
+        height: height,
+        id: id
+      };
+      return objImg;
+    });
+    return imagesListResult || [];
+  }, [postCoverUploads]);
   const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
   const [currentContent, setCurrentContent] = useState<String>('');
-
-  useEffect(() => {
-    const isMobile = width < 960 ? true : false;
-    setIsMobile(isMobile);
-  }, [width]);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {

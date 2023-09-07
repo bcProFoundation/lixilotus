@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { Avatar } from 'antd';
 import styled from 'styled-components';
 
@@ -45,7 +45,7 @@ export const transformShortName = (name: string) => {
   return shortName;
 };
 
-export const AvatarUser = (props: AvatarUserProps) => {
+const AvatarUser = (props: AvatarUserProps) => {
   const { name, isMarginRight, icon } = props;
 
   return (
@@ -59,3 +59,5 @@ export const AvatarUser = (props: AvatarUserProps) => {
     </>
   );
 };
+
+export default React.memo(AvatarUser);

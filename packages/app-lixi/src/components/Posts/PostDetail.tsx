@@ -2,7 +2,7 @@ import { DashOutlined, LeftOutlined, SendOutlined } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import ActionPostBar from '@components/Common/ActionPostBar';
-import { AvatarUser } from '@components/Common/AvatarUser';
+import AvatarUser from '@components/Common/AvatarUser';
 import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
@@ -44,8 +44,8 @@ import CommentListItem, { CommentItem } from './CommentListItem';
 import { EditPostModalProps } from './EditPostModalPopup';
 import { OPTION_BURN_VALUE } from '@bcpros/lixi-models/constants';
 import PostTranslate from './PostTranslate';
-import useWindowDimensions from '@hooks/useWindowDimensions';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
+import useDetectMobileView from '@local-hooks/useDetectMobileView';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -374,14 +374,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const filterValue = useAppSelector(getFilterPostsHome);
   const [showTranslation, setShowTranslation] = useState(false);
   const accountInfoTemp = useAppSelector(getAccountInfoTemp);
-  const [isMobileView, setIsMobileView] = useState(false);
-  const { width } = useWindowDimensions();
+  const isMobileView = useDetectMobileView();
   const level = useAppSelector(getLevelFilter);
-
-  useEffect(() => {
-    const isMobile = width < 960 ? true : false;
-    setIsMobileView(isMobile);
-  }, [width]);
 
   const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
     useRepostMutation();

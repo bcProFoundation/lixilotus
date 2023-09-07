@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import Icon, { GlobalOutlined, DollarOutlined, ShopOutlined } from '@ant-design/icons';
 import { Avatar, Dropdown, Menu } from 'antd';
-import { AvatarUser } from './AvatarUser';
+import AvatarUser from './AvatarUser';
 import intl from 'react-intl-universal';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
@@ -286,7 +286,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                     onClick={() => history.push(`/token/${token?.tokenId}`)}
                   />
                   <div onClick={() => history.push(`/profile/${postAccountAddress}`)}>
-                    <AvatarUser name={name} isMarginRight={true} />
+                    <AvatarUser name={name} isMarginRight={true} icon={null} />
                   </div>
                 </div>
                 <div className="card-info">

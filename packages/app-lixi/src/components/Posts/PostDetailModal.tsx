@@ -1,7 +1,7 @@
 import { DashOutlined, SendOutlined, DownloadOutlined, LeftOutlined, CloseOutlined } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
-import { AvatarUser } from '@components/Common/AvatarUser';
+import AvatarUser from '@components/Common/AvatarUser';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
 import { LoadingIcon, NavBarHeader } from '@components/Layout/MainLayout';
@@ -22,7 +22,7 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
@@ -43,9 +43,9 @@ import parse from 'html-react-parser';
 import ReactDomServer from 'react-dom/server';
 import ActionPostBar from '@components/Common/ActionPostBar';
 import PostTranslate from './PostTranslate';
-import useWindowDimensions from '@hooks/useWindowDimensions';
 import { useSwipeable } from 'react-swipeable';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
+import useDetectMobileView from '@local-hooks/useDetectMobileView';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -336,24 +336,17 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
   const failQueue = useAppSelector(getFailQueue);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const [imagesList, setImagesList] = useState([]);
   const [isEncryptedOptionalOpReturnMsg, setIsEncryptedOptionalOpReturnMsg] = useState(true);
   const walletStatus = useAppSelector(getWalletStatus);
   const [open, setOpen] = useState(false);
   const filterValue = useAppSelector(getFilterPostsHome);
   const [showTranslation, setShowTranslation] = useState(false);
   const [openPost, setOpenPost] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useDetectMobileView();
   const [borderColorHeader, setBorderColorHeader] = useState(false);
-  const { width } = useWindowDimensions();
   const accountInfoTemp = useAppSelector(getAccountInfoTemp);
   const [isSendingXPI, setIsSendingXPI] = useState<boolean>(false);
   const level = useAppSelector(getLevelFilter);
-
-  useEffect(() => {
-    const isMobileDetail = width < 960 ? true : false;
-    setIsMobile(isMobileDetail);
-  }, [width]);
 
   const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
     useRepostMutation();
@@ -377,20 +370,18 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
     false
   );
 
-  useEffect(() => {
-    const mapImages = post.uploads.map(img => {
+  const imagesList = useMemo(() => {
+    let result = post?.uploads.map(img => {
       const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.upload.cfImageId}/public`;
-      let width = img?.upload?.width || 4;
-      let height = img?.upload?.height || 3;
-      let objImg = {
+      let newImageObj = {
         src: imgUrl,
-        width: width,
-        height: height
+        width: img?.upload?.width || 4,
+        height: img?.upload?.height || 3
       };
-      return objImg;
+      return newImageObj;
     });
-    setImagesList(mapImages);
-  }, []);
+    return result || [];
+  }, [post?.uploads]);
 
   const [
     createCommentTrigger,
@@ -698,23 +689,25 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
     }
   };
 
-  const content: any = parse(post.content, {
-    replace: (domNode: any) => {
-      if (domNode.attribs && domNode.attribs.class === 'EditorLexical_hashtag') {
-        const hashtag: string = domNode.children[0].data;
-        return (
-          <span
-            rel="noopener noreferrer"
-            className="hashtag-link"
-            id={`${hashtag}`}
-            style={{ color: 'var(--color-primary) !important', cursor: 'pointer' }}
-          >
-            {domNode.children.map(child => child.data)}
-          </span>
-        );
+  const postContent: any = useMemo(() => {
+    return parse(post?.content, {
+      replace: (domNode: any) => {
+        if (domNode?.attribs && domNode?.attribs?.class === 'EditorLexical_hashtag') {
+          const hashtag: string = domNode?.children[0]?.data;
+          return (
+            <span
+              rel="noopener noreferrer"
+              className="hashtag-link"
+              id={`${hashtag}`}
+              style={{ color: 'var(--color-primary) !important', cursor: 'pointer' }}
+            >
+              {domNode.children.map(child => child.data)}
+            </span>
+          );
+        }
       }
-    }
-  });
+    });
+  }, [post?.content]);
 
   const handleRepost = async (post: any) => {
     const repostInput: RepostInput = {
@@ -817,7 +810,7 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
           </NavBarHeader>
           <PostContentDetail>
             <div className="description-post" onClick={e => handleHashtagClick(e)}>
-              {ReactHtmlParser(ReactDomServer.renderToStaticMarkup(content))}
+              {ReactHtmlParser(ReactDomServer.renderToStaticMarkup(postContent))}
             </div>
             {post.translations &&
               post.translations.length > 0 &&

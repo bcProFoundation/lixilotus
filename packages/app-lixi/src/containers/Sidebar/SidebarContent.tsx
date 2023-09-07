@@ -7,7 +7,7 @@ import { getFilterPostsHome, getIsTopPosts, getLevelFilter, getNavCollapsed } fr
 import { push } from 'connected-next-router';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
-import { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import {
   ItemQuickAccess,
@@ -98,13 +98,9 @@ const ContainerSideBarContent = styled.div`
 const SidebarContent = ({ className }: SidebarContentProps) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const [isCollapse, setIsCollapse] = useState(false);
   const navCollapsed = useAppSelector(getNavCollapsed);
-  const currentPathName = router.pathname ?? '';
   const filterValue = useAppSelector(getFilterPostsHome);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
-  const [filterGroup, setFilterGroup] = useState([]);
-  let isTop = useAppSelector(getIsTopPosts);
   const [filterPage, setFilterPage] = useState({});
   const [filterPageQuery, setFilterPageQuery] = useState<typeFilterPageQuery>({});
   const [query, setQuery] = useState<any>('');
@@ -115,7 +111,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
 
   let { data: timelineData } = useInfiniteHomeTimelineQuery(
     {
-      first: 20,
+      first: 40,
       level: level ?? 3
     },
     false
@@ -419,4 +415,4 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
   );
 };
 
-export default SidebarContent;
+export default React.memo(SidebarContent);
