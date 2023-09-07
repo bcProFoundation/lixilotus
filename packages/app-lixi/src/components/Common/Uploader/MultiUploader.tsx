@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 import intl from 'react-intl-universal';
 import { message, Upload, Button, Modal } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -14,6 +14,7 @@ import { UPLOAD_API_S3_MULTIPLE } from '@bcpros/lixi-models/constants';
 import _ from 'lodash';
 import { ButtonType } from 'antd/lib/button';
 import { showToast } from '@store/toast/actions';
+import React from 'react';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -68,8 +69,8 @@ type UploaderProps = {
   loading?: boolean;
   setUploadingImage: (state: boolean) => void;
 };
-
-export const MultiUploader = ({
+/* eslint-disable react/display-name */
+export const MultiUploader = React.forwardRef(({
   type,
   buttonName,
   buttonType,
@@ -78,11 +79,52 @@ export const MultiUploader = ({
   icon,
   loading,
   setUploadingImage
-}: UploaderProps) => {
+}: UploaderProps, ref) => {
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewVisible, setPreviewVisible] = useState(false);
   const dispatch = useAppDispatch();
+  useImperativeHandle(ref, () => ({
+    async uploadImageFromClipboard(options) {
+      const { file } = options;
+      const url = UPLOAD_API_S3_MULTIPLE;
+      const formData = new FormData();
+
+      formData.append('files', file);
+      formData.append('type', type);
+
+      const config = {
+        headers: { 'content-type': 'multipart/form-data' },
+        withCredentials: true,
+      };
+      setUploadingImage(true);
+      await axiosClient
+        .post(url, formData, config)
+        .then(response => {
+          setUploadingImage(false);
+          const { data } = response;
+          data.map(image => {
+            dispatch(setUpload({ upload: image, type: type }));
+          });
+          dispatch(
+            showToast('success', {
+              message: intl.get('toast.success'),
+              description: intl.get('lixi.fileUploadSuccess')
+            })
+          );
+        })
+        .catch(err => {
+          const { response } = err;
+          dispatch(
+            showToast('error', {
+              message: intl.get('toast.error'),
+              description: intl.get('lixi.fileUploadError')
+            })
+          );
+        });
+    }
+  }));
+
 
   const uploadButton = (
     <StyledButton
@@ -226,7 +268,7 @@ export const MultiUploader = ({
       </Upload>
     </StyledContainer>
   );
-};
+});
 
 export const StyledMultiUploader = styled(MultiUploader)`
   .ant-upload.ant-upload-select-picture-card {

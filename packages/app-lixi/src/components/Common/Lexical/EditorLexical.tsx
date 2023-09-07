@@ -18,7 +18,7 @@ import AutoLinkPlugin from './plugins/AutoLinkPlugin';
 import AutoEmbedPlugin from './plugins/AutoEmbedPlugin';
 import { MultiUploader } from '../Uploader/MultiUploader';
 import { PictureOutlined, CloseOutlined } from '@ant-design/icons';
-import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
+import { UPLOAD_API_S3_MULTIPLE, UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import styled from 'styled-components';
 import LinkPlugin from './plugins/LinkPlugin';
 import ButtonLinkPlugin from './plugins/ButtonLinkPlugin';
@@ -159,6 +159,8 @@ const EditorLexical = (props: EditorLexicalProps) => {
   const dispatch = useAppDispatch();
   const isMobile = useDetectMobileView();
   const postCoverUploads = useAppSelector(getPostCoverUploads);
+  const inputText = useRef(null);
+  const multiUploader = useRef(null);
   const imagesList = useMemo(() => {
     let imagesListResult = postCoverUploads.map(img => {
       const imgUrl = `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${img.cfImageId}/public`;
@@ -178,11 +180,12 @@ const EditorLexical = (props: EditorLexicalProps) => {
   const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
   const [currentContent, setCurrentContent] = useState<String>('');
 
-  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
-    if (_floatingAnchorElem !== null) {
-      setFloatingAnchorElem(_floatingAnchorElem);
-    }
-  };
+  useEffect(() => {
+    inputText.current?.addEventListener('paste', handlePasteImage);
+    return () => {
+      inputText.current?.removeEventListener('paste', handlePasteImage);
+    };
+  }, []);
 
   const Placeholder = () => {
     return <div className="EditorLexical_placeholder">{intl.get('general.createPost')}</div>;
@@ -204,6 +207,24 @@ const EditorLexical = (props: EditorLexicalProps) => {
     if (imgId) {
       dispatch(removeUpload({ type: 'post', id: imgId }));
     }
+  };
+
+  const handlePasteImage = evt => {
+    const clipboardItems = evt.clipboardData.items;
+    const items = [].slice.call(clipboardItems).filter(function (item) {
+      // Filter the image items only
+      return /^image\//.test(item.type);
+    });
+    if (items.length === 0) {
+      return;
+    }
+
+    const item = items[0];
+    const blob = item.getAsFile();
+
+    let file = new File([blob], 'file name', { type: 'image/jpeg', lastModified: new Date().getTime() }, 'utf-8');
+
+    multiUploader.current?.uploadImageFromClipboard({ file: file });
   };
 
   const imageRenderer = useCallback(({ photo }) => {
@@ -236,7 +257,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
           <div className="EditorLexical_container">
             <PlainTextPlugin
               contentEditable={
-                <div className="editor" ref={onRef}>
+                <div className="editor" ref={inputText}>
                   <ContentEditable className="EditorLexical_root" />
                 </div>
               }
@@ -315,6 +336,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
             </div>
             <div className="EditorLexical_action">
               <MultiUploader
+                ref={multiUploader}
                 type={UPLOAD_TYPES.POST}
                 isIcon={true}
                 icon={'/images/ico-picture.svg'}
