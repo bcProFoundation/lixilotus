@@ -222,7 +222,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
     const item = items[0];
     const blob = item.getAsFile();
 
-    let file = new File([blob], 'file name', { type: 'image/jpeg', lastModified: new Date().getTime() }, 'utf-8');
+    let file = new File([blob], 'file name', { type: 'image/jpeg', lastModified: new Date().getTime() });
 
     multiUploader.current?.uploadImageFromClipboard({ file: file });
   };
