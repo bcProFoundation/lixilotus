@@ -126,7 +126,6 @@ const PathDirection = styled.div`
     color: #1e1a1d;
     margin: 0;
   }
-
   .menu-mobile {
     display: none;
     margin-right: 8px;
@@ -352,7 +351,6 @@ export const TitleFilterStyled = styled.span`
     margin-right: 7px;
   }
 `;
-
 const BadgeStyled = styled(Badge)`
   .ant-badge-count {
     min-width: 10px !important;
@@ -455,6 +453,7 @@ const Topbar: React.FC<any> = ({ className }: { className: string }) => {
   const pathDirection = currentPathName.split('/', 2);
   const notifications = useAppSelector(getAllNotifications);
   const [openMoreOption, setOpenMoreOption] = useState(false);
+  const [openProfileOption, setOpenProfileOption] = useState(false);
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   let isTop = useAppSelector(getIsTopPosts);
   const currentTheme = useAppSelector(getCurrentThemes);
@@ -495,7 +494,6 @@ const Topbar: React.FC<any> = ({ className }: { className: string }) => {
     }
     return pathImageUrl;
   }, [currentDataPageQuery, currentDataGetAccount, router]);
-
   const otherAccounts = useMemo(() => {
     return _.filter(savedAccounts, acc => acc && acc.id !== selectedAccount?.id);
   }, [savedAccounts]);
@@ -618,16 +616,15 @@ const Topbar: React.FC<any> = ({ className }: { className: string }) => {
                 </div>
               )}
 
-              <Link href="/send">
+              <div onClick={() => handleClickProfile()}>
                 <span>
                   <SendOutlined style={{ fontSize: '16px' }} />
                 </span>
-              </Link>
+              </div>
             </div>
           </div>
         </>
       )}
-
       {otherAccounts.length > 0 && (
         <>
           <h3 style={{ marginTop: '1rem' }}>Switch Accounts</h3>
@@ -654,7 +651,6 @@ const Topbar: React.FC<any> = ({ className }: { className: string }) => {
       )}
     </AccountBox>
   );
-
   const contentMoreAction = (
     <PopoverStyled>
       <div className="social-menu">
@@ -755,6 +751,10 @@ const Topbar: React.FC<any> = ({ className }: { className: string }) => {
     </PopoverStyled>
   );
 
+  const handleClickProfile = () => {
+    router.push('/send');
+    setOpenProfileOption(false);
+  };
   return (
     <>
       <StyledHeader style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} className={`${className} header-component`}>
@@ -894,10 +894,12 @@ const Topbar: React.FC<any> = ({ className }: { className: string }) => {
           </div>
           <div className="account-bar">
             <Popover
+              onOpenChange={visible => setOpenProfileOption(visible)}
               overlayClassName={`${currentTheme === 'dark' ? 'popover-dark' : ''} account-popover`}
               arrow={false}
               content={contentSelectAccount}
               placement="bottom"
+              open={openProfileOption}
             >
               <div
                 onClick={() => {
