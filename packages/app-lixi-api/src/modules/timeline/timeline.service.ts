@@ -10,8 +10,6 @@ import { FollowCacheService } from '../account/follow-cache.service';
 import { PrismaService } from '../prisma/prisma.service';
 import SortedSet from 'redis-sorted-set';
 
-
-
 @Injectable()
 export class TimelineService {
   private logger: Logger = new Logger(this.constructor.name);
@@ -25,7 +23,7 @@ export class TimelineService {
     private readonly followCacheService: FollowCacheService,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   async cacheInNetworkByTime(accountId: number) {
     const key = `${TimelineService.inNetworkSourceKey}:${accountId}`;
@@ -141,7 +139,7 @@ export class TimelineService {
       await this.cacheInNetworkByScore(accountId);
     }
 
-    return await this.redis.zrevrange(key, 0, -1, "WITHSCORES");
+    return await this.redis.zrevrange(key, 0, -1, 'WITHSCORES');
   }
 
   async cacheOutNetwork() {
@@ -208,7 +206,7 @@ export class TimelineService {
         x = t;
       }
       return x;
-    }
+    };
 
     // find the gcd from ratio
     const numOfArr1In10Items = Math.round(ratio * 10);
@@ -227,13 +225,12 @@ export class TimelineService {
       k = 0;
 
     while (i < arr1.length && j < arr2.length) {
-
       const numOfItemsToInsertFromArr1 = Math.min(numOfArr1ItemsEachBatch, arr1.length - i);
       const numOfItemsToInsertFromArr2 = Math.min(numOfArr2ItemsEachBatch, arr2.length - j);
-      
+
       k = 0;
       let index1 = 0; // the index to track pointer moving in arr1
-      while ((k < numOfItemsToInsertFromArr1) && (i + index1 < arr1.length)) {
+      while (k < numOfItemsToInsertFromArr1 && i + index1 < arr1.length) {
         const item1 = arr1[i + index1];
         if (!seen.has(item1) && !_.isNil(item1)) {
           seen.add(item1);
@@ -246,7 +243,7 @@ export class TimelineService {
 
       k = 0;
       let index2 = 0; // the index to track pointer moving in arr2
-      while ((k < numOfItemsToInsertFromArr2) &&  (j + index2 < arr2.length)) {
+      while (k < numOfItemsToInsertFromArr2 && j + index2 < arr2.length) {
         const item2 = arr2[j + index2];
         if (!seen.has(item2)) {
           seen.add(item2);
@@ -301,9 +298,10 @@ export class TimelineService {
     const inNetwork = inNetworkWithScores.filter((item, index) => index % 2 === 0);
     const outNetwork = outNetworkWithScores.filter((item, index) => index % 2 === 0);
 
-    const timeline = _.toNumber(maxScoreInNetwork) > _.toNumber(maxScoreOutNetwork) ?
-      this.mergeByRatio(_.compact(inNetwork), _.compact(outNetwork), _.round(ratio, 1)) :
-      this.mergeByRatio(_.compact(outNetwork), _.compact(inNetwork), _.round(1 - ratio, 1));
+    const timeline =
+      _.toNumber(maxScoreInNetwork) > _.toNumber(maxScoreOutNetwork)
+        ? this.mergeByRatio(_.compact(inNetwork), _.compact(outNetwork), _.round(ratio, 1))
+        : this.mergeByRatio(_.compact(outNetwork), _.compact(inNetwork), _.round(1 - ratio, 1));
 
     let index = 0;
     for (const id of timeline) {

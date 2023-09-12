@@ -148,7 +148,6 @@ const PostContentDetail = styled.div`
     }
   }
   .description-translate {
-    font-weight: 400;
     line-height: 20px;
     text-align: left;
     word-break: break-word;
@@ -156,8 +155,8 @@ const PostContentDetail = styled.div`
     padding: 3px 3px 3px 6px;
     margin-bottom: 1rem;
     p {
-      font-size: 14px;
-      line-height: 22px;
+      font-size: 17px;
+      line-height: 24px;
     }
     .read-more-more-module_btn__33IaH {
       font-size: 14px;
