@@ -110,7 +110,7 @@ export default {
   'general.levelBalanced': 'Cân bằng',
   'general.levelLessFollowing': 'Ít bài theo dõi',
   'general.levelOnlyTopPosts': 'Bài đang nổi',
-  'general.showMore': 'Xem thêm',
+  'general.showMore': '...xem thêm',
   'general.showLess': 'Xem ít',
   'general.topAccounts': 'Xếp hạng tài khoản',
   'general.topPages': 'Xếp hạng trang',

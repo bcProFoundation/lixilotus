@@ -111,7 +111,7 @@ export default {
   'general.levelBalanced': 'Balanced',
   'general.levelLessFollowing': 'Less Following',
   'general.levelOnlyTopPosts': 'Only Top Post',
-  'general.showMore': 'Show more',
+  'general.showMore': '...show more',
   'general.showLess': 'Show less',
   'general.topAccounts': 'Top Accounts',
   'general.topPages': 'Top Pages',

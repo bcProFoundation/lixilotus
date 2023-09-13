@@ -105,7 +105,7 @@ export default {
   'general.burnForType': 'Burn For Type',
   'general.failed': 'Failed',
   'general.level': 'Level',
-  'general.showMore': 'Show more',
+  'general.showMore': '...show more',
   'general.showLess': 'Show less',
   'general.topAccounts': 'Top Accounts',
   'general.topPages': 'Top Pages',

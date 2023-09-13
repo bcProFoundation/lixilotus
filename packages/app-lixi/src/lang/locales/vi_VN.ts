@@ -104,7 +104,7 @@ export default {
   'general.burnForType': 'Đốt cho loại',
   'general.failed': 'Thất bại',
   'general.level': 'Cấp độ',
-  'general.showMore': 'Xem thêm',
+  'general.showMore': '...xem thêm',
   'general.showLess': 'Xem ít',
   'general.topAccounts': 'Xếp hạng tài khoản',
   'general.topPages': 'Xếp hạng trang',
