@@ -279,15 +279,13 @@ export class MessageResolver {
 
   @ResolveField()
   async pageMessageSession(@Parent() message: Message) {
-    const pageMessageSession = await this.prisma.pageMessageSession.findFirst({
-      where: {
-        messages: {
-          some: {
-            id: message.id
-          }
+    const pageMessageSession = await this.prisma.message
+      .findFirst({
+        where: {
+          id: message.id
         }
-      }
-    });
+      })
+      .pageMessageSession();
     return pageMessageSession;
   }
 

@@ -761,33 +761,37 @@ export class PageMessageSessionResolver {
 
   @ResolveField()
   async lixi(@Parent() pageMessageSession: PageMessageSession) {
-    const lixi = await this.prisma.lixi.findFirst({
-      where: {
-        pageMessageSession: {
+    const lixi = await this.prisma.pageMessageSession
+      .findUnique({
+        where: {
           id: pageMessageSession.id
         }
-      }
-    });
+      })
+      .lixi();
     return lixi;
   }
 
   @ResolveField()
   async account(@Parent() pageMessageSession: PageMessageSession) {
-    const account = await this.prisma.account.findFirst({
-      where: {
-        id: pageMessageSession.account.id
-      }
-    });
+    const account = await this.prisma.pageMessageSession
+      .findUnique({
+        where: {
+          id: pageMessageSession.id
+        }
+      })
+      .account();
     return account;
   }
 
   @ResolveField()
   async page(@Parent() pageMessageSession: PageMessageSession) {
-    const page = await this.prisma.page.findFirst({
-      where: {
-        id: pageMessageSession.page.id
-      }
-    });
+    const page = await this.prisma.pageMessageSession
+      .findUnique({
+        where: {
+          id: pageMessageSession.id
+        }
+      })
+      .page();
     return page;
   }
 }
