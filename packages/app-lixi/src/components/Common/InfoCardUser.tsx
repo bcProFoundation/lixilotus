@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import Icon, { GlobalOutlined, DollarOutlined, ShopOutlined } from '@ant-design/icons';
@@ -13,6 +13,13 @@ import FollowSvg from '@assets/icons/follow.svg';
 import { currency } from '@components/Common/Ticker';
 import { openActionSheet } from '@store/action-sheet/actions';
 import { PostListType } from '@bcpros/lixi-models/constants';
+import useAuthorization from './Authorization/use-authorization.hooks';
+import { AuthorizationContext } from '@context/index';
+import {
+  useCheckIfFollowAccountQuery,
+  useCheckIfFollowPageQuery,
+  useCheckIfFollowTokenQuery
+} from '@store/follow/follows.api';
 
 type InfoCardProps = {
   imgUrl: any;
@@ -162,6 +169,32 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const history = useRouter();
   const dispatch = useAppDispatch();
+  const authorization = useContext(AuthorizationContext);
+  const askAuthorization = useAuthorization();
+
+  const { currentData: currentDataCheckIsFollowedPage, isSuccess: isSuccessCheckFollowedPage } =
+    useCheckIfFollowPageQuery({ pageId: page?.id });
+  const { currentData: currentDataCheckIsFollowedAccount, isSuccess: isSuccessCheckFollowedAccount } =
+    useCheckIfFollowAccountQuery({
+      followingAccountId: post?.postAccount.id
+    });
+  const { currentData: currentDataCheckIsFollowedToken, isSuccess: isSuccessCheckFollowedTokent } =
+    useCheckIfFollowTokenQuery({
+      tokenId: token?.tokenId
+    });
+
+  let checkIfFollowPage;
+  let checkIfFollowAccount;
+  let checkIfFollowToken;
+  if (isSuccessCheckFollowedPage && currentDataCheckIsFollowedPage) {
+    checkIfFollowPage = currentDataCheckIsFollowedPage.checkIfFollowPage;
+  }
+  if (isSuccessCheckFollowedAccount && currentDataCheckIsFollowedAccount) {
+    checkIfFollowAccount = currentDataCheckIsFollowedAccount.checkIfFollowAccount;
+  }
+  if (isSuccessCheckFollowedTokent && currentDataCheckIsFollowedToken) {
+    checkIfFollowToken = currentDataCheckIsFollowedToken.checkIfFollowToken;
+  }
 
   const items: MenuProps['items'] = [
     {
@@ -181,22 +214,28 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     }
   };
 
-  const postActionSheet = (postContent, page?) => {
+  const postActionSheet = (postContent, page?, token?) => {
     // let isEditPost = selectedAccount && selectedAccount.address === postAccountAddress;
     // if (isEditPost) {
-    dispatch(
-      openActionSheet('PostActionSheet', {
-        isEditPost: selectedAccount.address === postAccountAddress && post.danaBurnScore === 0,
-        post: postContent,
-        page: page,
-        followPostOwner: followPostOwner,
-        followedPage: followedPage
-      })
-    );
+    authorization.authorized
+      ? dispatch(
+          openActionSheet('PostActionSheet', {
+            isEditPost: selectedAccount.address === postAccountAddress && post.danaBurnScore === 0,
+            post: postContent,
+            page: page,
+            token: token,
+            checkIfFollowPage,
+            checkIfFollowAccount,
+            checkIfFollowToken
+          })
+        )
+      : askAuthorization();
     // }
   };
 
   const normalInfor = (
+    displayIconFollow //just display icon follow in Home timeline
+  ) => (
     <div className="card-container">
       <div onClick={() => history.push(`/profile/${postAccountAddress}`)}>
         {imgUrl ? <Avatar src={imgUrl} /> : <AvatarUser name={name} isMarginRight={true} />}
@@ -211,7 +250,9 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
             style={{ marginLeft: '4px', fontSize: '10px', display: 'inline-flex', alignItems: 'center', gap: '1px' }}
           >
             {activatePostLocation && postLocation()}&nbsp;
-            {followPostOwner && <Icon className="follow-icon" component={() => <FollowSvg />} />}
+            {authorization.authorized && checkIfFollowAccount && displayIconFollow && (
+              <Icon className="follow-icon" component={() => <FollowSvg />} />
+            )}
           </span>
           <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
             {postEdited && intl.get('post.edited')}
@@ -226,11 +267,11 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     <>
       <InfoCardUserContainer className={`info-card-user ${type === 'card' ? 'card' : ''}`}>
         <CardUser>
-          {!page && !token && normalInfor}
+          {!page && !token && normalInfor(postListType === PostListType.Profile ? false : true)}
           {page &&
             page?.name &&
             (postListType === PostListType.Page ? (
-              normalInfor
+              normalInfor(false)
             ) : (
               <div className="card-container">
                 <div className="page-bar">
@@ -262,7 +303,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                       }}
                     >
                       {activatePostLocation && postLocation()}&nbsp;
-                      {(followPostOwner || followedPage) && (
+                      {authorization.authorized && (checkIfFollowAccount || checkIfFollowPage) && (
                         <Icon className="follow-icon" component={() => <FollowSvg />} />
                       )}
                     </span>
@@ -276,7 +317,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
           {token &&
             token?.name &&
             (postListType === PostListType.Token ? (
-              normalInfor
+              normalInfor(false)
             ) : (
               <div className="card-container">
                 <div className="page-bar">
@@ -308,8 +349,9 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                       }}
                     >
                       {activatePostLocation && postLocation()}&nbsp;
-                      {followPostOwner ||
-                        (followedPage && <Icon className="follow-icon" component={() => <FollowSvg />} />)}
+                      {authorization.authorized && (checkIfFollowAccount || checkIfFollowToken) && (
+                        <Icon className="follow-icon" component={() => <FollowSvg />} />
+                      )}
                     </span>
                     <span style={{ marginLeft: '4px', fontSize: '12px', fontStyle: 'italic' }}>
                       {postEdited && intl.get('post.edited')}
@@ -324,7 +366,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
             <Action>
               <picture>
                 <img
-                  onClick={() => postActionSheet(post, page)}
+                  onClick={() => postActionSheet(post, page, token)}
                   className="action-post"
                   src="/images/ico-more-vertical.svg"
                   alt=""

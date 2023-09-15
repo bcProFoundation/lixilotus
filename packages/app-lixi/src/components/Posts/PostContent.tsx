@@ -21,7 +21,7 @@ const PostContent = ({ post, showTranslation, currentLocale }) => {
           : post.translations[Language.vi]?.translateContent || post.translations[Language.en].translateContent //old post dont have vi trans will translate => en
         : post.content;
     }
-  }, [post]);
+  }, [showTranslation, currentLocale]);
 
   const content: any = useMemo(() => {
     return parse(postContent, {

@@ -1,5 +1,5 @@
 import { CopyOutlined, LikeOutlined } from '@ant-design/icons';
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { PostListType, PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
@@ -212,11 +212,11 @@ const StyledTag = styled(Tag)`
 
 type TokenProps = {
   token: any;
-  hasFollowed: boolean;
+  checkIsFollowed: boolean;
   isMobile: boolean;
 };
 
-const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
+const TokensFeed = ({ token, checkIsFollowed, isMobile }: TokenProps) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [tokenDetailData, setTokenDetailData] = useState<any>(token);
@@ -229,7 +229,6 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
   const [query, setQuery] = useState<any>('');
   const [hashtags, setHashtags] = useState<any>([]);
-  const [isFollowed, setIsFollowed] = useState<boolean>(hasFollowed);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
@@ -354,14 +353,6 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
-  useEffect(() => {
-    if (isSuccessCreateFollowToken) setIsFollowed(true);
-  }, [isSuccessCreateFollowToken]);
-
-  useEffect(() => {
-    if (isSuccessDeleteFollowToken) setIsFollowed(false);
-  }, [isSuccessDeleteFollowToken]);
-
   useDidMountEffectNotification();
 
   const handleBurnForPost = async (isUpVote: boolean, post: any) => {
@@ -482,6 +473,7 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
                   addToRecentHashtags={hashtag =>
                     dispatch(addRecentHashtagAtToken({ id: token.id, hashtag: hashtag.substring(1) }))
                   }
+                  postListType={PostListType.Token}
                 />
               );
             })}
@@ -517,8 +509,6 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
       </React.Fragment>
     );
   };
-
-  console.log('aon', tokenDetailData);
 
   return (
     <StyledTokensFeed>
@@ -579,9 +569,9 @@ const TokensFeed = ({ token, hasFollowed, isMobile }: TokenProps) => {
         <div style={{ marginTop: '1rem', textAlign: 'right' }}>
           <Button
             style={{ background: 'transparent !important', fontWeight: '700' }}
-            onClick={isFollowed ? handleUnfollowToken : handleFollowToken}
+            onClick={checkIsFollowed ? handleUnfollowToken : handleFollowToken}
           >
-            {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
+            {checkIsFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
           </Button>
         </div>
       </BannerTicker>

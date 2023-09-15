@@ -7,29 +7,38 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { closeActionSheet } from '@store/action-sheet/actions';
 import { EditPostModalProps } from '@components/Posts/EditPostModalPopup';
 import { openModal } from '@store/modal/actions';
-import { CreateFollowPageInput, DeleteFollowPageInput } from '@bcpros/lixi-models';
 import {
-  useCheckIfFollowPageQuery,
-  useCreateFollowPageMutation,
-  useDeleteFollowPageMutation
-} from '@store/follow/follows.generated';
+  CreateFollowPageInput,
+  CreateFollowTokenInput,
+  DeleteFollowPageInput,
+  DeleteFollowTokenInput
+} from '@bcpros/lixi-models';
 import { getSelectedAccount, getSelectedAccountId } from '@store/account';
 import { usePageQuery } from '@store/page/pages.generated';
-import { useCreateFollowAccountMutation, useDeleteFollowAccountMutation } from '@store/follow/follows.api';
+import {
+  useCheckIfFollowAccountQuery,
+  useCreateFollowAccountMutation,
+  useCreateFollowPageMutation,
+  useCreateFollowTokenMutation,
+  useDeleteFollowAccountMutation,
+  useDeleteFollowPageMutation,
+  useDeleteFollowTokenMutation
+} from '@store/follow/follows.api';
 import { CreateFollowAccountInput, DeleteFollowAccountInput } from '@generated/types.generated';
 import { getWalletStatus } from '@store/wallet';
 import { useSwipeable } from 'react-swipeable';
 import { useUserHadMessageToPageQuery } from '@store/message/pageMessageSession.generated';
 import CreatePostCard from './CreatePostCard';
-
 interface PostActionSheetProps {
   id?: string;
   classStyle?: string;
   isEditPost?: boolean;
   post?: any;
   page?: any;
-  followPostOwner?: boolean;
-  followedPage?: boolean;
+  token?: any;
+  checkIfFollowPage?: boolean;
+  checkIfFollowAccount?: boolean;
+  checkIfFollowToken?: boolean;
 }
 
 export const ItemActionSheetBottom = ({
@@ -99,14 +108,17 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
   isEditPost,
   post,
   page,
-  followPostOwner,
-  followedPage
+  token,
+  checkIfFollowPage,
+  checkIfFollowAccount,
+  checkIfFollowToken
 }: PostActionSheetProps) => {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(true);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [isFollowedPage, setIsFollowedPage] = useState<boolean>(false);
   const [isFollowedAccount, setIsFollowedAccount] = useState<boolean>(false);
+  const [isFollowedToken, setIsFollowedToken] = useState<boolean>(false);
   const [openCreatePost, setOpenCreatePost] = useState<boolean>(false);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const walletStatus = useAppSelector(getWalletStatus);
@@ -150,10 +162,32 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
       error: errorOnDeleteAccount
     }
   ] = useDeleteFollowAccountMutation();
+
+  const [
+    createFollowTokenTrigger,
+    {
+      isLoading: isLoadingCreateFollowToken,
+      isSuccess: isSuccessCreateFollowToken,
+      isError: isErrorCreateFollowToken,
+      error: errorOnCreateToken
+    }
+  ] = useCreateFollowTokenMutation();
+
+  const [
+    deleteFollowTokenTrigger,
+    {
+      isLoading: isLoadingDeleteFollowToken,
+      isSuccess: isSuccessDeleteFollowToken,
+      isError: isErrorDeleteFollowToken,
+      error: errorOnDeleteToken
+    }
+  ] = useDeleteFollowTokenMutation();
+
   useEffect(() => {
-    setIsFollowedPage(followedPage);
-    setIsFollowedAccount(followPostOwner);
-  }, [followedPage, followPostOwner]);
+    setIsFollowedPage(checkIfFollowPage);
+    setIsFollowedAccount(checkIfFollowAccount);
+    setIsFollowedToken(checkIfFollowToken);
+  }, [checkIfFollowPage, checkIfFollowPage, checkIfFollowToken]);
 
   const { data: pageMessageSessionData, refetch: pageMessageSessionRefetch } = useUserHadMessageToPageQuery(
     {
@@ -216,6 +250,24 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     };
     setIsFollowedAccount(!isFollowedAccount);
     await deleteFollowAccountTrigger({ input: deleteFollowAccountInput });
+  };
+
+  const handleFollowToken = async () => {
+    const createFollowTokenInput: CreateFollowTokenInput = {
+      accountId: selectedAccountId,
+      tokenId: token.tokenId
+    };
+    setIsFollowedToken(!isFollowedToken);
+    await createFollowTokenTrigger({ input: createFollowTokenInput });
+  };
+
+  const handleUnfollowToken = async () => {
+    const deleteFollowTokenInput: DeleteFollowTokenInput = {
+      accountId: selectedAccountId,
+      tokenId: token.tokenId
+    };
+    setIsFollowedToken(!isFollowedToken);
+    await deleteFollowTokenTrigger({ input: deleteFollowTokenInput });
   };
 
   const openPageMessageLixiModal = () => {
@@ -291,6 +343,21 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
               icon="/images/follow.svg"
               className={isFollowedAccount ? 'isFollowed' : ''}
               onClickItem={handleUnfollowAccount}
+            />
+          )}
+          {post.token && !isFollowedToken && (
+            <ItemActionSheetBottom
+              text={`${intl.get('general.follow')} ${token?.name}`}
+              icon="/images/follow.svg"
+              onClickItem={handleFollowToken}
+            />
+          )}
+          {post.token && isFollowedToken && (
+            <ItemActionSheetBottom
+              text={`${intl.get('general.unfollow')} ${token?.name}`}
+              icon="/images/follow.svg"
+              className={isFollowedToken ? 'isFollowed' : ''}
+              onClickItem={handleUnfollowToken}
             />
           )}
         </ContainerActionSheet>

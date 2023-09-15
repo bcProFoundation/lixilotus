@@ -5,36 +5,85 @@ const enhancedApi = api.enhanceEndpoints({
   endpoints: {
     checkIfFollowAccount: {},
     checkIfFollowPage: {},
-    createFollowAccount: {},
+    checkIfFollowToken: {},
+    createFollowAccount: {
+      async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
+        const { followingAccountId } = input;
+        try {
+          await queryFulfilled;
+          dispatch(
+            api.util.updateQueryData('checkIfFollowAccount', { followingAccountId }, draft => {
+              draft.checkIfFollowAccount = true;
+            })
+          );
+        } catch {}
+      }
+    },
     createFollowPage: {
       async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
         const { pageId } = input;
         try {
           await queryFulfilled;
           dispatch(
-            api.util.updateQueryData('checkIfFollowPage', { pageId: pageId }, draft => {
+            api.util.updateQueryData('checkIfFollowPage', { pageId }, draft => {
               draft.checkIfFollowPage = true;
             })
           );
         } catch {}
       }
     },
-    createFollowToken: {},
-    deleteFollowAccount: {},
+    createFollowToken: {
+      async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
+        const { tokenId } = input;
+        try {
+          await queryFulfilled;
+          dispatch(
+            api.util.updateQueryData('checkIfFollowToken', { tokenId }, draft => {
+              draft.checkIfFollowToken = true;
+            })
+          );
+        } catch {}
+      }
+    },
+    deleteFollowAccount: {
+      async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
+        const { followingAccountId } = input;
+        try {
+          await queryFulfilled;
+          dispatch(
+            api.util.updateQueryData('checkIfFollowAccount', { followingAccountId }, draft => {
+              draft.checkIfFollowAccount = false;
+            })
+          );
+        } catch {}
+      }
+    },
     deleteFollowPage: {
       async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
         const { pageId } = input;
         try {
           await queryFulfilled;
           dispatch(
-            api.util.updateQueryData('checkIfFollowPage', { pageId: pageId }, draft => {
+            api.util.updateQueryData('checkIfFollowPage', { pageId }, draft => {
               draft.checkIfFollowPage = false;
             })
           );
         } catch {}
       }
     },
-    deleteFollowToken: {}
+    deleteFollowToken: {
+      async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
+        const { tokenId } = input;
+        try {
+          await queryFulfilled;
+          dispatch(
+            api.util.updateQueryData('checkIfFollowToken', { tokenId }, draft => {
+              draft.checkIfFollowToken = false;
+            })
+          );
+        } catch {}
+      }
+    }
   }
 });
 
@@ -45,6 +94,8 @@ export const {
   useLazyCheckIfFollowAccountQuery,
   useCheckIfFollowPageQuery,
   useLazyCheckIfFollowPageQuery,
+  useCheckIfFollowTokenQuery,
+  useLazyCheckIfFollowTokenQuery,
   useCreateFollowAccountMutation,
   useCreateFollowPageMutation,
   useDeleteFollowAccountMutation,
