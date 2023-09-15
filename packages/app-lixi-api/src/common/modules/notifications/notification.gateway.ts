@@ -1,9 +1,10 @@
-import { NotificationDto as Notification, SessionAction, SocketUser } from '@bcpros/lixi-models';
-import { Injectable, Logger } from '@nestjs/common';
+import { AnalyticEvent, NotificationDto as Notification, SessionAction, SocketUser } from '@bcpros/lixi-models';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { Injectable, Logger, UseGuards } from '@nestjs/common';
 import Redis from 'ioredis';
-import * as _ from 'lodash';
 
+import { Account, PageMessageSessionStatus } from '@bcpros/lixi-prisma';
+import { InjectQueue } from '@nestjs/bullmq';
 import {
   ConnectedSocket,
   MessageBody,
@@ -15,9 +16,11 @@ import {
   WebSocketServer,
   WsResponse
 } from '@nestjs/websockets';
-import io, { Server, Socket } from 'socket.io';
+import { Queue } from 'bullmq';
+import { Server, Socket } from 'socket.io';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
-import { PageMessageSessionStatus } from '@bcpros/lixi-prisma';
+import { WsAuthGuardByPass } from '../../../modules/auth/guards/wsauth.guard';
+import { EVENTS_ANALYTIC_QUEUE } from '../../../modules/events-analytic/events-analytic.constants';
 
 // https://build.diligent.com/message-queues-in-database-transactions-f830718f4f12
 // https://cloudificationzone.com/2021/08/13/notification-system-design/
@@ -31,7 +34,11 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
   private logger: Logger = new Logger('NotificationGateway');
 
-  constructor(@InjectRedis() private readonly redis: Redis, private prisma: PrismaService) {}
+  constructor(
+    @InjectRedis() private readonly redis: Redis,
+    private readonly prisma: PrismaService,
+    @InjectQueue(EVENTS_ANALYTIC_QUEUE) private readonly eventsAnalyticQueue: Queue
+  ) {}
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
@@ -219,7 +226,6 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
     if (!joinedRoom) {
       client.join(userAddress);
-      this.logger.log('🚀 ~ file: message.gateway.ts:47 ~ MessageGateway ~ userAddress:', userAddress);
 
       return {
         event: 'userAddress',
@@ -255,5 +261,26 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
   publishSessionAction(pageMessageSessionId: string, message: SessionAction) {
     this.server.to(pageMessageSessionId).emit('sessionAction', message);
+  }
+
+  /// Analytic events
+  @UseGuards(WsAuthGuardByPass)
+  @SubscribeMessage('analyticEvents')
+  handleAnalyticEvents(@MessageBody() events: AnalyticEvent[], @ConnectedSocket() client: Socket) {
+    const account: Account = client.data.account;
+    const payload = account
+      ? {
+          events,
+          accountId: account.id
+        }
+      : {
+          events
+        };
+
+    this.eventsAnalyticQueue.add(EVENTS_ANALYTIC_QUEUE, payload);
+    return {
+      event: 'analyticEvents',
+      data: client.id
+    };
   }
 }

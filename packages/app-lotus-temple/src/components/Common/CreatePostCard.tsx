@@ -143,17 +143,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   ] = useCreatePostMutation();
 
   const updatePost = (tag: string, params, result: CreatePostMutation, pageId?: string, tokenPrimaryId?: string) => {
-    dispatch(
-      postApi.util.updateQueryData('Posts', { ...params, minBurnFilter: filterValue }, draft => {
-        draft.allPosts.edges.unshift({
-          cursor: result.createPost.id,
-          node: {
-            ...result.createPost
-          }
-        });
-        draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
-      })
-    );
     switch (tag) {
       case 'PostsByPageId':
         return dispatch(
@@ -228,9 +217,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       dispatch(deleteEditorTextFromCache());
     } catch (error) {
       const message = intl.get('post.unableCreatePostServer');
-      if (patches) {
-        dispatch(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
-      }
       dispatch(
         showToast('error', {
           message: 'Error',

@@ -20,6 +20,8 @@ import { VError } from 'verror';
 import { TranslateProvider } from '../translate/translate.constant';
 import { TranslateService } from '../translate/translate.service';
 import { ACCOUNT_DANA_QUEUE, BURN_FANOUT_QUEUE } from './burn.constants';
+import { AccountCacheService } from '../../account/account-cache.service';
+import { AccountDanaCacheService } from '../../account/account-dana-cache.service';
 
 @SkipThrottle()
 @Controller('burn')
@@ -34,123 +36,10 @@ export class BurnController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(BURN_FANOUT_QUEUE) private burnFanoutQueue: Queue,
     @InjectQueue(ACCOUNT_DANA_QUEUE) private accountDanaQueue: Queue,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private readonly accountCacheService: AccountCacheService,
+    private readonly accountDanaCacheService: AccountDanaCacheService
   ) {}
-
-  // private async updateAccountsDana(
-  //   burnType: BurnType,
-  //   amount: number,
-  //   command: BurnCommand,
-  //   txid: string,
-  //   givenDanaAddress?: string,
-  //   receivedDanaAddress?: string,
-  //   isUpvote?: boolean
-  // ) {
-  //   //Check if self burn
-  //   if (givenDanaAddress === receivedDanaAddress) {
-  //     await this.prisma.$transaction(async prisma => {
-  //       const account = await prisma.account.findFirst({
-  //         where: {
-  //           address: givenDanaAddress
-  //         },
-  //         orderBy: {
-  //           createdAt: 'desc'
-  //         }
-  //       });
-
-  //       const danaGiven = account?.danaGiven! + amount;
-
-  //       const updatedAccount = await prisma.account.update({
-  //         where: {
-  //           id: account?.id
-  //         },
-  //         data: {
-  //           danaGiven: danaGiven
-  //         }
-  //       });
-
-  //       await prisma.accountDanaHistory.create({
-  //         data: {
-  //           txid: txid,
-  //           burnType: command.burnType ? BurnTypePrisma.UPVOTE : BurnTypePrisma.DOWNVOTE,
-  //           burnedByAccount: {
-  //             connect: {
-  //               id: account?.id
-  //             }
-  //           },
-  //           burnForId: command.burnForId,
-  //           burnForType: command.burnForType,
-  //           burnedValue: amount,
-  //           danaScoreAfterBurn: updatedAccount?.danaGiven! + updatedAccount?.danaReceived!
-  //         }
-  //       });
-  //     });
-  //   } else {
-  //     await this.prisma.$transaction(async prisma => {
-  //       //update given account
-  //       const givenDanaAccount = await prisma.account.findFirst({
-  //         where: {
-  //           address: givenDanaAddress
-  //         },
-  //         orderBy: {
-  //           createdAt: 'desc'
-  //         }
-  //       });
-
-  //       const danaGivenAccount = givenDanaAccount?.danaGiven! + amount;
-
-  //       const givenDanaAccountUpdated = await prisma.account.update({
-  //         where: {
-  //           id: givenDanaAccount?.id
-  //         },
-  //         data: {
-  //           danaGiven: danaGivenAccount
-  //         }
-  //       });
-
-  //       await prisma.accountDanaHistory.create({
-  //         data: {
-  //           txid: txid,
-  //           burnType: command.burnType ? BurnTypePrisma.UPVOTE : BurnTypePrisma.DOWNVOTE,
-  //           burnedByAccount: {
-  //             connect: {
-  //               id: givenDanaAccount?.id
-  //             }
-  //           },
-  //           burnForId: command.burnForId,
-  //           burnForType: command.burnForType,
-  //           burnedValue: amount,
-  //           danaScoreAfterBurn: givenDanaAccountUpdated?.danaGiven! + givenDanaAccountUpdated?.danaReceived!
-  //         }
-  //       });
-
-  //       //update received account
-  //       const receivedDanaAccount = await prisma.account.findFirst({
-  //         where: {
-  //           address: receivedDanaAddress
-  //         },
-  //         orderBy: {
-  //           createdAt: 'desc'
-  //         }
-  //       });
-
-  //       const danaReceived =
-  //         burnType === BurnType.Up
-  //           ? receivedDanaAccount?.danaReceived! + amount
-  //           : receivedDanaAccount?.danaReceived! - amount;
-  //       const totalDanaReceivedAccount = danaReceived + receivedDanaAccount?.danaGiven!;
-
-  //       await prisma.account.update({
-  //         where: {
-  //           id: receivedDanaAccount?.id
-  //         },
-  //         data: {
-  //           danaReceived: danaReceived
-  //         }
-  //       });
-  //     });
-  //   }
-  // }
 
   private convertBurnedByToAddress(burnedBy: string): string {
     const legacyAddress = this.XPI.Address.hash160ToLegacy(burnedBy);
@@ -414,6 +303,7 @@ export class BurnController {
                 danaGiven: danaGiven
               }
             });
+            await this.accountDanaCacheService.setDanaGiven(updatedAccountDana.accountId, danaGiven);
 
             await prisma.accountDanaHistory.create({
               data: {
@@ -518,11 +408,7 @@ export class BurnController {
 
           commentAccountId = comment?.commentAccountId;
           commentPostId = comment?.commentToId;
-          commentAccount = await this.prisma.account.findFirst({
-            where: {
-              id: _.toSafeInteger(commentAccountId)
-            }
-          });
+          commentAccount = await this.accountCacheService.getById(_.toSafeInteger(commentAccountId));
         }
 
         const postId = command.burnForType == BurnForType.Comment ? commentPostId : command.burnForId;
@@ -543,12 +429,7 @@ export class BurnController {
           throw new VError(accountNotExistMessage);
         }
 
-        const recipientPostAccount = await this.prisma.account.findFirst({
-          where: {
-            id: _.toSafeInteger(post?.postAccountId)
-          }
-        });
-
+        const recipientPostAccount = await this.accountCacheService.getById(_.toSafeInteger(post?.postAccountId));
         if (!recipientPostAccount) {
           const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
           throw new VError(accountNotExistMessage);

@@ -443,7 +443,7 @@ export class PageMessageSessionResolver {
   }
 
   //This is for user only
-  @Query(() => PageMessageSession)
+  @Query(() => PageMessageSession, { nullable: true })
   async userHadMessageToPage(
     @Args({ name: 'accountId', type: () => Number, nullable: true }) accountId: number,
     @Args({ name: 'pageId', type: () => String, nullable: true }) pageId: string

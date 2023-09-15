@@ -1,19 +1,35 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Redis } from 'ioredis';
 import { TokenSigner, TokenVerifier, decodeToken } from 'jsontokens';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { VError } from 'verror';
 // import * as wif from 'wif';
-import { hashMnemonic } from '../../utils/encryptionMethods';
-import { WalletService } from '../wallet/wallet.service';
 import { Account } from '@bcpros/lixi-models';
+import { ModuleRef } from '@nestjs/core';
+import { hashMnemonic } from '../../utils/encryptionMethods';
+import { AccountCacheService } from '../account/account-cache.service';
+import { WalletService } from '../wallet/wallet.service';
 const wif = require('wif');
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
   private logger: Logger = new Logger(AuthService.name);
 
-  constructor(private prisma: PrismaService, private walletService: WalletService, @I18n() private i18n: I18nService) {}
+  private accountCacheService!: AccountCacheService;
+
+  constructor(
+    private prisma: PrismaService,
+    @InjectRedis() private readonly redis: Redis,
+    private walletService: WalletService,
+    @I18n() private i18n: I18nService,
+    private moduleRef: ModuleRef
+  ) {}
+
+  onModuleInit() {
+    this.accountCacheService = this.moduleRef.get(AccountCacheService);
+  }
 
   /**
    * Generate the jwt token from mnemonic
@@ -46,6 +62,7 @@ export class AuthService {
           publicKey: publicKey
         }
       });
+      await this.accountCacheService.deleteById(account.id);
     }
 
     const dataToSign = {
@@ -59,32 +76,18 @@ export class AuthService {
     return token;
   }
 
-  public async verifyJwt(token: string): Promise<Account> {
+  public async verifyJwt(token: string) {
     try {
       const tokenDecoded = decodeToken(token);
       const { id } = JSON.parse(tokenDecoded.payload as string);
 
-      // Find the account
-      const account = await this.prisma.account.findFirst({
-        where: {
-          id: id
-        }
-      });
+      const accountCacheService = await this.moduleRef.resolve(AccountCacheService);
 
-      const avatar = await this.prisma.account
-        .findUnique({
-          where: {
-            id: id
-          }
-        })
-        .avatar({
-          include: {
-            upload: true
-          }
-        });
-
+      // Find the account with cache
+      const account = await accountCacheService.getById(id);
       let url;
-      if (avatar) {
+      if (account && (account as any)?.avatar) {
+        const avatar = (account as any)?.avatar;
         const { upload } = avatar;
         const cfUrl = `${process.env.CF_IMAGES_DELIVERY_URL}/${process.env.CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
         url = upload.cfImageId ? cfUrl : upload.url;

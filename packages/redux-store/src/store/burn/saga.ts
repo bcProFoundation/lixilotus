@@ -188,9 +188,6 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnQueueCommand>) {
           field: PostOrderField.UpdatedAt
         }
       };
-      if (patches) {
-        yield put(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
-      }
       if (patch) {
         yield put(postApi.util.patchQueryData('Post', { id: postId }, patch.inversePatches));
       }
@@ -261,31 +258,6 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
         if (danaBurnScore < 0) {
           draft.homeTimeline.edges.splice(timelineItemToUpdateIndex, 1);
           draft.homeTimeline.totalCount = draft.homeTimeline.totalCount - 1;
-        }
-      }
-    })
-  );
-
-  yield put(
-    //THis is hardcoded, it wont work if isTop other than false, need to find better way to handle this
-    postApi.util.updateQueryData('Posts', { minBurnFilter: minBurnFilter, isTop: String(isTop) }, draft => {
-      const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === burnForId);
-      const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
-      if (postToUpdateIndex >= 0) {
-        let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
-        let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
-        if (burnType == BurnType.Up) {
-          danaBurnUp = danaBurnUp + burnValue;
-        } else {
-          danaBurnDown = danaBurnDown + burnValue;
-        }
-        const danaBurnScore = danaBurnUp - danaBurnDown;
-        draft.allPosts.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
-        draft.allPosts.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
-        draft.allPosts.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
-        if (danaBurnScore < 0) {
-          draft.allPosts.edges.splice(postToUpdateIndex, 1);
-          draft.allPosts.totalCount = draft.allPosts.totalCount - 1;
         }
       }
     })

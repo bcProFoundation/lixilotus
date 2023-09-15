@@ -258,7 +258,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   }, []);
 
   const handleCreateNewPost = async ({ htmlContent, pureContent }) => {
-    let patches: PatchCollection;
     let timelinePatches: PatchCollection;
     const params = {
       orderBy: {
@@ -355,9 +354,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         message = error.message;
       } else {
         message = intl.get('post.unableCreatePostServer');
-      }
-      if (patches) {
-        dispatch(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
       }
       if (timelinePatches) {
         dispatch(timelineApi.util.patchQueryData('HomeTimeline', { level: level }, timelinePatches.inversePatches));

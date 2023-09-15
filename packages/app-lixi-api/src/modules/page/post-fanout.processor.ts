@@ -10,6 +10,7 @@ import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { POST_FANOUT_QUEUE } from './constants/post.constants';
 import { Burn, Post } from '@bcpros/lixi-prisma';
 import { FollowCacheService } from '../account/follow-cache.service';
+import ReBloom from '../../common/redis/redis-bloom';
 
 @Injectable()
 @Processor(POST_FANOUT_QUEUE, { concurrency: 50 })
@@ -46,6 +47,19 @@ export class PostFanoutProcessor extends WorkerHost {
       ]);
 
       const followers = _.uniq(_.compact(_.concat(postAccountId, accountFollowers, pageFollowers)));
+
+      // Check if user view has view the post or not
+      const postviewBfKey = `post-view-exist-bf:${postAccountId}`;
+
+      const postviewBfExist = await this.redis.exists(postviewBfKey);
+
+      const reBloom = new ReBloom(this.redis);
+      if (!postviewBfExist) {
+        await reBloom.reserve(postviewBfKey, 0.001, 1000);
+      }
+
+      // Update dana view score and view for the post user
+      await reBloom.add(postviewBfKey, id);
 
       const pipeline = this.redis.pipeline();
 

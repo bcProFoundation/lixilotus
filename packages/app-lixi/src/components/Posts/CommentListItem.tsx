@@ -4,7 +4,7 @@ import { BurnForType } from '@bcpros/lixi-models/lib/burn';
 import AvatarUser from '@components/Common/AvatarUser';
 import { Counter } from '@components/Common/Counter';
 import { CommentQuery } from '@store/comment/comments.generated';
-import { PostsQuery } from '@store/post/posts.generated';
+import { PostQuery } from '@store/post/posts.generated';
 import { formatBalance } from '@utils/cashMethods';
 import { Space, Tooltip } from 'antd';
 import _ from 'lodash';
@@ -17,7 +17,7 @@ import { AuthorizationContext } from '@context/index';
 import useAuthorization from '@components/Common/Authorization/use-authorization.hooks';
 
 export type CommentItem = CommentQuery['comment'];
-type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+type PostItem = PostQuery['post'];
 
 const ACTION_VOTE = {
   UP_VOTE: 'upVote',

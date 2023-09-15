@@ -19,6 +19,7 @@ import worshipSaga from './worship/saga';
 import webpushSaga from './webpush/saga';
 import messageSaga from './message/saga';
 import { websocketSaga } from './websocket/saga';
+import analyticEventSaga from './analytic-event/saga';
 
 export default function* rootSaga() {
   yield all([
@@ -40,6 +41,7 @@ export default function* rootSaga() {
     burnSaga(),
     categorySaga(),
     messageSaga(),
-    websocketSaga()
+    websocketSaga(),
+    analyticEventSaga()
   ]);
 }

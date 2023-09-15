@@ -20,7 +20,6 @@ import { ExportSubLixiesProcessor } from './lixi/processors/export-sub-lixies.pr
 import { WithdrawSubLixiesEventsListener } from './lixi/processors/withdraw-sub-lixies.eventslistener';
 import { WithdrawSubLixiesProcessor } from './lixi/processors/withdraw-sub-lixies.processor';
 import { UploadFilesController } from './upload/upload.controller';
-import { UploadService } from './upload/upload.service';
 import { MeiliService } from '../page/meili.service';
 import { TranslateService } from './translate/translate.service';
 import { CloudflareModule } from '../../common/modules/cloudflare/cloudflare.module';
@@ -66,6 +65,7 @@ const baseCorsConfig = cors({
       }
     }),
     AuthModule,
+    AccountModule,
     NotificationModule,
     CloudflareModule,
     AccountModule,
@@ -85,7 +85,6 @@ const baseCorsConfig = cors({
   ],
   providers: [
     LixiService,
-    UploadService,
     MeiliService,
     TranslateService,
     CreateSubLixiesProcessor,
@@ -99,7 +98,6 @@ const baseCorsConfig = cors({
   ],
   exports: [
     LixiService,
-    UploadService,
     CreateSubLixiesProcessor,
     CreateSubLixiesEventsListener,
     WithdrawSubLixiesProcessor,

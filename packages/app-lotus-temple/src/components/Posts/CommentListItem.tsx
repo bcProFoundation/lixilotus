@@ -1,31 +1,26 @@
 import { Comment } from '@ant-design/compatible';
 import { DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined } from '@ant-design/icons';
-import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnForType } from '@bcpros/lixi-models/lib/burn';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import { Counter } from '@components/Common/Counter';
-import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { getSelectedAccount } from '@store/account/selectors';
-import { burnForUpDownVote } from '@store/burn/actions';
 import { CommentQuery } from '@store/comment/comments.generated';
-import { PostsQuery } from '@store/post/posts.generated';
-import { showToast } from '@store/toast/actions';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { PostQuery } from '@store/post/posts.generated';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
-import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
+import { formatBalance } from '@utils/cashMethods';
 import { Space, Tooltip } from 'antd';
-import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
 import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
 import intl from 'react-intl-universal';
-import { CommentOrderField, OrderDirection } from '@generated/types.generated';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { BurnData } from './PostDetail';
 
 export type CommentItem = CommentQuery['comment'];
-type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+type PostItem = PostQuery['post'];
 
 type CommentListItemProps = {
   index: number;

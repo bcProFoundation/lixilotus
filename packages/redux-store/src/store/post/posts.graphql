@@ -8,41 +8,6 @@ query Post($id: String!) {
   }
 }
 
-query Posts(
-  $after: String
-  $before: String
-  $first: Int = 20
-  $last: Int
-  $orderBy: [PostOrder!]
-  $skip: Int
-  $accountId: Int
-  $minBurnFilter: Int
-  $isTop: String
-) {
-  allPosts(
-    after: $after
-    before: $before
-    first: $first
-    last: $last
-    orderBy: $orderBy
-    skip: $skip
-    accountId: $accountId
-    minBurnFilter: $minBurnFilter
-    isTop: $isTop
-  ) {
-    totalCount
-    edges {
-      cursor
-      node {
-        ...PostFields
-      }
-    }
-    pageInfo {
-      ...PageInfoFields
-    }
-  }
-}
-
 query OrphanPosts(
   $after: String
   $before: String
@@ -398,6 +363,7 @@ fragment PostFields on Post {
     translateContent
     translateLanguage
   }
+  danaViewScore
 }
 
 fragment PostMeiliFields on Post {
@@ -459,6 +425,7 @@ fragment PostMeiliFields on Post {
     translateContent
     translateLanguage
   }
+  danaViewScore
 }
 
 mutation createPost($input: CreatePostInput!) {

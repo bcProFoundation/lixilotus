@@ -10,7 +10,7 @@ import useXPI from '@hooks/useXPI';
 import { getSelectedAccount } from '@store/account/selectors';
 import { addBurnQueue, addBurnTransaction, burnForUpDownVote } from '@store/burn/actions';
 import { openModal } from '@store/modal/actions';
-import { PostsQuery } from '@store/post/posts.generated';
+import { PostQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
@@ -217,7 +217,7 @@ const PostListItemContainer = styled(List.Item)`
   }
 `;
 
-type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+type PostItem = PostQuery['post'];
 
 type PostListItemProps = {
   index: number;

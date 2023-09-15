@@ -20,9 +20,9 @@ const extractHashtagFromText = (text: string) => {
 
 async function main() {
   console.log(`Indexing hashtag to meilisearch bucket: ${process.env.MEILISEARCH_BUCKET} and database`);
-  const allPosts = await prisma.post.findMany({});
+  const posts = await prisma.post.findMany({});
 
-  for (const post of allPosts) {
+  for (const post of posts) {
     const hashtags = extractHashtagFromText(post.content);
 
     if (hashtags === null) continue;

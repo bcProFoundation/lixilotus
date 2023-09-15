@@ -590,6 +590,7 @@ export default {
   'post.showTranslate': 'Hiện bài dịch',
   'post.hideTranslate': 'Ẩn bài dịch',
   'post.originTranslate': 'Được dịch từ {language}. Hiện ngôn ngữ gốc.',
+  'post.danaViewScore': 'Lượt xem dana',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',

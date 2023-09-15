@@ -1,15 +1,15 @@
 // import { NotificationDto as Notification, NotificationTypeDto as NotificationType } from '@bcpros/lixi-models';
 import {
   BurnCommand,
-  BurnType,
+  NotificationDto as Notification,
   NotificationDto,
   SendNotificationJobData,
   WebpushNotification
 } from '@bcpros/lixi-models';
-import { Account } from '@bcpros/lixi-prisma';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { Notification as NotificationDb, NotificationLevel as NotificationLevelDb, Prisma } from '@prisma/client';
 import { Queue } from 'bullmq';
 import Redis from 'ioredis';
@@ -18,17 +18,19 @@ import { I18n, I18nService } from 'nestjs-i18n';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { template } from 'src/utils/stringTemplate';
 import { VError } from 'verror';
+import { PushSubscription } from 'web-push';
+import { AccountCacheService } from '../../../modules/account/account-cache.service';
 import { NOTIFICATION_OUTBOUND_QUEUE, WEBPUSH_NOTIFICATION_QUEUE } from './notification.constants';
 import { NotificationGateway } from './notification.gateway';
-import { PushSubscription } from 'web-push';
 import { WebpushNotificationJobData } from './webpush-notification.process';
-import { NotificationDto as Notification } from '@bcpros/lixi-models';
 
 @Injectable()
-export class NotificationService {
+export class NotificationService implements OnModuleInit {
   private logger: Logger = new Logger('NotificationService');
+  private accountCacheService!: AccountCacheService;
 
   constructor(
+    private moduleRef: ModuleRef,
     private prisma: PrismaService,
     private notificationGateway: NotificationGateway,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
@@ -37,6 +39,10 @@ export class NotificationService {
     @I18n() private i18n: I18nService
   ) {}
 
+  onModuleInit() {
+    this.accountCacheService = this.moduleRef.get(AccountCacheService);
+  }
+
   async saveAndDispatchNotification(notification: NotificationDto) {
     if (!notification.recipientId) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
@@ -44,12 +50,8 @@ export class NotificationService {
       return;
     }
 
-    // get recipient account
-    const recipientAccount = await this.prisma.account.findUnique({
-      where: {
-        id: notification.recipientId
-      }
-    });
+    // get recipient account from cache
+    const recipientAccount = await this.accountCacheService.getById(notification.recipientId);
     if (!recipientAccount) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
       this.logger.error(new VError(accountNotExistMessage));
@@ -146,11 +148,7 @@ export class NotificationService {
     }
 
     // get recipient account
-    const recipientAccount = await this.prisma.account.findUnique({
-      where: {
-        id: webpushNotification.recipientId
-      }
-    });
+    const recipientAccount = await this.accountCacheService.getById(webpushNotification.recipientId);
     if (!recipientAccount) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
       this.logger.error(new VError(accountNotExistMessage));

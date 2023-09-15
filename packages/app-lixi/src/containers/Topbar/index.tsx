@@ -470,7 +470,7 @@ const Topbar: React.FC<any> = ({ className }: { className: string }) => {
     {
       address: slug
     },
-    { skip: !slug }
+    { skip: !slug || router.pathname.includes('/page/') }
   );
 
   const handlePathDirection = useMemo(() => {

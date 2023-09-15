@@ -3,27 +3,26 @@ import {
   Page,
   PaginationArgs,
   Post,
-  PostConnection,
   Repost,
   TimelineItem,
   TimelineItemConnection,
   UploadDetail
 } from '@bcpros/lixi-models';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import { Injectable, Logger, UseGuards, UseFilters } from '@nestjs/common';
+import { decode, encode } from '@msgpack/msgpack';
+import { Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { SkipThrottle } from '@nestjs/throttler';
 import { PubSub } from 'graphql-subscriptions';
 import { Redis } from 'ioredis';
 import _ from 'lodash';
 import { I18n, I18nService } from 'nestjs-i18n';
-import { encode, decode } from '@msgpack/msgpack';
 import { AccountEntity } from '../../decorators';
+import { GqlHttpExceptionFilter } from '../../middlewares/gql.exception.filter';
 import { GqlJwtAuthGuardByPass } from '../auth/guards/gql-jwtauth.guard';
+import PostLoader from '../page/post.loader';
 import { PrismaService } from '../prisma/prisma.service';
 import { TimelineService } from './timeline.service';
-import PostLoader from '../page/post.loader';
-import { GqlHttpExceptionFilter } from '../../middlewares/gql.exception.filter';
 
 const pubSub = new PubSub();
 
@@ -68,10 +67,11 @@ export class TimelineResolver {
 
       if (!dbPost) return null;
 
-      const [page, reposts, uploads] = await Promise.all([
+      const [page, reposts, uploads, danaViewScore] = await Promise.all([
         dbPost.pageId ? this.postLoader.batchPages.load(dbPost.pageId) : Promise.resolve(null),
         this.postLoader.batchReposts.load(dbPost.id),
-        this.postLoader.batchUploads.load(dbPost.id)
+        this.postLoader.batchUploads.load(dbPost.id),
+        this.postLoader.batchDanaViewScores.load(dbPost.id)
       ]);
 
       const post: Post = new Post({
@@ -80,7 +80,8 @@ export class TimelineResolver {
         uploads: uploads ? (uploads as UploadDetail[]) : [],
         page: page ? (page as Page) : null,
         repostCount: dbPost._count.reposts,
-        reposts: reposts ? (reposts as Repost[]) : []
+        reposts: reposts ? (reposts as Repost[]) : [],
+        danaBurnScore: (danaViewScore as number) || 0
       });
 
       const timelineItem: TimelineItem = {
@@ -159,10 +160,11 @@ export class TimelineResolver {
     const pageIds: string[] = _.compact(uncachedPosts.map(post => post.pageId)) ?? [];
 
     const timelineItems: TimelineItem[] = [];
-    const [arrPages, arrReposts, arrUploads] = await Promise.all([
+    const [arrPages, arrReposts, arrUploads, arrDanaViewScore] = await Promise.all([
       this.postLoader.batchPages.loadMany(pageIds),
       this.postLoader.batchReposts.loadMany(uncachedPostIds),
-      this.postLoader.batchUploads.loadMany(uncachedPostIds)
+      this.postLoader.batchUploads.loadMany(uncachedPostIds),
+      this.postLoader.batchDanaViewScores.loadMany(ids)
     ]);
 
     const pipeline = this.redis.pipeline();
@@ -181,6 +183,7 @@ export class TimelineResolver {
             ...dbPost,
             id: dbPost.id,
             uploads: arrUploads[i] ? (arrUploads[i] as UploadDetail[]) : [],
+            danaViewScore: (arrDanaViewScore[i] ?? 0) as number,
             page: page ? (page as Page) : null,
             repostCount: dbPost._count.reposts,
             reposts: arrReposts[i] ? (arrReposts[i] as Repost[]) : []
@@ -199,7 +202,10 @@ export class TimelineResolver {
         const post = decode(buffers[i]) as Post;
         const timelineItem: TimelineItem = {
           id: `${post.id}`,
-          data: new Post({ ...post })
+          data: new Post({
+            ...post,
+            danaViewScore: (arrDanaViewScore[i] ?? 0) as number
+          })
         };
         timelineItems.push(timelineItem);
       }

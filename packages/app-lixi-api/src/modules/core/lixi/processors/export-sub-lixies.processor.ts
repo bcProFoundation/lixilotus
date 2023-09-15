@@ -20,6 +20,7 @@ import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import * as fs from 'fs';
 import moment from 'moment';
+import { AccountCacheService } from '../../../account/account-cache.service';
 
 @Injectable()
 @Processor(EXPORT_SUB_LIXIES_QUEUE)
@@ -29,7 +30,8 @@ export class ExportSubLixiesProcessor extends WorkerHost {
     private prisma: PrismaService,
     private walletService: WalletService,
     @Inject('xpijs') private XPI: BCHJS,
-    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
+    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
+    private readonly accountCacheService: AccountCacheService
   ) {
     super();
   }
@@ -47,12 +49,7 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       }
     });
 
-    const account = await this.prisma.account.findFirst({
-      where: {
-        id: _.toSafeInteger(lixi?.accountId)
-      }
-    });
-
+    const account = await this.accountCacheService.getById(_.toSafeInteger(lixi?.accountId));
     let subLixies = await this.prisma.lixi.findMany({
       where: {
         parentId: jobData.parentId

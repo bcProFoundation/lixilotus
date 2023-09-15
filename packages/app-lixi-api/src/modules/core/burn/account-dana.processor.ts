@@ -7,13 +7,18 @@ import { ACCOUNT_DANA_QUEUE } from './burn.constants';
 import { AccountDanaHistoryType, BurnType as BurnTypePrisma } from '@bcpros/lixi-prisma';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { BurnCommand, BurnType } from '@bcpros/lixi-models';
+import { AccountDanaCacheService } from '../../account/account-dana-cache.service';
 
 @Injectable()
 @Processor(ACCOUNT_DANA_QUEUE, { concurrency: 1 })
 export class AccountDanaProcessor extends WorkerHost {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(@InjectRedis() private readonly redis: Redis, private prisma: PrismaService) {
+  constructor(
+    @InjectRedis() private readonly redis: Redis,
+    private readonly prisma: PrismaService,
+    private readonly accountDanaCacheService: AccountDanaCacheService
+  ) {
     super();
   }
 
@@ -29,6 +34,17 @@ export class AccountDanaProcessor extends WorkerHost {
 
       //Check if self burn
       if (givenDanaAddress === receivedDanaAddress) {
+        const accountDana = await this.prisma.accountDana.findFirst({
+          where: {
+            account: {
+              address: givenDanaAddress
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        });
+
         await this.prisma.$transaction(async prisma => {
           let givenUpValue = 0.0;
           let givenDownValue = 0.0;
@@ -41,17 +57,6 @@ export class AccountDanaProcessor extends WorkerHost {
               givenDownValue = amount;
               break;
           }
-
-          const accountDana = await prisma.accountDana.findFirst({
-            where: {
-              account: {
-                address: givenDanaAddress
-              }
-            },
-            orderBy: {
-              createdAt: 'desc'
-            }
-          });
 
           const danaGiven = accountDana?.danaGiven! + amount;
 
@@ -81,7 +86,34 @@ export class AccountDanaProcessor extends WorkerHost {
             }
           });
         });
+
+        if (accountDana && accountDana?.accountId) {
+          await this.accountDanaCacheService.incrDanaGivenBy(accountDana?.accountId, amount);
+        }
       } else {
+        const givenAccountDana = await this.prisma.accountDana.findFirst({
+          where: {
+            account: {
+              address: givenDanaAddress
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        });
+
+        //update received account
+        const receivedAccountDana = await this.prisma.accountDana.findFirst({
+          where: {
+            account: {
+              address: receivedDanaAddress
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        });
+
         await this.prisma.$transaction(async prisma => {
           let givenUpValue = 0.0;
           let givenDownValue = 0.0;
@@ -98,18 +130,6 @@ export class AccountDanaProcessor extends WorkerHost {
               receivedDownValue = amount;
               break;
           }
-
-          //update given account
-          const givenAccountDana = await prisma.accountDana.findFirst({
-            where: {
-              account: {
-                address: givenDanaAddress
-              }
-            },
-            orderBy: {
-              createdAt: 'desc'
-            }
-          });
 
           const danaGiven = givenAccountDana?.danaGiven! + amount;
 
@@ -136,18 +156,6 @@ export class AccountDanaProcessor extends WorkerHost {
               type: AccountDanaHistoryType.GIVEN,
               givenUpValue: givenUpValue,
               givenDownValue: givenDownValue
-            }
-          });
-
-          //update received account
-          const receivedAccountDana = await prisma.accountDana.findFirst({
-            where: {
-              account: {
-                address: receivedDanaAddress
-              }
-            },
-            orderBy: {
-              createdAt: 'desc'
             }
           });
 
@@ -182,6 +190,14 @@ export class AccountDanaProcessor extends WorkerHost {
             }
           });
         });
+
+        if (givenAccountDana && givenAccountDana?.accountId) {
+          await this.accountDanaCacheService.incrDanaGivenBy(givenAccountDana?.accountId, amount);
+        }
+        if (receivedAccountDana && receivedAccountDana?.accountId) {
+          const value = command.burnType == BurnType.Up ? amount : -1 * amount;
+          await this.accountDanaCacheService.incrDanaReceivedBy(receivedAccountDana?.accountId, value);
+        }
       }
     } catch (error) {
       this.logger.error(error);

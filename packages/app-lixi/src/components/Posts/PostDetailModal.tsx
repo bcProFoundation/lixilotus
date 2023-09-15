@@ -12,7 +12,7 @@ import { getAccountInfoTemp, getSelectedAccount } from '@store/account/selectors
 import { addBurnQueue, addBurnTransaction, clearFailQueue } from '@store/burn/actions';
 import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
-import { PostsQuery, useRepostMutation } from '@store/post/posts.generated';
+import { PostQuery, useRepostMutation } from '@store/post/posts.generated';
 import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
@@ -47,7 +47,7 @@ import { useSwipeable } from 'react-swipeable';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import useDetectMobileView from '@local-hooks/useDetectMobileView';
 
-export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+export type PostItem = PostQuery['post'];
 export type BurnData = {
   data: PostItem | CommentItem | TokenItem;
   burnForType: BurnForType;

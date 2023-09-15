@@ -26,18 +26,19 @@ import {
   Request,
   UseGuards
 } from '@nestjs/common';
-import { Account as AccountDb, AccountDana } from '@prisma/client';
+import { Account as AccountDb } from '@prisma/client';
 import { FastifyRequest } from 'fastify';
 
 import BCHJS from '@bcpros/xpi-js';
 import { SkipThrottle } from '@nestjs/throttler';
 import * as _ from 'lodash';
-import { orderBy, toSafeInteger } from 'lodash';
+import { toSafeInteger } from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwtauth.guard';
 import { VError } from 'verror';
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from '../../../utils/encryptionMethods';
+import { AccountCacheService } from '../../account/account-cache.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
 
@@ -48,7 +49,8 @@ export class AccountController {
     private prisma: PrismaService,
     private readonly walletService: WalletService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
-    @Inject('xpijs') private XPI: BCHJS
+    @Inject('xpijs') private XPI: BCHJS,
+    private readonly accountCacheService: AccountCacheService
   ) {}
 
   @Get(':id')
@@ -196,11 +198,15 @@ export class AccountController {
           mnemonicHash: mnemonicHash,
           id: undefined,
           address: address,
-          publicKey: publicKey
+          publicKey: publicKey,
+          accountDana: {
+            create: {}
+          }
         };
         const createdAccount: AccountDb = await this.prisma.account.create({
           data: accountToInsert
         });
+        await this.accountCacheService.deleteById(createdAccount.id);
         const balance: number = await this.xpiWallet.getBalance(createdAccount.address);
 
         const resultApi = _.omit(
@@ -279,6 +285,7 @@ export class AccountController {
             }
           }
         });
+        await this.accountCacheService.deleteById(createdAccount.id);
 
         const resultApi: AccountDto = _.omit(
           {
@@ -312,11 +319,7 @@ export class AccountController {
   ): Promise<AccountDto> {
     if (command) {
       try {
-        const account = await this.prisma.account.findUnique({
-          where: {
-            id: _.toSafeInteger(id)
-          }
-        });
+        const account = await this.accountCacheService.getById(_.toSafeInteger(id));
         if (!account) {
           const accountDoesNotExistMessage = await i18n.t('account.messages.accountNotExist');
           throw new VError(accountDoesNotExistMessage);
@@ -340,6 +343,7 @@ export class AccountController {
             secondaryLanguage: command.secondaryLanguage
           }
         });
+        await this.accountCacheService.deleteById(updatedAccount.id);
 
         const resultApi: AccountDto = _.omit(
           {
@@ -409,8 +413,10 @@ export class AccountController {
           this.prisma.lixi.deleteMany({ where: { accountId: accountId } }),
           this.prisma.account.deleteMany({ where: { id: accountId } })
         ]);
+        this.accountCacheService.deleteById(accountId);
       } else {
         this.prisma.account.deleteMany({ where: { id: accountId } });
+        this.accountCacheService.deleteById(accountId);
       }
 
       return null as any;

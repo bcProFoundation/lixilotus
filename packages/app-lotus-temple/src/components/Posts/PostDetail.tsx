@@ -13,7 +13,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { addBurnQueue, addBurnTransaction, clearFailQueue } from '@store/burn/actions';
 import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
-import { PostsQuery } from '@store/post/posts.generated';
+import { PostQuery } from '@store/post/posts.generated';
 import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
@@ -40,7 +40,7 @@ import { getTransactionStatus } from '@store/account/selectors';
 import { getBurnQueue, getFailQueue } from '@store/burn';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 
-export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+export type PostItem = PostQuery['post'];
 export type BurnData = {
   data: PostItem | CommentItem;
   burnForType: BurnForType;

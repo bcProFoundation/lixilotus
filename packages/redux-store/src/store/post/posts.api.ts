@@ -1,5 +1,5 @@
+import { PageInfo } from '@generated/types.generated';
 import { EntityState } from '@reduxjs/toolkit';
-import { PageInfo, Post, QueryAllPostsArgs } from '@generated/types.generated';
 
 import { api, PostQuery } from './posts.generated';
 
@@ -11,21 +11,6 @@ export interface PostApiState extends EntityState<PostQuery['post']> {
 const enhancedApi = api.enhanceEndpoints({
   addTagTypes: ['Post'],
   endpoints: {
-    Posts: {
-      providesTags: (result, error, arg) => ['Post'],
-      serializeQueryArgs({ queryArgs }) {
-        if (queryArgs) {
-          const { minBurnFilter, isTop, ...otherArgs } = queryArgs;
-          return { minBurnFilter, isTop };
-        }
-        return { queryArgs };
-      },
-      merge(currentCacheData, responseData) {
-        currentCacheData.allPosts.edges.push(...responseData.allPosts.edges);
-        currentCacheData.allPosts.pageInfo = responseData.allPosts.pageInfo;
-        currentCacheData.allPosts.totalCount = responseData.allPosts.totalCount;
-      }
-    },
     OrphanPosts: {
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
@@ -183,20 +168,6 @@ const enhancedApi = api.enhanceEndpoints({
             https://github.com/reduxjs/redux-toolkit/issues/2394#issuecomment-1198430740 &&
             https://github.com/reduxjs/redux-toolkit/issues/2394#issuecomment-1198589018
           */
-          dispatch(
-            api.util.updateQueryData('Posts', { minBurnFilter: minBurnFilter, isTop: isTop }, draft => {
-              const oldDraft = draft.allPosts.edges.map(el => el.cursor);
-              if (!oldDraft.includes(result.createPost.id)) {
-                draft.allPosts.edges.unshift({
-                  cursor: result.createPost.id,
-                  node: {
-                    ...result.createPost
-                  }
-                });
-                draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
-              }
-            })
-          );
 
           if (hashtagId) {
             dispatch(
@@ -297,12 +268,6 @@ const enhancedApi = api.enhanceEndpoints({
         const { isTop, minBurnFilter } = extraArguments;
         try {
           const { data: result } = await queryFulfilled;
-          dispatch(
-            api.util.updateQueryData('Posts', { minBurnFilter: minBurnFilter, isTop: isTop }, draft => {
-              const index = draft.allPosts.edges.findIndex(x => x.cursor === result.updatePost.id);
-              draft.allPosts.edges[index].node = result.updatePost;
-            })
-          );
         } catch {}
       }
     },
@@ -317,8 +282,6 @@ export const {
   useLazyPostQuery,
   useOrphanPostsQuery,
   useLazyOrphanPostsQuery,
-  usePostsQuery,
-  useLazyPostsQuery,
   usePostsByPageIdQuery,
   useLazyPostsByPageIdQuery,
   usePostsByTokenIdQuery,

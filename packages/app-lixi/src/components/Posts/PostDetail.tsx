@@ -20,7 +20,7 @@ import { api as commentsApi, useCreateCommentMutation } from '@store/comment/com
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
-import { PostsQuery, useRepostMutation } from '@store/post/posts.generated';
+import { PostQuery, useRepostMutation } from '@store/post/posts.generated';
 import { sendXPIFailure } from '@store/send/actions';
 import { getFilterPostsHome, getLevelFilter } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
@@ -47,7 +47,7 @@ import PostTranslate from './PostTranslate';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import useDetectMobileView from '@local-hooks/useDetectMobileView';
 
-export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+export type PostItem = PostQuery['post'];
 export type BurnData = {
   data: PostItem | CommentItem | TokenItem;
   burnForType: BurnForType;

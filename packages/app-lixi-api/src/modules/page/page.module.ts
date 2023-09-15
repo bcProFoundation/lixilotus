@@ -5,12 +5,15 @@ import IORedis from 'ioredis';
 import _ from 'lodash';
 import { NotificationModule } from 'src/common/modules/notifications/notification.module';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { AccountCacheService } from '../account/account-cache.service';
+import { AccountDanaCacheService } from '../account/account-dana-cache.service';
 import { AccountModule } from '../account/account.module';
 import { FollowCacheService } from '../account/follow-cache.service';
 import { AuthModule } from '../auth/auth.module';
 import { HashtagModule } from '../hashtag/hashtag.module';
 import { CommentResolver } from './comment.resolver';
 import { POST_FANOUT_QUEUE } from './constants/post.constants';
+import { DanaViewScoreService } from './dana-view-score.service';
 import { MeiliService } from './meili.service';
 import { PageResolver } from './page.resolver';
 import { PostFanoutProcessor } from './post-fanout.processor';
@@ -49,9 +52,12 @@ import { PostResolver } from './post.resolver';
     NotificationService,
     HashtagModule,
     FollowCacheService,
+    AccountCacheService,
+    AccountDanaCacheService,
     PostLoader,
-    PostFanoutProcessor
+    PostFanoutProcessor,
+    DanaViewScoreService
   ],
-  exports: [MeiliService, NotificationService, FollowCacheService, PostLoader]
+  exports: [MeiliService, NotificationService, FollowCacheService, PostLoader, DanaViewScoreService]
 })
 export class PageModule {}

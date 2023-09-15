@@ -1,8 +1,8 @@
 import { Redis, Cluster } from 'ioredis';
 
-export interface IItem<T> {
-  id: string;
-}
+export type IItem<T> = T & {
+  id: string | number;
+};
 
 export interface IPaginatedItems<T> {
   items: IItem<T>[];
@@ -13,11 +13,10 @@ export interface IItemRepository<T> {
   name: string;
   redis: Redis | Cluster;
   set: (item: IItem<T>, expirationInSeconds?: number) => Promise<void>;
-  getById: (id: string) => Promise<IItem<T> | null>;
-  getAll: () => Promise<IItem<T>[]>;
+  getById: (id: string | number) => Promise<IItem<T> | null>;
   getPaginated: (page: number, pageSize: number) => Promise<IPaginatedItems<T>>;
-  hasItem: (id: string) => Promise<boolean>;
-  deleteById: (id: string) => Promise<void>;
+  hasItem: (id: string | number) => Promise<boolean>;
+  deleteById: (id: string | number) => Promise<void>;
   deleteAll: () => Promise<void>;
   count: () => Promise<number>;
 }

@@ -33,12 +33,12 @@ import intl from 'react-intl-universal';
 import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { WithAuthorizeAction } from '../Common/Authorization/WithAuthorizeAction';
-import { PostsQuery } from '@store/post/posts.generated';
+import { PostQuery } from '@store/post/posts.generated';
 
 export const URL_AVATAR_DEFAULT = '/images/default-avatar.jpg';
 export const URL_COVER_DEFAULT = '/images/default-avatar.jpg';
 
-type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+type PostItem = PostQuery['post'];
 
 const AuthorizedButton = WithAuthorizeAction(Button);
 

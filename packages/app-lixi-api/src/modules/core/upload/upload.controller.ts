@@ -23,16 +23,16 @@ import { JwtAuthGuard } from 'src/modules/auth/guards/jwtauth.guard';
 import { VError } from 'verror';
 import { CloudflareImagesService } from '../../../common/modules/cloudflare/cloudflare-images.service';
 import { PrismaService } from '../../prisma/prisma.service';
-import { UploadService } from './upload.service';
 import { hexSha256 } from '../../../utils/encryptionMethods';
+import { AccountCacheService } from '../../account/account-cache.service';
 
 @SkipThrottle()
 @Controller('uploads')
 export class UploadFilesController {
   constructor(
     private prisma: PrismaService,
-    private uploadService: UploadService,
-    private readonly cloudflareService: CloudflareImagesService
+    private readonly cloudflareService: CloudflareImagesService,
+    private readonly accountCacheService: AccountCacheService
   ) {}
 
   @Post('/s3')
@@ -95,6 +95,7 @@ export class UploadFilesController {
           // coverAccount: {connect: type == UPLOAD_TYPES.ACCOUNT_COVER ? {id: account.id} : undefined },
         }
       });
+      this.accountCacheService.deleteById(account.id);
 
       return resultImage;
     } catch (err) {
@@ -177,6 +178,7 @@ export class UploadFilesController {
           })
         )
       );
+      this.accountCacheService.deleteById(account.id);
 
       return resultImages;
     } catch (err) {

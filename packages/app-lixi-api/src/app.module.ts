@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-static';
 import { redisStore } from 'cache-manager-ioredis-yet';
 import { FastifyRequest } from 'fastify';
@@ -16,6 +17,7 @@ import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n'
 import { MeiliSearchModule } from 'nestjs-meilisearch';
 import { S3Module } from 'nestjs-s3';
 import path, { join } from 'path';
+import { CloudflareModule } from './common/modules/cloudflare/cloudflare.module';
 import { NotificationModule } from './common/modules/notifications/notification.module';
 import { GraphqlConfig } from './config/config.interface';
 import configuration from './config/configuration';
@@ -23,17 +25,17 @@ import { HttpExceptionFilter } from './middlewares/exception.filter';
 import { AccountModule } from './modules/account/account.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CoreModule } from './modules/core/core.module';
+import { HashtagModule } from './modules/hashtag/hashtag.module';
+import { MessageModule } from './modules/message/message.module';
 import { PageModule } from './modules/page/page.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { TempleModule } from './modules/temple/temple.module';
+import { TimelineModule } from './modules/timeline/timeline.module';
 import { TokenModule } from './modules/token/token.module';
-import { HashtagModule } from './modules/hashtag/hashtag.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { WorshipModule } from './modules/worship/worship.module';
-import { MessageModule } from './modules/message/message.module';
-import { CloudflareModule } from './common/modules/cloudflare/cloudflare.module';
-import { ScheduleModule } from '@nestjs/schedule';
-import { TimelineModule } from './modules/timeline/timeline.module';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
+import { EventsAnalyticModule } from './modules/events-analytic/events-analytic.module';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -169,7 +171,11 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
         }
       })
     }),
-    CloudflareModule
+    CloudflareModule,
+    EventsAnalyticModule,
+    DevtoolsModule.register({
+      http: process.env.NODE_ENV !== 'production'
+    })
   ],
   controllers: [],
   providers: [

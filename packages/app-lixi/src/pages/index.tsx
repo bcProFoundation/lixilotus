@@ -1,4 +1,3 @@
-import PostsListing from '@components/Posts/PostsListing';
 import { getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getIsBootstrapped } from '@store/persistor/selectors';

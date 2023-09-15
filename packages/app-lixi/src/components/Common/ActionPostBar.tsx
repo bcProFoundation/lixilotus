@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { PostItem } from '@components/Posts/PostDetail';
-import styled from 'styled-components';
-import BaseReaction from './Reaction';
-import { formatBalance } from 'src/utils/cashMethods';
-import ShareSocialButton from './ShareSocialButton';
-import { RetweetOutlined } from '@ant-design/icons';
-import { Space, Tooltip } from 'antd';
+import { BarChartOutlined, RetweetOutlined } from '@ant-design/icons';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import intl from 'react-intl-universal';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getSelectedAccount } from '@store/account';
-import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
-import { getUtxoWif } from '@utils/cashMethods';
+import { PostItem } from '@components/Posts/PostDetail';
 import { WalletContext } from '@context/walletProvider';
-import useXPI from '@hooks/useXPI';
 import { RepostInput } from '@generated/types.generated';
+import useXPI from '@hooks/useXPI';
+import { getSelectedAccount } from '@store/account';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useRepostMutation } from '@store/post/posts.api';
 import { showToast } from '@store/toast/actions';
+import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
+import { getUtxoWif } from '@utils/cashMethods';
+import { Space, Tooltip } from 'antd';
 import { useRouter } from 'next/router';
-import { Counter } from './Counter';
+import React, { useEffect, useState } from 'react';
+import intl from 'react-intl-universal';
+import { formatBalance } from 'src/utils/cashMethods';
+import styled from 'styled-components';
 import { WithAuthorizeAction } from './Authorization/WithAuthorizeAction';
+import { Counter } from './Counter';
+import BaseReaction from './Reaction';
+import ShareSocialButton from './ShareSocialButton';
 
 export const GroupIconText = styled.div`
   align-items: center;
@@ -34,7 +34,8 @@ export const GroupIconText = styled.div`
       margin-right: 0;
     }
 
-    &.repost {
+    &.repost,
+    &.dana-view-score {
       svg {
         color: var(--color-primary);
         width: 28px;
@@ -224,6 +225,12 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment, isSetBorde
             </Space>
           </Tooltip>
         )}
+        <Tooltip title={`${intl.get('post.danaViewScore')}: ${post.danaViewScore ?? 0}`}>
+          <Space style={{ padding: '8px' }} className="dana-view-score" size={5}>
+            <BarChartOutlined />
+            <Counter isShowXPI={false} num={post.danaViewScore ?? 0} />
+          </Space>
+        </Tooltip>
       </GroupIconText>
 
       <ShareSocialButton slug={post.id} content={post.content} postAccountName={post.postAccount.name} />

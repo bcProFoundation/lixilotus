@@ -43,6 +43,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { HASHTAG, POSTS } from './constants/meili.constants';
 import { POST_FANOUT_QUEUE } from './constants/post.constants';
 import { MeiliService } from './meili.service';
+import { AccountCacheService } from '../account/account-cache.service';
+import PostLoader from './post.loader';
 
 const pubSub = new PubSub();
 
@@ -62,7 +64,9 @@ export class PostResolver {
     @InjectQueue(POST_FANOUT_QUEUE) private postFanoutQueue: Queue,
     @Inject('xpijs') private XPI: BCHJS,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
-    @I18n() private i18n: I18nService
+    @I18n() private i18n: I18nService,
+    private readonly accountCacheService: AccountCacheService,
+    private readonly postLoader: PostLoader
   ) {}
 
   @Subscription(() => Post)
@@ -72,127 +76,41 @@ export class PostResolver {
 
   @SkipThrottle()
   @Query(() => Post)
-  async post(@Args('id', { type: () => String }) id: string) {
-    return await this.prisma.post.findUnique({
+  @UseGuards(GqlJwtAuthGuardByPass)
+  async post(@PostAccountEntity() account: Account, @Args('id', { type: () => String }) id: string) {
+    const dbPost = await this.prisma.post.findUnique({
       where: { id: id },
       include: {
+        uploads: true,
         postAccount: true,
         comments: true,
         page: true,
         translations: true,
-        reposts: { select: { account: true, accountId: true } }
+        reposts: { select: { account: true, accountId: true } },
+        _count: {
+          select: { reposts: true, comments: true }
+        }
       }
     });
-  }
 
-  @SkipThrottle()
-  @Query(() => PostConnection)
-  @UseGuards(GqlJwtAuthGuardByPass)
-  async allPosts(
-    @PostAccountEntity() account: Account,
-    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
-    @Args({ name: 'accountId', type: () => Number, nullable: true }) accountId: number,
-    @Args({ name: 'isTop', type: () => String, nullable: true }) isTop: string,
-    @Args({ name: 'orderBy', type: () => [PostOrder!], nullable: true }) orderBy: PostOrder[]
-  ) {
-    let result;
+    if (!dbPost) return null;
 
-    if (account) {
-      if (accountId && !_.isNil(account) && accountId !== account.id) {
-        const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
-        throw new VError(invalidAccountMessage);
-      }
+    const [page, reposts, uploads, danaViewScore] = await Promise.all([
+      dbPost.pageId ? this.postLoader.batchPages.load(dbPost.pageId) : Promise.resolve(null),
+      this.postLoader.batchReposts.load(dbPost.id),
+      this.postLoader.batchUploads.load(dbPost.id),
+      this.postLoader.batchDanaViewScores.load(dbPost.id)
+    ]);
 
-      const followingsAccount = await this.prisma.followAccount.findMany({
-        where: { followerAccountId: account.id },
-        select: { followingAccountId: true }
-      });
-      const listFollowingsAccountIds = followingsAccount.map(item => item.followingAccountId);
-
-      // const listFollowingsAccountIds = await this.followCacheService.getAccountFollowings(accountId);
-
-      const followingPagesAccount = await this.prisma.followPage.findMany({
-        where: { accountId: account.id },
-        select: { pageId: true, tokenId: true }
-      });
-      const listFollowingsPageIds = followingPagesAccount.map(item => item.pageId || item.tokenId);
-
-      const queryPosts: any = {
-        OR: [
-          {
-            danaBurnScore: { gte: minBurnFilter ?? 0 }
-          },
-          {
-            postAccount: { id: account.id }
-          },
-          ...(isTop == 'true'
-            ? [{ AND: [{ postAccount: { id: { in: listFollowingsAccountIds } } }, { danaBurnScore: { gte: 0 } }] }]
-            : []),
-          ...(isTop == 'true'
-            ? [{ AND: [{ pageId: { in: listFollowingsPageIds } }, { danaBurnScore: { gte: 1 } }] }]
-            : [])
-        ]
-      };
-
-      result = await findManyCursorConnection(
-        async args => {
-          const posts = await this.prisma.post.findMany({
-            include: {
-              postAccount: true,
-              comments: true,
-              page: true,
-              translations: true,
-              reposts: { select: { account: true, accountId: true } }
-            },
-            where: queryPosts,
-            orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
-            ...args
-          });
-
-          const result = await Promise.all(
-            posts.map(async post => ({
-              ...post,
-              followPostOwner: listFollowingsAccountIds.includes(post.postAccountId) ? true : false,
-              followedPage: post.page && listFollowingsPageIds.includes(post.page.id) ? true : false,
-              repostCount: await this.prisma.repost.count({
-                where: { postId: post.id }
-              })
-            }))
-          );
-
-          return result;
-        },
-        () =>
-          this.prisma.post.count({
-            where: queryPosts
-          }),
-        { first, last, before, after }
-      );
-    } else {
-      result = await findManyCursorConnection(
-        args =>
-          this.prisma.post.findMany({
-            include: { postAccount: true, comments: true, translations: true },
-            where: {
-              danaBurnScore: {
-                gte: minBurnFilter ?? 0
-              }
-            },
-            orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
-            ...args
-          }),
-        () =>
-          this.prisma.post.count({
-            where: {
-              danaBurnScore: {
-                gte: minBurnFilter ?? 0
-              }
-            }
-          }),
-        { first, last, before, after }
-      );
-    }
-    return result;
+    return new Post({
+      ...dbPost,
+      id: dbPost.id,
+      uploads: uploads ? (uploads as UploadDetail[]) : [],
+      page: page ? (page as Page) : null,
+      repostCount: dbPost._count.reposts,
+      reposts: reposts ? (reposts as Repost[]) : [],
+      danaBurnScore: (danaViewScore as number) || 0
+    });
   }
 
   @SkipThrottle()
@@ -502,25 +420,6 @@ export class PostResolver {
 
       const postsId = _.map(posts, 'id');
 
-      //Testing new implement of searching
-
-      // const searchPosts = await this.prisma.post.findMany({
-      //   include: { translations: true },
-      //   where: {
-      //     AND: [
-      //       {
-      //         id: { in: postsId }
-      //       },
-      //       {
-      //         danaBurnScore: {
-      //           gte: minBurnFilter ?? 0
-      //         }
-      //       }
-      //     ]
-      //   },
-      //   orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
-      // });
-
       const result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
@@ -559,11 +458,6 @@ export class PostResolver {
         { first, last, before, after }
       );
       return result;
-
-      // return connectionFromArraySlice(searchPosts, args, {
-      //   arrayLength: count || 0,
-      //   sliceStart: offset || 0
-      // });
     } catch (err) {
       this.logger.error(err);
       if (err instanceof VError) {
@@ -1050,12 +944,7 @@ export class PostResolver {
         throw new VError(accountNotExistMessage);
       }
 
-      const recipient = await this.prisma.account.findFirst({
-        where: {
-          id: _.toSafeInteger(page.pageAccountId)
-        }
-      });
-
+      const recipient = await this.accountCacheService.getById(page.pageAccountId);
       if (!recipient) {
         const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
         throw new VError(accountNotExistMessage);

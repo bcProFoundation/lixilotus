@@ -3,10 +3,11 @@ import { Injectable, Scope } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import DataLoader from 'dataloader';
 import { Page, Repost, UploadDetail } from '@bcpros/lixi-models';
+import { DanaViewScoreService } from './dana-view-score.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export default class PostLoader {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly danaViewScoreService: DanaViewScoreService) {}
 
   public async getPostsUploadsByBatch(postIds: readonly string[]): Promise<(UploadDetail | any)[]> {
     const ids = postIds as unknown as string[];
@@ -139,6 +140,14 @@ export default class PostLoader {
     });
     return postIds.map(postId => {
       return reposts.filter(item => item.postId == postId) || null;
+    });
+  });
+
+  public readonly batchDanaViewScores = new DataLoader(async (postIds: readonly string[]) => {
+    const ids = (postIds as unknown as string[]) ?? [];
+    const scores = await this.danaViewScoreService.getByIds(ids);
+    return postIds.map((postId: string, index: number) => {
+      return scores[index] || 0;
     });
   });
 }

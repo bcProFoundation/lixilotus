@@ -65,6 +65,7 @@
     "react-swipe-to-delete-ios": "^2.1.0",
     "react-swipeable": "^7.0.1",
     "react-virtuoso": "^4.0.7",
+    "react-waypoint": "^10.3.0",
     "react-web-share": "^2.0.2",
     "read-more-more": "^2.0.2",
     "redux": "^4.2.1",

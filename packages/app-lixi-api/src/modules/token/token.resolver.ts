@@ -68,7 +68,7 @@ export class TokenResolver {
     const hashPrefix = `tokens:items-data`;
     const tokenRepository = new SortedItemRepository<Token>(keyPrefix, hashPrefix, this.redis);
 
-    const keyExist = await this.redis.exists(keyPrefix);
+    const keyExist = await this.redis.exists([keyPrefix]);
 
     if (!keyExist) {
       // caching the token1s

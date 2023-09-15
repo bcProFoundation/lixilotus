@@ -83,6 +83,9 @@ export class Post {
   @Field(() => [PostTranslation], { nullable: true })
   translations?: Nullable<PostTranslation[]>;
 
+  @Field(() => Number, { nullable: true })
+  danaViewScore?: Nullable<number>;
+
   constructor(partial: Partial<Post>) {
     Object.assign(this, partial);
   }

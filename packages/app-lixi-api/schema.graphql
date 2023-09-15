@@ -690,6 +690,7 @@ type Post {
   danaBurnDown: Float!
   danaBurnScore: Float!
   danaBurnUp: Float!
+  danaViewScore: Int
   followPostOwner: Boolean
   followedPage: Boolean
   id: ID!
@@ -810,7 +811,6 @@ type Query {
   allPagesByUserId(after: String, before: String, first: Int, id: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
   allPendingPageMessageSessionByAccountId(after: String, before: String, first: Int, id: Int, last: Int, minBurnFilter: Int, orderBy: PageMessageSessionOrder, skip: Int): PageMessageSessionConnection!
   allPendingPageMessageSessionByPageId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PageMessageSessionOrder, skip: Int): PageMessageSessionConnection!
-  allPosts(accountId: Int, after: String, before: String, first: Int, isTop: String, last: Int, minBurnFilter: Int, orderBy: [PostOrder!], skip: Int): PostConnection!
   allPostsByHashtagId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: [PostOrder!], skip: Int): PostConnection!
   allPostsBySearch(
@@ -917,7 +917,7 @@ type Query {
   temple(id: String!): Temple!
   timeline(id: String!): TimelineItem!
   token(tokenId: String!): Token!
-  userHadMessageToPage(accountId: Int, pageId: String): PageMessageSession!
+  userHadMessageToPage(accountId: Int, pageId: String): PageMessageSession
   worship(id: String!): Worship!
   worshipedPerson(id: String!): WorshipedPerson!
 }

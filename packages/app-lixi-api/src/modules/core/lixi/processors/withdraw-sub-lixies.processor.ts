@@ -8,6 +8,7 @@ import { WITHDRAW_SUB_LIXIES_QUEUE } from 'src/modules/core/lixi/constants/lixi.
 import { WithdrawSubLixiesJobData, WithdrawSubLixiesJobResult } from 'src/modules/core/lixi/models/lixi.models';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
+import { AccountCacheService } from '../../../account/account-cache.service';
 
 @Injectable()
 @Processor(WITHDRAW_SUB_LIXIES_QUEUE)
@@ -17,7 +18,8 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
     private prisma: PrismaService,
     private walletService: WalletService,
     @Inject('xpijs') private XPI: BCHJS,
-    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
+    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
+    private readonly accountCacheService: AccountCacheService
   ) {
     super();
   }
@@ -35,11 +37,7 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
       }
     });
 
-    const account = await this.prisma.account.findFirst({
-      where: {
-        id: _.toSafeInteger(lixi?.accountId)
-      }
-    });
+    const account = await this.accountCacheService.getById(_.toSafeInteger(lixi?.accountId));
 
     const subLixies = await this.prisma.lixi.findMany({
       where: {

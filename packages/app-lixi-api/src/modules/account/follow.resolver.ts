@@ -1,25 +1,17 @@
 import {
   Account,
+  AccountConnection,
+  AccountOrder,
   CreateFollowAccountInput,
   CreateFollowPageInput,
   CreateFollowTokenInput,
   DeleteFollowAccountInput,
   DeleteFollowPageInput,
+  DeleteFollowTokenInput,
   FollowAccount,
-  FollowAccountConnection,
-  FollowAccountOrder,
   FollowPage,
-  PaginationArgs,
-  DEFAULT_CATEGORY,
-  PageConnection,
-  PageOrder,
-  AccountOrder,
-  AccountConnection,
-  Page,
-  TokenOrder,
-  TokenConnection,
   FollowPageConnection,
-  DeleteFollowTokenInput
+  PaginationArgs
 } from '@bcpros/lixi-models';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
@@ -39,6 +31,7 @@ import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import VError from 'verror';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
+import { AccountCacheService } from './account-cache.service';
 import { FollowCacheService } from './follow-cache.service';
 
 const pubSub = new PubSub();
@@ -54,7 +47,8 @@ export class FollowResolver {
     private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
     @I18n() private readonly i18n: I18nService,
-    @InjectRedis() private readonly redis: Redis
+    @InjectRedis() private readonly redis: Redis,
+    private readonly accountCacheService: AccountCacheService
   ) {}
 
   @Subscription(() => FollowAccount)
@@ -191,20 +185,16 @@ export class FollowResolver {
         createdFollowAccount.createdAt
       );
 
-      const recipient = await this.prisma.account.findFirst({
-        where: {
-          id: _.toSafeInteger(followingAccountId)
-        }
-      });
-
-      if (!recipient) {
+      // get recipient account
+      const recipientAccount = await this.accountCacheService.getById(followingAccountId);
+      if (!recipientAccount) {
         const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
         throw new VError(accountNotExistMessage);
       }
 
       const createNotif = {
         senderId: account.id,
-        recipientId: recipient.id,
+        recipientId: _.toSafeInteger(recipientAccount.id),
         notificationTypeId: NOTIFICATION_TYPES.FOLLOW_ACCOUNT,
         level: NotificationLevel.INFO,
         url: '/profile/' + account.address,

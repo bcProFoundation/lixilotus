@@ -954,7 +954,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                             {intl.get('messenger.openMessage')}
                           </Button>
                         )
-                      }[pageMessageSessionData.userHadMessageToPage.status]
+                      }[pageMessageSessionData.userHadMessageToPage?.status ?? PageMessageSessionStatus.Open]
                     }
                   </React.Fragment>
                 )}

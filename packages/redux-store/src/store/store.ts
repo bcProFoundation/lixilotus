@@ -73,7 +73,12 @@ const makeStore = (context: Context) => {
         process.env.NODE_ENV === 'production'
           ? false
           : {
-              actionsDenylist: ['wallet/writeWalletStatus']
+              actionsDenylist: [
+                'wallet/writeWalletStatus',
+                'posts/setShowCreatePost',
+                'analyticEvent/batchEvents',
+                'analyticEvent/analyticEvent'
+              ]
             },
       preloadedState: initialState
     });

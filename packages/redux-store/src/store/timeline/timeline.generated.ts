@@ -40,6 +40,7 @@ export type TimelineQuery = {
       followPostOwner?: boolean | null;
       followedPage?: boolean | null;
       originalLanguage?: string | null;
+      danaViewScore?: number | null;
       uploads?: Array<{
         __typename?: 'UploadDetail';
         id: string;
@@ -118,6 +119,7 @@ export type HomeTimelineQuery = {
           followPostOwner?: boolean | null;
           followedPage?: boolean | null;
           originalLanguage?: string | null;
+          danaViewScore?: number | null;
           uploads?: Array<{
             __typename?: 'UploadDetail';
             id: string;

@@ -7,6 +7,5 @@ export * as postApi from './posts.api';
 export * from './useInfiniteOrphanPostsQuery';
 export * from './useInfinitePostsByPageIdQuery';
 export * from './useInfinitePostsBySearchQuery';
-export * from './useInfinitePostsQuery';
 export * from './useInfinitePostsByTokenIdQuery';
 export * from './useInfinitePostsByUserIdQuery';

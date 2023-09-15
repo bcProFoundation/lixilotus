@@ -17,7 +17,7 @@ export class ItemRepository<T> implements IItemRepository<T> {
   }
 
   async set(item: IItem<T>, expirationInSeconds?: number): Promise<void> {
-    const key = this.getKey(item.id);
+    const key = this.getKey(item.id.toString());
     const buffer = encode(item);
     if (expirationInSeconds != null) {
       await this.redis.setex(key, expirationInSeconds, Buffer.from(buffer));
@@ -26,21 +26,11 @@ export class ItemRepository<T> implements IItemRepository<T> {
     }
   }
 
-  async getById(id: string): Promise<IItem<T> | null> {
-    const key = this.getKey(id);
+  async getById(id: string | number): Promise<IItem<T> | null> {
+    const key = this.getKey(id.toString());
     const result = await this.redis.getBuffer(key);
 
     return bufferToItem(result) as IItem<T>;
-  }
-
-  async getAll(): Promise<IItem<T>[]> {
-    const keys = await this.redis.keys(this.getKey('*'));
-    if (keys.length === 0) {
-      return [];
-    }
-    const buffers = await this.redis.mgetBuffer(keys);
-
-    return buffers.map(b => bufferToItem(b) as IItem<T>);
   }
 
   async getPaginated(page: number, pageSize: number): Promise<IPaginatedItems<T>> {
@@ -65,13 +55,13 @@ export class ItemRepository<T> implements IItemRepository<T> {
     };
   }
 
-  async hasItem(id: string): Promise<boolean> {
-    const key = this.getKey(id);
+  async hasItem(id: string | number): Promise<boolean> {
+    const key = this.getKey(id.toString());
     return (await this.redis.exists(key)) === 1;
   }
 
-  async deleteById(id: string): Promise<void> {
-    const key = this.getKey(id);
+  async deleteById(id: string | number): Promise<void> {
+    const key = this.getKey(id.toString());
     await this.redis.del(key);
   }
 
@@ -88,8 +78,8 @@ export class ItemRepository<T> implements IItemRepository<T> {
     return keys.length;
   }
 
-  private getKey(id: string): string {
-    return `${this.keyPrefix}${id}`;
+  private getKey(id: string | number): string {
+    return `${this.keyPrefix}${id.toString()}`;
   }
 }
 

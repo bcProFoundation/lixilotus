@@ -14,7 +14,7 @@ import React from 'react';
 
 const PageDetailPage = props => {
   const { pageId, isMobile } = props;
-  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `pages/${pageId}`;
+  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `page/${pageId}`;
   const selectedAccount = useAppSelector(getSelectedAccount);
 
   const { currentData: currentDataPageQuery, isSuccess: isSuccessPageQuery } = usePageQuery({ id: pageId });

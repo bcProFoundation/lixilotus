@@ -78,7 +78,6 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
       return;
     }
 
-    let patches: PatchCollection;
     const editPostInput: UpdatePostInput = {
       htmlContent: htmlContent,
       pureContent: pureContent,

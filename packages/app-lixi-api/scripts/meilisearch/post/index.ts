@@ -9,7 +9,7 @@ const meiliClient = new MeiliSearch({ host: process.env.MEILISEARCH_HOST!, apiKe
 async function main() {
    console.log(`Indexing database to meilisearch bucket: ${process.env.MEILISEARCH_BUCKET}`)
    let indexedPosts: any = [];
-   const allPosts = await prisma.post.findMany({
+   const posts = await prisma.post.findMany({
       include: {
          page: {
             select: {
@@ -31,7 +31,7 @@ async function main() {
       }
    });
 
-   allPosts.map(async (post) => {
+   posts.map(async (post) => {
       const indexedPost = {
          primaryId: post.id,
          id: post.id,

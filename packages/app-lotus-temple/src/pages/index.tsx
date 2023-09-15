@@ -1,6 +1,6 @@
-import { LocalUserAccount, RenameAccountCommand } from '@bcpros/lixi-models';
-import PostsListing from '@components/Posts/PostsListing';
-import { generateAccount, renameAccount, silentLogin } from '@store/account/actions';
+import { LocalUserAccount } from '@bcpros/lixi-models';
+import Home from '@components/Home';
+import { generateAccount, silentLogin } from '@store/account/actions';
 import { getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { setLocalUserAccount } from '@store/localAccount';
@@ -14,7 +14,6 @@ import { getSelectorsByUserAgent } from 'react-device-detect';
 import { END } from 'redux-saga';
 import { LocalUser } from 'src/models/localUser';
 import { sessionOptions } from 'src/models/session';
-import Home from '@components/Home';
 
 type HomePageProps = {
   isMobile: boolean;

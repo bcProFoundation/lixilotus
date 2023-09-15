@@ -1,22 +1,20 @@
-import { eventChannel } from 'redux-saga';
-import { all, call, fork, put, race, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
+import { AccountDto, NotificationDto as Notification } from '@bcpros/lixi-models';
 import { NOTIFICATION_TYPES } from '@bcpros/lixi-models/constants';
-import { io, Socket } from 'socket.io-client';
 import { SessionAction, SessionActionEnum } from '@bcpros/lixi-models/lib/sessionAction';
-import { AccountDto, NotificationDto as Notification, SocketUser } from '@bcpros/lixi-models';
-import { getAccountById, getSelectedAccount } from '@store/account/selectors';
-import { put as putAction } from 'redux-saga/effects';
-import { api as pageMessageApi } from '../message/pageMessageSession.api';
-import { api as messageApi } from '../message/message.api';
-import { PageMessageSession } from '@generated/types.generated';
-import { setPageMessageSession } from '@store/page/action';
-import { connectToChannels, wsConnect } from './actions';
-import { PayloadAction } from '@reduxjs/toolkit';
-import { downloadExportedLixi, refreshLixiSilent } from '../lixi/actions';
-import { setNewPostAvailable } from '@store/post/actions';
-import { showToast } from '../toast/actions';
 import { callConfig } from '@context/shareContext';
+import { PageMessageSession } from '@generated/types.generated';
+import { getAccountById, getSelectedAccount } from '@store/account/selectors';
+import { setPageMessageSession } from '@store/page/action';
+import { setNewPostAvailable } from '@store/post/actions';
+import { eventChannel } from 'redux-saga';
+import { all, call, fork, put, put as putAction, race, select, take, takeLatest } from 'redux-saga/effects';
+import { Socket } from 'socket.io-client';
+import { downloadExportedLixi, refreshLixiSilent } from '../lixi/actions';
+import { api as messageApi } from '../message/message.api';
+import { api as pageMessageApi } from '../message/pageMessageSession.api';
 import { receiveNotification } from '../notification/actions';
+import { showToast } from '../toast/actions';
+import { connectToChannels } from './actions';
 
 function createMessageSocketChannel(socket: Socket) {
   return eventChannel(emit => {

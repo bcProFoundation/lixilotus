@@ -1,11 +1,17 @@
-import { PlusCircleOutlined, RetweetOutlined } from '@ant-design/icons';
+import { RetweetOutlined } from '@ant-design/icons';
+import { AnalyticEvent } from '@bcpros/lixi-models';
+import { PostListType } from '@bcpros/lixi-models/constants';
 import ActionPostBar from '@components/Common/ActionPostBar';
 import CommentComponent, { CommentItem } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
+import { LoadingIcon } from '@components/Layout/MainLayout';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import { getSelectedAccount } from '@store/account';
+import { analyticEvent } from '@store/analytic-event';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
-import { PostsQuery } from '@store/post/posts.generated';
+import { PostQuery } from '@store/post/posts.generated';
+import { getCurrentLocale } from '@store/settings/selectors';
 import { formatRelativeTime } from '@utils/formatting';
 import { Button, List, Spin } from 'antd';
 import _ from 'lodash';
@@ -13,15 +19,11 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
 import Gallery from 'react-photo-gallery';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
+import { Waypoint } from 'react-waypoint';
 import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
 import PostContent from './PostContent';
-import PostTranslate from './PostTranslate';
-import { PostListType } from '@bcpros/lixi-models/constants';
-import { PhotoProvider, PhotoView } from 'react-photo-view';
-import { LoadingIcon } from '@components/Layout/MainLayout';
-import { getCurrentLocale } from '@store/settings/selectors';
-import { getSelectedAccount } from '@store/account';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List
@@ -236,7 +238,7 @@ const PostListItemContainer = styled(List.Item)`
   }
 `;
 
-type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+type PostItem = PostQuery['post'];
 
 type PostListItemProps = {
   index: number;
@@ -324,6 +326,16 @@ const PostListItem = ({
 
       addToRecentHashtags(hashtag);
 
+      // analytic event
+      const payload: AnalyticEvent = {
+        eventType: 'click',
+        eventData: {
+          id: post.id,
+          type: 'post'
+        }
+      };
+      dispatch(analyticEvent(payload));
+
       return;
     }
     if (e.target.className === 'read-more-more-module_btn__33IaH' || e.target.className.includes('post-translation')) {
@@ -398,8 +410,20 @@ const PostListItem = ({
     toggleAutoTranslate();
   }, []);
 
+  const onEnterPostItem = () => {
+    const payload: AnalyticEvent = {
+      eventType: 'impression',
+      eventData: {
+        id: post.id,
+        type: 'post'
+      }
+    };
+    dispatch(analyticEvent(payload));
+  };
+
   return (
     <PostListItemContainer className="post-list-item" key={post.id} ref={ref}>
+      <Waypoint onEnter={onEnterPostItem} />
       <CardContainer className="card-container-post">
         {reposted()}
         <CardHeader>

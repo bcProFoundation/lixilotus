@@ -13,7 +13,7 @@ export class SortedItemRepository<T> implements ISortedItemRepository<T> {
   }
 
   async set(item: IItem<T>, score: number): Promise<void> {
-    if (await this.hasItem(item.id)) {
+    if (await this.hasItem(item.id.toString())) {
       await this.redis.zrem(this.keyPrefix, item.id);
     }
     const buffer = encode(item);
