@@ -62,6 +62,7 @@ export class EventsAnalyticProcessor extends WorkerHost {
     }
     const accountDana = await this.accountDanaCacheService.getAccountDana(accountId);
     const danaGiven = _.toNumber(accountDana.danaGiven);
+    if (!danaGiven) return;
     const promises = [];
     const postIds = events.map(event => event.eventData.id);
     const bfExists = await this.reBloom.mexists(accountPostImpressionBfKey, ...postIds);
@@ -85,6 +86,7 @@ export class EventsAnalyticProcessor extends WorkerHost {
     }
     const accountDana = await this.accountDanaCacheService.getAccountDana(accountId);
     const danaGiven = _.toNumber(accountDana.danaGiven);
+    if (!danaGiven) return;
     const promises = [];
     const postIds = events.map(event => event.eventData.id);
     const bfExists = await this.reBloom.mexists(accountPostViewBfKey, ...postIds);
