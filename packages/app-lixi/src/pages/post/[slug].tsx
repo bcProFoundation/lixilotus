@@ -2,7 +2,7 @@ import PostDetail from '@components/Posts/PostDetail';
 import { SagaStore, wrapper } from '@store/store';
 import _ from 'lodash';
 import { NextSeo } from 'next-seo';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import { usePostQuery } from '@store/post/posts.generated';
@@ -10,8 +10,13 @@ import MainLayout from '@components/Layout/MainLayout';
 import { PrismaClient } from '@bcpros/lixi-prisma';
 import { stripHtml } from 'string-strip-html';
 import intl from 'react-intl-universal';
+import { AnalyticEvent } from '@bcpros/lixi-models';
+import { analyticEvent } from '@store/analytic-event';
+import { useAppDispatch } from '@store/hooks';
 
 const PostDetailPage = props => {
+
+  const dispatch = useAppDispatch();
   const { postId, isMobile, postAsString } = props;
   const post = JSON.parse(postAsString);
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `post/${postId}`;
@@ -21,6 +26,20 @@ const PostDetailPage = props => {
   const document = new DOMParser().parseFromString(post.content, 'text/html');
   const paragraphElement = document.querySelector('.EditorLexical_paragraph');
   const paragraphText = paragraphElement?.textContent;
+
+  useEffect(() => {
+    // analytic event
+    const payload: AnalyticEvent = {
+      eventType: 'view',
+      eventData: {
+        id: postId,
+        type: 'post'
+      }
+    };
+    dispatch(analyticEvent(payload));
+  }, [postId])
+
+
 
   return (
     <React.Fragment>

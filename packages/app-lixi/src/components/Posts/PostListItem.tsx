@@ -328,7 +328,7 @@ const PostListItem = ({
 
       // analytic event
       const payload: AnalyticEvent = {
-        eventType: 'click',
+        eventType: 'view',
         eventData: {
           id: post.id,
           type: 'post'
