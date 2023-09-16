@@ -8,39 +8,6 @@ query Post($id: String!) {
   }
 }
 
-query OrphanPosts(
-  $after: String
-  $before: String
-  $first: Int = 20
-  $last: Int
-  $orderBy: PostOrder
-  $query: String
-  $skip: Int
-  $minBurnFilter: Int
-) {
-  allOrphanPosts(
-    after: $after
-    before: $before
-    first: $first
-    last: $last
-    orderBy: $orderBy
-    query: $query
-    skip: $skip
-    minBurnFilter: $minBurnFilter
-  ) {
-    totalCount
-    edges {
-      cursor
-      node {
-        ...PostFields
-      }
-    }
-    pageInfo {
-      ...PageInfoFields
-    }
-  }
-}
-
 query PostsByPageId(
   $after: String
   $before: String

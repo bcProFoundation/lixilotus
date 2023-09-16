@@ -63,10 +63,16 @@ export class EventsAnalyticProcessor extends WorkerHost {
     const accountDana = await this.accountDanaCacheService.getAccountDana(accountId);
     const danaGiven = _.toNumber(accountDana.danaGiven);
     const promises = [];
+    const postIds = events.map(event => event.eventData.id);
+    const bfExists = await this.reBloom.mexists(accountPostImpressionBfKey, ...postIds);
+    let i = 0;
     for (const event of events) {
       const postId = event.eventData.id;
-      promises.push(this.reBloom.add(accountPostImpressionBfKey, postId));
-      promises.push(this.danaViewCountService.incrBy(postId, danaGiven * 0.5));
+      if (!bfExists[i]) {
+        promises.push(this.reBloom.add(accountPostImpressionBfKey, postId));
+        promises.push(this.danaViewCountService.incrBy(postId, danaGiven * 0.5));
+      }
+      i += 1;
     }
     await Promise.allSettled(promises);
   }
@@ -80,10 +86,16 @@ export class EventsAnalyticProcessor extends WorkerHost {
     const accountDana = await this.accountDanaCacheService.getAccountDana(accountId);
     const danaGiven = _.toNumber(accountDana.danaGiven);
     const promises = [];
+    const postIds = events.map(event => event.eventData.id);
+    const bfExists = await this.reBloom.mexists(accountPostViewBfKey, ...postIds);
+    let i = 0;
     for (const event of events) {
       const postId = event.eventData.id;
-      promises.push(this.reBloom.add(accountPostViewBfKey, postId));
-      promises.push(this.danaViewCountService.incrBy(postId, danaGiven * 0.5));
+      if (!bfExists[i]) {
+        promises.push(this.reBloom.add(accountPostViewBfKey, postId));
+        promises.push(this.danaViewCountService.incrBy(postId, danaGiven * 0.5));
+      }
+      i += 1;
     }
     await Promise.allSettled(promises);
   }

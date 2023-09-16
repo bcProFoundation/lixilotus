@@ -490,29 +490,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
       );
       break;
     default:
-      yield put(
-        postApi.util.updateQueryData('OrphanPosts', { minBurnFilter: minBurnFilter }, draft => {
-          const postToUpdateIndex = draft.allOrphanPosts.edges.findIndex(item => item.node.id === burnForId);
-          const postToUpdate = draft.allOrphanPosts.edges[postToUpdateIndex];
-          if (postToUpdateIndex >= 0) {
-            let danaBurnUp = postToUpdate?.node?.danaBurnUp ?? 0;
-            let danaBurnDown = postToUpdate?.node?.danaBurnDown ?? 0;
-            if (burnType == BurnType.Up) {
-              danaBurnUp = danaBurnUp + burnValue;
-            } else {
-              danaBurnDown = danaBurnDown + burnValue;
-            }
-            const danaBurnScore = danaBurnUp - danaBurnDown;
-            draft.allOrphanPosts.edges[postToUpdateIndex].node.danaBurnUp = danaBurnUp;
-            draft.allOrphanPosts.edges[postToUpdateIndex].node.danaBurnDown = danaBurnDown;
-            draft.allOrphanPosts.edges[postToUpdateIndex].node.danaBurnScore = danaBurnScore;
-            if (danaBurnScore < 0) {
-              draft.allOrphanPosts.edges.splice(postToUpdateIndex, 1);
-              draft.allOrphanPosts.totalCount = draft.allOrphanPosts.totalCount - 1;
-            }
-          }
-        })
-      );
+      break;
   }
 }
 

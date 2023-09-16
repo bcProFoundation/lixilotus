@@ -11,21 +11,6 @@ export interface PostApiState extends EntityState<PostQuery['post']> {
 const enhancedApi = api.enhanceEndpoints({
   addTagTypes: ['Post'],
   endpoints: {
-    OrphanPosts: {
-      providesTags: (result, error, arg) => ['Post'],
-      serializeQueryArgs({ queryArgs }) {
-        if (queryArgs) {
-          const { minBurnFilter, ...otherArgs } = queryArgs;
-          return { minBurnFilter };
-        }
-        return { queryArgs };
-      },
-      merge(currentCacheData, responseData) {
-        currentCacheData.allOrphanPosts.edges.push(...responseData.allOrphanPosts.edges);
-        currentCacheData.allOrphanPosts.pageInfo = responseData.allOrphanPosts.pageInfo;
-        currentCacheData.allOrphanPosts.totalCount = responseData.allOrphanPosts.totalCount;
-      }
-    },
     PostsBySearch: {
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
@@ -280,8 +265,6 @@ export { enhancedApi as api };
 export const {
   usePostQuery,
   useLazyPostQuery,
-  useOrphanPostsQuery,
-  useLazyOrphanPostsQuery,
   usePostsByPageIdQuery,
   useLazyPostsByPageIdQuery,
   usePostsByTokenIdQuery,

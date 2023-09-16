@@ -8,7 +8,6 @@ async function localLogoutRoute(req: NextApiRequest, res: NextApiResponse) {
 
     req.session.localUser = null;
 
-    console.log('logout session:', req.session);
     await req.session.save();
 
     res.send({ ok: true });

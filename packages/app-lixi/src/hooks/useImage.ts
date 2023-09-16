@@ -57,7 +57,6 @@ const useImage = () => {
 
   const getRoundImg = async (imageSrc, fileName) => {
     const image: HTMLImageElement = await createImage(imageSrc);
-    console.log('image :', image);
     const canvas = document.createElement('canvas');
     canvas.width = image.width;
     canvas.height = image.height;
@@ -109,7 +108,6 @@ const useImage = () => {
 
   const getCroppedImg = async (imageSrc, pixelCrop, rotation = 0, fileName) => {
     const image = await createImage(imageSrc);
-    console.log('image :', image);
     const canvas = document.createElement('canvas');
     const ctx: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
 

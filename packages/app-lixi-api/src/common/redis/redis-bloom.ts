@@ -4,7 +4,7 @@ import { EventEmitter } from 'stream';
 const keyPrefix = 'lixilotus:';
 
 export default class ReBloom extends EventEmitter {
-  commands = ['BF.ADD', 'BF.EXISTS', 'BF.RESERVE'];
+  commands = ['BF.ADD', 'BF.EXISTS', 'BF.RESERVE', 'BF.MEXISTS'];
   cmds: any = {};
   client: Redis;
   constructor(redis: Redis) {
@@ -28,6 +28,11 @@ export default class ReBloom extends EventEmitter {
   exists(key: string, value: string): Promise<number> {
     const cmd = this.cmds['BF.EXISTS'];
     return cmd.call(this.client, `${keyPrefix}${key}`, value);
+  }
+
+  mexists(key: string, ...values: string[]): Promise<number[]> {
+    const cmd = this.cmds['BF.MEXISTS'];
+    return cmd.call(this.client, `${keyPrefix}${key}`, ...values);
   }
 
   reserve(key: string, errRate: number, capacity: number): Promise<number> {

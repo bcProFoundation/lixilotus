@@ -905,7 +905,6 @@ export type Query = {
   allMessageByPageMessageSessionId: MessageConnection;
   allOpenPageMessageSessionByAccountId: PageMessageSessionConnection;
   allOpenPageMessageSessionByPageId: PageMessageSessionConnection;
-  allOrphanPosts: PostConnection;
   allPageMessageSessionByAccountId: PageMessageSessionConnection;
   allPages: PageConnection;
   allPagesByFollower: FollowPageConnection;
@@ -944,7 +943,7 @@ export type Query = {
   temple: Temple;
   timeline: TimelineItem;
   token: Token;
-  userHadMessageToPage: PageMessageSession;
+  userHadMessageToPage?: Maybe<PageMessageSession>;
   worship: Worship;
   worshipedPerson: WorshipedPerson;
 };
@@ -1064,17 +1063,6 @@ export type QueryAllOpenPageMessageSessionByPageIdArgs = {
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PageMessageSessionOrder>;
-  skip?: InputMaybe<Scalars['Int']>;
-};
-
-export type QueryAllOrphanPostsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  minBurnFilter?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<PostOrder>;
-  query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 

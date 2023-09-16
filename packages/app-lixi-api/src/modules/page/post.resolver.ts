@@ -116,81 +116,6 @@ export class PostResolver {
   @SkipThrottle()
   @Query(() => PostConnection)
   @UseGuards(GqlJwtAuthGuardByPass)
-  async allOrphanPosts(
-    @PostAccountEntity() account: Account,
-    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
-    @Args({ name: 'query', type: () => String, nullable: true })
-    accountId: number,
-    @Args({
-      name: 'orderBy',
-      type: () => PostOrder,
-      nullable: true
-    })
-    orderBy: PostOrder
-  ) {
-    if (accountId && !_.isNil(account) && accountId !== account.id) {
-      const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
-      throw new VError(invalidAccountMessage);
-    }
-
-    const result = await findManyCursorConnection(
-      args =>
-        this.prisma.post.findMany({
-          include: { postAccount: true, comments: true, translations: true },
-          where: {
-            OR: [
-              { postAccountId: accountId },
-              {
-                AND: [
-                  {
-                    page: null
-                  },
-                  {
-                    token: null
-                  },
-                  {
-                    danaBurnScore: {
-                      gte: minBurnFilter ?? 0
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-          ...args
-        }),
-      () =>
-        this.prisma.post.count({
-          where: {
-            OR: [
-              { postAccountId: accountId },
-              {
-                AND: [
-                  {
-                    page: null
-                  },
-                  {
-                    token: null
-                  },
-                  {
-                    danaBurnScore: {
-                      gte: minBurnFilter ?? 0
-                    }
-                  }
-                ]
-              }
-            ]
-          }
-        }),
-      { first, last, before, after }
-    );
-    return result;
-  }
-
-  @SkipThrottle()
-  @Query(() => PostConnection)
-  @UseGuards(GqlJwtAuthGuardByPass)
   async allPostsByPageId(
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
@@ -1249,5 +1174,10 @@ export class PostResolver {
       });
 
     return uploads;
+  }
+
+  @ResolveField('danaViewScore', () => Number)
+  async danaViewScore(@Parent() post: Post) {
+    return this.postLoader.batchDanaViewScores.load(post.id);
   }
 }

@@ -45,7 +45,7 @@ export class TranslateService {
             return response.data[0];
           })
           .catch(e => {
-            console.log(e);
+            this.logger.error(e);
           });
         if (translationResult) {
           const { detectedLanguage, translations } = translationResult;
