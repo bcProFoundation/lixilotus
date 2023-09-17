@@ -15,7 +15,6 @@ import { analyticEvent } from '@store/analytic-event';
 import { useAppDispatch } from '@store/hooks';
 
 const PostDetailPage = props => {
-
   const dispatch = useAppDispatch();
   const { postId, isMobile, postAsString } = props;
   const post = JSON.parse(postAsString);
@@ -37,9 +36,7 @@ const PostDetailPage = props => {
       }
     };
     dispatch(analyticEvent(payload));
-  }, [postId])
-
-
+  }, [postId]);
 
   return (
     <React.Fragment>

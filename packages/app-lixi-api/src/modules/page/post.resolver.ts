@@ -69,11 +69,6 @@ export class PostResolver {
     private readonly postLoader: PostLoader
   ) {}
 
-  @Subscription(() => Post)
-  postCreated() {
-    return pubSub.asyncIterator('postCreated');
-  }
-
   @SkipThrottle()
   @Query(() => Post)
   @UseGuards(GqlJwtAuthGuardByPass)

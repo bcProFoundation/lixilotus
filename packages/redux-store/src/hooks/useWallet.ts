@@ -141,7 +141,8 @@ const useWallet = () => {
       const derivedWalletPathsPromises: Array<Promise<WalletPathAddressInfo[]>> = _.map(
         accountsNotInWallets,
         account => {
-          return getWalletPathDetails(account.mnemonic, [walletState.selectedWalletPath]);
+          const defaultPath = "m/44'/10605'/0'/0/0";
+          return getWalletPathDetails(account.mnemonic, [defaultPath]);
         }
       );
       // Calculate the wallet not synced yet

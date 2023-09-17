@@ -956,7 +956,6 @@ type Subscription {
   messageCreated: Message!
   pageCreated: Page!
   pageMessageSessionCreated: PageMessageSession!
-  postCreated: Post!
   templeCreated: Temple!
   tokenCreated: Token!
   worshipedPersonCreated: WorshipedPerson!

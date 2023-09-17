@@ -38,6 +38,6 @@ export default class ReBloom extends EventEmitter {
   reserve(key: string, errRate: number, capacity: number): Promise<number> {
     // errRate is false positive, it means the key doesn't actually exists, but the result shows it exists
     const cmd = this.cmds['BF.RESERVE'];
-    return cmd.call(this.client, key, errRate, capacity);
+    return cmd.call(this.client, `${keyPrefix}${key}`, errRate, capacity);
   }
 }
