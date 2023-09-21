@@ -15,6 +15,7 @@ query PostsByPageId(
   $last: Int
   $orderBy: [PostOrder!]
   $id: String
+  $accountId: Int
   $skip: Int
   $minBurnFilter: Int
 ) {
@@ -25,6 +26,7 @@ query PostsByPageId(
     last: $last
     orderBy: $orderBy
     id: $id
+    accountId: $accountId
     skip: $skip
     minBurnFilter: $minBurnFilter
   ) {
@@ -140,14 +142,7 @@ query PostsByTokenId(
   }
 }
 
-query PostsBySearch(
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
-  $query: String
-  $minBurnFilter: Int
-) {
+query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int) {
   allPostsBySearch(
     after: $after
     before: $before

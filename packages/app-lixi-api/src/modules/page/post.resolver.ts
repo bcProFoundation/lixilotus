@@ -116,6 +116,8 @@ export class PostResolver {
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true })
     id: string,
+    @Args({ name: 'accountId', type: () => Number, nullable: true })
+    accountId: number,
     @Args({
       name: 'orderBy',
       type: () => [PostOrder!],
@@ -185,10 +187,10 @@ export class PostResolver {
             where: {
               OR: [
                 {
-                  AND: [{ postAccountId: account.id }, { pageId: id }]
+                  AND: [{ postAccountId: accountId }, { pageId: id }]
                 },
                 {
-                  AND: [{ pageId: id }, { danaBurnScore: { gte: minBurnFilter ?? 0 } }]
+                  AND: [{ pageId: id }]
                 }
               ]
             },
@@ -212,7 +214,7 @@ export class PostResolver {
             where: {
               OR: [
                 {
-                  AND: [{ postAccountId: account.id }, { pageId: id }]
+                  AND: [{ postAccountId: accountId }, { pageId: id }]
                 },
                 {
                   AND: [{ pageId: id }, { danaBurnScore: { gte: minBurnFilter ?? 0 } }]
@@ -235,7 +237,7 @@ export class PostResolver {
             where: {
               OR: [
                 {
-                  AND: [{ postAccountId: account.id }, { pageId: id }]
+                  AND: [{ postAccountId: accountId }, { pageId: id }]
                 },
                 {
                   AND: [{ pageId: id }, { danaBurnScore: { gte: minBurnFilter ?? 0 } }]
@@ -250,7 +252,7 @@ export class PostResolver {
             where: {
               OR: [
                 {
-                  AND: [{ postAccountId: account.id }, { pageId: id }]
+                  AND: [{ postAccountId: accountId }, { pageId: id }]
                 },
                 {
                   AND: [{ pageId: id }, { danaBurnScore: { gte: minBurnFilter ?? 0 } }]

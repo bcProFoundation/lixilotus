@@ -1143,6 +1143,7 @@ export type QueryAllPostsByHashtagIdArgs = {
 };
 
 export type QueryAllPostsByPageIdArgs = {
+  accountId?: InputMaybe<Scalars['Int']>;
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
