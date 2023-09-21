@@ -935,29 +935,31 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             {selectedAccountId != pageDetailData?.pageAccountId && (
               <div>
                 {/* Chat */}
-                {selectedAccountId != pageDetailData?.pageAccountId && _.isNil(pageMessageSessionData) && (
-                  <Button type="primary" className="outline-btn" onClick={() => openPageMessageLixiModal()}>
-                    {intl.get('messenger.chatPage')}
-                  </Button>
-                )}
-                {selectedAccountId != pageDetailData?.pageAccountId && pageMessageSessionData && (
-                  <React.Fragment>
-                    {
+                {selectedAccountId != pageDetailData?.pageAccountId &&
+                  _.isNil(pageMessageSessionData?.userHadMessageToPage) && (
+                    <Button type="primary" className="outline-btn" onClick={() => openPageMessageLixiModal()}>
+                      {intl.get('messenger.chatPage')}
+                    </Button>
+                  )}
+                {selectedAccountId != pageDetailData?.pageAccountId &&
+                  !_.isNil(pageMessageSessionData?.userHadMessageToPage) && (
+                    <React.Fragment>
                       {
-                        [PageMessageSessionStatus.Open]: (
-                          <Button type="primary" className="outline-btn" onClick={() => router.push('/page-message')}>
-                            {intl.get('messenger.openMessage')}
-                          </Button>
-                        ),
-                        [PageMessageSessionStatus.Pending]: (
-                          <Button type="primary" className="outline-btn" onClick={() => router.push('/page-message')}>
-                            {intl.get('messenger.openMessage')}
-                          </Button>
-                        )
-                      }[pageMessageSessionData.userHadMessageToPage?.status ?? PageMessageSessionStatus.Open]
-                    }
-                  </React.Fragment>
-                )}
+                        {
+                          [PageMessageSessionStatus.Open]: (
+                            <Button type="primary" className="outline-btn" onClick={() => router.push('/page-message')}>
+                              {intl.get('messenger.openMessage')}
+                            </Button>
+                          ),
+                          [PageMessageSessionStatus.Pending]: (
+                            <Button type="primary" className="outline-btn" onClick={() => router.push('/page-message')}>
+                              {intl.get('messenger.openMessage')}
+                            </Button>
+                          )
+                        }[pageMessageSessionData.userHadMessageToPage?.status ?? PageMessageSessionStatus.Open]
+                      }
+                    </React.Fragment>
+                  )}
                 <Button
                   type="primary"
                   className="outline-btn"

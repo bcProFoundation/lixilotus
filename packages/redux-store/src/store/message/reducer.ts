@@ -1,33 +1,26 @@
-import { NotificationDto } from '@bcpros/lixi-models/lib/common/notification';
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
-import {
-  channelOff,
-  channelOn,
-  // receiveNotification,
-  serverOff,
-  serverOn
-} from './actions';
-import { MessageState } from './state';
+import { removePageMessageSession, upsertPageMessageSession, removeAllPageMessageSession } from './actions';
+import { IPageMessageSessionState, PageMessageSessionState } from './state';
 
-export const worshipAdapter = createEntityAdapter<any>({});
+export const pageMessageSessionAdapter = createEntityAdapter<IPageMessageSessionState>({
+  selectId: pageMessageSession => pageMessageSession.pageMessageSessionId
+});
 
-const initialState: MessageState = worshipAdapter.getInitialState({
-  channelStatusOn: false,
-  serverStatusOn: false
+const initialState: PageMessageSessionState = pageMessageSessionAdapter.getInitialState({
+  selectedId: ''
 });
 
 export const messageReducer = createReducer(initialState, builder => {
   builder
-    .addCase(channelOff, (state, action) => {
-      state.channelStatusOn = false;
+    .addCase(removePageMessageSession, (state, action) => {
+      const pageMessageSessionId = action.payload;
+      pageMessageSessionAdapter.removeOne(state, pageMessageSessionId);
     })
-    .addCase(channelOn, (state, action) => {
-      state.channelStatusOn = true;
+    .addCase(upsertPageMessageSession, (state, action) => {
+      const pageMessageSession: IPageMessageSessionState = action.payload;
+      pageMessageSessionAdapter.upsertOne(state, pageMessageSession);
     })
-    .addCase(serverOff, (state, action) => {
-      state.serverStatusOn = false;
-    })
-    .addCase(serverOn, (state, action) => {
-      state.serverStatusOn = true;
+    .addCase(removeAllPageMessageSession, (state, action) => {
+      pageMessageSessionAdapter.removeAll(state);
     });
 });

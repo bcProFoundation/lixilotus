@@ -646,9 +646,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
               {getAvatarAccount() ? (
                 <img className="avatar-img" src={getAvatarAccount()} alt="" />
               ) : (
-                <StyledAvatar className="avatar-img" icon={user?.avatar}>
-                  {transformShortName(user?.name)}
-                </StyledAvatar>
+                <StyledAvatar className="avatar-img">{transformShortName(user?.name)}</StyledAvatar>
               )}
               {selectedAccountId == user.id && (
                 <div className="btn-upload-avatar" onClick={() => uploadModal(true)}>

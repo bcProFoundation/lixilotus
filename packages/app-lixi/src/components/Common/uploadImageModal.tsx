@@ -1,6 +1,7 @@
 import {
   getAccountAvatarUpload,
   getAccountCoverUpload,
+  getAccountInfoTemp,
   getPageAvatarUpload,
   getPageCoverUpload
 } from '@store/account/selectors';
@@ -16,7 +17,7 @@ import { showToast } from '@store/toast/actions';
 import intl from 'react-intl-universal';
 import { closeModal } from '@store/modal/actions';
 import { useState } from 'react';
-import { setAccount, setAccountAvatar, setAccountCover } from '@store/account';
+import { setAccount, setAccountAvatar, setAccountCover, setAccountInfoTemp } from '@store/account';
 import { useUpdateAccountMutation } from '@store/account/accounts.generated';
 
 export interface UploadAvatarCoverProps {
@@ -28,6 +29,7 @@ export interface UploadAvatarCoverProps {
 
 export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: UploadAvatarCoverProps) => {
   const { profile, page, isAvatar, classStyle } = props;
+  const accountInfoTemp = useAppSelector(getAccountInfoTemp);
 
   const [
     updatePageTrigger,
@@ -116,6 +118,9 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
       const accountUpdated = await updateAccountTrigger({
         input: isAvatar ? updateAccountAvatar : updateAccountCover
       }).unwrap();
+
+      dispatch(setAccountInfoTemp({ ...accountInfoTemp, avatar: accountUpdated.updateAccount.avatar }));
+
       dispatch(
         showToast('success', {
           message: 'Success',

@@ -401,6 +401,17 @@ input ImportAccountInput {
   mnemonicHash: String
 }
 
+type LatestMessage {
+  author: LatestMessageAuthor
+  body: String
+  id: ID
+}
+
+type LatestMessageAuthor {
+  address: String
+  id: Int
+}
+
 type LixiModel {
   accountId: Int!
 
@@ -618,7 +629,7 @@ type PageMessageSession {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime
   id: ID!
-  latestMessage: String
+  latestMessage: LatestMessage
   lixi: LixiModel
   lixiClaimCode: String
   messages: [Message!]
@@ -811,7 +822,7 @@ type Query {
   allPendingPageMessageSessionByAccountId(after: String, before: String, first: Int, id: Int, last: Int, minBurnFilter: Int, orderBy: PageMessageSessionOrder, skip: Int): PageMessageSessionConnection!
   allPendingPageMessageSessionByPageId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PageMessageSessionOrder, skip: Int): PageMessageSessionConnection!
   allPostsByHashtagId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
-  allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: [PostOrder!], skip: Int): PostConnection!
+  allPostsByPageId(accountId: Int, after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: [PostOrder!], skip: Int): PostConnection!
   allPostsBySearch(
     """Paginate after opaque cursor"""
     after: String

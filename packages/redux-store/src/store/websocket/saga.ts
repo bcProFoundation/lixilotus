@@ -13,6 +13,7 @@ import { downloadExportedLixi, refreshLixiSilent } from '../lixi/actions';
 import { api as messageApi } from '../message/message.api';
 import { api as pageMessageApi } from '../message/pageMessageSession.api';
 import { receiveNotification } from '../notification/actions';
+import { upsertPageMessageSession } from '@store/message';
 import { showToast } from '../toast/actions';
 import { connectToChannels } from './actions';
 
@@ -99,7 +100,7 @@ function* connectToChannelsSaga() {
 }
 
 function* receiveLiveMessage(payload: any) {
-  const { pageMessageSessionId, body, updatedAt } = payload;
+  const { pageMessageSessionId, body, updatedAt, author } = payload;
   const account: AccountDto = yield select(getSelectedAccount);
 
   try {
@@ -128,7 +129,11 @@ function* receiveLiveMessage(payload: any) {
             cursor: object.cursor,
             node: {
               ...object.node,
-              latestMessage: body,
+              latestMessage: {
+                id: payload.id,
+                body: body,
+                author: author
+              },
               updatedAt: updatedAt
             }
           });
