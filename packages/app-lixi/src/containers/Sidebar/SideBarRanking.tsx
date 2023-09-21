@@ -313,8 +313,8 @@ const SidebarRanking = () => {
 
   const getTopAccountAvatar = (item: any) => {
     if (item.avatar) {
-      const { upload } = item.avatar;
-      return `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${upload.cfImageId}/public`;
+      const { cfImageId } = item.avatar.upload;
+      return `${process.env.NEXT_PUBLIC_CF_IMAGES_DELIVERY_URL}/${process.env.NEXT_PUBLIC_CF_ACCOUNT_HASH}/${cfImageId}/public`;
     } else {
       return '';
     }
