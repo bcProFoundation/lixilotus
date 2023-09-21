@@ -142,7 +142,16 @@ export class AccountController {
           }
         },
         include: {
-          accountDana: true
+          accountDana: true,
+          avatar: {
+            select: {
+              upload: {
+                select: {
+                  cfImageId: true
+                }
+              }
+            }
+          }
         },
         orderBy: {
           accountDana: {
