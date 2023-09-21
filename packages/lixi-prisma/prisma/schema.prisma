@@ -848,7 +848,7 @@ model Message {
   isPageOwner          Boolean?            @map("is_page_owner")
   createdAt            DateTime            @default(now()) @map("created_at") @db.Timestamptz
   updatedAt            DateTime            @default(now()) @map("updated_at") @db.Timestamptz
-  pageMessageSession   PageMessageSession? @relation(fields: [pageMessageSessionId], references: [id])
+  pageMessageSession   PageMessageSession? @relation("page_message_session", fields: [pageMessageSessionId], references: [id])
   pageMessageSessionId String?             @map("page_message_session_id")
   giveTipMessage       GiveTipMessage?
   uploads              UploadDetail[]
@@ -873,8 +873,7 @@ model PageMessageSession {
   lixi            Lixi?                     @relation(fields: [lixiId], references: [id])
   lixiId          Int?                      @unique @map("lixi_id")
   lixiClaimCode   String?                   @map("lixi_claim_code")
-  messages        Message[]
-  latestMessage   String?                   @map("latest_message")
+  messages        Message[]                 @relation("page_message_session")
   sessionOpenedAt DateTime?                 @map("session_opened_at")
   sessionClosedAt DateTime?                 @map("session_closed_at")
   status          PageMessageSessionStatus? @default(CLOSE)

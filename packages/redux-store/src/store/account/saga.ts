@@ -85,6 +85,7 @@ import {
 import { getAccountById, getSelectedAccount, getSelectedAccountId } from './selectors';
 import { saveClaimAddress } from '@store/claim';
 import { changeCurrentLocale, setInitIntlStatus } from '@store/settings/actions';
+import { removeAllPageMessageSession } from '@store/message';
 
 const nameConfigGenerator: Config = {
   dictionaries: [names, names],
@@ -357,6 +358,7 @@ function* selectAccountSuccessSaga(
   };
   yield put(setLocalUserAccount(localAccount));
   yield putResolve(silentLogin(account.mnemonic));
+  yield put(removeAllPageMessageSession());
   yield put(hideLoading(selectAccount.type));
 }
 

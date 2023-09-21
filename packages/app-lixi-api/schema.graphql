@@ -401,6 +401,17 @@ input ImportAccountInput {
   mnemonicHash: String
 }
 
+type LatestMessage {
+  author: LatestMessageAuthor
+  body: String
+  id: ID
+}
+
+type LatestMessageAuthor {
+  address: String
+  id: Int
+}
+
 type LixiModel {
   accountId: Int!
 
@@ -618,7 +629,7 @@ type PageMessageSession {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime
   id: ID!
-  latestMessage: String
+  latestMessage: LatestMessage
   lixi: LixiModel
   lixiClaimCode: String
   messages: [Message!]

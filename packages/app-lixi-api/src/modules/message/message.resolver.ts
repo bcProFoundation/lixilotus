@@ -30,6 +30,7 @@ import BCHJS from '@bcpros/xpi-js';
 import { ChronikClient } from 'chronik-client';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { PageMessageSessionCacheService } from './page-message-session-cache.service';
 
 const pubSub = new PubSub();
 
@@ -45,7 +46,8 @@ export class MessageResolver {
     private notificationGateway: NotificationGateway,
     @Inject('xpijs') private XPI: BCHJS,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly pageMessageSessionCacheService: PageMessageSessionCacheService
   ) {}
 
   @Subscription(() => Message)
@@ -196,16 +198,6 @@ export class MessageResolver {
           }
         });
 
-        await prisma.pageMessageSession.update({
-          where: {
-            id: pageMessageSession.id
-          },
-          data: {
-            updatedAt: updatedAt,
-            latestMessage: body
-          }
-        });
-
         //Give Tip
         if (tipHex) {
           const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
@@ -268,6 +260,14 @@ export class MessageResolver {
         url: `/page-message`,
         title: isPageOwner ? `${pageMessageSession.page.name} sent you a message` : `${account.name} sent you a message`
       };
+
+      await this.pageMessageSessionCacheService.setLatestMessage(
+        pageMessageSession.id,
+        result.id,
+        result.body!,
+        authorId.toString(),
+        account.address
+      );
 
       await this.notificationService.dispatchMessagePushNotification(webpushNotification);
 

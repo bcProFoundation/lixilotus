@@ -40,6 +40,7 @@ import { toastReducer } from './toast/reducer';
 import { tokenReducer, TokenState } from './token';
 import { walletStateReducer } from './wallet/reducer';
 import { api as worshipedPersonApi } from './worship/worshipedPerson.api';
+import { messageReducer, PageMessageSessionState } from './message';
 
 const migration = {
   0: state => {
@@ -145,6 +146,11 @@ const categoryPersistConfig: PersistConfig<CategoriesState> = {
   storage: storage('lixi-indexeddb')
 };
 
+const pageMessagePersistConfig: PersistConfig<PageMessageSessionState> = {
+  key: 'pageMessage',
+  storage: storage('lixi-indexeddb')
+};
+
 export const serverReducer = combineReducers({
   router: routerReducer,
   wallet: walletStateReducer,
@@ -167,6 +173,7 @@ export const serverReducer = combineReducers({
   states: stateReducer,
   categories: categoryReducer,
   burn: burnReducer,
+  pageMessage: messageReducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer
@@ -194,6 +201,7 @@ export const appReducer = combineReducers({
   states: persistReducer(statePersistConfig, stateReducer),
   categories: persistReducer(categoryPersistConfig, categoryReducer),
   burn: burnReducer,
+  pageMessage: persistReducer(pageMessagePersistConfig, messageReducer),
   [pagesApi.reducerPath]: pagesApi.reducer,
   [postApi.reducerPath]: postApi.reducer,
   [commentsApi.reducerPath]: commentsApi.reducer,

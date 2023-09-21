@@ -19,7 +19,6 @@ import { api } from 'src/api/baseApi';
 export type PageMessageSessionFieldsFragment = {
   __typename?: 'PageMessageSession';
   id: string;
-  latestMessage?: string | null;
   lixiClaimCode?: string | null;
   sessionOpenedAt?: any | null;
   sessionClosedAt?: any | null;
@@ -43,6 +42,12 @@ export type PageMessageSessionFieldsFragment = {
     activationAt?: any | null;
     status: string;
   } | null;
+  latestMessage?: {
+    __typename?: 'Message';
+    id: string;
+    body?: string | null;
+    author: { __typename?: 'Account'; id: number; address: string };
+  } | null;
 };
 
 export type PageMessageSessionQueryVariables = Types.Exact<{
@@ -54,7 +59,6 @@ export type PageMessageSessionQuery = {
   pageMessageSession: {
     __typename?: 'PageMessageSession';
     id: string;
-    latestMessage?: string | null;
     lixiClaimCode?: string | null;
     sessionOpenedAt?: any | null;
     sessionClosedAt?: any | null;
@@ -77,6 +81,12 @@ export type PageMessageSessionQuery = {
       expiryAt?: any | null;
       activationAt?: any | null;
       status: string;
+    } | null;
+    latestMessage?: {
+      __typename?: 'Message';
+      id: string;
+      body?: string | null;
+      author: { __typename?: 'Account'; id: number; address: string };
     } | null;
   };
 };
@@ -102,7 +112,6 @@ export type OpenPageMessageSessionByPageIdQuery = {
       node: {
         __typename?: 'PageMessageSession';
         id: string;
-        latestMessage?: string | null;
         lixiClaimCode?: string | null;
         sessionOpenedAt?: any | null;
         sessionClosedAt?: any | null;
@@ -125,6 +134,12 @@ export type OpenPageMessageSessionByPageIdQuery = {
           expiryAt?: any | null;
           activationAt?: any | null;
           status: string;
+        } | null;
+        latestMessage?: {
+          __typename?: 'Message';
+          id: string;
+          body?: string | null;
+          author: { __typename?: 'Account'; id: number; address: string };
         } | null;
       };
     }> | null;
@@ -159,7 +174,6 @@ export type PendingPageMessageSessionByPageIdQuery = {
       node: {
         __typename?: 'PageMessageSession';
         id: string;
-        latestMessage?: string | null;
         lixiClaimCode?: string | null;
         sessionOpenedAt?: any | null;
         sessionClosedAt?: any | null;
@@ -182,6 +196,12 @@ export type PendingPageMessageSessionByPageIdQuery = {
           expiryAt?: any | null;
           activationAt?: any | null;
           status: string;
+        } | null;
+        latestMessage?: {
+          __typename?: 'Message';
+          id: string;
+          body?: string | null;
+          author: { __typename?: 'Account'; id: number; address: string };
         } | null;
       };
     }> | null;
@@ -216,7 +236,6 @@ export type OpenPageMessageSessionByAccountIdQuery = {
       node: {
         __typename?: 'PageMessageSession';
         id: string;
-        latestMessage?: string | null;
         lixiClaimCode?: string | null;
         sessionOpenedAt?: any | null;
         sessionClosedAt?: any | null;
@@ -239,6 +258,12 @@ export type OpenPageMessageSessionByAccountIdQuery = {
           expiryAt?: any | null;
           activationAt?: any | null;
           status: string;
+        } | null;
+        latestMessage?: {
+          __typename?: 'Message';
+          id: string;
+          body?: string | null;
+          author: { __typename?: 'Account'; id: number; address: string };
         } | null;
       };
     }> | null;
@@ -273,7 +298,6 @@ export type PendingPageMessageSessionByAccountIdQuery = {
       node: {
         __typename?: 'PageMessageSession';
         id: string;
-        latestMessage?: string | null;
         lixiClaimCode?: string | null;
         sessionOpenedAt?: any | null;
         sessionClosedAt?: any | null;
@@ -296,6 +320,12 @@ export type PendingPageMessageSessionByAccountIdQuery = {
           expiryAt?: any | null;
           activationAt?: any | null;
           status: string;
+        } | null;
+        latestMessage?: {
+          __typename?: 'Message';
+          id: string;
+          body?: string | null;
+          author: { __typename?: 'Account'; id: number; address: string };
         } | null;
       };
     }> | null;
@@ -331,7 +361,6 @@ export type ClosedPageMessageSessionQuery = {
       node: {
         __typename?: 'PageMessageSession';
         id: string;
-        latestMessage?: string | null;
         lixiClaimCode?: string | null;
         sessionOpenedAt?: any | null;
         sessionClosedAt?: any | null;
@@ -354,6 +383,12 @@ export type ClosedPageMessageSessionQuery = {
           expiryAt?: any | null;
           activationAt?: any | null;
           status: string;
+        } | null;
+        latestMessage?: {
+          __typename?: 'Message';
+          id: string;
+          body?: string | null;
+          author: { __typename?: 'Account'; id: number; address: string };
         } | null;
       };
     }> | null;
@@ -388,7 +423,6 @@ export type PageMessageSessionByAccountIdQuery = {
       node: {
         __typename?: 'PageMessageSession';
         id: string;
-        latestMessage?: string | null;
         lixiClaimCode?: string | null;
         sessionOpenedAt?: any | null;
         sessionClosedAt?: any | null;
@@ -412,6 +446,12 @@ export type PageMessageSessionByAccountIdQuery = {
           activationAt?: any | null;
           status: string;
         } | null;
+        latestMessage?: {
+          __typename?: 'Message';
+          id: string;
+          body?: string | null;
+          author: { __typename?: 'Account'; id: number; address: string };
+        } | null;
       };
     }> | null;
     pageInfo: {
@@ -434,7 +474,6 @@ export type UserHadMessageToPageQuery = {
   userHadMessageToPage?: {
     __typename?: 'PageMessageSession';
     id: string;
-    latestMessage?: string | null;
     lixiClaimCode?: string | null;
     sessionOpenedAt?: any | null;
     sessionClosedAt?: any | null;
@@ -457,6 +496,12 @@ export type UserHadMessageToPageQuery = {
       expiryAt?: any | null;
       activationAt?: any | null;
       status: string;
+    } | null;
+    latestMessage?: {
+      __typename?: 'Message';
+      id: string;
+      body?: string | null;
+      author: { __typename?: 'Account'; id: number; address: string };
     } | null;
   } | null;
 };
@@ -470,7 +515,6 @@ export type CreatePageMessageSessionMutation = {
   createPageMessageSession: {
     __typename?: 'PageMessageSession';
     id: string;
-    latestMessage?: string | null;
     lixiClaimCode?: string | null;
     sessionOpenedAt?: any | null;
     sessionClosedAt?: any | null;
@@ -493,6 +537,12 @@ export type CreatePageMessageSessionMutation = {
       expiryAt?: any | null;
       activationAt?: any | null;
       status: string;
+    } | null;
+    latestMessage?: {
+      __typename?: 'Message';
+      id: string;
+      body?: string | null;
+      author: { __typename?: 'Account'; id: number; address: string };
     } | null;
   };
 };
@@ -506,7 +556,6 @@ export type ClosePageMessageSessionMutation = {
   closePageMessageSession: {
     __typename?: 'PageMessageSession';
     id: string;
-    latestMessage?: string | null;
     lixiClaimCode?: string | null;
     sessionOpenedAt?: any | null;
     sessionClosedAt?: any | null;
@@ -530,6 +579,12 @@ export type ClosePageMessageSessionMutation = {
       activationAt?: any | null;
       status: string;
     } | null;
+    latestMessage?: {
+      __typename?: 'Message';
+      id: string;
+      body?: string | null;
+      author: { __typename?: 'Account'; id: number; address: string };
+    } | null;
   };
 };
 
@@ -542,7 +597,6 @@ export type OpenPageMessageSessionMutation = {
   openPageMessageSession: {
     __typename?: 'PageMessageSession';
     id: string;
-    latestMessage?: string | null;
     lixiClaimCode?: string | null;
     sessionOpenedAt?: any | null;
     sessionClosedAt?: any | null;
@@ -565,6 +619,12 @@ export type OpenPageMessageSessionMutation = {
       expiryAt?: any | null;
       activationAt?: any | null;
       status: string;
+    } | null;
+    latestMessage?: {
+      __typename?: 'Message';
+      id: string;
+      body?: string | null;
+      author: { __typename?: 'Account'; id: number; address: string };
     } | null;
   };
 };
@@ -596,10 +656,17 @@ export const PageMessageSessionFieldsFragmentDoc = `
     activationAt
     status
   }
-  latestMessage
   lixiClaimCode
   sessionOpenedAt
   sessionClosedAt
+  latestMessage {
+    id
+    body
+    author {
+      id
+      address
+    }
+  }
   status
   createdAt
   updatedAt

@@ -25,6 +25,7 @@ import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { MeiliService } from '../page/meili.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { PageMessageSessionCacheService } from './page-message-session-cache.service';
 
 const pubSub = new PubSub();
 
@@ -38,7 +39,8 @@ export class PageMessageSessionResolver {
     private meiliService: MeiliService,
     @I18n() private i18n: I18nService,
     private notificationGateway: NotificationGateway,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly pageMessageSessionCacheService: PageMessageSessionCacheService
   ) {}
 
   @Subscription(() => PageMessageSession)
@@ -303,8 +305,9 @@ export class PageMessageSessionResolver {
     orderBy: PageMessageSessionOrder
   ) {
     const result = await findManyCursorConnection(
-      args =>
-        this.prisma.pageMessageSession.findMany({
+      async args => {
+        let sessions = [];
+        const pageMessageSessions = await this.prisma.pageMessageSession.findMany({
           include: {
             page: true,
             account: true,
@@ -344,7 +347,27 @@ export class PageMessageSessionResolver {
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
-        }),
+        });
+
+        const latestMessageCache = await this.pageMessageSessionCacheService.getMultiplePageMessageSessionCache(
+          pageMessageSessions.map(pageMessageSession => pageMessageSession.id)
+        );
+
+        //combine cache and db
+        for (let i = 0; i < pageMessageSessions.length; i++) {
+          const latestMessage = {
+            id: latestMessageCache[i]?.latestMessageId,
+            body: latestMessageCache[i]?.latestMessage,
+            author: {
+              id: latestMessageCache[i]?.authorId,
+              address: latestMessageCache[i]?.authorAddress
+            }
+          };
+          sessions.push({ ...pageMessageSessions[i], latestMessage: latestMessage });
+        }
+
+        return sessions;
+      },
       () =>
         this.prisma.pageMessageSession.count({
           where: {
@@ -659,6 +682,8 @@ export class PageMessageSessionResolver {
 
       await this.notificationService.saveAndDispatchNotification(notification);
     }
+
+    await this.pageMessageSessionCacheService.removeLatestMessage(pageMessageSession.id);
 
     this.notificationGateway.publishSessionAction(pageMessageSessionId, sessionAction);
 
