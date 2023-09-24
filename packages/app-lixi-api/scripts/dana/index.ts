@@ -4,7 +4,7 @@ import BCHJS from '@bcpros/xpi-js';
 require('dotenv').config();
 
 const prismaClient = new PrismaClient();
-const XPI = new BCHJS({ restURL: 'https://api.sendlotus.com/v4/' });
+const XPI = new BCHJS({});
 
 enum BurnForType {
   Page = 24321,

@@ -178,5 +178,10 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "browser": {
+    "fs": false,
+    "os": false,
+    "path": false
   }
 }

@@ -224,6 +224,10 @@ const nextConfig = withLess({
 			new webpack.EnvironmentPlugin({ ...process.env, 'THEME': { ...antdVariables } }),
 		);
 
+		if (!isServer) {
+			config.resolve.fallback = { fs: false };
+		}
+
 		return config;
 	},
 	env: {

@@ -51,7 +51,7 @@ const useWallet = () => {
   const [apiIndex, setApiIndex] = useState(0);
 
   const { getXPI } = useXPI();
-  const [XPI, setXPI] = useState<BCHJS>(getXPI(apiIndex));
+  const [XPI, setXPI] = useState<BCHJS>(getXPI());
 
   const accounts = useAppSelector(getAllAccounts);
   const walletState = useAppSelector(getWalletState);

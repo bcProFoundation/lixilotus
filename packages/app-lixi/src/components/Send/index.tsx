@@ -263,10 +263,7 @@ const SendComponent: React.FC = () => {
     // Set currency to XPI
     setSelectedCurrency(currency.ticker);
     try {
-      const utxos = await XPI.Utxo.get(currentAddress);
-      const utxoStore = utxos[0];
-      const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
-      const txFeeSats = calcFee(XPI, utxosStore);
+      const txFeeSats = calcFee(XPI, slpBalancesAndUtxos.nonSlpUtxos);
       const txFeeBch = txFeeSats / 10 ** currency.cashDecimals;
       let value =
         _.toNumber(walletBalances.totalBalance) - txFeeBch >= 0
