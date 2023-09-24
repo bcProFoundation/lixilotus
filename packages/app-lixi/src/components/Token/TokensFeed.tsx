@@ -501,6 +501,7 @@ const TokensFeed = ({ token, checkIsFollowed, isMobile }: TokenProps) => {
                   addToRecentHashtags={hashtag =>
                     dispatch(addRecentHashtagAtToken({ id: token.id, hashtag: hashtag.substring(1) }))
                   }
+                  postListType={PostListType.Token}
                 />
               );
             })}

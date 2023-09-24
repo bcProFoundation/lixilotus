@@ -704,6 +704,7 @@ type Post {
   danaViewScore: Int
   followPostOwner: Boolean
   followedPage: Boolean
+  followedToken: Boolean
   id: ID!
   originalLanguage: String
   page: Page

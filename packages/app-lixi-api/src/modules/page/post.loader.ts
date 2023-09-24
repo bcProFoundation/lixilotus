@@ -2,12 +2,17 @@ import _ from 'lodash';
 import { Injectable, Scope } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import DataLoader from 'dataloader';
-import { Page, Repost, UploadDetail } from '@bcpros/lixi-models';
+import { Page, Post, Repost, UploadDetail } from '@bcpros/lixi-models';
 import { DanaViewScoreService } from './dana-view-score.service';
+import { FollowCacheService } from '../account/follow-cache.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export default class PostLoader {
-  constructor(private readonly prisma: PrismaService, private readonly danaViewScoreService: DanaViewScoreService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly danaViewScoreService: DanaViewScoreService,
+    private readonly followCacheService: FollowCacheService
+  ) {}
 
   public async getPostsUploadsByBatch(postIds: readonly string[]): Promise<(UploadDetail | any)[]> {
     const ids = postIds as unknown as string[];
@@ -150,4 +155,46 @@ export default class PostLoader {
       return scores[index] || 0;
     });
   });
+
+  public readonly batchCheckAccountFollowAllAccount = new DataLoader(
+    async (items: readonly { followingAccountId: number; accountId: number }[]) => {
+      const listFollowingAccountId = items.map(item => item.followingAccountId);
+      const listCheckAccountFollowAccount = await this.followCacheService.checkAccountFollowAllAccount(
+        items[0].accountId,
+        listFollowingAccountId
+      );
+
+      return listCheckAccountFollowAccount.map((item, index) => {
+        return !!listCheckAccountFollowAccount[index];
+      });
+    }
+  );
+
+  public readonly batchCheckAccountFollowAllPage = new DataLoader(
+    async (items: readonly { pageId: string; accountId: number }[]) => {
+      const listPageId = items.map(item => item.pageId);
+      const listCheckAccountFollowPage = await this.followCacheService.checkAccountFollowAllPage(
+        items[0].accountId,
+        listPageId
+      );
+
+      return listCheckAccountFollowPage.map((item, index) => {
+        return !!listCheckAccountFollowPage[index];
+      });
+    }
+  );
+
+  public readonly batchCheckAccountFollowAllToken = new DataLoader(
+    async (items: readonly { tokenId: string; accountId: number }[]) => {
+      const listTokenId = items.map(item => item.tokenId);
+      const listCheckAccountFollowToken = await this.followCacheService.checkAccountFollowAllToken(
+        items[0].accountId,
+        listTokenId
+      );
+
+      return listCheckAccountFollowToken.map((item, index) => {
+        return !!listCheckAccountFollowToken[index];
+      });
+    }
+  );
 }

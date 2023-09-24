@@ -44,6 +44,9 @@ export class FollowCacheService {
     for (const following of followings) {
       promises.push(this.redis.zadd(key, following.createdAt.getTime(), following.followingAccountId));
     }
+
+    if (_.isNil(promises) || promises.length === 0) return null;
+
     return Promise.all(promises);
   }
 
@@ -85,7 +88,7 @@ export class FollowCacheService {
   private async _cachePageFollowingOfAccount(key: string, accountId: number) {
     const followings = await this.prisma.followPage.findMany({
       where: {
-        accountId: accountId
+        AND: [{ accountId: accountId }, { pageId: { not: null } }]
       }
     });
 
@@ -93,6 +96,8 @@ export class FollowCacheService {
     for (const following of followings) {
       promises.push(this.redis.zadd(key, following.createdAt.getTime(), following.pageId!));
     }
+
+    if (_.isNil(promises) || promises.length === 0) return null;
 
     return Promise.all(promises);
   }
@@ -109,7 +114,7 @@ export class FollowCacheService {
   private async _cacheTokenFollowingOfAccount(key: string, accountId: number) {
     const followings = await this.prisma.followPage.findMany({
       where: {
-        accountId: accountId
+        AND: [{ accountId: accountId }, { tokenId: { not: null } }]
       }
     });
 
@@ -117,6 +122,8 @@ export class FollowCacheService {
     for (const following of followings) {
       promises.push(this.redis.zadd(key, following.createdAt.getTime(), following.tokenId!));
     }
+
+    if (_.isNil(promises) || promises.length === 0) return null;
 
     return Promise.all(promises);
   }
@@ -209,5 +216,65 @@ export class FollowCacheService {
       this.redis.zadd(keyFollowers, createdAt.getTime(), followerAccountId),
       this.redis.zadd(keyFollowings, createdAt.getTime(), tokenId)
     ]);
+  }
+
+  async checkAccountFollowAllAccount(followerAccountId: number, followingAccountIds: number[]) {
+    const key = `user:${followerAccountId}:followings`;
+    const exist = await this.redis.exists([key]);
+    let accountHaveFollowing;
+    let listCheckAccountFollowAccounts: boolean[] | (string | null)[] = [];
+
+    if (!exist) {
+      accountHaveFollowing = await this._cacheAccountFollowings(key, followerAccountId);
+    }
+    if (accountHaveFollowing === null) {
+      followingAccountIds.forEach((item, index) => {
+        listCheckAccountFollowAccounts[index] = false;
+      });
+      return listCheckAccountFollowAccounts;
+    }
+
+    listCheckAccountFollowAccounts = await this.redis.zmscore(key, ...followingAccountIds);
+    return listCheckAccountFollowAccounts;
+  }
+
+  async checkAccountFollowAllPage(followerAccountId: number, pageIds: string[]) {
+    const key = `user:${followerAccountId}:followingPages`;
+    const exist = await this.redis.exists([key]);
+    let accountHaveFollowingPage;
+    let listCheckAccountFollowPages: boolean[] | (string | null)[] = [];
+
+    if (!exist) {
+      accountHaveFollowingPage = await this._cachePageFollowingOfAccount(key, followerAccountId);
+    }
+    if (accountHaveFollowingPage === null) {
+      pageIds.forEach((item, index) => {
+        listCheckAccountFollowPages[index] = false;
+      });
+      return listCheckAccountFollowPages;
+    }
+
+    listCheckAccountFollowPages = await this.redis.zmscore(key, ...pageIds);
+    return listCheckAccountFollowPages;
+  }
+
+  async checkAccountFollowAllToken(followerAccountId: number, tokenIds: string[]) {
+    const key = `user:${followerAccountId}:followingTokens`;
+    const exist = await this.redis.exists([key]);
+    let accountHaveFollowingToken;
+    let listCheckAccountFollowTokens: boolean[] | (string | null)[] = [];
+
+    if (!exist) {
+      accountHaveFollowingToken = await this._cacheTokenFollowingOfAccount(key, followerAccountId);
+    }
+    if (accountHaveFollowingToken === null) {
+      tokenIds.forEach((item, index) => {
+        listCheckAccountFollowTokens[index] = false;
+      });
+      return listCheckAccountFollowTokens;
+    }
+
+    listCheckAccountFollowTokens = await this.redis.zmscore(key, ...tokenIds);
+    return listCheckAccountFollowTokens;
   }
 }

@@ -802,6 +802,7 @@ export type Post = {
   danaViewScore?: Maybe<Scalars['Int']>;
   followPostOwner?: Maybe<Scalars['Boolean']>;
   followedPage?: Maybe<Scalars['Boolean']>;
+  followedToken?: Maybe<Scalars['Boolean']>;
   id: Scalars['ID'];
   originalLanguage?: Maybe<Scalars['String']>;
   page?: Maybe<Page>;

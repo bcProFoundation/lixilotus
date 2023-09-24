@@ -441,6 +441,7 @@ const PostListItem = ({
             danaBurnScore={post.danaBurnScore}
             followPostOwner={post.followPostOwner}
             followedPage={post.followedPage}
+            followedToken={post.followedToken}
             post={post}
             postListType={postListType}
           />

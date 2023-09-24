@@ -91,7 +91,7 @@ const PostContent = ({ post, showTranslation, currentLocale }) => {
     <div className="read-more">
       <ReadMoreMore
         id="readMore"
-        linesToShow={lineContentShow}
+        linesToShow={lineContentShow + lineContentShow * 0.1} //default lineHeight of Readmoremore is 1 but we custom lineHeight is 1.1
         parseHtml
         text={handleContentEmbed}
         checkFor={1000}

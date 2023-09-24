@@ -71,6 +71,9 @@ export class Post {
   @Field(() => Boolean, { nullable: true })
   followedPage?: Nullable<boolean>;
 
+  @Field(() => Boolean, { nullable: true })
+  followedToken?: Nullable<boolean>;
+
   @Field(() => Number, { nullable: true })
   repostCount?: Nullable<number>;
 

@@ -36,6 +36,7 @@ type InfoCardProps = {
   danaBurnScore?: number;
   followPostOwner?: boolean;
   followedPage?: boolean;
+  followedToken?: boolean;
   post?: any;
   postListType?: PostListType;
 };
@@ -163,6 +164,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     danaBurnScore,
     followPostOwner,
     followedPage,
+    followedToken,
     post,
     postListType
   } = props;
@@ -171,30 +173,6 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
   const dispatch = useAppDispatch();
   const authorization = useContext(AuthorizationContext);
   const askAuthorization = useAuthorization();
-
-  const { currentData: currentDataCheckIsFollowedPage, isSuccess: isSuccessCheckFollowedPage } =
-    useCheckIfFollowPageQuery({ pageId: page?.id });
-  const { currentData: currentDataCheckIsFollowedAccount, isSuccess: isSuccessCheckFollowedAccount } =
-    useCheckIfFollowAccountQuery({
-      followingAccountId: post?.postAccount.id
-    });
-  const { currentData: currentDataCheckIsFollowedToken, isSuccess: isSuccessCheckFollowedTokent } =
-    useCheckIfFollowTokenQuery({
-      tokenId: token?.tokenId
-    });
-
-  let checkIfFollowPage;
-  let checkIfFollowAccount;
-  let checkIfFollowToken;
-  if (isSuccessCheckFollowedPage && currentDataCheckIsFollowedPage) {
-    checkIfFollowPage = currentDataCheckIsFollowedPage.checkIfFollowPage;
-  }
-  if (isSuccessCheckFollowedAccount && currentDataCheckIsFollowedAccount) {
-    checkIfFollowAccount = currentDataCheckIsFollowedAccount.checkIfFollowAccount;
-  }
-  if (isSuccessCheckFollowedTokent && currentDataCheckIsFollowedToken) {
-    checkIfFollowToken = currentDataCheckIsFollowedToken.checkIfFollowToken;
-  }
 
   const items: MenuProps['items'] = [
     {
@@ -224,9 +202,9 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
             post: postContent,
             page: page,
             token: token,
-            checkIfFollowPage,
-            checkIfFollowAccount,
-            checkIfFollowToken
+            followPostOwner,
+            followedPage,
+            followedToken
           })
         )
       : askAuthorization();
@@ -250,7 +228,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
             style={{ marginLeft: '4px', fontSize: '10px', display: 'inline-flex', alignItems: 'center', gap: '1px' }}
           >
             {activatePostLocation && postLocation()}&nbsp;
-            {authorization.authorized && checkIfFollowAccount && displayIconFollow && (
+            {authorization.authorized && followPostOwner && displayIconFollow && (
               <Icon className="follow-icon" component={() => <FollowSvg />} />
             )}
           </span>
@@ -303,7 +281,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                       }}
                     >
                       {activatePostLocation && postLocation()}&nbsp;
-                      {authorization.authorized && (checkIfFollowAccount || checkIfFollowPage) && (
+                      {authorization.authorized && (followPostOwner || followedPage) && (
                         <Icon className="follow-icon" component={() => <FollowSvg />} />
                       )}
                     </span>
@@ -349,7 +327,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
                       }}
                     >
                       {activatePostLocation && postLocation()}&nbsp;
-                      {authorization.authorized && (checkIfFollowAccount || checkIfFollowToken) && (
+                      {authorization.authorized && (followPostOwner || followedToken) && (
                         <Icon className="follow-icon" component={() => <FollowSvg />} />
                       )}
                     </span>

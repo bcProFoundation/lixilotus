@@ -1,5 +1,5 @@
-import { CreatePostCommand, EditPostCommand } from '@bcpros/lixi-models';
-import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
+import { CreatePostCommand, EditPostCommand, Follow, ParamPostFollowCommand } from '@bcpros/lixi-models';
+import { all, fork, put, takeLatest } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
@@ -24,10 +24,14 @@ import {
   postPostSuccess,
   setPost,
   setPostsByAccountId,
-  setSelectedPost
+  setSelectedPost,
+  changeFollowActionSheetPost
 } from './actions';
 import postApi from './api';
-
+import { api as timelineApi } from '@store/timeline/timeline.api';
+import { api as postsApi } from '@store/post/posts.api';
+import { FollowForType } from '@bcpros/lixi-models/lib/follow/follow.model';
+import { OrderDirection, PostOrderField } from '@generated/types.generated';
 const call: any = Effects.call;
 /**
  * Generate a post
@@ -212,6 +216,190 @@ function* fetchAllPostsSaga() {
   }
 }
 
+function* changeFollowActionSheetPostSaga(action: PayloadAction<ParamPostFollowCommand>) {
+  const { changeFollow, followForType, extraArgumentsPostFollow } = action.payload;
+  const {
+    minBurnFilterPage,
+    minBurnFilterToken,
+    minBurnFilterProfile,
+    minBurnFilterHome,
+    pageId,
+    tokenId,
+    postAccountId,
+    tokenPrimaryId,
+    hashtags,
+    query,
+    level
+  } = extraArgumentsPostFollow;
+
+  yield put(
+    timelineApi.util.updateQueryData('HomeTimeline', { level }, draft => {
+      const listPostUpdateFollow = draft.homeTimeline.edges.map((item, index) => {
+        switch (followForType) {
+          case FollowForType.Account:
+            if (item.node.data.postAccount.id === postAccountId) {
+              draft.homeTimeline.edges[index].node.data.followPostOwner = !changeFollow;
+            }
+            break;
+          case FollowForType.Page:
+            if (item.node.data?.page?.id === pageId) {
+              draft.homeTimeline.edges[index].node.data.followedPage = !changeFollow;
+            }
+            break;
+          case FollowForType.Token:
+            if (item.node.data?.token?.tokenId === tokenId) {
+              draft.homeTimeline.edges[index].node.data.followedToken = !changeFollow;
+            }
+            break;
+          default:
+            break;
+        }
+      });
+    })
+  );
+
+  yield put(
+    postsApi.util.updateQueryData(
+      'PostsByTokenId',
+      { id: tokenPrimaryId, minBurnFilter: minBurnFilterToken },
+      draft => {
+        const listPostUpdateFollow = draft.allPostsByTokenId.edges.map((item, index) => {
+          switch (followForType) {
+            case FollowForType.Account:
+              if (item.node.postAccount.id === postAccountId) {
+                draft.allPostsByTokenId.edges[index].node.followPostOwner = !changeFollow;
+              }
+              break;
+            case FollowForType.Token:
+              if (item.node?.token?.tokenId === tokenId) {
+                draft.allPostsByTokenId.edges[index].node.followedToken = !changeFollow;
+              }
+              break;
+            default:
+              break;
+          }
+        });
+      }
+    )
+  );
+
+  yield put(
+    postsApi.util.updateQueryData('PostsByPageId', { id: pageId, minBurnFilter: minBurnFilterPage }, draft => {
+      const listPostUpdateFollow = draft.allPostsByPageId.edges.map((item, index) => {
+        switch (followForType) {
+          case FollowForType.Account: {
+            if (item.node.postAccount.id === postAccountId) {
+              draft.allPostsByPageId.edges[index].node.followPostOwner = !changeFollow;
+            }
+            break;
+          }
+          case FollowForType.Page:
+            if (item.node?.page?.id === pageId) {
+              draft.allPostsByPageId.edges[index].node.followedPage = !changeFollow;
+            }
+            break;
+          default:
+            break;
+        }
+      });
+    })
+  );
+
+  yield put(
+    postsApi.util.updateQueryData(
+      'PostsByUserId',
+      { id: postAccountId, minBurnFilter: minBurnFilterProfile },
+      draft => {
+        const listPostUpdateFollow = draft.allPostsByUserId.edges.map((item, index) => {
+          if (item.node.postAccount.id === postAccountId) {
+            draft.allPostsByUserId.edges[index].node.followPostOwner = !changeFollow;
+          }
+        });
+      }
+    )
+  );
+
+  yield put(
+    postsApi.util.updateQueryData(
+      'PostsBySearchWithHashtag',
+      { hashtags: hashtags, query: query, minBurnFilter: minBurnFilterHome },
+      draft => {
+        const listPostUpdateFollow = draft.allPostsBySearchWithHashtag.edges.map((item, index) => {
+          switch (followForType) {
+            case FollowForType.Account:
+              if (item.node.postAccount.id === postAccountId) {
+                draft.allPostsBySearchWithHashtag.edges[index].node.followPostOwner = !changeFollow;
+              }
+              break;
+            case FollowForType.Page:
+              if (item.node?.page?.id === pageId) {
+                draft.allPostsBySearchWithHashtag.edges[index].node.followedPage = !changeFollow;
+              }
+              break;
+            case FollowForType.Token:
+              if (item.node?.token?.tokenId === tokenId) {
+                draft.allPostsBySearchWithHashtag.edges[index].node.followedToken = !changeFollow;
+              }
+              break;
+            default:
+              break;
+          }
+        });
+      }
+    )
+  );
+
+  yield put(
+    postsApi.util.updateQueryData(
+      'PostsBySearchWithHashtagAtPage',
+      { pageId, hashtags, query, minBurnFilter: minBurnFilterPage },
+      draft => {
+        const listPostUpdateFollow = draft.allPostsBySearchWithHashtagAtPage.edges.map((item, index) => {
+          switch (followForType) {
+            case FollowForType.Account:
+              if (item.node.postAccount.id === postAccountId) {
+                draft.allPostsBySearchWithHashtagAtPage.edges[index].node.followPostOwner = !changeFollow;
+              }
+              break;
+            case FollowForType.Page:
+              if (item.node?.page?.id === pageId) {
+                draft.allPostsBySearchWithHashtagAtPage.edges[index].node.followedPage = !changeFollow;
+              }
+              break;
+            default:
+              break;
+          }
+        });
+      }
+    )
+  );
+
+  yield put(
+    postsApi.util.updateQueryData(
+      'PostsBySearchWithHashtagAtToken',
+      { tokenId: tokenPrimaryId, hashtags, query, minBurnFilter: minBurnFilterToken },
+      draft => {
+        const listPostUpdateFollow = draft.allPostsBySearchWithHashtagAtToken.edges.map((item, index) => {
+          switch (followForType) {
+            case FollowForType.Account:
+              if (item.node.postAccount.id === postAccountId) {
+                draft.allPostsBySearchWithHashtagAtToken.edges[index].node.followPostOwner = !changeFollow;
+              }
+              break;
+            case FollowForType.Token:
+              if (item.node?.token?.tokenId === tokenId) {
+                draft.allPostsBySearchWithHashtagAtToken.edges[index].node.followedToken = !changeFollow;
+              }
+              break;
+            default:
+              break;
+          }
+        });
+      }
+    )
+  );
+}
+
 function* fetchAllPostsSuccessSaga(action: any) {}
 
 function* fetchAllPostsFailureSaga(action: any) {}
@@ -268,6 +456,10 @@ function* watchGetPostFailure() {
   yield takeLatest(getPostFailure.type, getPostFailureSaga);
 }
 
+function* watchChangeFollowActionSheetPost() {
+  yield takeLatest(changeFollowActionSheetPost.type, changeFollowActionSheetPostSaga);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchPostPost),
@@ -282,6 +474,7 @@ export default function* postSaga() {
     fork(watchEditPostFailure),
     fork(watchEditPostSuccess),
     fork(watchGetPost),
-    fork(watchGetPostFailure)
+    fork(watchGetPostFailure),
+    fork(watchChangeFollowActionSheetPost)
   ]);
 }

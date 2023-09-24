@@ -123,7 +123,7 @@ const ShareSocialButton = (props: ShareSocialProps) => {
   const ShareSocialDropdown = (
     <Popover content={() => popOverContent(shareUrl)}>
       <ShareButton>
-        <ShareAltOutlined /> Share
+        <ShareAltOutlined />
       </ShareButton>
     </Popover>
   );

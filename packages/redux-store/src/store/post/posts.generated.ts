@@ -35,6 +35,7 @@ export type PostQuery = {
     updatedAt: any;
     followPostOwner?: boolean | null;
     followedPage?: boolean | null;
+    followedToken?: boolean | null;
     originalLanguage?: string | null;
     danaViewScore?: number | null;
     uploads?: Array<{
@@ -116,6 +117,7 @@ export type PostsByPageIdQuery = {
         updatedAt: any;
         followPostOwner?: boolean | null;
         followedPage?: boolean | null;
+        followedToken?: boolean | null;
         originalLanguage?: string | null;
         danaViewScore?: number | null;
         uploads?: Array<{
@@ -205,6 +207,7 @@ export type PostsByUserIdQuery = {
         updatedAt: any;
         followPostOwner?: boolean | null;
         followedPage?: boolean | null;
+        followedToken?: boolean | null;
         originalLanguage?: string | null;
         danaViewScore?: number | null;
         uploads?: Array<{
@@ -294,6 +297,7 @@ export type PostsByHashtagIdQuery = {
         updatedAt: any;
         followPostOwner?: boolean | null;
         followedPage?: boolean | null;
+        followedToken?: boolean | null;
         originalLanguage?: string | null;
         danaViewScore?: number | null;
         uploads?: Array<{
@@ -383,6 +387,7 @@ export type PostsByTokenIdQuery = {
         updatedAt: any;
         followPostOwner?: boolean | null;
         followedPage?: boolean | null;
+        followedToken?: boolean | null;
         originalLanguage?: string | null;
         danaViewScore?: number | null;
         uploads?: Array<{
@@ -466,6 +471,9 @@ export type PostsBySearchQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
+        followPostOwner?: boolean | null;
+        followedPage?: boolean | null;
+        followedToken?: boolean | null;
         originalLanguage?: string | null;
         danaViewScore?: number | null;
         uploads?: Array<{
@@ -551,6 +559,9 @@ export type PostsBySearchWithHashtagQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
+        followPostOwner?: boolean | null;
+        followedPage?: boolean | null;
+        followedToken?: boolean | null;
         originalLanguage?: string | null;
         danaViewScore?: number | null;
         uploads?: Array<{
@@ -637,6 +648,9 @@ export type PostsBySearchWithHashtagAtPageQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
+        followPostOwner?: boolean | null;
+        followedPage?: boolean | null;
+        followedToken?: boolean | null;
         originalLanguage?: string | null;
         danaViewScore?: number | null;
         uploads?: Array<{
@@ -723,6 +737,9 @@ export type PostsBySearchWithHashtagAtTokenQuery = {
         totalComments: number;
         createdAt: any;
         updatedAt: any;
+        followPostOwner?: boolean | null;
+        followedPage?: boolean | null;
+        followedToken?: boolean | null;
         originalLanguage?: string | null;
         danaViewScore?: number | null;
         uploads?: Array<{
@@ -793,6 +810,7 @@ export type PostFieldsFragment = {
   updatedAt: any;
   followPostOwner?: boolean | null;
   followedPage?: boolean | null;
+  followedToken?: boolean | null;
   originalLanguage?: string | null;
   danaViewScore?: number | null;
   uploads?: Array<{
@@ -850,6 +868,9 @@ export type PostMeiliFieldsFragment = {
   totalComments: number;
   createdAt: any;
   updatedAt: any;
+  followPostOwner?: boolean | null;
+  followedPage?: boolean | null;
+  followedToken?: boolean | null;
   originalLanguage?: string | null;
   danaViewScore?: number | null;
   uploads?: Array<{
@@ -916,6 +937,7 @@ export type CreatePostMutation = {
     updatedAt: any;
     followPostOwner?: boolean | null;
     followedPage?: boolean | null;
+    followedToken?: boolean | null;
     originalLanguage?: string | null;
     danaViewScore?: number | null;
     uploads?: Array<{
@@ -983,6 +1005,7 @@ export type UpdatePostMutation = {
     updatedAt: any;
     followPostOwner?: boolean | null;
     followedPage?: boolean | null;
+    followedToken?: boolean | null;
     originalLanguage?: string | null;
     danaViewScore?: number | null;
     uploads?: Array<{
@@ -1094,6 +1117,7 @@ export const PostFieldsFragmentDoc = `
   updatedAt
   followPostOwner
   followedPage
+  followedToken
   originalLanguage
   translations {
     id
@@ -1157,6 +1181,9 @@ export const PostMeiliFieldsFragmentDoc = `
   totalComments
   createdAt
   updatedAt
+  followPostOwner
+  followedPage
+  followedToken
   originalLanguage
   translations {
     id

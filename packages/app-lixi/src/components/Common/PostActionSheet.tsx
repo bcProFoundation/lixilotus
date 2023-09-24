@@ -11,12 +11,13 @@ import {
   CreateFollowPageInput,
   CreateFollowTokenInput,
   DeleteFollowPageInput,
-  DeleteFollowTokenInput
+  DeleteFollowTokenInput,
+  ExtraArgumentsPostFollow,
+  ParamPostFollowCommand
 } from '@bcpros/lixi-models';
 import { getSelectedAccount, getSelectedAccountId } from '@store/account';
 import { usePageQuery } from '@store/page/pages.generated';
 import {
-  useCheckIfFollowAccountQuery,
   useCreateFollowAccountMutation,
   useCreateFollowPageMutation,
   useCreateFollowTokenMutation,
@@ -29,6 +30,17 @@ import { getWalletStatus } from '@store/wallet';
 import { useSwipeable } from 'react-swipeable';
 import { useUserHadMessageToPageQuery } from '@store/message/pageMessageSession.generated';
 import CreatePostCard from './CreatePostCard';
+import {
+  getFilterPostsHome,
+  getFilterPostsPage,
+  getFilterPostsProfile,
+  getFilterPostsToken,
+  getLevelFilter
+} from '@store/settings';
+import { changeFollowActionSheetPost } from '@store/post/actions';
+import { FollowForType } from '@bcpros/lixi-models/lib/follow/follow.model';
+import { useRouter } from 'next/router';
+
 interface PostActionSheetProps {
   id?: string;
   classStyle?: string;
@@ -36,9 +48,9 @@ interface PostActionSheetProps {
   post?: any;
   page?: any;
   token?: any;
-  checkIfFollowPage?: boolean;
-  checkIfFollowAccount?: boolean;
-  checkIfFollowToken?: boolean;
+  followPostOwner?: boolean;
+  followedPage?: boolean;
+  followedToken?: boolean;
 }
 
 export const ItemActionSheetBottom = ({
@@ -109,19 +121,75 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
   post,
   page,
   token,
-  checkIfFollowPage,
-  checkIfFollowAccount,
-  checkIfFollowToken
+  followedPage,
+  followPostOwner,
+  followedToken
 }: PostActionSheetProps) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [open, setOpen] = useState(true);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
-  const [isFollowedPage, setIsFollowedPage] = useState<boolean>(false);
-  const [isFollowedAccount, setIsFollowedAccount] = useState<boolean>(false);
-  const [isFollowedToken, setIsFollowedToken] = useState<boolean>(false);
+  const [isFollowedPage, setIsFollowedPage] = useState<boolean>(followedPage);
+  const [isFollowedToken, setIsFollowedToken] = useState<boolean>(followedToken);
+  const [isFollowedAccount, setIsFollowedAccount] = useState<boolean>(followPostOwner);
   const [openCreatePost, setOpenCreatePost] = useState<boolean>(false);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const walletStatus = useAppSelector(getWalletStatus);
+  const level = useAppSelector(getLevelFilter);
+  const filterValuePage = useAppSelector(getFilterPostsPage);
+  const filterValueToken = useAppSelector(getFilterPostsToken);
+  const filterValueProfile = useAppSelector(getFilterPostsProfile);
+  const filterValueHome = useAppSelector(getFilterPostsHome);
+  const [query, setQuery] = useState<string | null>(null);
+  const [hashtags, setHashtags] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (router.query.hashtags) {
+      setHashtags((router.query.hashtags as string).split(' '));
+    } else {
+      setHashtags([]);
+    }
+  }, [router.query.hashtags]);
+
+  useEffect(() => {
+    if (router.query.q) {
+      setQuery(router.query.q as string);
+    } else {
+      setQuery(null);
+    }
+  }, [router.query.q]);
+
+  const extraArgumentsPostFollow: ExtraArgumentsPostFollow = {
+    minBurnFilterPage: filterValuePage,
+    minBurnFilterToken: filterValueToken,
+    minBurnFilterProfile: filterValueProfile,
+    minBurnFilterHome: filterValueHome,
+    level: level,
+    pageId: post?.page?.id,
+    tokenId: post?.token?.tokenId,
+    postAccountId: post.postAccount.id,
+    tokenPrimaryId: post?.token?.id,
+    hashtags: hashtags,
+    query: query
+  };
+
+  const payloadFollowPage: ParamPostFollowCommand = {
+    changeFollow: isFollowedPage,
+    followForType: FollowForType.Page,
+    extraArgumentsPostFollow
+  };
+
+  const payloadFollowToken: ParamPostFollowCommand = {
+    changeFollow: isFollowedToken,
+    followForType: FollowForType.Token,
+    extraArgumentsPostFollow
+  };
+
+  const payloadFollowAccount: ParamPostFollowCommand = {
+    changeFollow: isFollowedAccount,
+    followForType: FollowForType.Account,
+    extraArgumentsPostFollow
+  };
 
   const [
     createFollowPageTrigger,
@@ -183,12 +251,6 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     }
   ] = useDeleteFollowTokenMutation();
 
-  useEffect(() => {
-    setIsFollowedPage(checkIfFollowPage);
-    setIsFollowedAccount(checkIfFollowAccount);
-    setIsFollowedToken(checkIfFollowToken);
-  }, [checkIfFollowPage, checkIfFollowPage, checkIfFollowToken]);
-
   const { data: pageMessageSessionData, refetch: pageMessageSessionRefetch } = useUserHadMessageToPageQuery(
     {
       accountId: selectedAccount?.id,
@@ -223,6 +285,8 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     };
     setIsFollowedPage(!isFollowedPage);
     await createFollowPageTrigger({ input: createFollowPageInput });
+
+    dispatch(changeFollowActionSheetPost(payloadFollowPage));
   };
 
   const handleUnfollowPage = async () => {
@@ -232,6 +296,8 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     };
     setIsFollowedPage(!isFollowedPage);
     await deleteFollowPageTrigger({ input: deleteFollowPageInput });
+
+    dispatch(changeFollowActionSheetPost(payloadFollowPage));
   };
 
   const handleFollowAccount = async () => {
@@ -241,6 +307,8 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     };
     setIsFollowedAccount(!isFollowedAccount);
     await createFollowAccountTrigger({ input: createFollowAccountInput });
+
+    dispatch(changeFollowActionSheetPost(payloadFollowAccount));
   };
 
   const handleUnfollowAccount = async () => {
@@ -250,6 +318,8 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     };
     setIsFollowedAccount(!isFollowedAccount);
     await deleteFollowAccountTrigger({ input: deleteFollowAccountInput });
+
+    dispatch(changeFollowActionSheetPost(payloadFollowAccount));
   };
 
   const handleFollowToken = async () => {
@@ -259,6 +329,8 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     };
     setIsFollowedToken(!isFollowedToken);
     await createFollowTokenTrigger({ input: createFollowTokenInput });
+
+    dispatch(changeFollowActionSheetPost(payloadFollowToken));
   };
 
   const handleUnfollowToken = async () => {
@@ -268,6 +340,8 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     };
     setIsFollowedToken(!isFollowedToken);
     await deleteFollowTokenTrigger({ input: deleteFollowTokenInput });
+
+    dispatch(changeFollowActionSheetPost(payloadFollowToken));
   };
 
   const openPageMessageLixiModal = () => {

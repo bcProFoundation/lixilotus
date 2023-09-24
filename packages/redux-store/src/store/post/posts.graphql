@@ -319,6 +319,7 @@ fragment PostFields on Post {
   updatedAt
   followPostOwner
   followedPage
+  followedToken
   originalLanguage
   translations {
     id
@@ -381,6 +382,9 @@ fragment PostMeiliFields on Post {
   totalComments
   createdAt
   updatedAt
+  followPostOwner
+  followedPage
+  followedToken
   originalLanguage
   translations {
     id
