@@ -40,4 +40,5 @@ export class ExtraArgumentsPostFollow {
   tokenPrimaryId?: string;
   query?: string;
   hashtags?: string[];
+  accountId?: number;
 }

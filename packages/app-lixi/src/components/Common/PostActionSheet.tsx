@@ -170,7 +170,8 @@ export const PostActionSheet: React.FC<PostActionSheetProps> = ({
     postAccountId: post.postAccount.id,
     tokenPrimaryId: post?.token?.id,
     hashtags: hashtags,
-    query: query
+    query: query,
+    accountId: selectedAccountId || null
   };
 
   const payloadFollowPage: ParamPostFollowCommand = {

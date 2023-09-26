@@ -719,6 +719,7 @@ export default {
   'messenger.pendingMessage': 'Pending message',
   'messenger.openMessage': 'Open message',
   'messenger.chatPage': 'Chat with me',
+  'messenger.offerChat': 'Offer you {xpi} XPI for a chat.',
 
   /* 24. Code country to language*/
   'code.ab': 'Abkhazian',

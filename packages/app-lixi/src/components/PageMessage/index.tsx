@@ -1171,9 +1171,11 @@ const PageMessage = () => {
                       </Avatar>
                       <h4 className="sender-name">{currentPageMessageSession?.account?.name}</h4>
                       <p className="sender-created-at">{transformCreatedAt(currentPageMessageSession?.createdAt)}</p>
-                      <p className="sender-message-amount">{`${intl.get('messenger.giveYou')} ${Math.round(
-                        Number(currentPageMessageSession?.lixi.amount)
-                      )} XPI ${intl.get('messenger.forMessaging')}`}</p>
+                      <p className="sender-message-amount">
+                        {intl.get('messenger.offerChat', {
+                          xpi: Math.round(Number(currentPageMessageSession?.lixi.amount))
+                        })}
+                      </p>
                       <div className="group-action-session">
                         <Button type="primary" className="outline-btn" onClick={() => openSession()}>
                           {intl.get('messenger.accept')}

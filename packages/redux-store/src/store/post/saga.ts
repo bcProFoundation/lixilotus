@@ -229,7 +229,8 @@ function* changeFollowActionSheetPostSaga(action: PayloadAction<ParamPostFollowC
     tokenPrimaryId,
     hashtags,
     query,
-    level
+    level,
+    accountId
   } = extraArgumentsPostFollow;
 
   yield put(
@@ -284,25 +285,28 @@ function* changeFollowActionSheetPostSaga(action: PayloadAction<ParamPostFollowC
   );
 
   yield put(
-    postsApi.util.updateQueryData('PostsByPageId', { id: pageId, minBurnFilter: minBurnFilterPage }, draft => {
-      const listPostUpdateFollow = draft.allPostsByPageId.edges.map((item, index) => {
-        switch (followForType) {
-          case FollowForType.Account: {
-            if (item.node.postAccount.id === postAccountId) {
-              draft.allPostsByPageId.edges[index].node.followPostOwner = !changeFollow;
-            }
-            break;
+    postsApi.util.updateQueryData(
+      'PostsByPageId',
+      { id: pageId, minBurnFilter: minBurnFilterPage, accountId: accountId },
+      draft => {
+        const listPostUpdateFollow = draft.allPostsByPageId.edges.map((item, index) => {
+          switch (followForType) {
+            case FollowForType.Account:
+              if (item.node.postAccount.id === postAccountId) {
+                draft.allPostsByPageId.edges[index].node.followPostOwner = !changeFollow;
+              }
+              break;
+            case FollowForType.Page:
+              if (item.node?.page?.id === pageId) {
+                draft.allPostsByPageId.edges[index].node.followedPage = !changeFollow;
+              }
+              break;
+            default:
+              break;
           }
-          case FollowForType.Page:
-            if (item.node?.page?.id === pageId) {
-              draft.allPostsByPageId.edges[index].node.followedPage = !changeFollow;
-            }
-            break;
-          default:
-            break;
-        }
-      });
-    })
+        });
+      }
+    )
   );
 
   yield put(

@@ -182,7 +182,8 @@ export class PostResolver {
               postAccount: true,
               comments: true,
               reposts: { select: { account: true, accountId: true } },
-              translations: true
+              translations: true,
+              page: true
             },
             where: {
               OR: [
@@ -232,7 +233,8 @@ export class PostResolver {
               postAccount: true,
               comments: true,
               reposts: { select: { account: true, accountId: true } },
-              translations: true
+              translations: true,
+              page: true
             },
             where: {
               OR: [
@@ -348,7 +350,7 @@ export class PostResolver {
       const result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { translations: true, postAccount: true },
+            include: { translations: true, postAccount: true, page: true, token: true },
             where: {
               AND: [
                 {
@@ -433,7 +435,7 @@ export class PostResolver {
     const postsId = _.map(posts, 'id');
 
     const searchPosts = await this.prisma.post.findMany({
-      include: { translations: true, postAccount: true },
+      include: { translations: true, postAccount: true, page: true },
       where: {
         AND: [
           {
@@ -497,7 +499,7 @@ export class PostResolver {
     const postsId = _.map(posts, 'id');
 
     const searchPosts = await this.prisma.post.findMany({
-      include: { translations: true, postAccount: true },
+      include: { translations: true, postAccount: true, token: true },
       where: {
         AND: [
           {
@@ -1207,7 +1209,6 @@ export class PostResolver {
       tokenId: post?.token?.tokenId || '',
       accountId: account.id
     };
-
     return this.postLoader.batchCheckAccountFollowAllToken.load(payload);
   }
 }
