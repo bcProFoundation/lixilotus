@@ -359,7 +359,7 @@ export class PageMessageSessionResolver {
             id: latestMessageCache[i]?.latestMessageId,
             body: latestMessageCache[i]?.latestMessage,
             author: {
-              id: latestMessageCache[i]?.authorId,
+              id: latestMessageCache[i]?.authorId === '' ? 0 : latestMessageCache[i]?.authorId,
               address: latestMessageCache[i]?.authorAddress
             }
           };
