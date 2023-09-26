@@ -298,6 +298,17 @@ const PostListItem = ({
   };
 
   const handlePostClick = e => {
+
+    // analytic event
+    const payload: AnalyticEvent = {
+      eventType: 'view',
+      eventData: {
+        id: post.id,
+        type: 'post'
+      }
+    };
+    dispatch(analyticEvent(payload));
+
     if (e.target.className === 'hashtag-link') {
       e.stopPropagation();
       const hashtag = e.target.id;
@@ -325,17 +336,6 @@ const PostListItem = ({
       }
 
       addToRecentHashtags(hashtag);
-
-      // analytic event
-      const payload: AnalyticEvent = {
-        eventType: 'view',
-        eventData: {
-          id: post.id,
-          type: 'post'
-        }
-      };
-      dispatch(analyticEvent(payload));
-
       return;
     }
     if (e.target.className === 'read-more-more-module_btn__33IaH' || e.target.className.includes('post-translation')) {
