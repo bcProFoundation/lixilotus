@@ -157,8 +157,8 @@ export default class PostLoader {
   });
 
   public readonly batchCheckAccountFollowAllAccount = new DataLoader(
-    async (items: readonly { followingAccountId: number; accountId: number }[]) => {
-      const listFollowingAccountId = items.map(item => item.followingAccountId);
+    async (items: readonly { followingAccountId?: number; accountId: number }[]) => {
+      const listFollowingAccountId = items.map(item => item?.followingAccountId ?? 0);
       const listCheckAccountFollowAccount = await this.followCacheService.checkAccountFollowAllAccount(
         items[0].accountId,
         listFollowingAccountId
@@ -171,8 +171,8 @@ export default class PostLoader {
   );
 
   public readonly batchCheckAccountFollowAllPage = new DataLoader(
-    async (items: readonly { pageId: string; accountId: number }[]) => {
-      const listPageId = items.map(item => item.pageId);
+    async (items: readonly { pageId?: string; accountId: number }[]) => {
+      const listPageId = items.map(item => item?.pageId ?? '');
       const listCheckAccountFollowPage = await this.followCacheService.checkAccountFollowAllPage(
         items[0].accountId,
         listPageId
@@ -185,8 +185,8 @@ export default class PostLoader {
   );
 
   public readonly batchCheckAccountFollowAllToken = new DataLoader(
-    async (items: readonly { tokenId: string; accountId: number }[]) => {
-      const listTokenId = items.map(item => item.tokenId);
+    async (items: readonly { tokenId?: string; accountId: number }[]) => {
+      const listTokenId = items.map(item => item?.tokenId ?? '');
       const listCheckAccountFollowToken = await this.followCacheService.checkAccountFollowAllToken(
         items[0].accountId,
         listTokenId

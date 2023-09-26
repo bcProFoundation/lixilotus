@@ -46,9 +46,7 @@ const useWallet = () => {
 
   const [chronikWebsocket, setChronikWebsocket] = useState(null);
 
-  const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState(false);
-  const [apiIndex, setApiIndex] = useState(0);
 
   const { getXPI } = useXPI();
   const [XPI, setXPI] = useState<BCHJS>(getXPI());
@@ -318,7 +316,7 @@ const useWallet = () => {
       dispatch(setWalletRefreshInterval(websocketConnectedRefreshInterval));
     }
     try {
-      if (!wallet) {
+      if (!wallet || _.isEmpty(wallet.ids)) {
         return;
       }
 

@@ -1188,8 +1188,8 @@ export class PostResolver {
   @ResolveField('followPostOwner', () => Boolean)
   async followPostOwner(@Parent() post: Post, @PostAccountEntity() account: Account) {
     const payload = {
-      followingAccountId: post.postAccount.id,
-      accountId: account.id
+      followingAccountId: post?.postAccount?.id,
+      accountId: account?.id
     };
     return this.postLoader.batchCheckAccountFollowAllAccount.load(payload);
   }
@@ -1198,7 +1198,7 @@ export class PostResolver {
   async followedPage(@Parent() post: Post, @PostAccountEntity() account: Account) {
     const payload = {
       pageId: post?.page?.id || '',
-      accountId: account.id
+      accountId: account?.id
     };
     return this.postLoader.batchCheckAccountFollowAllPage.load(payload);
   }
@@ -1207,7 +1207,7 @@ export class PostResolver {
   async followedToken(@Parent() post: Post, @PostAccountEntity() account: Account) {
     const payload = {
       tokenId: post?.token?.tokenId || '',
-      accountId: account.id
+      accountId: account?.id
     };
     return this.postLoader.batchCheckAccountFollowAllToken.load(payload);
   }

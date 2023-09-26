@@ -11,13 +11,13 @@ import {
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { decode, encode } from '@msgpack/msgpack';
 import { Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { SkipThrottle } from '@nestjs/throttler';
 import { PubSub } from 'graphql-subscriptions';
 import { Redis } from 'ioredis';
 import _ from 'lodash';
 import { I18n, I18nService } from 'nestjs-i18n';
-import { AccountEntity } from '../../decorators';
+import { AccountEntity, PostAccountEntity } from '../../decorators';
 import { GqlHttpExceptionFilter } from '../../middlewares/gql.exception.filter';
 import { GqlJwtAuthGuardByPass } from '../auth/guards/gql-jwtauth.guard';
 import PostLoader from '../page/post.loader';
@@ -218,6 +218,63 @@ export class TimelineResolver {
         node: timelineItems[index]
       };
     });
+
+    // Calculate follow fields
+    if (accountId) {
+      const pageIds = edges.map(edge => edge.node.data?.pageId || '');
+      const postAccountIds = edges.map(edge => edge.node.data?.postAccountId || 0);
+      const tokenIds = edges.map(edge => edge.node.data?.tokenId || '');
+
+      const [arrFollowPostOwner, arrFollowedPage, arrFollowedToken] = await Promise.all([
+        this.postLoader.batchCheckAccountFollowAllAccount.loadMany(
+          postAccountIds.map((postAccountId: number) => {
+            return {
+              followingAccountId: postAccountId,
+              accountId
+            };
+          })
+        ),
+        this.postLoader.batchCheckAccountFollowAllPage.loadMany(
+          pageIds.map((pageId: string) => {
+            return {
+              pageId,
+              accountId
+            };
+          })
+        ),
+        this.postLoader.batchCheckAccountFollowAllToken.loadMany(
+          tokenIds.map((tokenId: string) => {
+            return {
+              tokenId,
+              accountId
+            };
+          })
+        )
+      ]);
+      // Map back to edges
+      let i = 0;
+      for (const edge of edges) {
+        const followPostOwner = arrFollowPostOwner[i] instanceof Error ? false : arrFollowPostOwner[i];
+        const followPage = arrFollowedPage[i] instanceof Error ? false : arrFollowedPage[i];
+        const followToken = arrFollowedToken[i] instanceof Error ? false : arrFollowedToken[i];
+
+        if (!_.isNil(edge.node?.data)) {
+          edge.node.data!.followPostOwner = followPostOwner as boolean;
+          edge.node.data!.followedPage = followPage as boolean;
+          edge.node.data!.followedToken = followToken as boolean;
+        }
+        i++;
+      }
+    } else {
+      edges.map(edge => {
+        if (!_.isNil(edge.node?.data)) {
+          edge.node.data!.followPostOwner = false;
+          edge.node.data!.followedPage = false;
+          edge.node.data!.followedToken = false;
+        }
+      });
+    }
+
     const firstEdge = edges[0];
     const lastEdge = edges[edges.length - 1];
     const lastTimelineIdCursor = timelineIds.edges[timelineIds.edges.length - 1].cursor;
