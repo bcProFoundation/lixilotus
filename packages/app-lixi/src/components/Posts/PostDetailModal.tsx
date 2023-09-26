@@ -507,7 +507,12 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
 
     let tipHex;
     let createFeeHex;
-    if (text.trim().toLowerCase().split(' ')[0] === '/give') {
+    //Give XPI only to post account when there is no page and no fee
+    if (
+      text.trim().toLowerCase().split(' ')[0] === '/give' &&
+      _.isNil(post.page) &&
+      post.postAccount.createCommentFee === '0'
+    ) {
       setIsSendingXPI(true);
       try {
         if (!isNumeric(text.trim().split(' ')[1])) {
@@ -537,8 +542,9 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
       }
     }
 
+    //Give XPI only to post account when there is no page and has fee
     if (_.isNil(post.page)) {
-      if (selectedAccount.id != post.postAccount.id && post.postAccount.createCommentFee != '0') {
+      if (selectedAccount.id != post.postAccount.id && post.postAccount.createCommentFee !== '0') {
         setIsSendingXPI(true);
 
         try {
@@ -550,10 +556,13 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
             slpBalancesAndUtxos.nonSlpUtxos,
             currency.defaultFee,
             '',
-            false, // indicate send mode is one to one
-            null,
-            post.postAccount.address,
-            post.postAccount.createCommentFee,
+            true, // indicate send mode is one to one
+            [
+              `${post.postAccount.address}, ${text.trim().split(' ')[1]}`,
+              `${post.postAccount.address}, ${post.postAccount.createCommentFee}`
+            ],
+            undefined,
+            undefined,
             isEncryptedOptionalOpReturnMsg,
             fundingWif,
             true
@@ -564,7 +573,8 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
         }
       }
     } else {
-      if (selectedAccount.id != post.page.pageAccount.id && post.page.createCommentFee != '0') {
+      //Give XPI only to post account when there is page and has fee
+      if (selectedAccount.id != post.page.pageAccount.id && post.page.createCommentFee !== '0') {
         setIsSendingXPI(true);
 
         try {
@@ -576,10 +586,13 @@ export const PostDetailModal: React.FC<PostDetailProps> = ({ post, classStyle }:
             slpBalancesAndUtxos.nonSlpUtxos,
             currency.defaultFee,
             '',
-            false, // indicate send mode is one to one
-            null,
-            post.page.pageAccount.address,
-            post.page.createCommentFee,
+            true, // indicate send mode is one to one
+            [
+              `${post.postAccount.address}, ${text.trim().split(' ')[1]}`,
+              `${post.page.pageAccount.address}, ${post.page.createCommentFee}`
+            ],
+            undefined,
+            undefined,
             isEncryptedOptionalOpReturnMsg,
             fundingWif,
             true
