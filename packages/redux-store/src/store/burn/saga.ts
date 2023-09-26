@@ -79,7 +79,6 @@ function* createTxHexSaga(action: PayloadAction<BurnQueueCommand>) {
 
     yield put({ type: returnTxHex.type, payload });
   } catch (e) {
-    console.log(e);
     yield put(moveAllBurnToFailQueue());
     yield put(clearBurnQueue());
   }

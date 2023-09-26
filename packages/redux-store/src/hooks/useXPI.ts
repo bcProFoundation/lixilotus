@@ -251,6 +251,7 @@ export default function useXPI() {
 
       return { rawTxHex, minerFee };
     } catch (e) {
+      console.log(e);
       throw new Error(`Insufficient funds`);
     }
   };
