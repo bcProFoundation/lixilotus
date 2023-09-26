@@ -385,6 +385,16 @@ const TimelineListing: React.FC<TimelineListingProps> = ({ className }: Timeline
       let tipToAddresses: { address: string; amount: string }[] = [];
       let tag: string;
 
+      console.log(
+        '🚀 ~ file: TimelineListing.tsx:412 ~ handleBurnForPost ~ slpBalancesAndUtxos.nonSlpUtxos.length:',
+        slpBalancesAndUtxos.nonSlpUtxos.length
+      );
+
+      console.log(
+        '🚀 ~ file: TimelineListing.tsx:416 ~ handleBurnForPost ~ fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis):',
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis)
+      );
+
       if (_.isNil(post.page) && _.isNil(post.token)) {
         tag = PostsQueryTag.Posts;
         tipToAddresses.push({
