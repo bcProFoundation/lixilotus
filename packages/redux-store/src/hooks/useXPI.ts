@@ -21,8 +21,22 @@ import { ChronikClient, Utxo } from 'chronik-client';
 import intl from 'react-intl-universal';
 
 export default function useXPI() {
-  const getXPI = (): BCHJS => {
-    return new BCHJS({});
+  const getRestUrl = (apiIndex = 0) => {
+    const apiString: string =
+      process.env.NEXT_PUBLIC_NETWORK === `mainnet`
+        ? process.env.NEXT_PUBLIC_XPI_APIS!
+        : process.env.NEXT_PUBLIC_XPI_APIS_TEST!;
+    const apiArray = apiString.split(',');
+    return apiArray[apiIndex];
+  };
+
+  const getXPI = (apiIndex = 0): BCHJS => {
+    let ConstructedSlpWallet;
+
+    ConstructedSlpWallet = new SlpWallet('', {
+      restURL: getRestUrl(apiIndex)
+    });
+    return ConstructedSlpWallet.bchjs as BCHJS;
   };
 
   const calcFee = (XPI: BCHJS, utxos: any, p2pkhOutputNumber = 2, satoshisPerByte = 2.01, opReturnLength = 0) => {
