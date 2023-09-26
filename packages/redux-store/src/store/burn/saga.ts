@@ -71,10 +71,15 @@ function* createTxHexSaga(action: PayloadAction<BurnQueueCommand>) {
       data.burnValue,
       tipToAddresses
     );
+
+    console.log('🚀 ~ file: saga.ts:63 ~ function*createTxHexSaga ~ rawTxHex:', rawTxHex);
+    console.log('🚀 ~ file: saga.ts:63 ~ function*createTxHexSaga ~ minerFee:', minerFee);
+
     const payload = {
       rawTxHex: rawTxHex,
       minerFee: _.toString(fromSatoshisToXpi(minerFee))
     };
+    console.log('🚀 ~ file: saga.ts:82 ~ function*createTxHexSaga ~ payload:', payload);
 
     yield put({ type: returnTxHex.type, payload });
   } catch {
