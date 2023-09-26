@@ -40,12 +40,12 @@ export class AccountDanaCacheService {
 
   async incrDanaGivenBy(id: number, value: number) {
     const keyField = `danaGiven:${id}`;
-    await this.redis.hincrby(this.keyPrefix, keyField, value);
+    await this.redis.hincrbyfloat(this.keyPrefix, keyField, value);
   }
 
   async incrDanaReceivedBy(id: number, value: number) {
     const keyField = `danaReceived:${id}`;
-    await this.redis.hincrby(this.keyPrefix, keyField, value);
+    await this.redis.hincrbyfloat(this.keyPrefix, keyField, value);
   }
 
   async setDanaGiven(id: number, value: number) {

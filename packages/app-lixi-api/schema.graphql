@@ -701,7 +701,7 @@ type Post {
   danaBurnDown: Float!
   danaBurnScore: Float!
   danaBurnUp: Float!
-  danaViewScore: Int
+  danaViewScore: Float
   followPostOwner: Boolean
   followedPage: Boolean
   followedToken: Boolean

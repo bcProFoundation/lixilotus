@@ -21,7 +21,6 @@ import { ChronikClient, Utxo } from 'chronik-client';
 import intl from 'react-intl-universal';
 
 export default function useXPI() {
-
   const getXPI = (): BCHJS => {
     return new BCHJS({});
   };

@@ -18,6 +18,6 @@ export class DanaViewScoreService {
   }
 
   async incrBy(id: string, value: number) {
-    await this.redis.hincrby(this.keyPrefix, `${id}`, value);
+    await this.redis.hincrbyfloat(this.keyPrefix, `${id}`, value);
   }
 }

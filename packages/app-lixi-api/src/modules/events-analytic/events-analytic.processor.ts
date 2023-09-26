@@ -67,15 +67,19 @@ export class EventsAnalyticProcessor extends WorkerHost {
     const postIds = events.map(event => event.eventData.id);
     const bfExists = await this.reBloom.mexists(accountPostImpressionBfKey, ...postIds);
     let i = 0;
-    for (const event of events) {
-      const postId = event.eventData.id;
-      if (!bfExists[i]) {
-        promises.push(this.reBloom.add(accountPostImpressionBfKey, postId));
-        promises.push(this.danaViewCountService.incrBy(postId, danaGiven * 0.5));
+    try {
+      for (const event of events) {
+        const postId = event.eventData.id;
+        if (!bfExists[i]) {
+          promises.push(this.reBloom.add(accountPostImpressionBfKey, postId));
+          promises.push(this.danaViewCountService.incrBy(postId, danaGiven * 0.5));
+        }
+        i += 1;
       }
-      i += 1;
+      await Promise.all(promises);
+    } catch (err) {
+      this.logger.error(err);
     }
-    await Promise.allSettled(promises);
   }
 
   private async processViewEvents(events: AnalyticEvent[], accountId: number) {
@@ -91,15 +95,19 @@ export class EventsAnalyticProcessor extends WorkerHost {
     const postIds = events.map(event => event.eventData.id);
     const bfExists = await this.reBloom.mexists(accountPostViewBfKey, ...postIds);
     let i = 0;
-    for (const event of events) {
-      const postId = event.eventData.id;
-      if (!bfExists[i]) {
-        promises.push(this.reBloom.add(accountPostViewBfKey, postId));
-        promises.push(this.danaViewCountService.incrBy(postId, danaGiven * 0.5));
+    try {
+      for (const event of events) {
+        const postId = event.eventData.id;
+        if (!bfExists[i]) {
+          promises.push(this.reBloom.add(accountPostViewBfKey, postId));
+          promises.push(this.danaViewCountService.incrBy(postId, danaGiven * 0.5));
+        }
+        i += 1;
       }
-      i += 1;
+      await Promise.all(promises);
+    } catch (err) {
+      this.logger.error(err);
     }
-    await Promise.allSettled(promises);
   }
 
   private async handleAnonymousEvents() {
