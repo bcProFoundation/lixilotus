@@ -23,4 +23,4 @@
 
 ## License
 
-Code released under [the MIT license](https://github.com/bcProFoundation/lixilotus/blob/master/LICENSE).
+Code released under [AGPL-3.0 license]([https://github.com/bcProFoundation/lixilotus/blob/master/LICENSE](https://www.gnu.org/licenses/agpl-3.0.en.html)).
